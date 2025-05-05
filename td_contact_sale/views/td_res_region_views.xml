@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_country_region_tree" model="ir.ui.view">
+        <field name="name">td.res.country.region.tree</field>
+        <field name="model">td.res.country.region</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="parent_region_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_country_region_form" model="ir.ui.view">
+        <field name="name">td.res.country.region.form</field>
+        <field name="model">td.res.country.region</field>
+        <field name="arch" type="xml">
+            <form string="Region">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="parent_region_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_country_region" model="ir.actions.act_window">
+        <field name="name">Region</field>
+        <field name="res_model">td.res.country.region</field>
+        <field name="view_id" ref="view_country_region_tree"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a Region
+            </p>
+        </field>
+    </record>
+</odoo>

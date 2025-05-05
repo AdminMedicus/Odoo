@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_partner_form_td_region_inherit" model="ir.ui.view">
+        <field name="name">res.partner.td.region.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="region_id"/>
+            </xpath>
+            <xpath expr="//span[@name='address_name']" position="before">
+                <field name="full_partner_name"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

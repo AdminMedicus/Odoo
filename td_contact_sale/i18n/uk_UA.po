@@ -1,0 +1,64 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* td_contact_sale
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-05-05 18:58+0000\n"
+"PO-Revision-Date: 2025-05-05 18:58+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: td_contact_sale
+#. odoo-python
+#: code:addons/td_contact_sale/models/td_res_region.py:0
+#: model:ir.model.fields,field_description:td_contact_sale.field_td_res_country_region__child_region_ids
+#, python-format
+msgid "Child Regions"
+msgstr "Дочірні регіони"
+
+#. module: td_contact_sale
+#. odoo-python
+#: code:addons/td_contact_sale/models/res_partner.py:0
+#: model:ir.model.fields,field_description:td_contact_sale.field_res_partner__full_partner_name
+#: model:ir.model.fields,field_description:td_contact_sale.field_res_users__full_partner_name
+#, python-format
+msgid "Full Partner Name"
+msgstr "Повна назва"
+
+#. module: td_contact_sale
+#. odoo-python
+#: code:addons/td_contact_sale/models/td_res_region.py:0
+#: model:ir.model.fields,field_description:td_contact_sale.field_td_res_country_region__parent_region_id
+#, python-format
+msgid "Parent Region"
+msgstr "Батьківський регіон"
+
+#. module: td_contact_sale
+#. odoo-python
+#: code:addons/td_contact_sale/models/res_partner.py:0
+#: code:addons/td_contact_sale/models/sale_report.py:0
+#: model:ir.actions.act_window,name:td_contact_sale.action_country_region
+#: model:ir.model.fields,field_description:td_contact_sale.field_res_partner__region_id
+#: model:ir.model.fields,field_description:td_contact_sale.field_res_users__region_id
+#: model:ir.model.fields,field_description:td_contact_sale.field_sale_report__partner_region_id
+#: model:ir.ui.menu,name:td_contact_sale.menu_country_region_partner
+#: model_terms:ir.ui.view,arch_db:td_contact_sale.view_country_region_form
+#: model_terms:ir.ui.view,arch_db:td_contact_sale.view_country_region_tree
+#, python-format
+msgid "Region"
+msgstr "Регіон"
+
+#. module: td_contact_sale
+#. odoo-python
+#: code:addons/td_contact_sale/models/td_res_region.py:0
+#: model:ir.model.fields,field_description:td_contact_sale.field_td_res_country_region__name
+#, python-format
+msgid "Region Name"
+msgstr "Назва регіону"
