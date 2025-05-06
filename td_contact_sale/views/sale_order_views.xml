@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_td_sub_client_inherit" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.td.sub.client</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="priority" eval="99"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_shipping_id']" position="after">
+                <field name="allowed_sub_client_ids" invisible="1"/>
+                <field name="sub_client_id" domain="[('id', 'in', allowed_sub_client_ids)]" readonly="not partner_id or state in ('sale', 'cancel')"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_shipping_id']" position="replace">
+                <field name="allowed_partner_shipping_id" invisible="1"/>
+                <field name="partner_shipping_id"
+                       groups="account.group_delivery_invoice_address"
+                       context="{'default_type':'delivery', 'show_address': False, 'show_vat': False}"
+                       readonly="state == 'cancel' or locked"
+                       invisible="sub_client_id"
+                />
+                <field name="partner_shipping_id"
+                       groups="account.group_delivery_invoice_address"
+                       context="{'default_type':'delivery', 'show_address': False, 'show_vat': False}"
+                       readonly="state == 'cancel' or locked"
+                       domain="[('id', 'in', allowed_partner_shipping_id)]"
+                       invisible="not sub_client_id"
+                />
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

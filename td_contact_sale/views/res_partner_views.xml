@@ -11,6 +11,20 @@
             <xpath expr="//span[@name='address_name']" position="before">
                 <field name="full_partner_name"/>
             </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Sub client" name="sub_client">
+                    <field name="sub_client_ids">
+                        <tree>
+                            <field name="name" optional="show"/>
+                            <field name="city" optional="show"/>
+                            <field name="phone" optional="show"/>
+                            <field name="mobile" optional="show"/>
+                            <field name="user_id" optional="show"/>
+                            <field name="category_id" optional="show"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
         </field>
     </record>
 </odoo>

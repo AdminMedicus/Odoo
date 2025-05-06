@@ -6,7 +6,8 @@
         <field name="inherit_id" ref="sale.view_order_product_pivot"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='price_subtotal']" position="after">
-                <field name="partner_region_id" type="measure"/>
+                <field name="partner_region_id"/>
+                <field name="partner_sub_client_id"/>
             </xpath>
         </field>
     </record>
