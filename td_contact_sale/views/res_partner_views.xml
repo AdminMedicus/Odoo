@@ -14,14 +14,14 @@
             <xpath expr="//notebook" position="inside">
                 <page string="Sub client" name="sub_client">
                     <field name="sub_client_ids">
-                        <tree>
+                        <list>
                             <field name="name" optional="show"/>
                             <field name="city" optional="show"/>
                             <field name="phone" optional="show"/>
                             <field name="mobile" optional="show"/>
                             <field name="user_id" optional="show"/>
                             <field name="category_id" optional="show"/>
-                        </tree>
+                        </list>
                     </field>
                 </page>
             </xpath>

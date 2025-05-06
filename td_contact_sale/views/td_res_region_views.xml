@@ -4,10 +4,10 @@
         <field name="name">td.res.country.region.tree</field>
         <field name="model">td.res.country.region</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
                 <field name="parent_region_id"/>
-            </tree>
+            </list>
         </field>
     </record>
 
