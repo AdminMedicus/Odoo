@@ -1,0 +1,40 @@
+# @format
+
+name: Sync GitHub Repos Test
+on:
+  push:
+    branches:
+      - 18.0-medicus-test1
+
+jobs:
+  sync:
+    if: github.repository == 'artel-dev/medicus'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source repository
+        uses: actions/checkout@v4
+        
+      - name: Push to destination repository (test branch)
+        env:
+          ORG_NAME: AdminMedicus
+          ORG_EMAIL: ikutko@it-artel.ua
+          ORG_TOKEN: ${{ secrets.PAT }}
+          ORG_REPO_NAME: Odoo
+          ORG_BRANCH_NAME: 18.0-medicus-test1
+          ORIGINAL_ORG_NAME: artel-dev
+          ORIGINAL_ORG_EMAIL: ikutko@it-artel.ua
+          ORIGINAL_ORG_TOKEN: ${{ secrets.PAT }}
+          ORIGINAL_REPO_NAME: medicus
+          # ORIGINAL_REPO_NAME: ${{ github.repository }}
+          # ORIGINAL_BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+          ORIGINAL_BRANCH_NAME: 18.0-medicus-test1
+        run: |
+          git config --global user.email ${{ env.ORG_EMAIL }}
+          git config --global user.name ${{ env.ORG_NAME }}
+          git clone https://${{ env.ORG_NAME }}:${{ env.ORG_TOKEN }}@github.com/${{ env.ORG_NAME }}/${{ env.ORG_REPO_NAME }}.git --branch ${{ env.ORG_BRANCH_NAME }}
+          cd ${{ env.ORG_REPO_NAME }}
+          git remote add ${{ env.ORIGINAL_REPO_NAME }} https://${{ env.ORIGINAL_ORG_NAME }}:${{ env.ORIGINAL_ORG_TOKEN }}@github.com/${{ env.ORIGINAL_ORG_NAME }}/${{ env.ORIGINAL_REPO_NAME }}.git
+          git remote update
+          git merge ${{ env.ORIGINAL_REPO_NAME }}/${{ env.ORIGINAL_BRANCH_NAME }} --allow-unrelated-histories
+          git show-ref
+          git push origin ${{ env.ORIGINAL_BRANCH_NAME }}
