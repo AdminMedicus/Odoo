@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_country_region_partner"
+        action="td_contact_sale.action_country_region"
+        parent="contacts.menu_localisation"
+        sequence="2"/>
+</odoo>
