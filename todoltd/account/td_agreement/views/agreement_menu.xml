@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<menuitem
+		id="menu_td_agreement_root"
+		name="Agreement"
+		web_icon="td_agreement,static/description/icon.png"
+		sequence="100"/>
+
+	<menuitem
+		id="td_agreement_menu"
+		name="Settings"
+		parent="menu_td_agreement_root"
+		sequence="2"/>
+
+</odoo>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+
+    <t t-inherit="account_accountant.BankRecRecordNotebookManualOperations" t-inherit-mode="extension">
+        <xpath expr="//div[@name='balance']" position="after">
+           <div name="agreement" class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+           <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+               <label class="o_form_label"
+					  t-att-class="{'o_field_invalid': invalidFields.includes('agreement'), 'o_form_label_readonly': reconciled}">Agreement</label>
+           </div>
+			   <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 w-100 mb-1">
+               <div class="o_field_widget o_field_many2one"
+					t-att-class="{'o_field_invalid': invalidFields.includes('agreement')}">
+                   <Many2OneField
+					   name="'td_agreement_id'"
+					   record="line"
+					   canOpen="false"
+					   readonly="reconciled"
+					   canQuickCreate="false"
+				   />
+               </div>
+           </div>
+       </div>
+        </xpath>
+    </t>
+
+
+</templates>

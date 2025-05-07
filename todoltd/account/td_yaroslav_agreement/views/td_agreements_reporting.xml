@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_td_agreement_report_graph" model="ir.ui.view">
+    <field name="name">td.agreement.report.graph</field>
+    <field name="model">td.agreement</field>
+    <field name="priority">20</field>
+    <field name="arch" type="xml">
+        <graph string="Agreement Analysis" sample="1">
+            <field name="create_date" interval="month"/>
+            <field name="partner_id"/>
+            <field name="company_id"/>
+            <field name="type_of_agreement"/>
+            <field name="closing_reason_id"/>
+        </graph>
+    </field>
+</record>
+
+    <record id="view_td_agreement_report_pivot" model="ir.ui.view">
+    <field name="name">td.agreement.report.pivot</field>
+    <field name="model">td.agreement</field>
+    <field name="priority">60</field>
+    <field name="arch" type="xml">
+        <pivot string="Agreement Analysis" sample="1">
+            <field name="create_date" interval="month" type="row"/>
+            <field name="partner_id" type="col"/>
+            <field name="company_id"/>
+            <field name="type_of_agreement"/>
+            <field name="closing_reason_id"/>
+        </pivot>
+    </field>
+</record>
+
+
+
+</odoo>
