@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="td_agreement_form_inherit_yaroslav" model="ir.ui.view">
+        <field name="name">td.agreement.form.inherit.yaroslav</field>
+        <field name="model">td.agreement</field>
+        <field name="inherit_id" ref="td_agreement.td_agreement_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <div class="oe_button_box" name="button_box">
+                    <button class="oe_stat_button" type="object" name="action_view_sale_order"
+                        icon="fa-usd">
+                        <field string="Sales" name="td_sale_order_count" widget="statinfo"/>
+                    </button>
+                    <button class="oe_stat_button" type="object" name="action_view_purchase_order"
+                        icon="fa-usd">
+                        <field string="Purchase" name="td_purchase_order_count" widget="statinfo"/>
+                    </button>
+                    <button class="oe_stat_button" type="object" name="action_view_account_move"
+                        icon="fa-usd">
+                        <field string="Account Move" name="td_account_move_count" widget="statinfo"/>
+                    </button>
+                    <button class="oe_stat_button" type="object" name="action_view_account_bill"
+                        icon="fa-usd">
+                        <field string="Account Bills" name="td_account_bill_count" widget="statinfo"/>
+                    </button>
+                    <button type="object" class="oe_stat_button" name="action_open_partner_ledger" icon="fa-list"
+                    string="Client statement"/>
+
+                    <button class="oe_stat_button" type="object" name="plug_button">
+                        <field string="Timeliness of Payment (%)" name="td_timeline_percentage" widget="statinfo"/>
+                    </button>
+                </div>
+            </xpath>
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button
+                        name="action_mark_closed"
+                        type="object"
+                        string="Close agreement"
+                        class="btn btn-primary"
+                        invisible="is_closed"/>
+                    <button
+                        name="action_restore_agreement"
+                        type="object"
+                        string="Restore agreement"
+                        class="btn btn-secondary"
+                        invisible="not is_closed"/>
+                </header>
+            </xpath>
+            <xpath expr="//form/sheet/group" position="before">
+                <widget name="web_ribbon"
+                        title="Closed"
+                        bg_color="text-bg-danger"
+                        invisible="not is_closed"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="discount"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="td_action_active_agreement_view_tree" model="ir.actions.act_window">
+        <field name="name">Active Agreements</field>
+        <field name="res_model">td.agreement</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_closed', '=', False)]</field>
+    </record>
+
+    <record id="view_td_agreement_tree_inherit" model="ir.ui.view">
+        <field name="name">td.agreement.tree.inherit</field>
+        <field name="model">td.agreement</field>
+        <field name="inherit_id" ref="td_agreement.td_agreement_tree"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//list" position="attributes">
+                <attribute name="decoration-danger">is_closed</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="discount"/>
+            </xpath>
+
+            <xpath expr="//field[@name='account_id']" position="after">
+                <field name="closing_reason_id"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="td_agreement_search_view" model="ir.ui.view">
+        <field name="name">td.agreement.search.view</field>
+        <field name="model">td.agreement</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="Active Agreements" name="active_agreements" domain="[('is_closed', '=', False)]"/>
+                <filter string="Closed Agreements" name="closed_agreements" domain="[('is_closed', '=', True)]"/>
+            </search>
+        </field>
+    </record>
+
+    <menuitem id="menu_td_agreement_reports"
+              name="Reports"
+              parent="td_agreement.menu_td_agreement_root"
+              sequence="3"/>
+
+    <record id="action_td_agreement_report" model="ir.actions.act_window">
+        <field name="name">Agreement Analysis</field>
+        <field name="res_model">td.agreement</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="view_ids"
+               eval="[(5, 0, 0),
+                      (0, 0, {'view_mode': 'graph', 'view_id': ref('td_yaroslav_agreement.view_td_agreement_report_graph')}),
+                      (0, 0, {'view_mode': 'pivot', 'view_id': ref('td_yaroslav_agreement.view_td_agreement_report_pivot')}),
+                      (0, 0, {'view_mode': 'list', 'view_id': ref('td_agreement.td_agreement_tree')})
+                     ]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No data found!
+            </p>
+            <p>
+                This analysis provides insights into agreements based on creation date.
+            </p>
+        </field>
+    </record>
+
+    <!-- Agreement Analysis Menu -->
+    <menuitem id="menu_td_agreement_analysis"
+              parent="menu_td_agreement_reports"
+              action="action_td_agreement_report"
+              sequence="1"/>
+</odoo>

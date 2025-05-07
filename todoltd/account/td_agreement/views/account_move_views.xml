@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo><data>
+    <record id="td_account_move_form_inherited" model="ir.ui.view">
+        <field name="name">td.account.move.form.inherited</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ref']" position="after">
+                <field name="td_agreement_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="td_account_move_tree_inherited" model="ir.ui.view">
+        <field name="name">td.account.move.tree.inherited</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="td_agreement_id" optional="show" readonly="state != 'draft'"/>
+            </xpath>
+        </field>
+    </record>
+
+</data></odoo>
