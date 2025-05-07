@@ -1,2 +1,0 @@
-# medicus
-Project Medicus
