@@ -36,6 +36,8 @@ class SaleOrder(models.Model):
                 res.allowed_partner_shipping_id = (
                     res.sub_client_id.child_ids.ids
                 )
+            else:
+                res.partner_shipping_id = False
 
     def action_confirm(self):
         action = super().action_confirm()
