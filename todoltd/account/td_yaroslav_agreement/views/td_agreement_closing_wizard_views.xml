@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="td_agreement_closing_wizard_form_view" model="ir.ui.view">
+        <field name="name">td.agreement.closing.wizard.form</field>
+        <field name="model">td.agreement.closing.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Closing Agreement">
+                <group>
+                    <field name="closing_reason_id" required="0"/>
+                    <field name="notes" required="0"/>
+                </group>
+                <footer>
+                    <button string="Close" type="object" name="action_close" class="oe_highlight"/>
+                    <button string="Cancel" type="object" name="action_cancel" class="oe_link"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
