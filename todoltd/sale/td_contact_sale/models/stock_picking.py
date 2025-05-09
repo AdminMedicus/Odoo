@@ -7,3 +7,10 @@ class StockPicking(models.Model):
     sub_client_id = fields.Many2one(
         comodel_name='res.partner',
     )
+
+    def button_validate(self):
+        res = super().button_validate()
+        picking_ids = self.move_ids.move_dest_ids.picking_id
+        for picking in picking_ids:
+            picking.sub_client_id = self.sub_client_id.id
+        return res

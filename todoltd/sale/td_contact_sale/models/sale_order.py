@@ -22,7 +22,8 @@ class SaleOrder(models.Model):
     def _onchange_domain_for_sub_client_id(self):
         for res in self:
             if res.partner_id:
-                res.allowed_sub_client_ids = res.partner_id.sub_client_ids.ids
+                res.allowed_sub_client_ids = res.partner_id.sub_client_ids.ids or False
+                res.sub_client_id = False
             else:
                 res.allowed_sub_client_ids = False
                 res.sub_client_id = False
