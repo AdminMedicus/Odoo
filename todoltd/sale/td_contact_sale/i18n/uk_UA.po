@@ -81,3 +81,18 @@ msgstr "Суб клієнт"
 #: model_terms:ir.ui.view,arch_db:td_contact_sale.res_partner_form_td_region_inherit
 msgid "Sub client"
 msgstr "Суб клієнт"
+
+#. module: td_contact_sale
+#: model_terms:ir.ui.view,arch_db:td_contact_sale.view_picking_form_td_status_stock_inherit
+msgid "Validate"
+msgstr "Підтвердити"
+
+#. module: td_contact_sale
+#: model_terms:ir.ui.view,arch_db:td_contact_sale.view_order_form_td_status_stock_inherit
+msgid "Ready to be completed"
+msgstr "Готовий до комплектування"
+
+#. module: td_contact_sale
+#: model_terms:ir.ui.view,arch_db:td_contact_sale.view_order_form_td_status_stock_inherit
+msgid "Not Ready to be completed"
+msgstr "Не готовий до комплектування"

@@ -10,4 +10,31 @@
             </xpath>
         </field>
     </record>
+
+    <record id="view_picking_form_td_status_stock_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.form.td.status.stock.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="priority" eval="99"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='button_validate']" position="replace">
+            </xpath>
+            <xpath expr="//button[@name='button_validate']" position="replace">
+                <button name="button_validate"
+                        invisible="state in ('draft', 'confirmed', 'done', 'cancel') or picking_type_code != 'internal'"
+                        string="Validate" type="object" class="oe_highlight"
+                        groups="stock.group_stock_user" data-hotkey="v"
+                />
+
+                <button name="button_validate"
+                        invisible="state in ('draft', 'confirmed', 'done', 'cancel') or picking_type_code == 'internal'"
+                        string="Validate" type="object" class="oe_highlight"
+                        groups="stock.group_stock_user" data-hotkey="v"/>
+                <button name="button_validate"
+                        invisible="state in ('waiting', 'assigned', 'done', 'cancel') or picking_type_code == 'internal'"
+                        string="Validate" type="object" groups="stock.group_stock_user"
+                        class="o_btn_validate" data-hotkey="v"/>
+            </xpath>
+        </field>
+    </record>
 </odoo>
