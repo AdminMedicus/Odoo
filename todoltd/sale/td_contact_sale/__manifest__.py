@@ -2,7 +2,7 @@
 {
     'name': "Modification Contact Sale",
     'summary': 'Additional for contacts and sale',
-    'version': '18.0.0.0.4',
+    'version': '18.0.0.0.5',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
@@ -26,6 +26,11 @@
         # menu
         'views/region_menu_views.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'td_contact_sale/static/src/style.scss'
+        ],
+    },
     'installable': 'True',
     'application': False,
 }

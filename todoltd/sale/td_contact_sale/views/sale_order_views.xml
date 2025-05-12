@@ -30,4 +30,35 @@
         </field>
     </record>
 
+    <record id="view_order_form_td_status_stock_inherit" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.td.sub.client</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="priority" eval="99"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@class='oe_title']" position="replace">
+                <div class="oe_title oe_td_title">
+                    <h1>
+                        <field name="name" readonly="1"/>
+                    </h1>
+                    <field name="stock_status_assigned" invisible="1"/>
+                    <div id="td_status_stock_button">
+                        <button name="action_confirm_stock_status"
+                            class="btn-primary"
+                            string="Ready to be completed"
+                            invisible="stock_status_assigned"
+                            type="object" data-hotkey="g"
+                        />
+                        <button name="action_rejected_stock_status"
+                            class="btn-secondary"
+                            string="Not Ready to be completed"
+                            invisible="not stock_status_assigned"
+                            type="object" data-hotkey="g"
+                        />
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>
