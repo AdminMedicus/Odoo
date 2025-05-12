@@ -17,12 +17,16 @@ class SaleOrder(models.Model):
         comodel_name='res.partner',
         relation='sale_order_allowed_partner_shipping_rel'
     )
+    stock_status_assigned = fields.Boolean(default=False)
+    stock_button_active = fields.Boolean(default=True)
 
     @api.onchange('partner_id')
     def _onchange_domain_for_sub_client_id(self):
         for res in self:
             if res.partner_id:
-                res.allowed_sub_client_ids = res.partner_id.sub_client_ids.ids or False
+                res.allowed_sub_client_ids = (
+                    res.partner_id.sub_client_ids.ids or False
+                )
                 res.sub_client_id = False
             else:
                 res.allowed_sub_client_ids = False
@@ -36,8 +40,11 @@ class SaleOrder(models.Model):
                 res.allowed_partner_shipping_id = (
                     res.sub_client_id.child_ids.ids
                 )
+            elif res.sub_client_id:
+                res.partner_shipping_id = res.sub_client_id.id
+                res.allowed_partner_shipping_id = [res.sub_client_id.id]
             else:
-                res.partner_shipping_id = False
+                res.partner_shipping_id = res.partner_id.id
 
     def action_confirm(self):
         action = super().action_confirm()
@@ -46,4 +53,27 @@ class SaleOrder(models.Model):
                 for picking in res.picking_ids:
                     picking.sub_client_id = res.sub_client_id.id
                     picking.partner_id = res.partner_shipping_id.id
+                    if picking.state not in ['done', 'cancel'] \
+                            and picking.picking_type_code == 'internal':
+                        picking.state = 'confirmed'
         return action
+
+    def action_confirm_stock_status(self):
+        for res in self:
+            if res.stock_button_active:
+                if res.picking_ids:
+                    for picking in res.picking_ids:
+                        if picking.state not in ['done', 'cancel'] \
+                                and picking.picking_type_code == 'internal':
+                            picking.state = 'assigned'
+                res.stock_status_assigned = True
+
+    def action_rejected_stock_status(self):
+        for res in self:
+            if res.stock_button_active:
+                if res.picking_ids:
+                    for picking in res.picking_ids:
+                        if picking.state not in ['done', 'cancel'] \
+                                and picking.picking_type_code == 'internal':
+                            picking.state = 'confirmed'
+                res.stock_status_assigned = False
