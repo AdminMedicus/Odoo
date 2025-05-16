@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="agreement_td_account_move_form_inherited" model="ir.ui.view">
+        <field name="name">td.account.move.form.inherited</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="td_agreement.td_account_move_form_inherited"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='td_agreement_id']" position="attributes">
+                <attribute name="domain">[('partner_id', '=', partner_id)]</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

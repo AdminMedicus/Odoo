@@ -173,3 +173,10 @@ msgstr "Рівними частинами"
 #: model_terms:ir.ui.view,arch_db:td_medicus_agreement.td_medicus_agreement_form_inherit_yaroslav
 msgid "Calculate"
 msgstr "Розрахувати"
+
+#. module: td_medicus_agreement
+#. odoo-python
+#: code:addons/td_medicus_agreement/models/res_partner.py:0
+#: model_terms:ir.ui.view,arch_db:td_medicus_agreement.view_td_res_partner_form_inherit
+msgid "Agreements"
+msgstr "Договори"
