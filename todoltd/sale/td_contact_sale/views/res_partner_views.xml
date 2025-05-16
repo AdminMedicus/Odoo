@@ -13,9 +13,10 @@
             </xpath>
             <xpath expr="//notebook" position="inside">
                 <page string="Sub client" name="sub_client">
-                    <field name="sub_client_ids">
-                        <list>
-                            <field name="name" optional="show"/>
+                    <field name="sub_client_rel_ids">
+                        <list editable="bottom">
+                            <field name="sub_client_id" optional="show"/>
+                            <field name="is_typical" optional="show"/>
                             <field name="city" optional="show"/>
                             <field name="phone" optional="show"/>
                             <field name="mobile" optional="show"/>
