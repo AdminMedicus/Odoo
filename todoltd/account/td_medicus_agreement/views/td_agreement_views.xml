@@ -28,11 +28,13 @@
                 <field name="budget_funds"/>
                 <field name="contract_terms"/>
             </xpath>
-            <xpath expr="//field[@name='type_of_agreement']" position="after">
-                <field name="pricelist_id"/>
-                <field name="document_available"/>
-                <field name="main_contract"/>
-                <field name="implementation_document"/>
+            <xpath expr="//field[@name='type_of_agreement']/ancestor::group[1]" position="after">
+                <group colspan="2">
+                    <field name="pricelist_id"/>
+                    <field name="document_available"/>
+                    <field name="main_contract"/>
+                    <field name="implementation_document"/>
+                </group>
             </xpath>
             <xpath expr="//page[@name='description']" position="after">
                 <page string="Contract Terms" name="contract_terms" invisible="contract_terms != 'deferred'">
