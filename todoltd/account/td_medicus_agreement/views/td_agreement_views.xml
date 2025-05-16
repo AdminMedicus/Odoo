@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_td_medicus_agreement_tree_inherit" model="ir.ui.view">
+        <field name="name">td.medicus.agreement.tree.inherit</field>
+        <field name="model">td.agreement</field>
+        <field name="inherit_id" ref="td_yaroslav_agreement.view_td_agreement_tree_inherit"/>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='discount']" position="replace">
+            </xpath>
+        </field>
+    </record>
+
+    <record id="td_medicus_agreement_form_inherit_yaroslav" model="ir.ui.view">
+        <field name="name">td.medicus.agreement.form.inherit.yaroslav</field>
+        <field name="model">td.agreement</field>
+        <field name="inherit_id" ref="td_yaroslav_agreement.td_agreement_form_inherit_yaroslav"/>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='number']" position="replace">
+            </xpath>
+            <xpath expr="//field[@name='discount']" position="replace">
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="allowed_sub_client_ids" invisible="1"/>
+                <field name="sub_client_id" domain="[('id', 'in', allowed_sub_client_ids)]"/>
+                <field name="contract_amount"/>
+                <field name="budget_funds"/>
+                <field name="pricelist_id"/>
+                <field name="document_available"/>
+                <field name="main_contract"/>
+                <field name="contract_terms"/>
+                <field name="implementation_document"/>
+            </xpath>
+            <xpath expr="//field[@name='type_of_agreement']/ancestor::group[1]" position="after">
+                <group class="o_row">
+                    <field name="pre_payment" widget="percentage" readonly="pre_payment_sum"/>
+                    <field name="pre_payment_date_to"/>
+                    <field name="pre_payment_sum" readonly="pre_payment"/>
+                </group>
+                <group class="o_row">
+                    <field name="on_delivery" widget="percentage" readonly="on_delivery_sum"/>
+                    <field name="on_delivery_date_to"/>
+                    <field name="on_delivery_sum" readonly="on_delivery"/>
+                </group>
+                <group class="o_row">
+                    <field name="split_debt"/>
+                    <field name="months"/>
+                    <field name="first_payment_date"/>
+                </group>
+                <group class="o_row">
+                    <field name="regular_payment_date"/>
+                    <field name="regular_payment_sum"/>
+                    <field name="equal_parts"/>
+                </group>
+                <button name="calculate_split_debt_and_regular_payment_sum" type="object" string="Calculate"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

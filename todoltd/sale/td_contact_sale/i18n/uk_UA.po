@@ -69,11 +69,10 @@ msgid "Create a Region"
 msgstr "Створити регіон"
 
 #. module: td_contact_sale
-#: model:ir.model.fields,field_description:td_contact_sale.field_res_partner__sub_client_ids
-#: model:ir.model.fields,field_description:td_contact_sale.field_res_users__sub_client_ids
 #: model:ir.model.fields,field_description:td_contact_sale.field_sale_order__sub_client_id
 #: model:ir.model.fields,field_description:td_contact_sale.field_sale_report__partner_sub_client_id
 #: model:ir.model.fields,field_description:td_contact_sale.field_stock_picking__sub_client_id
+#: model:ir.model.fields,field_description:td_contact_sale.field_td_res_partner_sub_client_rel__sub_client_id
 msgid "Sub Client"
 msgstr "Суб клієнт"
 
@@ -96,3 +95,39 @@ msgstr "Готовий до комплектування"
 #: model_terms:ir.ui.view,arch_db:td_contact_sale.view_order_form_td_status_stock_inherit
 msgid "Not Ready to be completed"
 msgstr "Не готовий до комплектування"
+
+#. module: td_contact_sale
+#: model:ir.model.fields,field_description:td_contact_sale.field_td_res_partner_sub_client_rel__is_typical
+msgid "Typical Subclient"
+msgstr "Типічний Суб клієнт"
+
+#. module: td_contact_sale
+#. odoo-python
+#: code:addons/td_contact_sale/models/res_partner.py:0
+msgid "This client can have only 1 typical subclient"
+msgstr "Цей клієнт може мати лише одного типічного суб клієнта"
+
+#. module: td_contact_sale
+#: model:ir.model.fields,field_description:td_contact_sale.field_td_res_partner_sub_client_rel__category_id
+msgid "Tags"
+msgstr "Мітки"
+
+#. module: td_contact_sale
+#: model:ir.model.fields,field_description:td_contact_sale.field_td_res_partner_sub_client_rel__user_id
+msgid "Salesperson"
+msgstr "Продавець"
+
+#. module: td_contact_sale
+#: model:ir.model.fields,field_description:td_contact_sale.field_td_res_partner_sub_client_rel__mobile
+msgid "Mobile"
+msgstr "Мобільний"
+
+#. module: td_contact_sale
+#: model:ir.model.fields,field_description:td_contact_sale.field_td_res_partner_sub_client_rel__phone
+msgid "Phone"
+msgstr "Телефон"
+
+#. module: td_contact_sale
+#: model:ir.model.fields,field_description:td_contact_sale.field_td_res_partner_sub_client_rel__city
+msgid "City"
+msgstr "Місто"
