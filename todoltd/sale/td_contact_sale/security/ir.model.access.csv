@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_td_res_country_region,td_res_country_region,model_td_res_country_region,base.group_user,1,1,1,1
+access_td_res_partner_sub_client_rel,td_res_partner_sub_client_rel,model_td_res_partner_sub_client_rel,base.group_user,1,1,1,1
