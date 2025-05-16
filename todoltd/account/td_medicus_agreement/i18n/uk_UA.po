@@ -48,6 +48,7 @@ msgstr "Основний договір для клієнта"
 
 #. module: td_medicus_agreement
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement__contract_terms
+#: model_terms:ir.ui.view,arch_db:td_medicus_agreement.td_medicus_agreement_form_inherit_yaroslav
 msgid "Contract Terms"
 msgstr "Умови договору"
 
