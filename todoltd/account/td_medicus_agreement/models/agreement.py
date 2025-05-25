@@ -1,5 +1,4 @@
-from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+from odoo import models, fields, api
 
 
 class Agreement(models.Model):
@@ -39,9 +38,6 @@ class Agreement(models.Model):
             ("no", "No"),
         ],
         default="no",
-    )
-    main_contract = fields.Boolean(
-        default=False,
     )
     contract_terms = fields.Selection(
         selection=[
@@ -129,17 +125,3 @@ class Agreement(models.Model):
     def _onchange_partner_id(self):
         for res in self:
             res.sub_client_id = False
-
-    @api.onchange('main_contract')
-    def _onchange_main_contract(self):
-        for res in self:
-            contracts = self.search([
-                ('partner_id', '=', res.partner_id.id),
-                ('main_contract', '=', True)
-            ])
-            if contracts:
-                raise ValidationError(
-                    _("You cannot make this contract the main "
-                      "contract because the main contract is "
-                      "already selected")
-                )
