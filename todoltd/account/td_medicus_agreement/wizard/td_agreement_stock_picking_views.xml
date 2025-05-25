@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="td_stock_move_wizard_view_form" model="ir.ui.view">
+        <field name="name">td.agreement.stock.picking.form</field>
+        <field name="model">td.agreement.stock.picking</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="record_ids" nolabel="1">
+                            <list editable="bottom">
+                                <field name="is_selected"/>
+                                <field name="product_id"/>
+                                <field name="stock_picking_id"/>
+                                <field name="sale_order_id"/>
+                                <field name="quantity"/>
+                                <field name="product_uom"/>
+                            </list>
+                        </field>
+                    </group>
+                    <footer>
+                        <button name="action_process_selected" string="Apply" type="object" class="btn-primary"/>
+                        <button string="Cancel" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -9,6 +9,16 @@ class ResPartner(models.Model):
         compute='_compute_count_agreement'
     )
 
+    standard_agreement_expense_id = fields.Many2one(
+        comodel_name='td.agreement',
+        string='Standard contract (expense invoice)'
+    )
+
+    standard_agreement_custody_id = fields.Many2one(
+        comodel_name='td.agreement',
+        string='Standard contract (Act of custody)'
+    )
+
     def action_view_agreements(self):
         self.ensure_one()
 

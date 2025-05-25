@@ -15,4 +15,17 @@
             </xpath>
         </field>
     </record>
+
+    <record id="view_td_res_partner_form_inherit_standard_agreement" model="ir.ui.view">
+        <field name="name">td.res.partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="delivery.view_partner_property_form"/>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='property_delivery_carrier_id']" position="after">
+                <field name="standard_agreement_expense_id" domain="[('partner_id', '=', id)]"/>
+                <field name="standard_agreement_custody_id" domain="[('partner_id', '=', id)]"/>
+            </xpath>
+        </field>
+    </record>
 </odoo>

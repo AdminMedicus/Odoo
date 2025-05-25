@@ -53,21 +53,29 @@ msgid "Contract Terms"
 msgstr "Умови договору"
 
 #. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_sale_order__implementation_document
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_stock_picking__implementation_document
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement__implementation_document
 msgid "Implementation Document"
 msgstr "Документ реалізації"
 
 #. module: td_medicus_agreement
+#: model:ir.model.fields.selection,name:td_medicus_agreement.selection__sale_order__implementation_document__exp_inv
+#: model:ir.model.fields.selection,name:td_medicus_agreement.selection__stock_picking__implementation_document__exp_inv
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__td_agreement__implementation_document__exp_inv
 msgid "Expenditure invoice"
 msgstr "Видаткова накладна"
 
 #. module: td_medicus_agreement
+#: model:ir.model.fields.selection,name:td_medicus_agreement.selection__sale_order__implementation_document__act_res_st
+#: model:ir.model.fields.selection,name:td_medicus_agreement.selection__stock_picking__implementation_document__act_res_st
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__td_agreement__implementation_document__act_res_st
 msgid "Act of responsible storage"
 msgstr "Акт відповідального зберігання"
 
 #. module: td_medicus_agreement
+#: model:ir.model.fields.selection,name:td_medicus_agreement.selection__sale_order__implementation_document__move
+#: model:ir.model.fields.selection,name:td_medicus_agreement.selection__stock_picking__implementation_document__move
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__td_agreement__implementation_document__move
 msgid "Movement"
 msgstr "Переміщення"
@@ -180,3 +188,95 @@ msgstr "Розрахувати"
 #: model_terms:ir.ui.view,arch_db:td_medicus_agreement.view_td_res_partner_form_inherit
 msgid "Agreements"
 msgstr "Договори"
+
+#. module: td_medicus_agreement
+#: model_terms:ir.ui.view,arch_db:td_medicus_agreement.td_stock_move_wizard_view_form
+msgid "Apply"
+msgstr "Підтвердити"
+
+#. module: td_medicus_agreement
+#: model_terms:ir.ui.view,arch_db:td_medicus_agreement.td_stock_move_wizard_view_form
+msgid "Cancel"
+msgstr "Скасувати"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_res_partner__count_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_res_users__count_agreement
+msgid "Count Agreement"
+msgstr "Кількість договорів"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_res_partner__standard_agreement_custody_id
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_res_users__standard_agreement_custody_id
+msgid "Standard contract (Act of custody)"
+msgstr "Типовий договір (Акт відповідального зберігання)"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_res_partner__standard_agreement_expense_id
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_res_users__standard_agreement_expense_id
+msgid "Standard contract (expense invoice)"
+msgstr "Типовий договір (видаткова накладна)"
+
+#. module: td_medicus_agreement
+#: model:ir.model,name:td_medicus_agreement.model_sale_order
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_stock_move__sale_order_id
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_stock_picking__sale_order_ids
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement_stock_move__sale_order_id
+msgid "Sale Order"
+msgstr "Замовлення на продаж"
+
+#. module: td_medicus_agreement
+#. odoo-python
+#: code:addons/td_medicus_agreement/models/stock_picking.py:0
+#: model_terms:ir.ui.view,arch_db:td_medicus_agreement.td_implementation_document_view_picking_form_inherit
+msgid "Sale Orders"
+msgstr "Замовлення на продаж"
+
+#. module: td_medicus_agreement
+#. odoo-python
+#: code:addons/td_medicus_agreement/models/stock_picking.py:0
+msgid "Select Record"
+msgstr "Оберіть записи"
+
+#. module: td_medicus_agreement
+#: model_terms:ir.ui.view,arch_db:td_medicus_agreement.td_implementation_document_view_picking_form_inherit
+msgid "Show the list of products"
+msgstr "Показати перелік товарів"
+
+#. module: td_medicus_agreement
+#. odoo-python
+#: code:addons/td_medicus_agreement/models/stock_picking.py:0
+msgid "You need to specify the end date of the agreement"
+msgstr "Вам потрібно вказати дату закінчення договору"
+
+#. module: td_medicus_agreement
+#. odoo-python
+#: code:addons/td_medicus_agreement/models/stock_picking.py:0
+msgid "You need to specify the implementation document"
+msgstr "Вам потрібно вказати документ реалізації"
+
+#. module: td_medicus_agreement
+#. odoo-python
+#: code:addons/td_medicus_agreement/models/stock_picking.py:0
+msgid "You need to specify the start date of the agreement"
+msgstr "Вам потрібно вказати дату початку договору"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement_stock_move__is_selected
+msgid "Is Selected"
+msgstr "Обраний"
+
+#. module: td_medicus_agreement
+#: model_terms:ir.ui.view,arch_db:td_medicus_agreement.td_implementation_document_view_picking_form_inherit
+msgid "Create a new implementation document"
+msgstr "Створити новий документ реалізації"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_stock_picking__date_agreement_end
+msgid "Date Agreement End"
+msgstr "До"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_stock_picking__date_agreement_start
+msgid "Date Agreement Start"
+msgstr "Від"
