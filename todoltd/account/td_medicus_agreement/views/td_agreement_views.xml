@@ -32,7 +32,7 @@
                 <group colspan="2">
                     <field name="pricelist_id"/>
                     <field name="document_available"/>
-                    <field name="main_contract"/>
+<!--                    <field name="main_contract"/>-->
                     <field name="implementation_document"/>
                 </group>
             </xpath>

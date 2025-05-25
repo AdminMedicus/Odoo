@@ -30,8 +30,8 @@ class StockPicking(models.Model):
         for res in self:
             if res.partner_id:
                 res.allowed_sub_client_ids = (
-                        res.partner_id.sub_client_rel_ids.sub_client_id.ids
-                        or False
+                    res.partner_id.sub_client_rel_ids.sub_client_id.ids
+                    or False
                 )
                 typical = res.partner_id.sub_client_rel_ids.filtered(
                     lambda rec: rec.is_typical
