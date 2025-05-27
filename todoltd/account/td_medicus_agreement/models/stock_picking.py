@@ -79,6 +79,15 @@ class StockPicking(models.Model):
         self.sale_id = sale_order.id
         self.origin = sale_order.name
 
+        return {
+            'name': _('Sale Order'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'sale.order',
+            'view_mode': 'form',
+            'target': 'current',
+            'res_id': sale_order.id
+        }
+
     def product_price_unit(self, record):
         if record.sale_order_id:
             order_line = self.env['sale.order.line'].sudo().search([
