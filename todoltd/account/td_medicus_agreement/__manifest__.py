@@ -2,7 +2,7 @@
 {
     'name': "Modification ToDo Agreement",
     'summary': 'Additional for ToDo Agreement',
-    'version': '18.0.0.0.3',
+    'version': '18.0.0.0.4',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',

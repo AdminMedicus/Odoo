@@ -46,8 +46,16 @@ class StockPicking(models.Model):
         )
         if len(pricelist) > 1:
             pricelist_id = False
+        elif len(pricelist) == 0:
+            pricelist_id = False
         else:
             pricelist_id = list(pricelist)[0]
+
+        if len(self.move_ids_without_package) == 0:
+            raise ValidationError(_(
+                "Products not selected and their quantity"
+            ))
+
         sale_order = self.env['sale.order'].sudo().create({
             'partner_id': self.partner_id.id,
             'sub_client_id': self.sub_client_id.id
