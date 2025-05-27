@@ -280,3 +280,24 @@ msgstr "До"
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_stock_picking__date_agreement_start
 msgid "Date Agreement Start"
 msgstr "Від"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement_stock_move__stock_picking_id
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement_stock_picking__stock_picking_id
+msgid "Stock Picking"
+msgstr "Замовлення на доставку"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement_stock_move__product_id
+msgid "Product"
+msgstr "Продукт"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement_stock_move__product_uom
+msgid "Product Uom"
+msgstr "Одиниця вимірювання"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement_stock_move__quantity
+msgid "Quantity"
+msgstr "Кількість"

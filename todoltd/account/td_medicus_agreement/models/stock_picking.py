@@ -1,3 +1,6 @@
+from datetime import date
+from dateutil.relativedelta import relativedelta
+
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
@@ -12,8 +15,12 @@ class StockPicking(models.Model):
             ('move', 'Movement')
         ],
     )
-    date_agreement_start = fields.Date()
-    date_agreement_end = fields.Date()
+    date_agreement_start = fields.Date(
+        default=lambda self: date.today() - relativedelta(months=6),
+    )
+    date_agreement_end = fields.Date(
+        default=lambda self: date.today(),
+    )
     sale_order_ids = fields.Many2many(
         comodel_name='sale.order',
         compute='_compute_sale_order_ids'
@@ -21,6 +28,14 @@ class StockPicking(models.Model):
     sale_order_count = fields.Integer(
         compute='_compute_sale_order_ids'
     )
+
+    def button_validate(self):
+        res = super().button_validate()
+        picking_ids = self.move_ids.move_dest_ids.picking_id
+        for picking in picking_ids:
+            picking.implementation_document = self.implementation_document
+        return res
+
 
     def create_implementation_document_sale_order(self):
         self.ensure_one()

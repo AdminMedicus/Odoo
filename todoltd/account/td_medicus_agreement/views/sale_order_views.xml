@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="td_view_order_form_inherit" model="ir.ui.view">
+    <record id="td_sale_order_implementation_document_form_inherited" model="ir.ui.view">
         <field name="name">td.sale.order.form.inherit</field>
         <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale.view_order_form"/>
+<!--        <field name="inherit_id" ref="sale.view_order_form"/>-->
+        <field name="inherit_id" ref="td_agreement.td_sale_order_form_inherited"/>
         <field name="priority">99</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='payment_term_id']" position="after">
                 <field name="implementation_document" readonly="state in ('sale', 'cancel')"/>
+            </xpath>
+            <xpath expr="//field[@name='td_agreement_id']" position="replace">
+                <field name="td_agreement_id"
+                       readonly="state in ('sale', 'cancel')"
+                       invisible="implementation_document"
+                />
+                <field name="td_agreement_id"
+                       readonly="state in ('sale', 'cancel')"
+                       domain="[
+                       ('partner_id', '=?', partner_id),
+                       ('implementation_document', '=', implementation_document)
+                       ]"
+                       invisible="not implementation_document"
+                />
             </xpath>
         </field>
     </record>
