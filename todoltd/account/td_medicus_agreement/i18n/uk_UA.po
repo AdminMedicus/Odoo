@@ -301,3 +301,9 @@ msgstr "Одиниця вимірювання"
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement_stock_move__quantity
 msgid "Quantity"
 msgstr "Кількість"
+
+#. module: td_medicus_agreement
+#. odoo-python
+#: code:addons/td_medicus_agreement/models/stock_picking.py:0
+msgid "Products not selected and their quantity"
+msgstr "Не обрані товари та їх кількість"
