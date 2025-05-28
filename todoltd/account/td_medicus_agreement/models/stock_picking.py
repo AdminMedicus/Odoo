@@ -36,7 +36,6 @@ class StockPicking(models.Model):
             picking.implementation_document = self.implementation_document
         return res
 
-
     def create_implementation_document_sale_order(self):
         self.ensure_one()
         pricelist = set(
@@ -133,15 +132,22 @@ class StockPicking(models.Model):
             ))
 
         if self.sub_client_id:
-            records = self.search([
-                "&", "&", "&", "&", "&",
-                ('sub_client_id', '=', self.sub_client_id.id),
+            sale_orders = self.env['sale.order'].search([
                 ('partner_id', '=', self.partner_id.id),
-                ('picking_type_id.code', '=', 'outgoing'),
-                ("implementation_document", "=", self.implementation_document),
-                ("scheduled_date", ">=", self.date_agreement_start),
-                ("scheduled_date", "<=", self.date_agreement_end)
+                ('sub_client_id', '=', self.sub_client_id.id)
             ])
+            if sale_orders:
+                records = self.search([
+                    "&", "&", "&", "&",
+                    ('sale_id', 'in', sale_orders.ids),
+                    ('picking_type_id.code', '=', 'outgoing'),
+                    ("implementation_document", "=",
+                     self.implementation_document),
+                    ("scheduled_date", ">=", self.date_agreement_start),
+                    ("scheduled_date", "<=", self.date_agreement_end)
+                ])
+            else:
+                records = self.browse([])
         else:
             records = self.search([
                 "&", "&", "&", "&", "&",
@@ -152,6 +158,7 @@ class StockPicking(models.Model):
                 ("scheduled_date", ">=", self.date_agreement_start),
                 ("scheduled_date", "<=", self.date_agreement_end)
             ])
+
         stock_move_records = records.move_ids_without_package
 
         td_stock_move_records = self.env[
@@ -164,22 +171,15 @@ class StockPicking(models.Model):
                 'quantity': move_id.quantity,
                 'product_uom': move_id.product_uom.id,
                 'stock_picking_id': move_id.picking_id.id,
+                'origin_stock_picking_id': self.id
                 } for move_id in stock_move_records
         ])
-
-        td_stock_picking = self.env[
-            'td.agreement.stock.picking'
-        ].sudo().create({
-            'user_id': self.env.user.id,
-            'stock_picking_id': self.id,
-            'record_ids': [(6, 0, td_stock_move_records.ids)],
-        })
 
         return {
             'name': _('Select Record'),
             'type': 'ir.actions.act_window',
-            'res_model': 'td.agreement.stock.picking',
-            'view_mode': 'form',
+            'res_model': 'td.agreement.stock.move',
+            'view_mode': 'list',
             'target': 'new',
-            'res_id': td_stock_picking.id,
+            'domain': [('id', 'in', td_stock_move_records.ids)],
         }

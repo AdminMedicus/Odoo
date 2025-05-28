@@ -23,3 +23,18 @@ class TdStockMove(models.TransientModel):
     stock_picking_id = fields.Many2one(
         comodel_name='stock.picking',
     )
+    origin_stock_picking_id = fields.Many2one(
+        comodel_name='stock.picking',
+    )
+
+    def action_process_selected(self):
+        self.env['stock.move'].sudo().create([
+            {
+                'picking_id': rec.origin_stock_picking_id.id,
+                'product_id': rec.product_id.id,
+                'quantity': rec.quantity,
+                'sale_order_id': rec.sale_order_id.id,
+                'product_uom': rec.product_uom.id,
+                'name': rec.product_id.name,
+            } for rec in self
+        ])
