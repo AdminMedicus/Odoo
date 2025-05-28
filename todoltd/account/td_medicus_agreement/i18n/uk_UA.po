@@ -191,11 +191,6 @@ msgstr "Договори"
 
 #. module: td_medicus_agreement
 #: model_terms:ir.ui.view,arch_db:td_medicus_agreement.td_stock_move_wizard_view_form
-msgid "Apply"
-msgstr "Підтвердити"
-
-#. module: td_medicus_agreement
-#: model_terms:ir.ui.view,arch_db:td_medicus_agreement.td_stock_move_wizard_view_form
 msgid "Cancel"
 msgstr "Скасувати"
 
@@ -307,3 +302,8 @@ msgstr "Кількість"
 #: code:addons/td_medicus_agreement/models/stock_picking.py:0
 msgid "Products not selected and their quantity"
 msgstr "Не обрані товари та їх кількість"
+
+#. module: td_medicus_agreement
+#: model_terms:ir.ui.view,arch_db:td_medicus_agreement.td_stock_move_wizard_view_tree
+msgid "Apply"
+msgstr "Додати Обрані"

@@ -1,3 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_td_agreement_stock_move,td_agreement_stock_move,model_td_agreement_stock_move,base.group_user,1,1,1,1
-access_td_agreement_stock_picking,td_agreement_stock_picking,model_td_agreement_stock_picking,base.group_user,1,1,1,1
