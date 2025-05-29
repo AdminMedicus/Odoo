@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import models, fields, api
 
 
 class TdStockMove(models.TransientModel):
@@ -26,6 +26,10 @@ class TdStockMove(models.TransientModel):
     origin_stock_picking_id = fields.Many2one(
         comodel_name='stock.picking',
     )
+    price_unit = fields.Float()
+    price_subtotal = fields.Float(
+        compute='_compute_quantity',
+    )
 
     def action_process_selected(self):
         self.env['stock.move'].sudo().create([
@@ -36,5 +40,12 @@ class TdStockMove(models.TransientModel):
                 'sale_order_id': rec.sale_order_id.id,
                 'product_uom': rec.product_uom.id,
                 'name': rec.product_id.name,
+                'td_price_unit': rec.price_unit,
+                'td_price_subtotal': rec.price_subtotal,
             } for rec in self
         ])
+
+    @api.onchange('quantity')
+    def _compute_quantity(self):
+        for rec in self:
+            rec.price_subtotal = rec.price_unit * rec.quantity

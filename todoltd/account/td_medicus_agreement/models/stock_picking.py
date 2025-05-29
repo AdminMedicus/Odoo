@@ -28,6 +28,17 @@ class StockPicking(models.Model):
     sale_order_count = fields.Integer(
         compute='_compute_sale_order_ids'
     )
+    td_total_amount = fields.Float(
+        compute='_compute_td_total_amount'
+    )
+
+    @api.onchange('move_ids_without_package')
+    def _compute_td_total_amount(self):
+        for rec in self:
+            rec.td_total_amount = sum([
+                move.td_price_subtotal
+                for move in rec.move_ids_without_package
+            ])
 
     def button_validate(self):
         res = super().button_validate()
@@ -171,7 +182,11 @@ class StockPicking(models.Model):
                 'quantity': move_id.quantity,
                 'product_uom': move_id.product_uom.id,
                 'stock_picking_id': move_id.picking_id.id,
-                'origin_stock_picking_id': self.id
+                'origin_stock_picking_id': self.id,
+                'price_unit': move_id.sale_line_id.price_unit
+                if move_id.sale_line_id else 0,
+                'price_subtotal': move_id.sale_line_id.price_subtotal
+                if move_id.sale_line_id else 0,
                 } for move_id in stock_move_records
         ])
 
