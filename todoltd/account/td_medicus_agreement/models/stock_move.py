@@ -11,6 +11,8 @@ class StockMove(models.Model):
         compute='_compute_sale_order_id',
         store=True
     )
+    td_price_unit = fields.Float()
+    td_price_subtotal = fields.Float()
 
     @api.depends('sale_line_id')
     def _compute_sale_order_id(self):

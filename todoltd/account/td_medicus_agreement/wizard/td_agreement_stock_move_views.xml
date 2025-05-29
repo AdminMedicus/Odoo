@@ -10,6 +10,8 @@
                 <field name="sale_order_id"/>
                 <field name="quantity"/>
                 <field name="product_uom"/>
+                <field name="price_unit" readonly="1"/>
+                <field name="price_subtotal" readonly="1"/>
                 <header>
                     <button name="action_process_selected" string="Apply" type="object" class="btn-primary"/>
                 </header>

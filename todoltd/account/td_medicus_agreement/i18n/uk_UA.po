@@ -307,3 +307,28 @@ msgstr "Не обрані товари та їх кількість"
 #: model_terms:ir.ui.view,arch_db:td_medicus_agreement.td_stock_move_wizard_view_tree
 msgid "Apply"
 msgstr "Додати Обрані"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement_stock_move__price_subtotal
+msgid "Price Subtotal"
+msgstr "Сума"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement_stock_move__price_unit
+msgid "Price Unit"
+msgstr "Ціна одиниці"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_stock_move__td_price_subtotal
+msgid "Td Price Subtotal"
+msgstr "Сума"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_stock_move__td_price_unit
+msgid "Td Price Unit"
+msgstr "Ціна одиниці"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_stock_picking__td_total_amount
+msgid "Td Total Amount"
+msgstr "Разом"
