@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="td_view_stock_report" model="ir.ui.view">
+         <field name="name">td.stock.report.pivot</field>
+         <field name="model">td.stock.report</field>
+         <field name="arch" type="xml">
+             <pivot>
+                 <field name="implementation_document" type="row"/>
+                 <field name="partner_id" type="row"/>
+                 <field name="shipping_address_id" type="row"/>
+                 <field name="qty_quantity" type="measure"/>
+             </pivot>
+         </field>
+    </record>
+
+    <record id="td_view_stock_tree" model="ir.ui.view">
+        <field name="name">td.stock.report.tree</field>
+        <field name="model">td.stock.report</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date" optional="show"/>
+                <field name="name" optional="show"/>
+                <field name="partner_id" optional="show"/>
+                <field name="shipping_address_id" optional="show"/>
+                <field name="implementation_document" optional="show"/>
+                <field name="reference_id" optional="show"/>
+                <field name="lot_ids" optional="show"/>
+                <field name="location_id" optional="show"/>
+                <field name="location_dest_id" optional="show"/>
+                <field name="qty_quantity" optional="show"/>
+                <field name="state" optional="show" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_td_stock_report_pivot" model="ir.actions.act_window">
+        <field name="name">Stock Report Pivot</field>
+        <field name="res_model">td.stock.report</field>
+        <field name="view_mode">pivot</field>
+        <field name="view_id" ref="td_view_stock_report"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                No records found in Stock Report.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_td_stock_report" name="Stock Report" parent="stock.menu_warehouse_report" action="action_td_stock_report_pivot" sequence="10"/>
+
+</odoo>
