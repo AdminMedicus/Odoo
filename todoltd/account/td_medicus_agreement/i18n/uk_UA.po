@@ -18,6 +18,8 @@ msgstr ""
 #. module: td_medicus_agreement
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement__allowed_sub_client_ids
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement__sub_client_id
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement__sub_client_id
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_stock_report__sub_client_id
 msgid "Sub Client"
 msgstr "Суб клієнт"
 
@@ -54,29 +56,37 @@ msgstr "Умови договору"
 
 #. module: td_medicus_agreement
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_sale_order__implementation_document
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_sale_report__implementation_document
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_stock_picking__implementation_document
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement__implementation_document
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_stock_report__implementation_document
 msgid "Implementation Document"
 msgstr "Документ реалізації"
 
 #. module: td_medicus_agreement
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__sale_order__implementation_document__exp_inv
+#: model:ir.model.fields.selection,name:td_medicus_agreement.selection__sale_report__implementation_document__exp_inv
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__stock_picking__implementation_document__exp_inv
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__td_agreement__implementation_document__exp_inv
+#: model:ir.model.fields.selection,name:td_medicus_agreement.selection__td_stock_report__implementation_document__exp_inv
 msgid "Expenditure invoice"
 msgstr "Видаткова накладна"
 
 #. module: td_medicus_agreement
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__sale_order__implementation_document__act_res_st
+#: model:ir.model.fields.selection,name:td_medicus_agreement.selection__sale_report__implementation_document__act_res_st
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__stock_picking__implementation_document__act_res_st
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__td_agreement__implementation_document__act_res_st
+#: model:ir.model.fields.selection,name:td_medicus_agreement.selection__td_stock_report__implementation_document__act_res_st
 msgid "Act of responsible storage"
 msgstr "Акт відповідального зберігання"
 
 #. module: td_medicus_agreement
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__sale_order__implementation_document__move
+#: model:ir.model.fields.selection,name:td_medicus_agreement.selection__sale_report__implementation_document__move
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__stock_picking__implementation_document__move
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__td_agreement__implementation_document__move
+#: model:ir.model.fields.selection,name:td_medicus_agreement.selection__td_stock_report__implementation_document__move
 msgid "Movement"
 msgstr "Переміщення"
 
@@ -284,6 +294,7 @@ msgstr "Замовлення на доставку"
 
 #. module: td_medicus_agreement
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement_stock_move__product_id
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_stock_report__product_id
 msgid "Product"
 msgstr "Продукт"
 
@@ -332,3 +343,69 @@ msgstr "Ціна одиниці"
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_stock_picking__td_total_amount
 msgid "Td Total Amount"
 msgstr "Разом"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_stock_report__partner_id
+msgid "Partner"
+msgstr "Партнер"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_stock_report__date
+msgid "Date"
+msgstr "Дата"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_stock_report__name
+msgid "Name"
+msgstr "Референс"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_stock_report__shipping_address_id
+msgid "Shipping Address"
+msgstr "Адреса доставки"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_stock_report__reference_id
+msgid "Reference"
+msgstr "Референс"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_stock_report__lot_ids
+msgid "Serial Numbers"
+msgstr "Серійні номери"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_stock_report__location_id
+msgid "Location"
+msgstr "Від"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_stock_report__location_dest_id
+msgid "Location Dest"
+msgstr "До"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_stock_report__qty_quantity
+msgid "Qty Quantity"
+msgstr "Кількість"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_stock_report__state
+msgid "State"
+msgstr "Статус"
+
+#. module: td_medicus_agreement
+#: model:ir.ui.menu,name:td_medicus_agreement.menu_td_stock_report
+msgid "Stock Report"
+msgstr "Залишок товарів у клієнта по Акту відповідального зберігання"
+
+#. module: td_medicus_agreement
+#: model:ir.actions.act_window,name:td_medicus_agreement.action_td_stock_report_pivot
+msgid "Stock Report Pivot"
+msgstr "Залишок товарів у клієнта по Акту відповідального зберігання"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement_stock_move__move_id
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_stock_report__move_id
+msgid "Move"
+msgstr "Переміщення"
