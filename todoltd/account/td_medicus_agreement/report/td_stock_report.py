@@ -89,6 +89,8 @@ class StockReport(models.Model):
                 LEFT JOIN stock_picking sp ON m.picking_id = sp.id
                 LEFT JOIN stock_picking_type spt ON sp.picking_type_id = spt.id
                 LEFT JOIN res_partner rp ON sp.partner_id = rp.id
+                WHERE spt.code = 'outgoing'
+                    OR spt.td_is_goods_balance_of_act_res_st = True
                 GROUP BY
                     sp.implementation_document,
                     rp.parent_id,
