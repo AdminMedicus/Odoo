@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="td_view_picking_type_form" model="ir.ui.view">
+        <field name="name">td.stock.picking.type.form.inherit</field>
+        <field name="model">stock.picking.type</field>
+        <field name="inherit_id" ref="stock.view_picking_type_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='barcode']" position="after">
+                <field name="td_is_goods_balance_of_act_res_st"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
