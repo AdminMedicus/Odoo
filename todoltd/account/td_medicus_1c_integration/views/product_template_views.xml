@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_product_td_medicus_1c_integration_inherit_from" model="ir.ui.view">
+        <field name="name">product.template.td_medicus_1c_integration.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='barcode']" position="after">
+                <field name="td_manufacturer_directory_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
