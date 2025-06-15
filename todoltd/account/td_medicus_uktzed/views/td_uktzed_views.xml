@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="td_uktzed_view_list" model="ir.ui.view">
+        <field name="name">td.uktzed.view.list</field>
+        <field name="model">td.uktzed</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="visible" optional="hide"/>
+                <field name="selectable" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="td_uktzed_view_form" model="ir.ui.view">
+        <field name="name">td.uktzed.view.form</field>
+        <field name="model">td.uktzed</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                            <field name="title" nolabel="1"/>
+                            <field name="code"/>
+                            <field name="visible"/>
+                            <field name="selectable"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="child" string="Child Codes">
+                            <group>
+                                <field name="child_ids" nolabel="1">
+                                    <list form="td_uktzed_view_form" list="td_uktzed_view_list"/>
+                                </field>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="td_uktzed_view_search" model="ir.ui.view">
+        <field name="name">td.uktzed.search</field>
+        <field name="model">td.uktzed</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" filter_domain="[('name', 'ilike', self)]"/>
+                <field name="code" filter_domain="[('code', 'ilike', self)]"/>
+                <filter name="filter_archived" string="Archived" domain="[('active', '=', False)]"/>
+                <searchpanel>
+                    <field name="parent_id" string="Parent" hierarchize="1" limit="0"/>
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_td_uktzed_view" model="ir.actions.act_window">
+        <field name="name">Td UKTZED</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">td.uktzed</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem
+        id="account_td_uktzed"
+        parent="account.account_management_menu"
+        action="action_td_uktzed_view"
+        sequence="5"
+    />
+</odoo>
