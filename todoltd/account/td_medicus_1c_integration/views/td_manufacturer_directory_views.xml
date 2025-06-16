@@ -10,7 +10,6 @@
                         <field name="code"/>
                         <field name="name"/>
                         <field name="full_name"/>
-                        <field name="mark"/>
                         <field name="non_resident"/>
                         <field name="ukrainian_name"/>
                     </group>
@@ -27,7 +26,6 @@
                 <field name="code" optional="show"/>
                 <field name="name" optional="show"/>
                 <field name="full_name" optional="show"/>
-                <field name="mark" optional="show"/>
                 <field name="non_resident" optional="show"/>
                 <field name="ukrainian_name" optional="show"/>
             </list>
