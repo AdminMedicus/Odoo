@@ -56,7 +56,9 @@ msgid "Display Name"
 msgstr ""
 
 #. module: td_medicus_1c_integration
-#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_view_warehouse_form_inherit
+#. odoo-python
+#: code:addons/td_medicus_1c_integration/models/stock_warehouse.py:0
+#: model:ir.model.fields,help:td_medicus_1c_integration.field_stock_warehouse__td_code_integration_one_c
 msgid "For integration with 1C"
 msgstr "Для інтеграції з 1С"
 
@@ -144,3 +146,9 @@ msgstr "Укр. Назва"
 #: model:ir.model,name:td_medicus_1c_integration.model_stock_warehouse
 msgid "Warehouse"
 msgstr "Склад"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_product_product__td_one_c_category_id
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_product_template__td_one_c_category_id
+msgid "Td One C Category"
+msgstr "Категорія товару з 1С"

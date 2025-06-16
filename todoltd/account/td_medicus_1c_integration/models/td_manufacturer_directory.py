@@ -8,6 +8,5 @@ class TDManufacturerDirectory(models.Model):
     code = fields.Char()
     name = fields.Char()
     full_name = fields.Char()
-    mark = fields.Boolean()
     non_resident = fields.Boolean()
     ukrainian_name = fields.Char()

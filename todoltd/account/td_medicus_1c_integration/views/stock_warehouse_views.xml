@@ -7,9 +7,6 @@
         <field name="arch" type="xml">
              <xpath expr="//field[@name='code']" position="after">
                 <field name="td_code_integration_one_c"/>
-                <div class="oe_form_field_help" style="margin-top: -17px;">
-                    For integration with 1C
-                </div>
             </xpath>
         </field>
     </record>
