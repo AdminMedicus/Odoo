@@ -131,3 +131,10 @@ msgstr ""
 #: model:ir.model.fields,field_description:td_medicus_uktzed.field_td_uktzed__visible
 msgid "Visible"
 msgstr "Видимий"
+
+#. module: td_medicus_uktzed
+#. odoo-python
+#: code:addons/td_medicus_uktzed/models/product_template.py:0
+#: code:addons/td_medicus_uktzed/models/stock_lot.py:0
+msgid "You can't press this code"
+msgstr "Ви не можете обрати цей код"
