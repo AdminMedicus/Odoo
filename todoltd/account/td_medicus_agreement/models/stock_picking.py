@@ -178,7 +178,9 @@ class StockPicking(models.Model):
             {
                 'move_id': move_id.id,
                 'product_id': move_id.product_id.id,
+                'lot_ids': move_id.lot_ids.ids,
                 'sale_order_id': move_id.sale_order_id.id,
+                'sale_line_id': move_id.sale_line_id.id,
                 'quantity': move_id.quantity,
                 'product_uom': move_id.product_uom.id,
                 'stock_picking_id': move_id.picking_id.id,
