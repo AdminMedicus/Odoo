@@ -64,7 +64,7 @@ class TdTaxInvoiceLine(models.Model):
                     line.uktzed_code_id = (
                         line.lot_ids[0].td_uktzed_code_id.id or False
                     )
-                else:
+                if not line.uktzed_code_id:
                     if product.td_uktzed_code_id:
                         line.uktzed_code_id = product.td_uktzed_code_id.id
                     else:
