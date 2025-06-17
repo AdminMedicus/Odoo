@@ -1,3 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_td_one_c_category,td_one_c_category,model_td_one_c_category,base.group_user,1,1,1,1
 access_td_manufacturer_directory,td_manufacturer_directory,model_td_manufacturer_directory,base.group_user,1,1,1,1
+access_td_tax_invoice,td_tax_invoice,model_td_tax_invoice,base.group_user,1,1,1,1
+access_td_tax_invoice_line,td_tax_invoice_line,model_td_tax_invoice_line,base.group_user,1,1,1,1
