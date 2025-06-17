@@ -47,9 +47,15 @@ class TdTaxInvoice(models.Model):
         inverse_name='td_invoice_id'
     )
     narration = fields.Text()
-    price_with_out_tax = fields.Float()
-    price_vat = fields.Float()
-    price_total = fields.Float()
+    price_with_out_tax = fields.Float(
+        compute='_compute_total_price'
+    )
+    price_vat = fields.Float(
+        compute='_compute_total_price'
+    )
+    price_total = fields.Float(
+        compute='_compute_total_price'
+    )
 
     responsible_user_id = fields.Many2one(
         comodel_name='res.users'
@@ -59,11 +65,25 @@ class TdTaxInvoice(models.Model):
         default=lambda self: self.env.company
     )
 
+    def _compute_total_price(self):
+        for inv in self:
+            price_with_out_tax = []
+            price_vat = []
+            price_total = []
+            for line in inv.td_invoice_line_ids:
+                price_with_out_tax.append(line.sum_price_with_out_vat)
+                price_vat.append(line.vat_price)
+                price_total.append(line.price_with_vat)
+            inv.price_with_out_tax = sum(price_with_out_tax)
+            inv.price_vat = sum(price_vat)
+            inv.price_total = sum(price_total)
+
     @api.onchange('tax_guide')
     def _onchange_tax_guide(self):
         for inv in self:
             for line in inv.td_invoice_line_ids:
                 line._onchange_product_id()
+            inv._compute_total_price()
 
     def action_confirm_tax_invoice(self):
         for inv in self:
