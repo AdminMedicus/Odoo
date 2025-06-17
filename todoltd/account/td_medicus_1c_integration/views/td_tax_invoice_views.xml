@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="td_tax_invoice_view_form" model="ir.ui.view">
+        <field name="name">td.tax.invoice.form</field>
+        <field name="model">td.tax.invoice</field>
+        <field name="arch" type="xml">
+            <form js_class="account_move_form">
+                <header>
+                    <button name="action_confirm_tax_invoice"
+                            type="object"
+                            string="Confirm"
+                            invisible="state == 'confirm'"
+                            class="btn btn-primary"
+                    />
+                    <button name="action_draft_tax_invoice"
+                            type="object"
+                            string="Reset to Draft"
+                            invisible="state != 'cancel'"
+                            class="btn btn-secondary"
+                    />
+                    <button name="action_cancel_tax_invoice"
+                            type="object"
+                            string="Cancel"
+                            invisible="state == 'cancel'"
+                            class="btn btn-secondary"
+                    />
+                    <button name="action_create_adjustment_invoice"
+                            type="object"
+                            string="Create Adjustment Invoice"
+                            invisible="state == 'cancel'"
+                            class="btn btn-secondary"
+                    />
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div name="button_box" class="oe_button_box">
+                        <button name="action_open_sale_order"
+                                class="oe_stat_button"
+                                icon="fa-shopping-cart"
+                                type="object"
+                        >
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Sale Order</span>
+                            </div>
+                        </button>
+                        <button name="action_open_invoice"
+                                class="oe_stat_button"
+                                icon="fa-pencil-square-o"
+                                type="object"
+                        >
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Invoice</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <span class="o_form_label"><field name="move_type" readonly="1" nolabel="1"/></span>
+                        <h1>
+                            <field name="name" readonly="state != 'draft'"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="parent_id"/>
+                            <label for="partner_id" style="font-weight:bold;"/>
+                            <div class="o_col">
+                                <field name="partner_id" widget="res_partner_many2one" nolabel="1"
+                                       domain="[('company_id', 'in', (False, company_id))]"
+                                       options='{"no_quick_create": True}'
+                                       placeholder="Search a name or Tax ID..."
+                                       readonly="state != 'draft'"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="accounting_date"/>
+                            <field name="tax_guide"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="td_invoice_line" string="Document Line">
+                            <field name="td_invoice_line_ids" nolabel="1" readonly="state == 'confirm'">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="name"/>
+                                    <field name="lot_ids" widget="many2many_tags"/>
+                                    <field name="uktzed_code_id"/>
+                                    <field name="quantity"/>
+                                    <field name="product_uom_id"/>
+                                    <field name="price_with_out_vat"/>
+                                    <field name="sum_price_with_out_vat"/>
+                                    <field name="vat_id"/>
+                                    <field name="vat_price"/>
+                                    <field name="price_with_vat"/>
+                                </list>
+                            </field>
+                            <group col="12" class="oe_invoice_lines_tab overflow-hidden">
+                                <group colspan="8">
+                                    <field name="narration" placeholder="Terms and Conditions" nolabel="1"/>
+                                </group>
+                                <group colspan="4">
+                                    <group class="oe_subtotal_footer">
+
+                                        <field name="price_with_out_tax" colspan="2" readonly="1"/>
+                                        <div colspan="2" class="o_row" invisible="not tax_guide">
+                                            <field name="tax_guide" colspan="1" nolabel="1" readonly="1"/>
+                                            <field name="price_vat" colspan="1" readonly="1" nolabel="1"/>
+                                        </div>
+                                        <field name="price_total" class="oe_subtotal_footer_separator" readonly="1"/>
+                                    </group>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="other_information" string="Other information">
+                            <group>
+                                <group>
+                                    <field name="responsible_user_id"/>
+                                    <field name="company_id"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="td_tax_invoice_view_list" model="ir.ui.view">
+        <field name="name">td.tax.invoice.list</field>
+        <field name="model">td.tax.invoice</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_td_tax_invoice" model="ir.actions.act_window">
+        <field name="name">Tax Invoice</field>
+        <field name="res_model">td.tax.invoice</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('move_type', '=', 'tax_inv')]</field>
+    </record>
+
+    <record id="action_td_adj_invoice" model="ir.actions.act_window">
+        <field name="name">Adjustment Invoice</field>
+        <field name="res_model">td.tax.invoice</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('move_type', '=', 'adj_inv')]</field>
+    </record>
+
+    <menuitem
+        id="menu_td_tax_invoice"
+        action="action_td_tax_invoice"
+        parent="account.menu_finance_receivables"
+        sequence="98"
+    />
+    <menuitem
+        id="menu_td_adj_invoice"
+        action="action_td_adj_invoice"
+        parent="account.menu_finance_receivables"
+        sequence="99"
+    />
+</odoo>

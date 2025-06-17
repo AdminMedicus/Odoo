@@ -152,3 +152,173 @@ msgstr "Склад"
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_product_template__td_one_c_category_id
 msgid "Td One C Category"
 msgstr "Категорія товару з 1С"
+
+#. module: td_medicus_1c_integration
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_tax_invoice_view_form
+msgid "<span class=\"o_stat_text\">Invoice</span>"
+msgstr "<span class=\"o_stat_text\">Рахунок</span>"
+
+#. module: td_medicus_1c_integration
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_tax_invoice_view_form
+msgid "<span class=\"o_stat_text\">Sale Order</span>"
+msgstr "<span class=\"o_stat_text\">Продаж</span>"
+
+#. module: td_medicus_1c_integration
+#. odoo-python
+#: code:addons/td_medicus_1c_integration/models/td_tax_invoice.py:0
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__td_tax_invoice__state__draft
+msgid "Draft"
+msgstr "Чернетка"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__td_tax_invoice__state__cancel
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_tax_invoice_view_form
+msgid "Cancel"
+msgstr "Скасувати"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__company_id
+msgid "Company"
+msgstr "Компанія"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__td_tax_invoice__state__confirm
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_tax_invoice_view_form
+msgid "Confirm"
+msgstr "Підтвердити"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,help:td_medicus_1c_integration.field_td_tax_invoice_line__product_uom_id
+msgid "Default unit of measure used for all stock operations."
+msgstr "Одиниця вимірювання"
+
+#. module: td_medicus_1c_integration
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_tax_invoice_view_form
+msgid "Document Line"
+msgstr "Рядки документа"
+
+#. module: td_medicus_1c_integration
+#. odoo-python
+#: code:addons/td_medicus_1c_integration/models/td_tax_invoice.py:0
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__invoice_id
+msgid "Invoice"
+msgstr "Рахунок"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__lot_ids
+msgid "Lot"
+msgstr "Партія/серія"
+
+#. module: td_medicus_1c_integration
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_tax_invoice_view_form
+msgid "Other information"
+msgstr "Інша інформація"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__price_total
+msgid "Price Total"
+msgstr "Разом"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__price_with_out_tax
+msgid "Price With Out Tax"
+msgstr "Сума без податків"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__price_with_out_vat
+msgid "Price With Out Vat"
+msgstr "Ціна без ПДВ"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__price_with_vat
+msgid "Price With Vat"
+msgstr "Ціна з ПДВ"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__quantity
+msgid "Quantity"
+msgstr "Кількість"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__responsible_user_id
+msgid "Responsible User"
+msgstr "Відповідальний"
+
+#. module: td_medicus_1c_integration
+#. odoo-python
+#: code:addons/td_medicus_1c_integration/models/td_tax_invoice.py:0
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__sale_order_id
+msgid "Sale Order"
+msgstr "Продаж"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__accounting_date
+msgid "Accounting Date"
+msgstr "Дата бухобліку"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__name
+msgid "Description"
+msgstr "Опис"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__partner_id
+msgid "Partner"
+msgstr "Покупець"
+
+#. module: td_medicus_1c_integration
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_tax_invoice_view_form
+msgid "Reset to Draft"
+msgstr "Повернути в чернетку"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__tax_guide
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__vat_id
+msgid "Tax Guide"
+msgstr "Ставка ПДВ"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__uktzed_code_id
+msgid "Uktzed Code"
+msgstr "Код УКТЗЕД"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__vat_price
+msgid "Vat Price"
+msgstr "ПДВ"
+
+#. module: td_medicus_1c_integration
+#: model:ir.actions.act_window,name:td_medicus_1c_integration.action_td_tax_invoice
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__td_tax_invoice__move_type__tax_inv
+#: model:ir.ui.menu,name:td_medicus_1c_integration.menu_td_tax_invoice
+msgid "Tax Invoice"
+msgstr "Податкові накладні"
+
+#. module: td_medicus_1c_integration
+#. odoo-python
+#: code:addons/td_medicus_1c_integration/models/td_tax_invoice.py:0
+#: model:ir.actions.act_window,name:td_medicus_1c_integration.action_td_adj_invoice
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__td_tax_invoice__move_type__adj_inv
+#: model:ir.ui.menu,name:td_medicus_1c_integration.menu_td_adj_invoice
+msgid "Adjustment Invoice"
+msgstr "Рахунок-коригування"
+
+#. module: td_medicus_1c_integration
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_tax_invoice_view_form
+msgid "Create Adjustment Invoice"
+msgstr "Створити Рахунок-коригування"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__parent_id
+msgid "Parent Tax Invoice"
+msgstr "Батьківська Податкова накладна"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__partner_id
+msgid "Partner Tax Invoice"
+msgstr "Покупець"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__product_id
+msgid "Product Invoice"
+msgstr "Товар"

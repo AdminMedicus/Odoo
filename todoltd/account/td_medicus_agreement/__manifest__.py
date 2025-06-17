@@ -2,7 +2,7 @@
 {
     'name': "Modification ToDo Agreement",
     'summary': 'Additional for ToDo Agreement',
-    'version': '18.0.0.0.10',
+    'version': '18.0.0.0.11',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
@@ -12,7 +12,8 @@
         'td_yaroslav_agreement',
         'delivery',
         'stock',
-        'td_contact_sale'
+        'td_contact_sale',
+        'td_medicus_uktzed',
     ],
 
     'data': [

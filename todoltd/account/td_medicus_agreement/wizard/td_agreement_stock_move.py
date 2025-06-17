@@ -13,6 +13,12 @@ class TdStockMove(models.TransientModel):
     product_id = fields.Many2one(
         comodel_name='product.product',
     )
+    lot_ids = fields.Many2many(
+        comodel_name='stock.lot'
+    )
+    sale_line_id = fields.Many2one(
+        comodel_name='sale.order.line'
+    )
     sale_order_id = fields.Many2one(
         comodel_name='sale.order',
     )
@@ -32,11 +38,13 @@ class TdStockMove(models.TransientModel):
     )
 
     def action_process_selected(self):
-        self.env['stock.move'].sudo().create([
+       self.env['stock.move'].sudo().create([
             {
                 'picking_id': rec.origin_stock_picking_id.id,
                 'product_id': rec.product_id.id,
                 'quantity': rec.quantity,
+                'td_lot_ids': [(6, 0, rec.lot_ids.ids)],
+                'sale_line_id': rec.sale_line_id.id,
                 'sale_order_id': rec.sale_order_id.id,
                 'product_uom': rec.product_uom.id,
                 'name': rec.product_id.name,

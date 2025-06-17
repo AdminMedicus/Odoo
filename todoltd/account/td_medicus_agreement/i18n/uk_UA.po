@@ -414,3 +414,8 @@ msgstr "Переміщення"
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_stock_picking_type__td_is_goods_balance_of_act_res_st
 msgid "Td Is Goods Balance Of Act Res St"
 msgstr "Залишок товарів у клієнта по Акту відповідального зберігання"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement_stock_move__lot_ids
+msgid "Lot"
+msgstr "Серійні номери"

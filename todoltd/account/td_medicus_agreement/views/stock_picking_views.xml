@@ -7,7 +7,7 @@
         <field name="priority">99</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='origin']" position="after">
-                <field name="implementation_document" readonly="state not in ('draft')"/>
+                <field name="implementation_document" readonly="state not in ('draft')" required="1"/>
                 <div/>
                 <div class="o_row" colspan="2">
                     <label for="date_agreement_start"/>
@@ -48,6 +48,9 @@
             </xpath>
             <xpath expr="//field[@name='move_ids_without_package']//field[@name='quantity']" position="attributes">
                  <attribute name="column_invisible">0</attribute>
+            </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']//field[@name='lot_ids']" position="after">
+                 <field name="td_uktzed_code_id"/>
             </xpath>
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_see_sale_orders" type="object" class="oe_stat_button" icon="fa-shopping-cart">
