@@ -8,6 +8,7 @@ class TdTaxInvoice(models.Model):
 
     name = fields.Char(
         default='Draft',
+        readonly=True
     )
     partner_id = fields.Many2one(
         comodel_name='res.partner',
