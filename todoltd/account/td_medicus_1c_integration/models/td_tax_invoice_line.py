@@ -19,7 +19,9 @@ class TdTaxInvoiceLine(models.Model):
         comodel_name='stock.lot'
     )
     uktzed_code_id = fields.Many2one(
-        comodel_name='td.uktzed'
+        comodel_name='td.uktzed',
+        compute='_onchange_product_id',
+        readonly=False
     )
     quantity = fields.Float(
         default=1
@@ -38,14 +40,18 @@ class TdTaxInvoiceLine(models.Model):
     price_with_vat = fields.Float()
 
     @api.onchange('product_id', 'lot_ids', 'vat_id', 'quantity')
+    @api.depends('product_id', 'lot_ids', 'vat_id', 'quantity')
     def _onchange_product_id(self):
         for line in self:
             product = line.product_id
             if product:
                 line.name = product.description
-                line.price_with_out_vat = product.list_price
+
+                if not line.price_with_out_vat:
+                    line.price_with_out_vat = product.list_price
+
                 line.sum_price_with_out_vat = (
-                    product.list_price * line.quantity
+                    line.price_with_out_vat * line.quantity
                 )
                 if line.vat_id:
                     amount_type = line.vat_id.amount_type

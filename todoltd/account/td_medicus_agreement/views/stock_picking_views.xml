@@ -7,7 +7,7 @@
         <field name="priority">99</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='origin']" position="after">
-                <field name="implementation_document" readonly="state not in ('draft')" required="1"/>
+                <field name="implementation_document" readonly="state not in ('draft')"/>
                 <div/>
                 <div class="o_row" colspan="2">
                     <label for="date_agreement_start"/>
