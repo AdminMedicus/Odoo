@@ -8,6 +8,7 @@
     'category': 'Other',
     'depends': [
         'stock',
+        'account',
         'td_medicus_uktzed',
     ],
     'data': [
@@ -19,6 +20,8 @@
         'views/product_template_views.xml',
         'views/stock_warehouse_views.xml',
         'views/td_tax_invoice_views.xml',
+        'views/account_move_views.xml',
+        'views/sale_order_views.xml',
     ],
     "installable": True,
     "application": True,

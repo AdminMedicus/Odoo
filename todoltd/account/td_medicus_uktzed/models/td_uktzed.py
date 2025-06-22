@@ -39,3 +39,8 @@ class TdUKTZED(models.Model):
         inverse_name='parent_id',
         string='Children'
     )
+
+    def _compute_display_name(self):
+        for code in self:
+            name = f"{code.code} | {code.name}"
+            code.display_name = name

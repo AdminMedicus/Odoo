@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, Command
 
 
 class StockMove(models.Model):
@@ -18,7 +18,8 @@ class StockMove(models.Model):
     )
     td_uktzed_code_id = fields.Many2one(
         comodel_name='td.uktzed',
-        compute='_compute_product_id_and_lot_ids'
+        compute='_compute_product_id_and_lot_ids',
+        readonly=False
     )
 
     @api.depends('sale_line_id')
@@ -27,12 +28,70 @@ class StockMove(models.Model):
             if rec.sale_line_id:
                 rec.sale_order_id = rec.sale_line_id.order_id.id
 
-    @api.depends('move_line_ids.lot_id', 'move_line_ids.quantity')
+    @api.depends('td_lot_ids', 'move_line_ids.lot_id', 'move_line_ids.quantity')
     def _compute_lot_ids(self):
-        for line in self:
-            super(StockMove, line)._compute_lot_ids()
-            if line.td_lot_ids:
-                line.lot_ids = [(6, 0, line.td_lot_ids.ids)]
+        for move in self:
+            if move.td_lot_ids:
+                move.lot_ids = move.td_lot_ids
+            else:
+                domain = [
+                    ('move_id', '=', move.id),
+                    ('lot_id', '!=', False),
+                    ('quantity', '!=', 0.0)
+                ]
+                lots = self.env['stock.move.line'].search(domain).mapped('lot_id')
+                move.lot_ids = lots
+
+    def _set_lot_ids(self):
+        for move in self:
+            if move.product_id.tracking != 'serial':
+                continue
+
+            lots_to_process = move.td_lot_ids if move.td_lot_ids else move.lot_ids
+
+            move_lines_commands = []
+            mls = move.move_line_ids
+            mls_with_lots = mls.filtered(lambda ml: ml.lot_id)
+            mls_without_lots = (mls - mls_with_lots)
+
+            for ml in mls_with_lots:
+                if ml.quantity and ml.lot_id not in lots_to_process:
+                    move_lines_commands.append((2, ml.id))
+
+            existing_lot_ids = mls.mapped('lot_id')
+
+            for lot in lots_to_process:
+                if lot not in existing_lot_ids:
+                    if mls_without_lots:
+                        move_line = mls_without_lots[0]
+                        move_lines_commands.append(Command.update(move_line.id, {
+                            'lot_name': lot.name,
+                            'lot_id': lot.id,
+                            'product_uom_id': move.product_id.uom_id.id,
+                            'quantity': 1,
+                        }))
+                        mls_without_lots = mls_without_lots[1:]
+                    else:
+                        reserved_quants = self.env['stock.quant']._get_reserve_quantity(
+                            move.product_id, move.location_id, 1.0, lot_id=lot
+                        )
+                        if reserved_quants:
+                            move_line_vals = move._prepare_move_line_vals(
+                                quantity=0, reserved_quant=reserved_quants[0][0]
+                            )
+                        else:
+                            move_line_vals = move._prepare_move_line_vals(quantity=0)
+                            move_line_vals['lot_id'] = lot.id
+                            move_line_vals['lot_name'] = lot.name
+                        move_line_vals['product_uom_id'] = move.product_id.uom_id.id
+                        move_line_vals['quantity'] = 1
+                        move_lines_commands.append((0, 0, move_line_vals))
+                else:
+                    move_line = mls.filtered(lambda line: line.lot_id.id == lot.id)
+                    move_line.quantity = 1
+
+            if move_lines_commands:
+                move.write({'move_line_ids': move_lines_commands})
 
     @api.onchange('lot_ids', 'product_id')
     def _compute_product_id_and_lot_ids(self):

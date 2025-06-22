@@ -4,3 +4,5 @@ from . import product_template
 from . import stock_warehouse
 from . import td_tax_invoice
 from . import td_tax_invoice_line
+from . import account_move
+from . import sale_order
