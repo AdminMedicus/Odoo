@@ -8,7 +8,7 @@
         <field name="priority">99</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='payment_term_id']" position="after">
-                <field name="implementation_document" readonly="state in ('sale', 'cancel')"/>
+                <field name="implementation_document" readonly="state in ('sale', 'cancel')" required="1"/>
             </xpath>
             <xpath expr="//field[@name='td_agreement_id']" position="replace">
                 <field name="td_agreement_id"

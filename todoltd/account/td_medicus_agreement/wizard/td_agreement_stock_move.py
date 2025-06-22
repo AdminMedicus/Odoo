@@ -38,7 +38,7 @@ class TdStockMove(models.TransientModel):
     )
 
     def action_process_selected(self):
-       self.env['stock.move'].sudo().create([
+        records = self.env['stock.move'].sudo().create([
             {
                 'picking_id': rec.origin_stock_picking_id.id,
                 'product_id': rec.product_id.id,
@@ -52,6 +52,10 @@ class TdStockMove(models.TransientModel):
                 'td_price_subtotal': rec.price_subtotal,
             } for rec in self
         ])
+        for record in records:
+            record.write({
+                'lot_ids': [(6, 0, record.td_lot_ids.ids)]
+            })
 
     @api.onchange('quantity')
     def _compute_quantity(self):
