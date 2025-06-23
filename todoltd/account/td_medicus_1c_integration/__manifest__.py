@@ -1,6 +1,5 @@
 {
     'name': 'TD Medicus 1C Integration',
-    'description': '',
     "version": '18.0.0.0.3',
     'author': 'ToDo',
     'website': 'https://todo.ltd',

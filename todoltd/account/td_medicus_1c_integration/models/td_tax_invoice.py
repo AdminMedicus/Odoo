@@ -25,7 +25,7 @@ class TdTaxInvoice(models.Model):
         comodel_name='sale.order'
     )
     accounting_date = fields.Date(
-        default=lambda self: fields.Date.context_today(self)
+        default=fields.Date.context_today
     )
     tax_guide = fields.Many2one(
         comodel_name='account.tax'
@@ -83,7 +83,7 @@ class TdTaxInvoice(models.Model):
     def _onchange_tax_guide(self):
         for inv in self:
             for line in inv.td_invoice_line_ids:
-                line._onchange_product_id()
+                line._compute_product_id()
             inv._compute_total_price()
 
     def action_confirm_tax_invoice(self):
