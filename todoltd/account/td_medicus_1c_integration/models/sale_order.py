@@ -27,6 +27,6 @@ class SaleOrder(models.Model):
             'name': _('Tax Invoices'),
             'res_model': 'td.tax.invoice',
             'view_mode': 'list,form',
-            'domain': [('id','in', self.td_tax_invoice_ids.ids)],
+            'domain': [('id', 'in', self.td_tax_invoice_ids.ids)],
             'target': 'current',
         }

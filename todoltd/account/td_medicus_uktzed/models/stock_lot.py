@@ -1,6 +1,7 @@
 from odoo import fields, models, api, _
 from odoo.exceptions import ValidationError
 
+
 class StockLot(models.Model):
     _inherit = 'stock.lot'
 
