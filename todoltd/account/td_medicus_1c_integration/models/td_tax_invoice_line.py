@@ -20,7 +20,7 @@ class TdTaxInvoiceLine(models.Model):
     )
     uktzed_code_id = fields.Many2one(
         comodel_name='td.uktzed',
-        compute='_onchange_product_id',
+        compute='_compute_product_id',
         readonly=False
     )
     quantity = fields.Float(
@@ -41,7 +41,7 @@ class TdTaxInvoiceLine(models.Model):
 
     @api.onchange('product_id', 'lot_ids', 'vat_id', 'quantity')
     @api.depends('product_id', 'lot_ids', 'vat_id', 'quantity')
-    def _onchange_product_id(self):
+    def _compute_product_id(self):
         for line in self:
             product = line.product_id
             if product:
