@@ -48,8 +48,8 @@ class StockMove(models.Model):
 
     def _set_lot_ids(self):
         for move in self:
-            if move.product_id.tracking != 'serial':
-                continue
+            # if move.product_id.tracking != 'serial':
+            #     continue
 
             lots_to_process = (
                 move.td_lot_ids
