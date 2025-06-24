@@ -33,11 +33,14 @@
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
+                    <field name="invoice_id" invisible="1"/>
+                    <field name="sale_order_id" invisible="1"/>
                     <div name="button_box" class="oe_button_box">
                         <button name="action_open_sale_order"
                                 class="oe_stat_button"
                                 icon="fa-shopping-cart"
                                 type="object"
+                                invisible="not sale_order_id"
                         >
                             <div class="o_stat_info">
                                 <span class="o_stat_text">Sale Order</span>
@@ -47,6 +50,7 @@
                                 class="oe_stat_button"
                                 icon="fa-pencil-square-o"
                                 type="object"
+                                invisible="not invoice_id"
                         >
                             <div class="o_stat_info">
                                 <span class="o_stat_text">Invoice</span>
@@ -81,15 +85,15 @@
                         <page name="td_invoice_line" string="Document Line">
                             <field name="td_invoice_line_ids" nolabel="1" readonly="state == 'confirm'">
                                 <list editable="bottom">
-                                    <field name="product_id"/>
+                                    <field name="product_id" widget="many2one"/>
                                     <field name="name"/>
                                     <field name="lot_ids" widget="many2many_tags"/>
-                                    <field name="uktzed_code_id"/>
+                                    <field name="uktzed_code_id" widget="many2one"/>
                                     <field name="quantity"/>
                                     <field name="product_uom_id"/>
                                     <field name="price_with_out_vat"/>
                                     <field name="sum_price_with_out_vat"/>
-                                    <field name="vat_id"/>
+                                    <field name="vat_id" widget="many2one"/>
                                     <field name="vat_price"/>
                                     <field name="price_with_vat"/>
                                 </list>
@@ -131,6 +135,13 @@
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
+                <field name="partner_id" optional="show"/>
+                <field name="accounting_date" optional="show"/>
+                <field name="price_with_out_tax" optional="show"/>
+                <field name="price_vat" optional="hide"/>
+                <field name="price_total" optional="show"/>
+                <field name="state" optional="show"/>
+                <field name="responsible_user_id" optional="show"/>
             </list>
         </field>
     </record>

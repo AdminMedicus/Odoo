@@ -322,3 +322,41 @@ msgstr "Покупець"
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__product_id
 msgid "Product Invoice"
 msgstr "Товар"
+
+#. module: td_medicus_1c_integration
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_one_c_integration_account_move_form_inherited
+msgid "Create Td Tax Invoice"
+msgstr "Створити Податкову накладну"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model,name:td_medicus_1c_integration.model_td_tax_invoice
+msgid "TD Tax Invoice"
+msgstr "Податкові накладні"
+
+#. module: td_medicus_1c_integration
+#. odoo-python
+#: code:addons/td_medicus_1c_integration/models/sale_order.py:0
+msgid "Tax Invoices"
+msgstr "Податкові накладні"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_account_bank_statement_line__td_tax_invoice_id
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_account_move__td_tax_invoice_id
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_sale_order__td_tax_invoice_ids
+msgid "Td Tax Invoice"
+msgstr "Податкові накладні"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__product_uom_id
+msgid "Unit of Measure"
+msgstr "Одиниця вимірювання"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__state
+msgid "State"
+msgstr "Статус"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__price_vat
+msgid "Price Vat"
+msgstr "Ціна ПДВ"

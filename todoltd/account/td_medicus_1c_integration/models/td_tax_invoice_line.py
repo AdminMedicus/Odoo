@@ -10,10 +10,11 @@ class TdTaxInvoiceLine(models.Model):
     product_id = fields.Many2one(
         comodel_name='product.product',
         required=True,
-        string="Product Invoice"
+        string='Product Invoice'
     )
-    name = fields.Char(
-        string="Description"
+    name = fields.Text(
+        string='Description',
+        related='product_id.description_sale'
     )
     lot_ids = fields.Many2many(
         comodel_name='stock.lot'
