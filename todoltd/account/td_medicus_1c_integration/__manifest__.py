@@ -7,6 +7,7 @@
     'category': 'Other',
     'depends': [
         'stock',
+        'sale',
         'account',
         'td_medicus_uktzed',
     ],

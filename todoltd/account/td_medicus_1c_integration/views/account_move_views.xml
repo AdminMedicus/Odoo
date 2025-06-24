@@ -6,13 +6,15 @@
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
             <xpath expr="//button[@name='button_draft']" position="after">
-                <button name="action_create_td_tax_invoice" type="object" string="Create Td Tax Invoice"/>
+                <field name="td_tax_invoice_id" invisible="1"/>
+                <button name="action_create_td_tax_invoice" type="object" string="Create Td Tax Invoice" invisible="td_tax_invoice_id"/>
             </xpath>
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_open_td_tax_invoice"
                         class="oe_stat_button"
                         icon="fa-pencil-square-o"
                         type="object"
+                        invisible="not td_tax_invoice_id"
                 >
                     <div class="o_stat_info">
                         <span class="o_stat_text"><field name="td_tax_invoice_name" readonly="1" nolabel="1"/></span>
