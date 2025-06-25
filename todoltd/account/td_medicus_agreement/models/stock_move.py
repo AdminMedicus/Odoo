@@ -1,3 +1,4 @@
+from collections import defaultdict
 from odoo import models, fields, api, Command
 
 
@@ -21,6 +22,7 @@ class StockMove(models.Model):
         compute='_compute_product_id_and_lot_ids',
         readonly=False
     )
+    td_quantity = fields.Float()
 
     @api.depends('sale_line_id')
     def _compute_sale_order_id(self):
@@ -77,7 +79,7 @@ class StockMove(models.Model):
                                 'lot_name': lot.name,
                                 'lot_id': lot.id,
                                 'product_uom_id': move.product_id.uom_id.id,
-                                'quantity': 1,
+                                'quantity': move.td_quantity,
                             }))
                         mls_without_lots = mls_without_lots[1:]
                     else:
@@ -100,7 +102,7 @@ class StockMove(models.Model):
                         move_line_vals[
                             'product_uom_id'
                         ] = move.product_id.uom_id.id
-                        move_line_vals['quantity'] = 1
+                        move_line_vals['quantity'] = move.td_quantity
                         move_lines_commands.append(
                             (0, 0, move_line_vals)
                         )
@@ -108,10 +110,48 @@ class StockMove(models.Model):
                     move_line = mls.filtered(
                         lambda line: line.lot_id.id == lot.id
                     )
-                    move_line.quantity = 1
+                    move_line.quantity = move.td_quantity
 
             if move_lines_commands:
                 move.write({'move_line_ids': move_lines_commands})
+
+    @api.depends('move_line_ids.quantity', 'move_line_ids.product_uom_id')
+    def _compute_quantity(self):
+        """ This field represents the sum of the move lines `quantity`. It allows the user to know
+        if there is still work to do.
+
+        We take care of rounding this value at the general decimal precision and not the rounding
+        of the move's UOM to make sure this value is really close to the real sum, because this
+        field will be used in `_action_done` in order to know if the move will need a backorder or
+        an extra move.
+        """
+        if not any(self._ids):
+            # onchange
+            for move in self:
+                if move.td_quantity:
+                    move.quantity = move.td_quantity
+                    continue
+                move.quantity = move._quantity_sml()
+        else:
+            # compute
+            move_lines_ids = set()
+            for move in self:
+                if move.td_quantity:
+                    move.quantity = move.td_quantity
+                    continue
+                move_lines_ids |= set(move.move_line_ids.ids)
+
+            data = self.env['stock.move.line']._read_group(
+                [('id', 'in', list(move_lines_ids))],
+                ['move_id', 'product_uom_id'], ['quantity:sum']
+            )
+            sum_qty = defaultdict(float)
+            for move, product_uom, qty_sum in data:
+                uom = move.product_uom
+                sum_qty[move.id] += product_uom._compute_quantity(qty_sum, uom, round=False)
+
+            for move in self:
+                move.quantity = sum_qty[move.id]
 
     @api.onchange('lot_ids', 'product_id')
     def _compute_product_id_and_lot_ids(self):

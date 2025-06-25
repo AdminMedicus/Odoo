@@ -1,4 +1,6 @@
 from datetime import date
+from email.policy import default
+
 from dateutil.relativedelta import relativedelta
 
 from odoo import models, fields, api, _
@@ -14,6 +16,12 @@ class StockPicking(models.Model):
             ('act_res_st', 'Act of responsible storage'),
             ('move', 'Movement')
         ],
+    )
+    td_is_change = fields.Boolean(
+        default=True
+    )
+    td_sale_id_name = fields.Char(
+        related='sale_id.name'
     )
     date_agreement_start = fields.Date(
         default=lambda self: date.today() - relativedelta(months=6),
@@ -72,6 +80,8 @@ class StockPicking(models.Model):
             if self.sub_client_id else False,
             'pricelist_id': pricelist_id,
             'implementation_document': 'exp_inv',
+            'td_agreement_id': self.partner_id.standard_agreement_expense_id.id
+            if self.partner_id.standard_agreement_expense_id else False
         })
         self.env['sale.order.line'].sudo().create([
             {
@@ -88,6 +98,7 @@ class StockPicking(models.Model):
 
         self.sale_id = sale_order.id
         self.origin = sale_order.name
+        self.td_is_change = False
 
         return {
             'name': _('Sale Order'),
@@ -96,6 +107,17 @@ class StockPicking(models.Model):
             'view_mode': 'form',
             'target': 'current',
             'res_id': sale_order.id
+        }
+
+    def action_open_sale_order(self):
+        self.ensure_one()
+        return {
+            'name': _('Sale Order'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'sale.order',
+            'view_mode': 'form',
+            'target': 'current',
+            'res_id': self.sale_id.id
         }
 
     def product_price_unit(self, record):

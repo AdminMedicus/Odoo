@@ -99,13 +99,13 @@ msgstr "Не готовий до комплектування"
 #. module: td_contact_sale
 #: model:ir.model.fields,field_description:td_contact_sale.field_td_res_partner_sub_client_rel__is_typical
 msgid "Typical Subclient"
-msgstr "Типічний Суб клієнт"
+msgstr "Типовий Суб клієнт"
 
 #. module: td_contact_sale
 #. odoo-python
 #: code:addons/td_contact_sale/models/res_partner.py:0
 msgid "This client can have only 1 typical subclient"
-msgstr "Цей клієнт може мати лише одного типічного суб клієнта"
+msgstr "Цей клієнт може мати лише одного типового суб клієнта"
 
 #. module: td_contact_sale
 #: model:ir.model.fields,field_description:td_contact_sale.field_td_res_partner_sub_client_rel__category_id
