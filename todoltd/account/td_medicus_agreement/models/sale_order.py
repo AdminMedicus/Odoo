@@ -45,7 +45,8 @@ class SaleOrder(models.Model):
         for res in self:
             if res.picking_ids:
                 for picking in res.picking_ids:
-                    picking.implementation_document = (
-                        res.implementation_document
-                    )
+                    if picking.td_is_change:
+                        picking.implementation_document = (
+                            res.implementation_document
+                        )
         return action
