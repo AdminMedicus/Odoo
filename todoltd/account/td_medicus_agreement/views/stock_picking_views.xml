@@ -53,15 +53,25 @@
                  <field name="td_uktzed_code_id"/>
             </xpath>
             <xpath expr="//div[@name='button_box']" position="inside">
+                <field name="sale_id" invisible="1"/>
                 <button name="action_see_sale_orders" type="object" class="oe_stat_button" icon="fa-shopping-cart">
                     <field string="Sale Orders" name="sale_order_count" widget="statinfo"/>
                 </button>
+                <button name="action_open_sale_order" type="object" class="oe_stat_button" icon="fa-shopping-cart"
+                    invisible="not sale_id"
+                >
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text"><field name="td_sale_id_name" nolabel="1"/></span>
+                    </div>
+                </button>
             </xpath>
             <xpath expr="//button[@name='action_cancel']" position="after">
+                <field name="sale_id" invisible="1"/>
                 <button
                         name="create_implementation_document_sale_order"
                         type="object"
                         string="Create a new implementation document"
+                        invisible="sale_id"
                 />
             </xpath>
         </field>

@@ -43,6 +43,7 @@ class TdStockMove(models.TransientModel):
                 'picking_id': rec.origin_stock_picking_id.id,
                 'product_id': rec.product_id.id,
                 'quantity': rec.quantity,
+                'td_quantity': rec.quantity,
                 'td_lot_ids': [(6, 0, rec.lot_ids.ids)],
                 'sale_line_id': rec.sale_line_id.id,
                 'sale_order_id': rec.sale_order_id.id,
@@ -54,8 +55,10 @@ class TdStockMove(models.TransientModel):
         ])
         for record in records:
             record.write({
-                'lot_ids': [(6, 0, record.td_lot_ids.ids)]
+                'lot_ids': [(6, 0, record.td_lot_ids.ids)],
+                'quantity': record.td_quantity,
             })
+        self.origin_stock_picking_id.action_confirm()
 
     @api.onchange('quantity')
     def _compute_quantity(self):
