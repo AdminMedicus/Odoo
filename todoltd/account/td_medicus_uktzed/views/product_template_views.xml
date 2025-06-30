@@ -10,4 +10,15 @@
             </xpath>
         </field>
     </record>
+
+    <record id="product_normal_form_view_td_medicus_1c_integration_inherit_from" model="ir.ui.view">
+        <field name="name">product.product.td_medicus_1c_integration.form.inherit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='type']" position="before">
+                <field name="td_uktzed_code_id" domain="[('visible', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
 </odoo>

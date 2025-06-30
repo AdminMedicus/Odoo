@@ -397,12 +397,12 @@ msgstr "Статус"
 #. module: td_medicus_agreement
 #: model:ir.ui.menu,name:td_medicus_agreement.menu_td_stock_report
 msgid "Stock Report"
-msgstr "Залишок товарів у клієнта по Акту відповідального зберігання"
+msgstr "Оборот товарів у роз. документів реалізації"
 
 #. module: td_medicus_agreement
 #: model:ir.actions.act_window,name:td_medicus_agreement.action_td_stock_report_pivot
 msgid "Stock Report Pivot"
-msgstr "Залишок товарів у клієнта по Акту відповідального зберігання"
+msgstr "Оборот товарів у роз. документів реалізації"
 
 #. module: td_medicus_agreement
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement_stock_move__move_id
@@ -413,7 +413,7 @@ msgstr "Переміщення"
 #. module: td_medicus_agreement
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_stock_picking_type__td_is_goods_balance_of_act_res_st
 msgid "Td Is Goods Balance Of Act Res St"
-msgstr "Залишок товарів у клієнта по Акту відповідального зберігання"
+msgstr "Оборот товарів у роз. документів реалізації"
 
 #. module: td_medicus_agreement
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement_stock_move__lot_ids

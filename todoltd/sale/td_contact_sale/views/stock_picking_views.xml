@@ -7,6 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="allowed_sub_client_ids" invisible="1"/>
+                <field name="td_parent_partner_id" readonly="1"/>
                 <field name="sub_client_id" readonly="state not in ('draft')" domain="[('id', 'in', allowed_sub_client_ids)]"/>
             </xpath>
         </field>

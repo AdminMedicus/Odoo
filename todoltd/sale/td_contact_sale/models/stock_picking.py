@@ -8,12 +8,24 @@ class StockPicking(models.Model):
         comodel_name='res.partner',
     )
 
+    td_parent_partner_id = fields.Many2one(
+        comodel_name='res.partner',
+        compute='_compute_partner_id_td',
+        store=True
+    )
+
     allowed_sub_client_ids = fields.Many2many(
         comodel_name='res.partner',
         relation='stock_picking_allowed_sub_client_rel',
         column1='stock_picking_id',
         column2='allowed_sub_client_id',
     )
+
+    @api.depends('partner_id')
+    def _compute_partner_id_td(self):
+        for rec in self:
+            if rec.partner_id:
+                rec.td_parent_partner_id = rec.partner_id.id
 
     def button_validate(self):
         res = super().button_validate()
