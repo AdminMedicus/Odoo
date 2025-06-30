@@ -60,6 +60,8 @@ class SaleOrder(models.Model):
                 for picking in res.picking_ids:
                     picking.sub_client_id = res.sub_client_id.id
                     picking.partner_id = res.partner_shipping_id.id
+                    picking.td_parent_partner_id = res.partner_id.id
+
                     if picking.state not in ['done', 'cancel'] \
                             and picking.picking_type_code == 'internal':
                         picking.state = 'confirmed'
