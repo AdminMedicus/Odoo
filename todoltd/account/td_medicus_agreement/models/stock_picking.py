@@ -1,5 +1,4 @@
 from datetime import date
-from email.policy import default
 
 from dateutil.relativedelta import relativedelta
 
@@ -53,6 +52,8 @@ class StockPicking(models.Model):
         picking_ids = self.move_ids.move_dest_ids.picking_id
         for picking in picking_ids:
             picking.implementation_document = self.implementation_document
+            picking.td_parent_partner_id = self.td_parent_partner_id.id \
+                if self.td_parent_partner_id else False
         return res
 
     def create_implementation_document_sale_order(self):
@@ -73,16 +74,23 @@ class StockPicking(models.Model):
             raise ValidationError(_(
                 "Products not selected and their quantity"
             ))
-
-        sale_order = self.env['sale.order'].sudo().create({
+        sale_order_data = {
             'partner_id': self.partner_id.id,
             'sub_client_id': self.sub_client_id.id
             if self.sub_client_id else False,
             'pricelist_id': pricelist_id,
             'implementation_document': 'exp_inv',
             'td_agreement_id': self.partner_id.standard_agreement_expense_id.id
-            if self.partner_id.standard_agreement_expense_id else False
-        })
+            if self.partner_id.standard_agreement_expense_id else False,
+        }
+        warehouse = self.env['stock.warehouse'].search([
+            ('td_is_warehouse_for_sale_order', '=', True)
+        ], limit=1)
+
+        if warehouse:
+            sale_order_data['warehouse_id'] = warehouse.id
+
+        sale_order = self.env['sale.order'].sudo().create(sale_order_data)
         self.env['sale.order.line'].sudo().create([
             {
                 'order_id': sale_order.id,

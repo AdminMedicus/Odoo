@@ -23,6 +23,7 @@
         'views/sale_report_views.xml',
         'views/sale_order_views.xml',
         'views/stock_picking_views.xml',
+        'views/stock_warehouse_views.xml',
         # menu
         'views/region_menu_views.xml',
     ],
