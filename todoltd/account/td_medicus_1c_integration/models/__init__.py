@@ -6,3 +6,6 @@ from . import td_tax_invoice
 from . import td_tax_invoice_line
 from . import account_move
 from . import sale_order
+from . import sale_order_line
+from . import account_move_line
+from . import res_config_settings

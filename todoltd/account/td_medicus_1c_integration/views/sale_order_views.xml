@@ -14,6 +14,48 @@
                     <field name="td_tax_invoice_count" widget="statinfo" string="Td Tax Invoices"/>
                 </button>
             </xpath>
+<!--            <button id="create_invoice" name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice"-->
+<!--                    type="action" class="btn-primary" data-hotkey="q"-->
+<!--                    invisible="invoice_status != 'to invoice'"/>-->
+            <xpath expr="//button[@id='create_invoice']" position="before">
+                <field name="td_show_create_invoice" invisible="1"/>
+            </xpath>
+            <xpath expr="//button[@id='create_invoice']" position="attributes">
+                <attribute name="invisible">invoice_status != 'to invoice' and td_show_create_invoice</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="td_one_c_integration_view_order_form_td_inherited" model="ir.ui.view">
+        <field name="name">td.one.c.sale.order.form.inherited</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="td_medicus_agreement.td_sale_order_implementation_document_form_inherited"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='implementation_document']" position="after">
+                <field name="td_tax_guide_id"/>
+                <field name="td_budget_funds"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="td_one_c_view_quotation_tree_with_onboarding_inherit" model="ir.ui.view">
+        <field name="name">td.sale.order.tree.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="after">
+<!--                <field name="td_tax_invoice_state" optional="show" widget="statusbar" colors='{-->
+<!--                    "budget": "grey",-->
+<!--                    "not_created": "warning",-->
+<!--                    "draft": "primary",-->
+<!--                    "confirm": "success",-->
+<!--                    "confirm_finish": "dark",-->
+<!--                    "cancel": "danger"-->
+<!--                }'/>-->
+                <field name="td_tax_invoice_state" optional="show"/>
+                <field name="td_budget_funds" optional="show"/>
+            </xpath>
         </field>
     </record>
 </odoo>
