@@ -65,6 +65,8 @@ class SaleOrder(models.Model):
                 rec.td_tax_invoice_state = 'budget'
             elif len(rec.td_tax_invoice_ids.filtered(lambda l: l.state == 'cancel')) > 0:
                 rec.td_tax_invoice_state = 'cancel'
+            else:
+                rec.td_tax_invoice_state = 'draft'
 
     def action_confirm(self):
         self.ensure_one()
