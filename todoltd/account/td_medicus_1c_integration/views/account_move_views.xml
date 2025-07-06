@@ -7,6 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//button[@name='button_draft']" position="after">
                 <field name="td_tax_invoice_id" invisible="1"/>
+                <field name="td_tax_invoice_ids" invisible="1"/>
                 <button name="action_create_td_tax_invoice" type="object" string="Create Td Tax Invoice" invisible="td_tax_invoice_id"/>
             </xpath>
             <xpath expr="//div[@name='button_box']" position="inside">
@@ -14,12 +15,31 @@
                         class="oe_stat_button"
                         icon="fa-pencil-square-o"
                         type="object"
-                        invisible="not td_tax_invoice_id"
+                        invisible="not td_tax_invoice_id and td_budget_funds"
                 >
                     <div class="o_stat_info">
                         <span class="o_stat_text"><field name="td_tax_invoice_name" readonly="1" nolabel="1"/></span>
                     </div>
                 </button>
+                <button name="action_open_td_tax_invoice"
+                        class="oe_stat_button"
+                        icon="fa-pencil-square-o"
+                        type="object"
+                        invisible="not td_tax_invoice_ids and td_budget_funds"
+                >
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Tax Invoices</span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//label[@for='journal_id']" position="before">
+                <field name="td_tax_guide_id"/>
+                <field name="td_budget_funds"/>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']//list//field[@name='tax_ids']" position="after">
+                <field name="td_purchase_price" optional="show"/>
+                <field name="td_margin" optional="show"/>
+                <field name="td_margin_percent" optional="show"/>
             </xpath>
         </field>
     </record>

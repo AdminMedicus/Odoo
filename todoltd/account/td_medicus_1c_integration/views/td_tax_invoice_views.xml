@@ -30,6 +30,12 @@
                             invisible="state == 'cancel'"
                             class="btn btn-secondary"
                     />
+                    <button name="recalculation_of_the_quantity_of_lines"
+                            type="object"
+                            string="Recalculation of the quantity of lines"
+                            invisible="state == 'cancel'"
+                            class="btn btn-secondary"
+                    />
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -78,24 +84,29 @@
                         </group>
                         <group>
                             <field name="accounting_date"/>
-                            <field name="tax_guide"/>
+                            <field name="tax_guide_id"/>
+                            <field name="domain_payment_ids" invisible="1"/>
+                            <field name="payment_id" domain="[('id', 'in', domain_payment_ids)]"/>
+                            <field name="td_budget_funds"/>
                         </group>
                     </group>
                     <notebook>
                         <page name="td_invoice_line" string="Document Line">
                             <field name="td_invoice_line_ids" nolabel="1" readonly="state == 'confirm'">
                                 <list editable="bottom">
-                                    <field name="product_id" widget="many2one"/>
-                                    <field name="name"/>
-                                    <field name="lot_ids" widget="many2many_tags"/>
-                                    <field name="uktzed_code_id" widget="many2one"/>
-                                    <field name="quantity"/>
-                                    <field name="product_uom_id"/>
-                                    <field name="price_with_out_vat"/>
-                                    <field name="sum_price_with_out_vat"/>
-                                    <field name="vat_id" widget="many2one"/>
-                                    <field name="vat_price"/>
-                                    <field name="price_with_vat"/>
+                                    <field name="seq_line_number" optional="show"/>
+                                    <field name="product_id" widget="many2one" optional="show"/>
+                                    <field name="name" optional="show"/>
+                                    <field name="lot_ids" widget="many2many_tags" optional="show"/>
+                                    <field name="uktzed_code_id" widget="many2one" optional="show"/>
+                                    <field name="quantity" optional="show"/>
+                                    <field name="product_uom_id" optional="show"/>
+                                    <field name="price_with_out_vat" optional="show"/>
+                                    <field name="sum_price_with_out_vat" optional="show"/>
+                                    <field name="vat_id" widget="many2one" optional="show"/>
+                                    <field name="vat_price" optional="show"/>
+                                    <field name="price_with_vat" optional="show"/>
+                                    <field name="corr_line_number" optional="show"/>
                                 </list>
                             </field>
                             <group col="12" class="oe_invoice_lines_tab overflow-hidden">
@@ -106,8 +117,8 @@
                                     <group class="oe_subtotal_footer">
 
                                         <field name="price_with_out_tax" colspan="2" readonly="1"/>
-                                        <div colspan="2" class="o_row" invisible="not tax_guide">
-                                            <field name="tax_guide" colspan="1" nolabel="1" readonly="1"/>
+                                        <div colspan="2" class="o_row" invisible="not tax_guide_id">
+                                            <field name="tax_guide_id" colspan="1" nolabel="1" readonly="1"/>
                                             <field name="price_vat" colspan="1" readonly="1" nolabel="1"/>
                                         </div>
                                         <field name="price_total" class="oe_subtotal_footer_separator" readonly="1"/>
@@ -124,6 +135,10 @@
                             </group>
                         </page>
                     </notebook>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
                 </sheet>
             </form>
         </field>
@@ -141,6 +156,7 @@
                 <field name="price_vat" optional="hide"/>
                 <field name="price_total" optional="show"/>
                 <field name="state" optional="show"/>
+                <field name="td_budget_funds" optional="show"/>
                 <field name="responsible_user_id" optional="show"/>
             </list>
         </field>

@@ -4,6 +4,7 @@ from odoo import models, fields, api, _
 
 class TdTaxInvoice(models.Model):
     _name = 'td.tax.invoice'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'TD Tax Invoice'
 
     name = fields.Char(
@@ -27,21 +28,43 @@ class TdTaxInvoice(models.Model):
     accounting_date = fields.Date(
         default=fields.Date.context_today
     )
-    tax_guide = fields.Many2one(
-        comodel_name='account.tax'
+    tax_guide_id = fields.Many2one(
+        comodel_name='account.tax',
+        compute='_compute_tax_guide_id',
+        readonly=False
     )
     state = fields.Selection(
         [
+            ('budget', 'Budget funds'),
+            ('not_created', 'Not created'),
             ('draft', 'Draft'),
             ('confirm', 'Confirm'),
+            ('confirm_finish', 'Confirmed (no adjustments are possible)'),
             ('cancel', 'Cancel'),
         ], default='draft'
+    )
+    td_budget_funds = fields.Boolean(
+        default=False,
+        related='invoice_id.td_budget_funds'
     )
     move_type = fields.Selection(
         [
             ('tax_inv', 'Tax Invoice'),
             ('adj_inv', 'Adjustment Invoice'),
         ], default='tax_inv'
+    )
+    invoice_type = fields.Selection(
+        [
+            ('regular', 'Regular invoicing'), # Регулярне виставлення рахунку
+            ('invoice', 'Invoice'), # Рахунок фактура
+        ]
+    )
+    payment_id = fields.Many2one(
+        comodel_name='account.move.line'
+    )
+    domain_payment_ids = fields.Many2many(
+        comodel_name='account.move.line',
+        compute='_compute_domain_payment_ids'
     )
     td_invoice_line_ids = fields.One2many(
         comodel_name='td.tax.invoice.line',
@@ -66,6 +89,61 @@ class TdTaxInvoice(models.Model):
         default=lambda self: self.env.company
     )
 
+    @api.depends('invoice_id')
+    def _compute_tax_guide_id(self):
+        for rec in self:
+            if rec.invoice_id:
+                if rec.invoice_id.td_tax_guide_id:
+                    rec.tax_guide_id = rec.invoice_id.td_tax_guide_id.id
+                else:
+                    rec.tax_guide_id = rec.tax_guide_id or False
+            else:
+                rec.tax_guide_id = rec.tax_guide_id or False
+
+    def recalculation_of_the_quantity_of_lines(self):
+        for rec in self:
+            record = list(
+                filter(
+                    lambda rec_: rec_['aml_id'] == rec.payment_id.id,
+                    rec.invoice_id._get_all_reconciled_invoice_partials()
+                )
+            )
+            if record:
+                amount = record[0]['amount']
+                lines_data = []
+                total = sum(line.price_unit * line.quantity for line in rec.invoice_id.invoice_line_ids)
+
+                for line in rec.invoice_id.invoice_line_ids:
+                    line_total = line.price_unit * line.quantity
+                    percent = (line_total / total) * 100 if total else 0
+                    percent_qty = (line.quantity * percent) / 100
+
+                    lines_data.append({
+                        'id': line.id,
+                        'quantity': line.quantity,
+                        'percent': round(percent, 2),
+                        'percent_qty': round(percent_qty, 2),
+                    })
+
+                for line in lines_data:
+                    amount_line = (line['percent'] * amount) / 100
+                    quantity_line = line['quantity']
+                    line = rec.td_invoice_line_ids.filtered(lambda l: l.invoice_line_id.id == line['id'])
+                    line.quantity = line.price_with_out_vat / amount_line
+
+    @api.depends('invoice_id')
+    def _compute_domain_payment_ids(self):
+        for rec in self:
+            if rec.invoice_id:
+                rec.domain_payment_ids = [
+                    (6, 0, [
+                        data['aml_id']
+                        for data in rec.invoice_id.sudo()._get_all_reconciled_invoice_partials()
+                    ])
+                ]
+            else:
+                rec.domain_payment_ids = False
+
     def _compute_total_price(self):
         for inv in self:
             price_with_out_tax = []
@@ -79,8 +157,8 @@ class TdTaxInvoice(models.Model):
             inv.price_vat = sum(price_vat)
             inv.price_total = sum(price_total)
 
-    @api.onchange('tax_guide')
-    def _onchange_tax_guide(self):
+    @api.onchange('tax_guide_id')
+    def _onchange_tax_guide_id(self):
         for inv in self:
             for line in inv.td_invoice_line_ids:
                 line._compute_product_id()

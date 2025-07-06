@@ -3,7 +3,6 @@
     <record id="td_sale_order_implementation_document_form_inherited" model="ir.ui.view">
         <field name="name">td.sale.order.form.inherit</field>
         <field name="model">sale.order</field>
-<!--        <field name="inherit_id" ref="sale.view_order_form"/>-->
         <field name="inherit_id" ref="td_agreement.td_sale_order_form_inherited"/>
         <field name="priority">99</field>
         <field name="arch" type="xml">

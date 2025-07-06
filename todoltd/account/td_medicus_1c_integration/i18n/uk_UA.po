@@ -360,3 +360,19 @@ msgstr "Статус"
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__price_vat
 msgid "Price Vat"
 msgstr "Ціна ПДВ"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__sale_advance_payment_inv__td_advance_payment_method__delivered
+msgid "Regular invoice"
+msgstr "Видаткова накладна"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__sale_advance_payment_inv__td_advance_payment_method__percentage
+msgid "Down payment (percentage)"
+msgstr "Попередня оплата"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_sale_advance_payment_inv__advance_payment_method
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_sale_advance_payment_inv__td_advance_payment_method
+msgid "Create Invoice"
+msgstr "Створити рахунок"
