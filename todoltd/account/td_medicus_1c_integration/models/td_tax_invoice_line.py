@@ -57,11 +57,14 @@ class TdTaxInvoiceLine(models.Model):
     def _compute_lot_ids(self):
         for rec in self:
             if rec.invoice_line_id and rec.invoice_line_id.td_order_line_id:
-                records = self.env['stock.move'].search([(
-                    'sale_order_id', '=', rec.invoice_line_id.td_order_line_id.id
-                )])
-                record = records.filtered(lambda l: l.picking_id and l.picking_id.code == 'outgoing')[0]
-                rec.lot_ids = [(6, 0, [lot.id for lot in record.lot_ids])]
+                records = self.env['stock.move'].search([
+                    ('sale_order_id', '=', rec.invoice_line_id.td_order_line_id.id)
+                ])
+                outgoing_record = records.filtered(lambda l: l.picking_id and l.picking_id.code == 'outgoing')
+                if outgoing_record:
+                    rec.lot_ids = [(6, 0, [lot.id for lot in outgoing_record[0].lot_ids])]
+                else:
+                    rec.lot_ids = False
             else:
                 rec.lot_ids = False
 
