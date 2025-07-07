@@ -100,7 +100,7 @@ class TdTaxInvoice(models.Model):
             else:
                 rec.tax_guide_id = rec.tax_guide_id or False
 
-    def recalculation_of_the_quantity_of_lines(self):
+    def recalculation_of_the_quantity_of_lines(self, recalc = True):
         for rec in self:
             record = list(
                 filter(
@@ -125,11 +125,9 @@ class TdTaxInvoice(models.Model):
                         'percent_qty': round(percent_qty, 2),
                     })
 
-                for line in lines_data:
-                    amount_line = (line['percent'] * amount) / 100
-                    quantity_line = line['quantity']
-                    line = rec.td_invoice_line_ids.filtered(lambda l: l.invoice_line_id.id == line['id'])
-                    line.quantity = line.price_with_out_vat / amount_line
+                for line_ in lines_data:
+                    line = rec.td_invoice_line_ids.filtered(lambda l: l.invoice_line_id.id == line_['id'])
+                    line.quantity = (line_['percent_qty'] * amount) / (line_['percent'] * total / 100)
 
     @api.depends('invoice_id')
     def _compute_domain_payment_ids(self):
@@ -144,6 +142,7 @@ class TdTaxInvoice(models.Model):
             else:
                 rec.domain_payment_ids = False
 
+    @api.depends('td_invoice_line_ids.quantity')
     def _compute_total_price(self):
         for inv in self:
             price_with_out_tax = []
