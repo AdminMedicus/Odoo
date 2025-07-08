@@ -182,7 +182,9 @@ msgid "Company"
 msgstr "Компанія"
 
 #. module: td_medicus_1c_integration
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__sale_order__td_tax_invoice_state__confirm
 #: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__td_tax_invoice__state__confirm
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_one_c_integration_view_order_form_inherited
 #: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_tax_invoice_view_form
 msgid "Confirm"
 msgstr "Підтвердити"
@@ -201,8 +203,9 @@ msgstr "Рядки документа"
 #. odoo-python
 #: code:addons/td_medicus_1c_integration/models/td_tax_invoice.py:0
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__invoice_id
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__td_tax_invoice__invoice_type__invoice
 msgid "Invoice"
-msgstr "Рахунок"
+msgstr "Рахунок фактури"
 
 #. module: td_medicus_1c_integration
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__lot_ids
@@ -272,7 +275,7 @@ msgid "Reset to Draft"
 msgstr "Повернути в чернетку"
 
 #. module: td_medicus_1c_integration
-#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__tax_guide
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__tax_guide_id
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__vat_id
 msgid "Tax Guide"
 msgstr "Ставка ПДВ"
@@ -367,12 +370,121 @@ msgid "Regular invoice"
 msgstr "Видаткова накладна"
 
 #. module: td_medicus_1c_integration
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__account_move__td_advance_payment_method__percentage
 #: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__sale_advance_payment_inv__td_advance_payment_method__percentage
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__sale_advance_payment_inv__td_advance_payment_method_one__percentage
 msgid "Down payment (percentage)"
 msgstr "Попередня оплата"
 
 #. module: td_medicus_1c_integration
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_sale_advance_payment_inv__advance_payment_method
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_sale_advance_payment_inv__td_advance_payment_method
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_sale_advance_payment_inv__td_advance_payment_method_one
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_one_c_integration_view_order_form_inherited
 msgid "Create Invoice"
 msgstr "Створити рахунок"
+
+#. module: td_medicus_1c_integration
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_one_c_integration_account_move_form_inherited
+msgid "<span class=\"o_stat_text\">Tax Invoices</span>"
+msgstr "<span class=\"o_stat_text\">Податкові накладні</span>"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_account_bank_statement_line__td_budget_funds
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_account_move__td_budget_funds
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_sale_order__budget_funds
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_sale_order__td_budget_funds
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__td_budget_funds
+msgid "Budget Funds"
+msgstr "Бюджетні кошти"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__sale_order__td_tax_invoice_state__budget
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__td_tax_invoice__state__budget
+msgid "Budget funds"
+msgstr "Бюджетні кошти"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__sale_order__td_tax_invoice_state__confirm_finish
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__td_tax_invoice__state__confirm_finish
+msgid "Confirmed (no adjustments are possible)"
+msgstr "Підтверджено (коригування неможливі) (темно зелений)"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__corr_line_number
+msgid "Correction Line Number"
+msgstr "Номер лінії корегування"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__sum_price_with_out_vat
+msgid "Sum Price With Out Vat"
+msgstr "Сума без ПДВ"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_account_move_line__td_margin
+msgid "Td Margin"
+msgstr "Маржа"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_account_move_line__td_margin_percent
+msgid "Td Margin Percent"
+msgstr "Маржа, %"
+
+#. module: td_medicus_1c_integration
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_view_sale_order_low_margin_warning
+msgid "This document contains goods whose value is lower than cost."
+msgstr "У даному документі є товари, вартість яких нижча за собівартість."
+
+#. module: td_medicus_1c_integration
+#. odoo-python
+#: code:addons/td_medicus_1c_integration/models/sale_order_line.py:0
+msgid "You are trying to add products with different VAT rates"
+msgstr "Ви намагаєтесь додати товари з різною ставкою ПДВ"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_account_bank_statement_line__td_tax_guide_id
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_account_move__td_tax_guide_id
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_sale_order__td_tax_guide_id
+msgid "Td Tax Guide"
+msgstr "Податок"
+
+#. module: td_medicus_1c_integration
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_one_c_integration_view_order_form_inherited
+msgid "Td Tax Invoices"
+msgstr "Податкові накладні"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_account_move_line__td_purchase_price
+msgid "Td Purchase Price"
+msgstr "Собівартість"
+
+#. module: td_medicus_1c_integration
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_tax_invoice_view_form
+msgid "Recalculation of the quantity of lines"
+msgstr "Перерахувати кількість в лініях"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__payment_id
+msgid "Payment"
+msgstr "Платіж"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__td_tax_invoice__invoice_type__regular
+msgid "Regular invoicing"
+msgstr "Видаткова накладна"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__invoice_type
+msgid "Invoice Type"
+msgstr "Джерело документа"
+
+#. module: td_medicus_1c_integration
+#: model:ir.module.category,name:td_medicus_1c_integration.module_category_manager
+msgid "Manager"
+msgstr "Редагування податкових накладних"
+
+#. module: td_medicus_1c_integration
+#. odoo-python
+#: code:addons/td_medicus_1c_integration/models/td_tax_invoice.py:0
+msgid "You can't change this record ( you don't have permission)"
+msgstr "Ви не можете змінити цей запис! ( У вас недостатньо прав)"

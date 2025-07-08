@@ -1,5 +1,6 @@
 from datetime import datetime
 from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
 
 
 class TdTaxInvoice(models.Model):
@@ -41,7 +42,8 @@ class TdTaxInvoice(models.Model):
             ('confirm', 'Confirm'),
             ('confirm_finish', 'Confirmed (no adjustments are possible)'),
             ('cancel', 'Cancel'),
-        ], default='draft'
+        ], default='draft',
+        tracking=True
     )
     td_budget_funds = fields.Boolean(
         default=False,
@@ -88,6 +90,13 @@ class TdTaxInvoice(models.Model):
         comodel_name='res.company',
         default=lambda self: self.env.company
     )
+
+    def write(self, values):
+        if self.state and self.state == 'confirm_finish':
+            if not self.env.user.has_group('td_medicus_1c_integration.group_admin'):
+                raise ValidationError(_("You can't change this record ( you don't have permission)"))
+        result = super().write(values)
+        return result
 
     @api.depends('invoice_id')
     def _compute_tax_guide_id(self):
@@ -136,7 +145,8 @@ class TdTaxInvoice(models.Model):
                 rec.domain_payment_ids = [
                     (6, 0, [
                         data['aml_id']
-                        for data in rec.invoice_id.sudo()._get_all_reconciled_invoice_partials()
+                        for data in rec.invoice_id.sudo(
+                        )._get_all_reconciled_invoice_partials()
                     ])
                 ]
             else:

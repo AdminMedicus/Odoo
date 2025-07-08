@@ -86,8 +86,9 @@
                             <field name="accounting_date"/>
                             <field name="tax_guide_id"/>
                             <field name="domain_payment_ids" invisible="1"/>
-                            <field name="payment_id" domain="[('id', 'in', domain_payment_ids)]"/>
+                            <field name="payment_id" domain="[('id', 'in', domain_payment_ids)]" invisible="invoice_type == 'regular'"/>
                             <field name="td_budget_funds"/>
+                            <field name="invoice_type"/>
                         </group>
                     </group>
                     <notebook>
