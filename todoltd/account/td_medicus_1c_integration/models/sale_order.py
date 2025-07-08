@@ -250,7 +250,9 @@ class SaleOrder(models.Model):
             )
 
             for filt_rec in filtered_records:
-                filt_rec.state = 'confirm_finish'
+                filt_rec.with_context(
+                    skip_state_write_check=True
+                ).write({'state': 'confirm_finish'})
 
             if len(rec.td_tax_invoice_ids.filtered(lambda l: l.state == 'confirm_finish')) > 0:
                 rec.td_tax_invoice_state = 'confirm_finish'

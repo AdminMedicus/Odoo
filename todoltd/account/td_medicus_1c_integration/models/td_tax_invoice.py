@@ -92,11 +92,13 @@ class TdTaxInvoice(models.Model):
     )
 
     def write(self, values):
-        if self.state and self.state == 'confirm_finish':
-            if not self.env.user.has_group('td_medicus_1c_integration.group_admin'):
-                raise ValidationError(_("You can't change this record ( you don't have permission)"))
-        result = super().write(values)
-        return result
+        if (
+                not self.env.context.get('skip_state_write_check')
+                and self.state == 'confirm_finish'
+                and not self.env.user.has_group('td_medicus_1c_integration.group_admin')
+        ):
+            raise ValidationError(_("You can't change this record ( you don't have permission)"))
+        return super().write(values)
 
     @api.depends('invoice_id')
     def _compute_tax_guide_id(self):
