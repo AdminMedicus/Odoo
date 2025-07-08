@@ -39,6 +39,8 @@ class AccountMove(models.Model):
         for move in self:
             if move.td_prepayment:
                 format_values['prefix1'] = "RAH-F/"
+            else:
+                format_values['prefix1'] = "INV/"
 
         return format_string, format_values
 
@@ -127,7 +129,7 @@ class AccountMove(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Tax Invoice'),
             'res_model': 'td.tax.invoice',
-            'view_mode': 'list, form',
+            'views': [(False, 'list'), (False, 'form')],
             'domain': [('id', 'in', self.td_tax_invoice_id.ids)],
             'target': 'current',
         }

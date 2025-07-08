@@ -16,7 +16,6 @@
         # security
         'security/ir.model.access.csv',
         'security/tax_invoices_groups.xml',
-        'security/tax_invoice_rules.xml',
         # views
         'views/td_manufacturer_directory_views.xml',
         'views/td_one_c_category_views.xml',

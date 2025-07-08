@@ -6,7 +6,7 @@
             <form>
                 <group>
                     <p>
-                        У даному документі є товари, вартість яких нижча за собівартість.
+                        This document contains goods whose value is lower than cost.
                     </p>
                 </group>
                 <footer>
