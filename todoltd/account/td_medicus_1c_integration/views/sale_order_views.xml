@@ -14,14 +14,18 @@
                     <field name="td_tax_invoice_count" widget="statinfo" string="Td Tax Invoices"/>
                 </button>
             </xpath>
-<!--            <button id="create_invoice" name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice"-->
-<!--                    type="action" class="btn-primary" data-hotkey="q"-->
-<!--                    invisible="invoice_status != 'to invoice'"/>-->
-            <xpath expr="//button[@id='create_invoice']" position="before">
-                <field name="td_show_create_invoice" invisible="1"/>
+            <xpath expr="//button[@name='action_confirm']" position="replace">
             </xpath>
-            <xpath expr="//button[@id='create_invoice']" position="attributes">
-                <attribute name="invisible">invoice_status != 'to invoice' and td_show_create_invoice</attribute>
+            <xpath expr="//button[@name='action_confirm']" position="replace">
+            </xpath>
+            <xpath expr="//button[@id='create_invoice']" position="replace">
+                <field name="td_show_create_invoice" invisible="1"/>
+                <button name="action_confirm" data-hotkey="q"
+                        string="Confirm" class="btn-primary" type="object" context="{'validate_analytic': True}"
+                        invisible="state != 'draft'"/>
+                <button id="create_invoice" name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice"
+                        type="action" class="btn-secondary" data-hotkey="q"
+                        invisible="invoice_status != 'to invoice' or td_show_create_invoice"/>
             </xpath>
         </field>
     </record>

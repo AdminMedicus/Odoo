@@ -56,13 +56,21 @@ class TdTaxInvoiceLine(models.Model):
     @api.depends('invoice_line_id')
     def _compute_lot_ids(self):
         for rec in self:
-            if rec.invoice_line_id and rec.invoice_line_id.td_order_line_id:
-                records = self.env['stock.move'].search([
-                    ('sale_order_id', '=', rec.invoice_line_id.td_order_line_id.id)
-                ])
-                outgoing_record = records.filtered(lambda l: l.picking_id and l.picking_id.code == 'outgoing')
-                if outgoing_record:
-                    rec.lot_ids = [(6, 0, [lot.id for lot in outgoing_record[0].lot_ids])]
+            if rec.td_invoice_id.invoice_type == 'regular':
+                if rec.invoice_line_id and rec.invoice_line_id.td_order_line_id:
+                    records = self.env['stock.move'].search([
+                        ('sale_line_id', '=',
+                         rec.invoice_line_id.td_order_line_id.id)
+                    ])
+                    outgoing_record = records.filtered(
+                        lambda pick: pick.picking_id and pick.picking_id.picking_type_code == 'outgoing'
+                    )
+                    if outgoing_record:
+                        rec.lot_ids = [(6, 0, [
+                            lot.id for lot in outgoing_record[0].lot_ids
+                        ])]
+                    else:
+                        rec.lot_ids = False
                 else:
                     rec.lot_ids = False
             else:
