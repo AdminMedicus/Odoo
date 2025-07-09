@@ -10,9 +10,11 @@ class SaleOrderLine(models.Model):
     )
 
     @api.onchange('tax_id')
+    @api.constrains('tax_id', 'order_id')
     def _onchange_tax_id_td(self):
         for line in self:
-            if line.order_id.td_tax_guide_id.id != line.tax_id.id:
-                raise ValidationError(
-                    _("You are trying to add products with different VAT rates")
-                )
+            if line.order_id.td_tax_guide_id and line.tax_id:
+                if line.order_id.td_tax_guide_id.id != line.tax_id.id:
+                    raise ValidationError(
+                        _("You are trying to add products with different VAT rates")
+                    )
