@@ -6,7 +6,7 @@ class StockMoveLine(models.Model):
 
     td_uktzed_code_id = fields.Many2one(
         comodel_name='td.uktzed',
-        compute='_compute_product_id_and_lot_ids',
+        # compute='_compute_product_id_and_lot_ids',
         readonly=False,
         store=True
     )
