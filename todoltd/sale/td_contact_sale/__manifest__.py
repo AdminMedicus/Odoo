@@ -24,8 +24,11 @@
         'views/sale_order_views.xml',
         'views/stock_picking_views.xml',
         'views/stock_warehouse_views.xml',
+        'views/product_template_views.xml',
         # menu
         'views/region_menu_views.xml',
+        # wizard
+        'wizard/td_change_product_in_sol.xml'
     ],
     'assets': {
         'web.assets_backend': [

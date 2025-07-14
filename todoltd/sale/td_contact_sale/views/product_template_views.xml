@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_product_td_contact_sale_inherit_from" model="ir.ui.view">
+        <field name="name">product.template.td_contact_sale.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='invoicing']" position="after">
+                <page name="alternative_products" string="Alternative products">
+                    <group>
+                        <field name="td_product_template_ids" nolabel="1">
+                            <list>
+                                <field name="name" optional="show"/>
+                                <field name="list_price" optional="show"/>
+                                <field name="standard_price" optional="show"/>
+                                <field name="taxes_id" widget="many2many_tags" optional="show"/>
+                            </list>
+                        </field>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_normal_form_view_td_contact_sale_inherit_from" model="ir.ui.view">
+        <field name="name">product.product.td_contact_sale.form.inherit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='invoicing']" position="after">
+                <page name="alternative_products" string="Alternative products">
+                    <group>
+                        <field name="td_product_template_ids" nolabel="1">
+                            <list>
+                                <field name="name" optional="show"/>
+                                <field name="list_price" optional="show"/>
+                                <field name="standard_price" optional="show"/>
+                                <field name="taxes_id" widget="many2many_tags" optional="show"/>
+                            </list>
+                        </field>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
