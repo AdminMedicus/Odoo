@@ -60,7 +60,7 @@ class TdTaxInvoice(models.Model):
             ('regular', 'Regular invoicing'), # Регулярне виставлення рахунку
             ('invoice', 'Invoice'), # Рахунок фактура
         ],
-        readonly=1
+        readonly=True
     )
     payment_id = fields.Many2one(
         comodel_name='account.move.line'
