@@ -131,3 +131,21 @@ msgstr "Телефон"
 #: model:ir.model.fields,field_description:td_contact_sale.field_td_res_partner_sub_client_rel__city
 msgid "City"
 msgstr "Місто"
+
+#. module: td_contact_sale
+#. odoo-python
+#: code:addons/td_contact_sale/models/sale_order_line.py:0
+#: model_terms:ir.ui.view,arch_db:td_contact_sale.view_order_form_td_change_product_inherit
+msgid "Change Product"
+msgstr "Змінити товар"
+
+#. module: td_contact_sale
+#: model_terms:ir.ui.view,arch_db:td_contact_sale.product_normal_form_view_td_contact_sale_inherit_from
+#: model_terms:ir.ui.view,arch_db:td_contact_sale.view_product_td_contact_sale_inherit_from
+msgid "Alternative products"
+msgstr "Альтернативні товари"
+
+#. module: td_contact_sale
+#: model_terms:ir.ui.view,arch_db:td_contact_sale.td_change_product_in_sol_view_form
+msgid "Choose"
+msgstr "Обрати"
