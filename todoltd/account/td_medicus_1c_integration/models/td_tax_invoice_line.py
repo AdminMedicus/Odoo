@@ -7,6 +7,9 @@ class TdTaxInvoiceLine(models.Model):
     td_invoice_id = fields.Many2one(
         comodel_name='td.tax.invoice'
     )
+    td_sale_order_line_id = fields.Many2one(
+        comodel_name='sale.order.line'
+    )
     seq_line_number = fields.Integer(
         string="№",
         compute="_compute_line_number",

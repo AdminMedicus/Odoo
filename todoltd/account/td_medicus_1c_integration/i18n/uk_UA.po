@@ -166,9 +166,16 @@ msgstr "<span class=\"o_stat_text\">Продаж</span>"
 #. module: td_medicus_1c_integration
 #. odoo-python
 #: code:addons/td_medicus_1c_integration/models/td_tax_invoice.py:0
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__sale_order__td_tax_invoice_state__draft
 #: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__td_tax_invoice__state__draft
 msgid "Draft"
 msgstr "Чернетка"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__sale_order__td_tax_invoice_state__not_created
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__td_tax_invoice__state__not_created
+msgid "Not created"
+msgstr "Не створено"
 
 #. module: td_medicus_1c_integration
 #: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__td_tax_invoice__state__cancel
@@ -374,7 +381,7 @@ msgstr "Видаткова накладна"
 #: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__sale_advance_payment_inv__td_advance_payment_method__percentage
 #: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__sale_advance_payment_inv__td_advance_payment_method_one__percentage
 msgid "Down payment (percentage)"
-msgstr "Попередня оплата"
+msgstr "Попередня оплата (відсоток)"
 
 #. module: td_medicus_1c_integration
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_sale_advance_payment_inv__advance_payment_method
@@ -408,7 +415,7 @@ msgstr "Бюджетні кошти"
 #: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__sale_order__td_tax_invoice_state__confirm_finish
 #: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__td_tax_invoice__state__confirm_finish
 msgid "Confirmed (no adjustments are possible)"
-msgstr "Підтверджено (коригування неможливі) (темно зелений)"
+msgstr "Підтверджено (коригування неможливі)"
 
 #. module: td_medicus_1c_integration
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__corr_line_number
@@ -488,3 +495,20 @@ msgstr "Редагування податкових накладних"
 #: code:addons/td_medicus_1c_integration/models/td_tax_invoice.py:0
 msgid "You can't change this record ( you don't have permission)"
 msgstr "Ви не можете змінити цей запис! ( У вас недостатньо прав)"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_sale_order__td_tax_invoice_state
+msgid "Td Tax Invoice State"
+msgstr "Статус податкової накладної"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_res_config_settings__td_days_for_tax_invoice_confirm
+msgid "Td Days For Tax Invoice Confirm"
+msgstr "Дата після якої коригування Податкових накладних обмежене"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__account_move__td_advance_payment_method__fixed
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__sale_advance_payment_inv__td_advance_payment_method__fixed
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__sale_advance_payment_inv__td_advance_payment_method_one__fixed
+msgid "Down payment (fixed amount)"
+msgstr "Попередня оплата (Фіксована сума)"

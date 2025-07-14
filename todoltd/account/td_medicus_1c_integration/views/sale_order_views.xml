@@ -24,7 +24,7 @@
                         string="Confirm" class="btn-primary" type="object" context="{'validate_analytic': True}"
                         invisible="state != 'draft'"/>
                 <button id="create_invoice" name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice"
-                        type="action" class="btn-secondary" data-hotkey="q"
+                        type="action" class="btn-primary" data-hotkey="q"
                         invisible="invoice_status != 'to invoice' or td_show_create_invoice"/>
             </xpath>
         </field>
