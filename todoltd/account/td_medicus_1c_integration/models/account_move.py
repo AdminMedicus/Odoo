@@ -25,6 +25,7 @@ class AccountMove(models.Model):
         selection=[
             ('delivered', "Regular invoice"),
             ('percentage', "Down payment (percentage)"),
+            ('fixed', "Down payment (fixed amount)"),
         ],
         default='delivered',
     )
@@ -89,13 +90,17 @@ class AccountMove(models.Model):
                         'quantity': line.quantity,
                         'invoice_line_id': line.id,
                         'product_uom_id': line.product_uom_id.id,
-                        'price_with_out_vat': line.price_unit,
+                        'td_sale_order_line_id': line.td_order_line_id.id
+                        if line.td_order_line_id else False,
+                        'price_with_out_vat': line.td_order_line_id.price_unit
+                        if line.td_order_line_id else line.price_unit,
                     }) for line in move.invoice_line_ids
                 ],
             }
             if move.td_advance_payment_method:
                 if move.td_advance_payment_method == 'delivered':
                     record_data['invoice_type'] = 'regular'
+                    record_data['td_invoice_line_ids'] = self.recalculation_of_the_quantity_of_lines()
                 else:
                     record_data['invoice_type'] = 'invoice'
 
@@ -114,6 +119,35 @@ class AccountMove(models.Model):
                 'target': 'current',
             }
 
+    def recalculation_of_the_quantity_of_lines(self):
+        td_tax_inv_ids = self.env['td.tax.invoice'].search([
+            ('sale_order_id', '=', self.td_order_id.id),
+            ('invoice_type', '=', 'invoice')
+        ])
+        product_dict = {}
+        for tax_invoice in td_tax_inv_ids:
+            for line in tax_invoice.td_invoice_line_ids:
+                if product_dict.get(line.product_id, False):
+                    product_dict[line.product_id] = product_dict[line.product_id] + line.quantity
+                else:
+                    product_dict[line.product_id] = line.quantity
+
+        return [
+            (0, 0, {
+                'product_id': line.product_id.id,
+                'name': line.name,
+                'quantity': line.quantity - product_dict[line.product_id],
+                'invoice_line_id': line.id,
+                'product_uom_id': line.product_uom_id.id,
+                'td_sale_order_line_id': line.td_order_line_id.id
+                if line.td_order_line_id else False,
+                'price_with_out_vat': line.td_order_line_id.price_unit
+                if line.td_order_line_id else line.price_unit,
+            }) for line in self.invoice_line_ids
+        ]
+
+
+
     def action_open_td_tax_invoice(self):
         self.ensure_one()
         if self.td_advance_payment_method == 'delivered':
@@ -130,6 +164,6 @@ class AccountMove(models.Model):
             'name': _('Tax Invoice'),
             'res_model': 'td.tax.invoice',
             'views': [(False, 'list'), (False, 'form')],
-            'domain': [('id', 'in', self.td_tax_invoice_id.ids)],
+            'domain': [('id', 'in', self.td_tax_invoice_ids.ids)],
             'target': 'current',
         }

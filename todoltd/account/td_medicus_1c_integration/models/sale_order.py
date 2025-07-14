@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date
 from odoo import models, fields, api, _
 from odoo.fields import Command
 from itertools import groupby
@@ -242,17 +242,22 @@ class SaleOrder(models.Model):
         for rec in self:
             days = self.env['ir.config_parameter'].sudo().get_param(
                 'td_medicus_1c_integration.td_days_for_tax_invoice_confirm')
+            if days:
+                days = int(days)
+            else:
+                days = 0
+
             today = date.today()
-            end_date = today + timedelta(days=days)
+            day_of_month = today.day
 
-            filtered_records = rec.td_tax_invoice_ids.filtered(
-                lambda l: l.accounting_date and today <= l.accounting_date <= end_date
-            )
-
-            for filt_rec in filtered_records:
-                filt_rec.with_context(
-                    skip_state_write_check=True
-                ).write({'state': 'confirm_finish'})
+            if day_of_month >= days and days > 0:
+                # filtered_records = rec.td_tax_invoice_ids.filtered(
+                #     lambda
+                #         l: l.accounting_date and l.accounting_date.month == today.month and l.accounting_date.year == today.year
+                # )
+                filtered_records = rec.td_tax_invoice_ids.filtered(lambda rec: rec.state == 'confirm')
+                for filt_rec in filtered_records:
+                    filt_rec.with_context(skip_state_write_check=True).write({'state': 'confirm_finish'})
 
             if len(rec.td_tax_invoice_ids.filtered(lambda l: l.state == 'confirm_finish')) > 0:
                 rec.td_tax_invoice_state = 'confirm_finish'

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
@@ -59,7 +59,8 @@ class TdTaxInvoice(models.Model):
         [
             ('regular', 'Regular invoicing'), # Регулярне виставлення рахунку
             ('invoice', 'Invoice'), # Рахунок фактура
-        ]
+        ],
+        readonly=1
     )
     payment_id = fields.Many2one(
         comodel_name='account.move.line'
@@ -92,12 +93,31 @@ class TdTaxInvoice(models.Model):
     )
 
     def write(self, values):
+        if self.env.context.get('skip_state_write_check'):
+            return super().write(values)
+
         if (
                 not self.env.context.get('skip_state_write_check')
                 and self.state == 'confirm_finish'
                 and not self.env.user.has_group('td_medicus_1c_integration.group_admin')
         ):
             raise ValidationError(_("You can't change this record ( you don't have permission)"))
+
+        days = self.env['ir.config_parameter'].sudo().get_param(
+            'td_medicus_1c_integration.td_days_for_tax_invoice_confirm')
+
+        if days:
+            days = int(days)
+        else:
+            days = 0
+
+        today = date.today()
+        day_of_month = today.day
+
+        if day_of_month >= days and days > 0:
+            if self.state == 'confirm':
+                self.with_context(skip_state_write_check=True).write({'state': 'confirm_finish'})
+
         return super().write(values)
 
     @api.depends('invoice_id')
@@ -122,7 +142,9 @@ class TdTaxInvoice(models.Model):
             if record:
                 amount = record[0]['amount']
                 lines_data = []
-                total = sum(line.price_unit * line.quantity for line in rec.invoice_id.invoice_line_ids)
+                # total = sum(line.price_unit * line.quantity for line in rec.invoice_id.invoice_line_ids)
+                # total = sum(line.sum_price_with_out_vat * line.quantity for line in rec.td_invoice_line_ids)
+                total = sum(line.td_order_line_id.price_unit * line.td_order_line_id.product_uom_qty for line in rec.invoice_id.invoice_line_ids)
 
                 for line in rec.invoice_id.invoice_line_ids:
                     line_total = line.price_unit * line.quantity
@@ -184,6 +206,21 @@ class TdTaxInvoice(models.Model):
                 inv.name = f'ADJ/{year}/{padded_id}'
             else:
                 inv.name = f'TAX/{year}/{padded_id}'
+
+            days = self.env['ir.config_parameter'].sudo().get_param(
+                'td_medicus_1c_integration.td_days_for_tax_invoice_confirm')
+
+            if days:
+                days = int(days)
+            else:
+                days = 0
+
+            today = date.today()
+            day_of_month = today.day
+
+            if day_of_month >= days and days > 0:
+                if inv.state == 'confirm':
+                    inv.with_context(skip_state_write_check=True).write({'state': 'confirm_finish'})
 
     def action_draft_tax_invoice(self):
         for inv in self:

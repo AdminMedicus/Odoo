@@ -9,7 +9,7 @@
                     <button name="action_confirm_tax_invoice"
                             type="object"
                             string="Confirm"
-                            invisible="state == 'confirm'"
+                            invisible="state in ('confirm', 'confirm_finish')"
                             class="btn btn-primary"
                     />
                     <button name="action_draft_tax_invoice"
