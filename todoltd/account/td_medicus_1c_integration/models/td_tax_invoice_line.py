@@ -3,6 +3,7 @@ from odoo import fields, models, api
 
 class TdTaxInvoiceLine(models.Model):
     _name = 'td.tax.invoice.line'
+    _description = 'TdTaxInvoiceLine'
 
     td_invoice_id = fields.Many2one(
         comodel_name='td.tax.invoice'
