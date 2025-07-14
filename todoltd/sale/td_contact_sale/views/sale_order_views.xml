@@ -61,4 +61,20 @@
         </field>
     </record>
 
+    <record id="view_order_form_td_change_product_inherit" model="ir.ui.view">
+        <field name="name">td.change.product.sale.order.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="priority" eval="99"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list//field[@name='product_uom']" position="after">
+                <button
+                        class="btn fa fa-bars text-start o_external_button px-1"
+                        name="action_change_product_in_line"
+                        type="object" title="Change Product"
+                />
+            </xpath>
+        </field>
+    </record>
+
 </odoo>
