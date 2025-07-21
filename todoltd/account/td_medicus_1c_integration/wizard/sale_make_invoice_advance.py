@@ -12,7 +12,7 @@ class SaleMakeInvoiceAdvance(models.TransientModel):
             ('fixed', "Down payment (fixed amount)"),
         ],
         string="Create Invoice",
-        default='delivered',
+        default='fixed',
     )
     td_advance_payment_method_one = fields.Selection(
         selection=[

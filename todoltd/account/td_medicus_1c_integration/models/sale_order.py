@@ -248,30 +248,11 @@ class SaleOrder(models.Model):
             base_lines += order._add_base_lines_for_early_payment_discount()
             AccountTax._add_tax_details_in_base_lines(base_lines, order.company_id)
             AccountTax._round_base_lines_tax_details(base_lines, order.company_id)
-            tax_totals = AccountTax._get_tax_totals_summary(
+            order.tax_totals = AccountTax._get_tax_totals_summary(
                 base_lines=base_lines,
                 currency=order.currency_id or order.company_id.currency_id,
                 company=order.company_id,
             )
-
-            downpayment_total = sum(order.order_line.filtered(
-                lambda x: not x.display_type and x.is_downpayment).mapped('price_subtotal'))
-
-            if tax_totals and downpayment_total:
-                tax_totals['base_amount'] -= downpayment_total
-                tax_totals['base_amount_currency'] -= downpayment_total
-
-                tax_totals['total_amount'] -= downpayment_total
-                tax_totals['total_amount_currency'] -= downpayment_total
-
-                for subtotal in tax_totals.get('subtotals', []):
-                    if subtotal.get('name') == 'Сума без податків':
-                        subtotal['base_amount'] -= downpayment_total
-                        subtotal['base_amount_currency'] -= downpayment_total
-                        subtotal['tax_amount'] = 0.0
-                        subtotal['tax_amount_currency'] = 0.0
-
-            order.tax_totals = tax_totals
 
     @api.depends('td_tax_invoice_ids', 'td_budget_funds')
     def _compute_td_tax_invoice_state(self):
