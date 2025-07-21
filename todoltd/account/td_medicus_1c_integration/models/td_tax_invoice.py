@@ -32,7 +32,8 @@ class TdTaxInvoice(models.Model):
     tax_guide_id = fields.Many2one(
         comodel_name='account.tax',
         compute='_compute_tax_guide_id',
-        readonly=False
+        readonly=False,
+        store=True
     )
     state = fields.Selection(
         [
@@ -131,7 +132,7 @@ class TdTaxInvoice(models.Model):
             else:
                 rec.tax_guide_id = rec.tax_guide_id or False
 
-    def recalculation_of_the_quantity_of_lines(self, recalc = True):
+    def recalculation_of_the_quantity_of_lines(self, recalc=True):
         for rec in self:
             record = list(
                 filter(
@@ -142,12 +143,11 @@ class TdTaxInvoice(models.Model):
             if record:
                 amount = record[0]['amount']
                 lines_data = []
-                # total = sum(line.price_unit * line.quantity for line in rec.invoice_id.invoice_line_ids)
-                # total = sum(line.sum_price_with_out_vat * line.quantity for line in rec.td_invoice_line_ids)
-                total = sum(line.td_order_line_id.price_unit * line.td_order_line_id.product_uom_qty for line in rec.invoice_id.invoice_line_ids)
 
-                for line in rec.invoice_id.invoice_line_ids:
-                    line_total = line.price_unit * line.quantity
+                total = sum(line.price_with_vat for line in rec.td_invoice_line_ids if line.price_with_vat)
+
+                for line in rec.td_invoice_line_ids:
+                    line_total = line.price_with_vat
                     percent = (line_total / total) * 100 if total else 0
                     percent_qty = (line.quantity * percent) / 100
 
@@ -159,8 +159,9 @@ class TdTaxInvoice(models.Model):
                     })
 
                 for line_ in lines_data:
-                    line = rec.td_invoice_line_ids.filtered(lambda l: l.invoice_line_id.id == line_['id'])
-                    line.quantity = (line_['percent_qty'] * amount) / (line_['percent'] * total / 100)
+                    line = rec.td_invoice_line_ids.filtered(lambda l: l.id == line_['id'])
+                    if line and line_.get('percent'):
+                        line.quantity = (line_.get('percent_qty') * amount) / (line_.get('percent') * total / 100)
 
     @api.depends('invoice_id')
     def _compute_domain_payment_ids(self):
