@@ -131,13 +131,14 @@ class AccountMove(models.Model):
                     product_dict[line.product_id] = product_dict[line.product_id] + line.quantity
                 else:
                     product_dict[line.product_id] = line.quantity
-        if not product_dict:
-            return False
+        # if not product_dict:
+        #     return False
         return [
             (0, 0, {
                 'product_id': line.product_id.id,
                 'name': line.name,
-                'quantity': line.quantity - product_dict[line.product_id],
+                'quantity': line.quantity - product_dict[line.product_id]
+                if product_dict and product_dict[line.product_id] else line.quantity,
                 'invoice_line_id': line.id,
                 'product_uom_id': line.product_uom_id.id,
                 'td_sale_order_line_id': line.td_order_line_id.id

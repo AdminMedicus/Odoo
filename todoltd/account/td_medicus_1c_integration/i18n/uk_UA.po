@@ -517,3 +517,9 @@ msgstr "Попередня оплата (Фіксована сума)"
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_account_move_line__td_paid_price
 msgid "Td Paid Price"
 msgstr "Оплачена сума"
+
+#. module: td_medicus_1c_integration
+#. odoo-python
+#: code:addons/td_medicus_1c_integration/models/td_tax_invoice.py:0
+msgid "You need to add at least one line to the document lines"
+msgstr "Потрібно додати хоча б один рядок у рядки документа"
