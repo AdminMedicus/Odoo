@@ -44,7 +44,8 @@ class SaleOrder(models.Model):
             ('confirm_finish', 'Confirmed (no adjustments are possible)'),
             ('cancel', 'Cancel'),
         ], default='draft',
-        compute='_compute_td_tax_invoice_state'
+        compute='_compute_td_tax_invoice_state',
+        store=True
     )
 
     def _create_invoices(self, grouped=False, final=False, date=None):
@@ -236,6 +237,41 @@ class SaleOrder(models.Model):
                 subtype_xmlid='mail.mt_note',
             )
         return moves
+
+    @api.depends_context('lang')
+    @api.depends('order_line.price_subtotal', 'currency_id', 'company_id', 'payment_term_id')
+    def _compute_tax_totals(self):
+        AccountTax = self.env['account.tax']
+        for order in self:
+            order_lines = order.order_line.filtered(lambda x: not x.display_type and not x.is_downpayment)
+            base_lines = [line._prepare_base_line_for_taxes_computation() for line in order_lines]
+            base_lines += order._add_base_lines_for_early_payment_discount()
+            AccountTax._add_tax_details_in_base_lines(base_lines, order.company_id)
+            AccountTax._round_base_lines_tax_details(base_lines, order.company_id)
+            tax_totals = AccountTax._get_tax_totals_summary(
+                base_lines=base_lines,
+                currency=order.currency_id or order.company_id.currency_id,
+                company=order.company_id,
+            )
+
+            downpayment_total = sum(order.order_line.filtered(
+                lambda x: not x.display_type and x.is_downpayment).mapped('price_subtotal'))
+
+            if tax_totals and downpayment_total:
+                tax_totals['base_amount'] -= downpayment_total
+                tax_totals['base_amount_currency'] -= downpayment_total
+
+                tax_totals['total_amount'] -= downpayment_total
+                tax_totals['total_amount_currency'] -= downpayment_total
+
+                for subtotal in tax_totals.get('subtotals', []):
+                    if subtotal.get('name') == 'Сума без податків':
+                        subtotal['base_amount'] -= downpayment_total
+                        subtotal['base_amount_currency'] -= downpayment_total
+                        subtotal['tax_amount'] = 0.0
+                        subtotal['tax_amount_currency'] = 0.0
+
+            order.tax_totals = tax_totals
 
     @api.depends('td_tax_invoice_ids', 'td_budget_funds')
     def _compute_td_tax_invoice_state(self):
