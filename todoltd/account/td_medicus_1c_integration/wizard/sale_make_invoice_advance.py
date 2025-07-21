@@ -87,10 +87,18 @@ class SaleMakeInvoiceAdvance(models.TransientModel):
         self.ensure_one()
 
         if self.advance_payment_method == 'delivered':
-            return sale_orders._create_invoices(
+            invoice = sale_orders._create_invoices(
                 final=self.deduct_down_payments,
                 grouped=not self.consolidated_billing
             )
+            order_lines = sale_orders.order_line.filtered(lambda x: x.is_downpayment == True)
+            for invoice_line in invoice.invoice_line_ids:
+                for order_line in order_lines.filtered(lambda rec: rec.product_id.id == invoice_line.product_id.id):
+                    invoice_line.price_subtotal = invoice_line.price_subtotal - order_line.price_subtotal
+                    invoice_line.td_paid_price = invoice_line.td_paid_price + order_line.price_subtotal
+
+            invoice.amount_residual = sum([line.price_subtotal for line in invoice.invoice_line_ids])
+            return invoice
 
         self.sale_order_ids.ensure_one()
         self = self.with_company(self.company_id)
@@ -191,6 +199,7 @@ class SaleMakeInvoiceAdvance(models.TransientModel):
                     **new_line._prepare_invoice_line(
                         quantity=new_line.product_uom_qty),
                     'td_order_line_id': origin_line.id,
+                    'is_downpayment': True,
                     'tax_ids': [(6, 0, origin_line.tax_id.ids)],
 
                 }) for new_line, origin_line in downpayment_so_lines],

@@ -512,3 +512,8 @@ msgstr "Дата після якої коригування Податкових
 #: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__sale_advance_payment_inv__td_advance_payment_method_one__fixed
 msgid "Down payment (fixed amount)"
 msgstr "Попередня оплата (Фіксована сума)"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_account_move_line__td_paid_price
+msgid "Td Paid Price"
+msgstr "Оплачена сума"

@@ -41,6 +41,9 @@
                 <field name="td_margin" optional="show"/>
                 <field name="td_margin_percent" optional="show"/>
             </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']//list//field[@name='price_subtotal']" position="before">
+                <field name="td_paid_price" optional="show" column_invisible="parent.td_advance_payment_method != 'delivered'"/>
+            </xpath>
         </field>
     </record>
 </odoo>
