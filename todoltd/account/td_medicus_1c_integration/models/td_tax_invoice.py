@@ -93,6 +93,13 @@ class TdTaxInvoice(models.Model):
         default=lambda self: self.env.company
     )
 
+    @api.model
+    def create(self, values):
+        if not values.get('td_invoice_line_ids'):
+            raise ValidationError(_("You need to add at least one line to the document lines"))
+
+        return super().create(values)
+
     def write(self, values):
         if self.env.context.get('skip_state_write_check'):
             return super().write(values)
