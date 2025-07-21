@@ -16,6 +16,7 @@ class AccountMoveLine(models.Model):
     td_margin_percent = fields.Float(
         compute='_compute_td_purchase_margin'
     )
+    td_paid_price = fields.Float()
 
     @api.depends('td_order_line_id', 'product_id')
     def _compute_td_purchase_margin(self):
