@@ -48,6 +48,40 @@ class SaleOrder(models.Model):
         store=True
     )
 
+    @api.depends_context('lang')
+    @api.depends('order_line.price_subtotal', 'currency_id', 'company_id', 'payment_term_id')
+    def _compute_tax_totals(self):
+        AccountTax = self.env['account.tax']
+        for order in self:
+            order_lines = order.order_line.filtered(lambda x: not x.display_type and not x.is_downpayment)
+            base_lines = [line._prepare_base_line_for_taxes_computation() for line in order_lines]
+            base_lines += order._add_base_lines_for_early_payment_discount()
+            AccountTax._add_tax_details_in_base_lines(base_lines, order.company_id)
+            AccountTax._round_base_lines_tax_details(base_lines, order.company_id)
+            order.tax_totals = AccountTax._get_tax_totals_summary(
+                base_lines=base_lines,
+                currency=order.currency_id or order.company_id.currency_id,
+                company=order.company_id,
+            )
+
+    @api.depends('order_line.price_subtotal', 'currency_id', 'company_id', 'payment_term_id')
+    def _compute_amounts(self):
+        AccountTax = self.env['account.tax']
+        for order in self:
+            order_lines = order.order_line.filtered(lambda x: not x.display_type and not x.is_downpayment)
+            base_lines = [line._prepare_base_line_for_taxes_computation() for line in order_lines]
+            base_lines += order._add_base_lines_for_early_payment_discount()
+            AccountTax._add_tax_details_in_base_lines(base_lines, order.company_id)
+            AccountTax._round_base_lines_tax_details(base_lines, order.company_id)
+            tax_totals = AccountTax._get_tax_totals_summary(
+                base_lines=base_lines,
+                currency=order.currency_id or order.company_id.currency_id,
+                company=order.company_id,
+            )
+            order.amount_untaxed = tax_totals['base_amount_currency']
+            order.amount_tax = tax_totals['tax_amount_currency']
+            order.amount_total = tax_totals['total_amount_currency']
+
     def _create_invoices(self, grouped=False, final=False, date=None):
         """ Create invoice(s) for the given Sales Order(s).
 
@@ -238,46 +272,14 @@ class SaleOrder(models.Model):
             )
         return moves
 
-    @api.depends_context('lang')
-    @api.depends('order_line.price_subtotal', 'currency_id', 'company_id', 'payment_term_id')
-    def _compute_tax_totals(self):
-        AccountTax = self.env['account.tax']
-        for order in self:
-            order_lines = order.order_line.filtered(lambda x: not x.display_type and not x.is_downpayment)
-            base_lines = [line._prepare_base_line_for_taxes_computation() for line in order_lines]
-            base_lines += order._add_base_lines_for_early_payment_discount()
-            AccountTax._add_tax_details_in_base_lines(base_lines, order.company_id)
-            AccountTax._round_base_lines_tax_details(base_lines, order.company_id)
-            order.tax_totals = AccountTax._get_tax_totals_summary(
-                base_lines=base_lines,
-                currency=order.currency_id or order.company_id.currency_id,
-                company=order.company_id,
-            )
-
-    @api.depends('td_tax_invoice_ids', 'td_budget_funds')
+    @api.depends('td_tax_invoice_ids', 'td_budget_funds', 'td_tax_invoice_ids.state')
     def _compute_td_tax_invoice_state(self):
         for rec in self:
-            days = self.env['ir.config_parameter'].sudo().get_param(
-                'td_medicus_1c_integration.td_days_for_tax_invoice_confirm')
-            if days:
-                days = int(days)
-            else:
-                days = 0
-
-            today = date.today()
-            day_of_month = today.day
-
-            if day_of_month >= days and days > 0:
-                # filtered_records = rec.td_tax_invoice_ids.filtered(
-                #     lambda
-                #         l: l.accounting_date and l.accounting_date.month == today.month and l.accounting_date.year == today.year
-                # )
-                filtered_records = rec.td_tax_invoice_ids.filtered(lambda rec: rec.state == 'confirm')
-                for filt_rec in filtered_records:
-                    filt_rec.with_context(skip_state_write_check=True).write({'state': 'confirm_finish'})
 
             if len(rec.td_tax_invoice_ids.filtered(lambda l: l.state == 'confirm_finish')) > 0:
                 rec.td_tax_invoice_state = 'confirm_finish'
+            elif len(rec.td_tax_invoice_ids.filtered(lambda l: l.state == 'confirm')) > 0:
+                rec.td_tax_invoice_state = 'confirm'
             elif len(rec.td_tax_invoice_ids) == 0:
                 rec.td_tax_invoice_state = 'not_created'
             elif len(rec.td_tax_invoice_ids.filtered(lambda l: l.state == 'draft')) > 0:
@@ -337,6 +339,8 @@ class SaleOrder(models.Model):
             move.td_tax_invoice_count = len(td_tax_inv_ids)
 
     def action_open_tax_invoices(self):
+        for tax_invoice in self.td_tax_invoice_ids:
+            tax_invoice._update_status_on_month_day()
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',

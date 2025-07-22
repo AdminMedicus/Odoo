@@ -1,4 +1,5 @@
-from datetime import datetime, date
+from datetime import date, datetime, timedelta
+from calendar import monthrange
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
@@ -98,7 +99,24 @@ class TdTaxInvoice(models.Model):
         if not values.get('td_invoice_line_ids'):
             raise ValidationError(_("You need to add at least one line to the document lines"))
 
+        self._update_status_on_month_day()
+
         return super().create(values)
+
+    def unlink(self):
+        if self.env.context.get('skip_state_write_check'):
+            return super().unlink()
+
+        if (
+                not self.env.context.get('skip_state_write_check')
+                and self.state == 'confirm_finish'
+                and not self.env.user.has_group('td_medicus_1c_integration.group_admin')
+        ):
+            raise ValidationError(_("You can't change this record ( you don't have permission)"))
+
+        self._update_status_on_month_day()
+
+        return super(TdTaxInvoice, self).unlink()
 
     def write(self, values):
         if self.env.context.get('skip_state_write_check'):
@@ -111,20 +129,7 @@ class TdTaxInvoice(models.Model):
         ):
             raise ValidationError(_("You can't change this record ( you don't have permission)"))
 
-        days = self.env['ir.config_parameter'].sudo().get_param(
-            'td_medicus_1c_integration.td_days_for_tax_invoice_confirm')
-
-        if days:
-            days = int(days)
-        else:
-            days = 0
-
-        today = date.today()
-        day_of_month = today.day
-
-        if day_of_month >= days and days > 0:
-            if self.state == 'confirm':
-                self.with_context(skip_state_write_check=True).write({'state': 'confirm_finish'})
+        self._update_status_on_month_day()
 
         return super().write(values)
 
@@ -205,6 +210,48 @@ class TdTaxInvoice(models.Model):
                 line._compute_product_id()
             inv._compute_total_price()
 
+    def _update_expired_status(self):
+
+        tax_records = self.env['td.tax.invoice'].search([
+            ('accounting_date', '!=', False),
+            ('state', '!=', 'confirm_finish'),
+        ])
+
+        for tax_rec in tax_records:
+            tax_rec._update_status_on_month_day()
+
+    def _update_status_on_month_day(self):
+        days = int(self.env['ir.config_parameter'].sudo().get_param(
+            'td_days_for_tax_invoice_confirm', default=0))
+
+        check_day = days
+        today = date.today()
+
+        rec = self.sudo()
+
+        record_date = rec.accounting_date
+        if isinstance(record_date, datetime):
+            record_date = record_date.date()
+
+        if record_date.day < check_day:
+            first_target_date = record_date.replace(day=check_day)
+        else:
+            year = record_date.year + (1 if record_date.month == 12 else 0)
+            month = 1 if record_date.month == 12 else record_date.month + 1
+            try:
+                first_target_date = date(year, month, check_day)
+            except ValueError:
+                last_day = monthrange(year, month)[1]
+                first_target_date = date(year, month, min(check_day, last_day))
+
+        if first_target_date <= today:
+            rec.with_context(skip_state_write_check=True).write({
+                'state': 'confirm_finish'
+            })
+
+        if rec.sale_order_id:
+            rec.sale_order_id._compute_td_tax_invoice_state()
+
     def action_confirm_tax_invoice(self):
         for inv in self:
             inv.state = 'confirm'
@@ -215,20 +262,7 @@ class TdTaxInvoice(models.Model):
             else:
                 inv.name = f'TAX/{year}/{padded_id}'
 
-            days = self.env['ir.config_parameter'].sudo().get_param(
-                'td_medicus_1c_integration.td_days_for_tax_invoice_confirm')
-
-            if days:
-                days = int(days)
-            else:
-                days = 0
-
-            today = date.today()
-            day_of_month = today.day
-
-            if day_of_month >= days and days > 0:
-                if inv.state == 'confirm':
-                    inv.with_context(skip_state_write_check=True).write({'state': 'confirm_finish'})
+            self._update_status_on_month_day()
 
     def action_draft_tax_invoice(self):
         for inv in self:
