@@ -16,6 +16,7 @@ class SaleOrderLine(models.Model):
         for line in self:
             if line.order_id.td_tax_guide_id and line.tax_id:
                 if line.order_id.td_tax_guide_id.id != line.tax_id.id:
+                    line.tax_id = False
                     raise ValidationError(
                         _("You are trying to add products with different VAT rates")
                     )

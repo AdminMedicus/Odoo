@@ -1,6 +1,6 @@
 {
     'name': 'TD Medicus 1C Integration',
-    "version": '18.0.0.0.13',
+    "version": '18.0.0.0.14',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
@@ -13,6 +13,8 @@
         'td_medicus_agreement'
     ],
     'data': [
+        # data
+        'data/ir_cron_data.xml',
         # security
         'security/ir.model.access.csv',
         'security/tax_invoices_groups.xml',
