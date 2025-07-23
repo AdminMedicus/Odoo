@@ -233,24 +233,25 @@ class TdTaxInvoice(models.Model):
         if isinstance(record_date, datetime):
             record_date = record_date.date()
 
-        if rec.accounting_date and record_date.day < check_day:
-            first_target_date = record_date.replace(day=check_day)
-        else:
-            year = record_date.year + (1 if record_date.month == 12 else 0)
-            month = 1 if record_date.month == 12 else record_date.month + 1
-            try:
-                first_target_date = date(year, month, check_day)
-            except ValueError:
-                last_day = monthrange(year, month)[1]
-                first_target_date = date(year, month, min(check_day, last_day))
+        if rec.accounting_date:
+            if record_date.day < check_day:
+                first_target_date = record_date.replace(day=check_day)
+            else:
+                year = record_date.year + (1 if record_date.month == 12 else 0)
+                month = 1 if record_date.month == 12 else record_date.month + 1
+                try:
+                    first_target_date = date(year, month, check_day)
+                except ValueError:
+                    last_day = monthrange(year, month)[1]
+                    first_target_date = date(year, month, min(check_day, last_day))
 
-        if first_target_date <= today:
-            rec.with_context(skip_state_write_check=True).write({
-                'state': 'confirm_finish'
-            })
+            if first_target_date <= today:
+                rec.with_context(skip_state_write_check=True).write({
+                    'state': 'confirm_finish'
+                })
 
-        if rec.sale_order_id:
-            rec.sale_order_id._compute_td_tax_invoice_state()
+            if rec.sale_order_id:
+                rec.sale_order_id._compute_td_tax_invoice_state()
 
     def action_confirm_tax_invoice(self):
         for inv in self:
