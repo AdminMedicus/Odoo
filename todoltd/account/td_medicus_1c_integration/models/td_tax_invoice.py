@@ -233,7 +233,7 @@ class TdTaxInvoice(models.Model):
         if isinstance(record_date, datetime):
             record_date = record_date.date()
 
-        if record_date.day < check_day:
+        if rec.accounting_date and record_date.day < check_day:
             first_target_date = record_date.replace(day=check_day)
         else:
             year = record_date.year + (1 if record_date.month == 12 else 0)
