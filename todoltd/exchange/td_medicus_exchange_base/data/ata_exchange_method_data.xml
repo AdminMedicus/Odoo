@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- EXTERNAL SYSTEMS -->
+        <record id="medicus_1c" model="ata.exchange.system">
+            <field name="name">1C exchange point</field>
+            <field name="description">1C 8.3 to 7.7 exchange point</field>
+            <field name="server_address">217.20.172.9</field>
+            <field name="server_port">16089</field>
+            <field name="resource_address">medicus_exchange/hs/odoo</field>
+            <field name="content_type">jsonrpc</field>
+            <field name="authentication_type">basic</field>
+            <field name="login">odoo_user</field>            
+        </record>
+    </data>
+    
+    <data noupdate="0">
+        <!-- QUEUE USAGE -->
+        <record id="queue_usage" model="ata.exchange.queue.usage">
+            <field name="usage">True</field>        
+        </record>
+        
+        <!-- METHODS -->
+        <!-- INCOMING methods -->
+        <record id="product_incoming" model="ata.exchange.method">
+            <field name="name">ProductIncoming</field>
+            <field name="description">Product (incoming)</field>
+            <field name="type">incoming_request</field>
+            <field name="model_id" ref="model_ata_exchange_incomingrequest_product" />
+            <field name="model_name">ata.exchange.incomingrequest.product_product</field>
+        </record>
+
+        <!-- OUTGOING methods -->
+        <!-- product to ext. system -->
+        <record id="product_outgoing" model="ata.exchange.method">
+            <field name="name">ProductOutgoing</field>
+            <field name="description">Product (outgoing)</field>
+            <field name="type">outgoing_data</field>
+            <field name="model_id" ref="product.model_product_product" />
+            <field name="model_name">product.product</field>
+        </record>
+
+        <record id="bas_erp_outgoingdata_product_product" model="ata.exchange.domain">
+            <field name="method" ref="product_outgoing" />
+            <field name="ext_system" ref="medicus_1c" />
+        </record>
+
+        <!-- API KEYS -->
+        <record id="OneC_api_key" model="ata.exchange.api.key">
+            <field name="active">True</field>
+            <field name="system_id" ref="medicus_1c" />
+            <field name="methods_ids" eval="[(6, 0, [ref('td_medicus_exchange_base.product_incoming')])]" />
+        </record>
+
+        <!-- INNER TYPES FOR MATCHING DATA -->
+        <record id="inner_types_vendor_1c" model="ata.exchange.method">
+            <field name="name">Vendor1C</field>
+            <field name="description">Vendor from 1C</field>
+            <field name="type">inner_types</field>
+            <field name="model_id" ref="td_medicus_1c_integration.model_td_manufacturer_directory" />
+            <field name="model_name">td.manufacturer.directory</field>
+        </record>
+    </data>
+</odoo>
