@@ -136,5 +136,5 @@ msgstr "Видимий"
 #. odoo-python
 #: code:addons/td_medicus_uktzed/models/product_template.py:0
 #: code:addons/td_medicus_uktzed/models/stock_lot.py:0
-msgid "You can't press this code"
-msgstr "Ви не можете обрати цей код"
+msgid "You can't press this code UKTZED"
+msgstr "Ви не можете обрати цей код УКТЗЕД"
