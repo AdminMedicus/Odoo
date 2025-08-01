@@ -94,14 +94,14 @@ class TdTaxInvoice(models.Model):
         default=lambda self: self.env.company
     )
 
-    @api.model
-    def create(self, values):
-        if not values.get('td_invoice_line_ids'):
+    @api.model_create_multi
+    def create(self, vals_list):
+        if not vals_list.get('td_invoice_line_ids'):
             raise ValidationError(_("You need to add at least one line to the document lines"))
 
         self._update_status_on_month_day()
 
-        return super().create(values)
+        return super().create(vals_list)
 
     def unlink(self):
         if self.env.context.get('skip_state_write_check'):
@@ -118,9 +118,9 @@ class TdTaxInvoice(models.Model):
 
         return super(TdTaxInvoice, self).unlink()
 
-    def write(self, values):
+    def write(self, vals):
         if self.env.context.get('skip_state_write_check'):
-            return super().write(values)
+            return super().write(vals)
 
         if (
                 not self.env.context.get('skip_state_write_check')
@@ -131,7 +131,7 @@ class TdTaxInvoice(models.Model):
 
         self._update_status_on_month_day()
 
-        return super().write(values)
+        return super().write(vals)
 
     @api.depends('invoice_id')
     def _compute_tax_guide_id(self):

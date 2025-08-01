@@ -11,5 +11,5 @@ class ProductTemplate(models.Model):
 
     @api.constrains('td_uktzed_code_id')
     def _check_partner(self):
-        if not self.td_uktzed_code_id.selectable:
-            raise ValidationError(_("You can't press this code"))
+        if self.td_uktzed_code_id and not self.td_uktzed_code_id.selectable:
+            raise ValidationError(_("You can't press this code UKTZED"))
