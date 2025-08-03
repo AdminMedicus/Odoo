@@ -31,7 +31,6 @@ class AtaExchangeIncomingrequestCashRegisterReceipt(models.AbstractModel):
 
         # create product
         product_id = cast(ProductProduct,self.ata_exchange_get_model_record(record_params))
-        self.env['ata.exchange.base.outgoingdata']._re_exchanged_add(product_id)
 
         return {
             'status': True if product_id else False
