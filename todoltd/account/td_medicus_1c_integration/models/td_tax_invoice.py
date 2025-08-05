@@ -96,8 +96,9 @@ class TdTaxInvoice(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        if not vals_list.get('td_invoice_line_ids'):
-            raise ValidationError(_("You need to add at least one line to the document lines"))
+        for vals in vals_list:
+            if not vals.get('td_invoice_line_ids'):
+                raise ValidationError(_("You need to add at least one line to the document lines"))
 
         self._update_status_on_month_day()
 
