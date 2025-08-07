@@ -8,7 +8,7 @@ on:
 
 jobs:
   sync:
-    if: github.repository == 'artel-dev/medicus'
+    if: github.repository == 'todoltd/medicus'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source repository
@@ -21,7 +21,7 @@ jobs:
           ORG_TOKEN: ${{ secrets.PAT }}
           ORG_REPO_NAME: Odoo
           ORG_BRANCH_NAME: 18.0-medicus-test1
-          ORIGINAL_ORG_NAME: artel-dev
+          ORIGINAL_ORG_NAME: todoltd
           ORIGINAL_ORG_EMAIL: ikutko@it-artel.ua
           ORIGINAL_ORG_TOKEN: ${{ secrets.PAT }}
           ORIGINAL_REPO_NAME: medicus
