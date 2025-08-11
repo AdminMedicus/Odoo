@@ -33,7 +33,7 @@
                     <button name="recalculation_of_the_quantity_of_lines"
                             type="object"
                             string="Recalculation of the quantity of lines"
-                            invisible="state == 'cancel'"
+                            invisible="state in ['cancel', 'confirm', 'confirm_finish']"
                             class="btn btn-secondary"
                     />
                     <field name="state" widget="statusbar"/>
@@ -172,6 +172,16 @@
         <field name="res_model">td.tax.invoice</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[('move_type', '=', 'adj_inv')]</field>
+    </record>
+
+    <record id="action_td_tax_invoice_mass_change_status" model="ir.actions.server">
+        <field name="name">Mass Change Status</field>
+        <field name="model_id" ref="model_td_tax_invoice"/>
+        <field name="state">code</field>
+        <field name="code">records.action_mass_change_status()</field>
+        <field name="binding_model_id" ref="model_td_tax_invoice"/>
+        <field name="binding_view_types">list</field>
+        <field name="groups_id" eval="[(4, ref('td_medicus_1c_integration.group_admin'))]"/>
     </record>
 
     <menuitem

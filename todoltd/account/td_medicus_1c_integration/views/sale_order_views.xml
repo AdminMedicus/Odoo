@@ -49,6 +49,20 @@
         <field name="priority">99</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='state']" position="after">
+                <field name="td_tax_invoice_state" optional="show" widget="badge"
+                    decoration-muted="td_tax_invoice_state in ('budget', 'draft')"
+                    decoration-info="td_tax_invoice_state == 'not_created'"
+                    decoration-danger="td_tax_invoice_state == 'cancel'"
+                    decoration-warning="td_tax_invoice_state == 'confirm'"
+                    decoration-success="td_tax_invoice_state == 'confirm_finish'"
+                />
+                <field name="td_tax_invoice_state_percentage" optional="show"/>
+                <field name="td_budget_funds" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+
 <!--                <field name="td_tax_invoice_state" optional="show" widget="statusbar" colors='{-->
 <!--                    "budget": "grey",-->
 <!--                    "not_created": "warning",-->
@@ -57,9 +71,3 @@
 <!--                    "confirm_finish": "dark",-->
 <!--                    "cancel": "danger"-->
 <!--                }'/>-->
-                <field name="td_tax_invoice_state" optional="show"/>
-                <field name="td_budget_funds" optional="show"/>
-            </xpath>
-        </field>
-    </record>
-</odoo>
