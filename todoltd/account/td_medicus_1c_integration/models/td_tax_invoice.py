@@ -94,13 +94,21 @@ class TdTaxInvoice(models.Model):
         default=lambda self: self.env.company
     )
 
+    def action_mass_change_status(self):
+        if self.env.user.has_group('td_medicus_1c_integration.group_admin'):
+            for rec in self.filtered(lambda rec_: rec_.state != 'confirm_finish'):
+                rec.state = 'confirm_finish'
+        else:
+            raise ValidationError(_("You can't change this record ( you don't have permission)"))
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            if not vals.get('td_invoice_line_ids'):
-                raise ValidationError(_("You need to add at least one line to the document lines"))
+            has_lines = vals.get('td_invoice_line_ids')
+            user_is_system = self.env.user._is_system()
 
-        self._update_status_on_month_day()
+            if not has_lines and not user_is_system:
+                raise ValidationError(_("You need to add at least one line to the document lines"))
 
         return super().create(vals_list)
 
@@ -110,12 +118,13 @@ class TdTaxInvoice(models.Model):
 
         if (
                 not self.env.context.get('skip_state_write_check')
-                and self.state == 'confirm_finish'
                 and not self.env.user.has_group('td_medicus_1c_integration.group_admin')
         ):
-            raise ValidationError(_("You can't change this record ( you don't have permission)"))
+            for rec in self:
+                if rec.state == 'confirm_finish':
+                    raise ValidationError(_("You can't change this record ( you don't have permission)"))
 
-        self._update_status_on_month_day()
+        # self._update_status_on_month_day()
 
         return super(TdTaxInvoice, self).unlink()
 
@@ -130,7 +139,7 @@ class TdTaxInvoice(models.Model):
         ):
             raise ValidationError(_("You can't change this record ( you don't have permission)"))
 
-        self._update_status_on_month_day()
+        # self._update_status_on_month_day()
 
         return super().write(vals)
 
@@ -153,28 +162,24 @@ class TdTaxInvoice(models.Model):
                     rec.invoice_id._get_all_reconciled_invoice_partials()
                 )
             )
-            if record:
-                amount = record[0]['amount']
-                lines_data = []
+            if not record:
+                continue
 
-                total = sum(line.price_with_vat for line in rec.td_invoice_line_ids if line.price_with_vat)
+            amount = record[0]['amount']
+            total = sum(line.price_with_vat or 0 for line in rec.td_invoice_line_ids)
 
-                for line in rec.td_invoice_line_ids:
-                    line_total = line.price_with_vat
-                    percent = (line_total / total) * 100 if total else 0
-                    percent_qty = (line.quantity * percent) / 100
+            new_quantities = []
+            for line in rec.td_invoice_line_ids:
+                line_total = line.price_with_vat or 0
+                percent = (line_total / total) * 100 if total else 0
+                percent_qty = (line.quantity * percent) / 100
+                new_qty = (percent_qty * amount) / (percent * total / 100) if percent else 0
 
-                    lines_data.append({
-                        'id': line.id,
-                        'quantity': line.quantity,
-                        'percent': round(percent, 2),
-                        'percent_qty': round(percent_qty, 2),
-                    })
+                new_quantities.append((line, new_qty))
 
-                for line_ in lines_data:
-                    line = rec.td_invoice_line_ids.filtered(lambda l: l.id == line_['id'])
-                    if line and line_.get('percent'):
-                        line.quantity = (line_.get('percent_qty') * amount) / (line_.get('percent') * total / 100)
+            for line, qty in new_quantities:
+                if rec.state not in ['confirm', 'confirm_finish']:
+                    line.quantity = qty
 
     @api.depends('invoice_id')
     def _compute_domain_payment_ids(self):
@@ -200,9 +205,15 @@ class TdTaxInvoice(models.Model):
                 price_with_out_tax.append(line.sum_price_with_out_vat)
                 price_vat.append(line.vat_price)
                 price_total.append(line.price_with_vat)
-            inv.price_with_out_tax = sum(price_with_out_tax)
-            inv.price_vat = sum(price_vat)
-            inv.price_total = sum(price_total)
+            if inv.tax_guide_id and inv.tax_guide_id.price_include_override == 'tax_included':
+                inv.price_with_out_tax = sum(price_with_out_tax)
+                inv.price_vat = sum(price_vat)
+                inv.price_total = sum(price_with_out_tax) - sum(price_vat)
+            # inv.tax_guide_id and inv.tax_guide_id.price_include_override == 'tax_excluded':
+            else:
+                inv.price_with_out_tax = sum(price_with_out_tax)
+                inv.price_vat = sum(price_vat)
+                inv.price_total = sum(price_total)
 
     @api.onchange('tax_guide_id')
     def _onchange_tax_guide_id(self):
@@ -211,15 +222,15 @@ class TdTaxInvoice(models.Model):
                 line._compute_product_id()
             inv._compute_total_price()
 
-    def _update_expired_status(self):
-
-        tax_records = self.env['td.tax.invoice'].search([
-            ('accounting_date', '!=', False),
-            ('state', '!=', 'confirm_finish'),
-        ])
-
-        for tax_rec in tax_records:
-            tax_rec._update_status_on_month_day()
+    # def _update_expired_status(self):
+    #
+    #     tax_records = self.env['td.tax.invoice'].search([
+    #         ('accounting_date', '!=', False),
+    #         ('state', '!=', 'confirm_finish'),
+    #     ])
+    #
+    #     for tax_rec in tax_records:
+    #         tax_rec._update_status_on_month_day()
 
     def _update_status_on_month_day(self):
         days = int(self.env['ir.config_parameter'].sudo().get_param(
@@ -264,7 +275,7 @@ class TdTaxInvoice(models.Model):
             else:
                 inv.name = f'TAX/{year}/{padded_id}'
 
-            self._update_status_on_month_day()
+            # self._update_status_on_month_day()
 
     def action_draft_tax_invoice(self):
         for inv in self:

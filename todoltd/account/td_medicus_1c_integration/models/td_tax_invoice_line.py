@@ -112,10 +112,15 @@ class TdTaxInvoiceLine(models.Model):
                         ) / 100
                     else:
                         line.vat_price = line.vat_id.amount
+                if line.vat_id and line.vat_id.price_include_override == 'tax_excluded':
 
-                line.price_with_vat = (
-                    line.sum_price_with_out_vat + line.vat_price
-                )
+                    line.price_with_vat = (
+                        line.sum_price_with_out_vat + line.vat_price
+                    )
+                elif line.vat_id and line.vat_id.price_include_override == 'tax_included':
+                    line.price_with_vat = (
+                            line.sum_price_with_out_vat - line.vat_price
+                    )
 
                 if line.lot_ids:
                     line.uktzed_code_id = (
