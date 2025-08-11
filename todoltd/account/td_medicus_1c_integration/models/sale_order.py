@@ -7,6 +7,7 @@ from odoo.exceptions import (
     UserError,
     ValidationError,
 )
+from collections import Counter
 
 
 class SaleOrder(models.Model):
@@ -44,6 +45,10 @@ class SaleOrder(models.Model):
             ('confirm_finish', 'Confirmed (no adjustments are possible)'),
             ('cancel', 'Cancel'),
         ], default='draft',
+        compute='_compute_td_tax_invoice_state',
+        store=True
+    )
+    td_tax_invoice_state_percentage = fields.Float(
         compute='_compute_td_tax_invoice_state',
         store=True
     )
@@ -275,21 +280,33 @@ class SaleOrder(models.Model):
     @api.depends('td_tax_invoice_ids', 'td_budget_funds', 'td_tax_invoice_ids.state')
     def _compute_td_tax_invoice_state(self):
         for rec in self:
+            rec.td_tax_invoice_state = 'not_created'
+            rec.td_tax_invoice_state_percentage = 100
+            states = [line.state for line in rec.td_tax_invoice_ids]
+            state_counts = Counter(states)
+            total = len(states)
+            state_percentages = {
+                state: round((count / total) * 100, 2) for state, count in state_counts.items()
+            } if total > 0 else {}
+            if state_percentages:
+                most_common_state = max(state_percentages.items(), key=lambda x: x[1])
+                rec.td_tax_invoice_state = most_common_state[0]
+                rec.td_tax_invoice_state_percentage = most_common_state[-1]
 
-            if len(rec.td_tax_invoice_ids.filtered(lambda l: l.state == 'confirm_finish')) > 0:
-                rec.td_tax_invoice_state = 'confirm_finish'
-            elif len(rec.td_tax_invoice_ids.filtered(lambda l: l.state == 'confirm')) > 0:
-                rec.td_tax_invoice_state = 'confirm'
-            elif len(rec.td_tax_invoice_ids) == 0:
-                rec.td_tax_invoice_state = 'not_created'
-            elif len(rec.td_tax_invoice_ids.filtered(lambda l: l.state == 'draft')) > 0:
-                rec.td_tax_invoice_state = 'draft'
-            elif rec.td_budget_funds:
-                rec.td_tax_invoice_state = 'budget'
-            elif len(rec.td_tax_invoice_ids.filtered(lambda l: l.state == 'cancel')) > 0:
-                rec.td_tax_invoice_state = 'cancel'
-            else:
-                rec.td_tax_invoice_state = 'draft'
+            # if len(rec.td_tax_invoice_ids.filtered(lambda l: l.state == 'confirm_finish')) > 0:
+            #     rec.td_tax_invoice_state = 'confirm_finish'
+            # elif len(rec.td_tax_invoice_ids.filtered(lambda l: l.state == 'confirm')) > 0:
+            #     rec.td_tax_invoice_state = 'confirm'
+            # elif len(rec.td_tax_invoice_ids) == 0:
+            #     rec.td_tax_invoice_state = 'not_created'
+            # elif len(rec.td_tax_invoice_ids.filtered(lambda l: l.state == 'draft')) > 0:
+            #     rec.td_tax_invoice_state = 'draft'
+            # elif rec.td_budget_funds:
+            #     rec.td_tax_invoice_state = 'budget'
+            # elif len(rec.td_tax_invoice_ids.filtered(lambda l: l.state == 'cancel')) > 0:
+            #     rec.td_tax_invoice_state = 'cancel'
+            # else:
+            #     rec.td_tax_invoice_state = 'draft'
 
     def action_confirm(self):
         self.ensure_one()
@@ -339,8 +356,8 @@ class SaleOrder(models.Model):
             move.td_tax_invoice_count = len(td_tax_inv_ids)
 
     def action_open_tax_invoices(self):
-        for tax_invoice in self.td_tax_invoice_ids:
-            tax_invoice._update_status_on_month_day()
+        # for tax_invoice in self.td_tax_invoice_ids:
+        #     tax_invoice._update_status_on_month_day()
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
