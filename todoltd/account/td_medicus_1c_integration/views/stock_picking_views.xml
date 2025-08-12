@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="td_one_c_view_picking_form_inherited" model="ir.ui.view">
+        <field name="name">td.stock_picking_batch.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="td_medicus_agreement.td_implementation_document_view_picking_form_inherit"/>
+        <field name="priority" eval="1000"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='location_dest_id']" position="after">
+                <field name="td_is_import" invisible="1"/>
+                <field name="td_currency_id"/>
+                <field name="td_currency_rate"/>
+            </xpath>
+            <xpath expr="//field[@name='owner_id']" position="after">
+                <field name="td_type_of_trade" invisible="not td_is_import"/>
+            </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']//field[@name='td_uktzed_code_id']" position="after">
+                <field name="td_currency_rate" optional="show"/>
+                <field name="td_customs_rate" optional="show" widget="percentage"/>
+            </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']//field[@name='td_price_subtotal']" position="after">
+                <field name="td_customs_value_good" optional="show"/>
+                <field name="td_book_value" optional="show"/>
+                <field name="td_taxes" optional="show" widget="percentage"/>
+                <field name="td_taxes_price" optional="show"/>
+                <field name="td_price_total" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
