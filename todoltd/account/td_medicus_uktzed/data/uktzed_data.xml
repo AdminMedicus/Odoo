@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
+<odoo noupdate="1">
     <record model="td.uktzed" id="td_uktzed_I">
         <field name="code">I</field>
         <field name="name">(з 01 по 05) Живі тварини; продукти тваринного походження</field>

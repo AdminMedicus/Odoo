@@ -1,6 +1,6 @@
 {
     'name': 'TD Medicus 1C Integration',
-    "version": '18.0.0.0.15',
+    "version": '18.0.0.0.16',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
@@ -9,6 +9,7 @@
         'stock',
         'sale',
         'account',
+        'purchase_stock',
         'td_medicus_uktzed',
         'td_medicus_agreement'
     ],
@@ -26,7 +27,9 @@
         'views/td_tax_invoice_views.xml',
         'views/account_move_views.xml',
         'views/sale_order_views.xml',
-        # 'views/res_config_settings_views.xml',
+        'views/purchase_order_views.xml',
+        'views/stock_picking_views.xml',
+        'views/stock_picking_type_views.xml',
         # wizard
         'wizard/sale_make_invoice_advance.xml',
         'wizard/td_sale_order_low_margin_warning.xml'

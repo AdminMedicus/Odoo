@@ -4,6 +4,56 @@ from odoo import models, fields, api
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
+    td_currency_id = fields.Many2one(
+        comodel_name='res.currency',
+        related='purchase_id.currency_id'
+    )
+
+    td_currency_rate = fields.Float(
+        string="Currency Rate",
+        digits=(12, 6),
+        compute='_compute_currency_id_set_rate',
+        readonly=True
+    )
+
+    td_type_of_trade = fields.Selection(
+        [
+            ('prepayment', 'Prepayment'),
+            ('credit', 'Credit'),
+            ('res_storage', 'Responsible Storage'),
+        ], default='prepayment',
+        related='purchase_id.td_type_of_trade'
+    )
+
+    td_is_import = fields.Boolean(
+        string="Import",
+        default=False,
+        related='purchase_id.td_is_import'
+    )
+
+    @api.depends('td_currency_id')
+    def _compute_currency_id_set_rate(self):
+        for record in self:
+            if not record.td_currency_id:
+                record.td_currency_rate = 1.0
+                continue
+
+            company_currency = record.company_id.currency_id
+            if record.td_currency_id == company_currency:
+                record.td_currency_rate = 1.0
+                continue
+
+            # rate = self.env['res.currency.rate'].search(
+            #     [('currency_id', '=', record.td_currency_id.id)],
+            #     order='name desc',
+            #     limit=1
+            # )
+
+            if record.td_currency_id:
+                record.td_currency_rate = record.td_currency_id.rate
+            else:
+                record.td_currency_rate = 1.0
+
     def button_validate(self):
         res = super().button_validate()
         if self and self.id:

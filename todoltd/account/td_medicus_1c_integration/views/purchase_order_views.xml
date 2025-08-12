@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="td_one_c_purchase_order_form_inherited" model="ir.ui.view">
+        <field name="name">td.purchase.order.form.inherited</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='picking_type_id']" position="after">
+                <field name="td_type_of_trade"/>
+            </xpath>
+            <xpath expr="//field[@name='currency_id']" position="after">
+                <field name="td_is_import"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
