@@ -33,6 +33,7 @@ class ProductDataIncoming(BaseModelPydantic):
     uktzed: str
     account_code: str
     supplier_code: str
+    tracking_lot: bool
 
 SALE_TAX_MAPPING = {
     TaxCodeEnum.TAX_20: "account.1_sale_tax_template_vat20_psbo",
@@ -73,8 +74,6 @@ class TdProductProductExchange(models.Model):
     _name = 'product.product'
     _inherit = ['product.product','ata.exchange.class','ata.exchange.model.handler.mixin']
 
-    ATA_EXCHANGE_NODE_NAME = "product"
-
     #region outgoing function
     def ata_exchange_compute_methods(self) -> list[AtaExchangeMethod]:
         methods = [
@@ -89,12 +88,11 @@ class TdProductProductExchange(models.Model):
             "name":         record.name,
             "code":         self._str_empty(record.default_code),
             "description":  record.description,
-            # "category":     record.categ_id.ata_exchange_get_data_record(),
             "type":         record.ata_exchange_get_product_type(),
             "consumable":   record.type == 'consu',
             "is_landed_cost": False,
             "price":        record.standard_price,
-            "uom":          record.uom_id.ata_exchange_get_data_record(),            
+            "uom":          record.uom_id.exchange_data,            
         } for record in self]
 
     def ata_exchange_get_product_type(self) -> str:
@@ -124,7 +122,11 @@ class TdProductProductExchange(models.Model):
         vals: dict[str, str|int|list] = {
             "name":                 product_data.name,
             "description_sale":     product_data.name_full,
-            "type":                 "consu",            
+            "type":                 "consu",
+            "is_storable":          True,
+            "tracking":             "serial" if product_data.tracking_lot else "lot",
+            "lot_valuated":         True,
+            "default_code":         product_data.supplier_code,
         }
 
         # TAXES
@@ -157,26 +159,31 @@ class TdProductProductExchange(models.Model):
             }
         }).id
 
-        # MANUFACTURER
-        vals["td_manufacturer_directory_id"] = self.ata_exchange_get_model_record({
-            **(default_params:=self.ata_exchange_get_default_record_handler_params('td.manufacturer.directory')),
-            'data': {
-                'id': product_data.vendor.id,
-                'name': product_data.vendor.name,
-                'full_name': product_data.vendor.name_full,
-            },
-            'create_record': True,
-            'search_params': {
-                **default_params['search_params'],
-                'use_matching_data': True,
-                'key_matching_data': 'id',
-                'ext_system_id': record_params['search_params']['ext_system_id'],
-                'method_id': self.env.ref('td_medicus_exchange_base.inner_types_vendor_1c'),
-                'search_domain_second': [
-                    ('full_name', '=', product_data.vendor.name)
-                ]
-            }
-        }).id
+        # SUPPLIERINFO
+        # vals["seller_ids"] = [
+        #     Command.clear(),
+        #     Command.create({
+        #         "partner_id": self.ata_exchange_get_model_record({
+        #             **(default_params:=self.ata_exchange_get_default_record_handler_params('res.partner')),
+        #             'data': {
+        #                 'id': product_data.vendor.id,
+        #                 'name': product_data.vendor.name,
+        #                 'full_name': product_data.vendor.name_full,
+        #             },
+        #             'create_record': True,
+        #             'search_params': {
+        #                 **default_params['search_params'],
+        #                 'use_matching_data': True,
+        #                 'key_matching_data': 'id',
+        #                 'ext_system_id': record_params['search_params']['ext_system_id'],
+        #                 'method_id': self.env.ref('td_medicus_exchange_base.inner_types_vendor_1c'),
+        #                 'search_domain_second': [
+        #                     ('full_name', '=', product_data.vendor.name)
+        #                 ]
+        #             }
+        #         }).id,
+        #     })
+        # ]
 
         #UKTZED
         vals["td_uktzed_code_id"] = self.ata_exchange_get_model_record({
