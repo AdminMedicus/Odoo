@@ -12,16 +12,17 @@
             <field name="authentication_type">basic</field>
             <field name="login">odoo_user</field>            
         </record>
-    </data>
-    
-    <data noupdate="0">
+
         <!-- QUEUE USAGE -->
         <record id="queue_usage" model="ata.exchange.queue.usage">
             <field name="usage">True</field>        
         </record>
-        
+    </data>
+    
+    <data noupdate="0">
         <!-- METHODS -->
         <!-- INCOMING methods -->
+        <!-- product -->
         <record id="product_incoming" model="ata.exchange.method">
             <field name="name">ProductIncoming</field>
             <field name="description">Product (incoming)</field>
@@ -31,7 +32,7 @@
         </record>
 
         <!-- OUTGOING methods -->
-        <!-- product to ext. system -->
+        <!-- product -->
         <record id="product_outgoing" model="ata.exchange.method">
             <field name="name">ProductOutgoing</field>
             <field name="description">Product (outgoing)</field>
@@ -40,8 +41,36 @@
             <field name="model_name">product.product</field>
         </record>
 
-        <record id="bas_erp_outgoingdata_product_product" model="ata.exchange.domain">
+        <record id="c77_outgoingdata_product_product" model="ata.exchange.domain">
             <field name="method" ref="product_outgoing" />
+            <field name="ext_system" ref="medicus_1c" />
+        </record>
+
+        <!-- agreement -->
+        <record id="agreement_outgoing" model="ata.exchange.method">
+            <field name="name">AgreementOutgoing</field>
+            <field name="description">Agreement (outgoing)</field>
+            <field name="type">outgoing_data</field>
+            <field name="model_id" ref="td_agreement.model_td_agreement" />
+            <field name="model_name">td.agreement</field>
+        </record>
+
+        <record id="c77_outgoingdata_td_agreement" model="ata.exchange.domain">
+            <field name="method" ref="agreement_outgoing" />
+            <field name="ext_system" ref="medicus_1c" />
+        </record>
+
+        <!-- partner -->
+        <record id="partner_outgoing" model="ata.exchange.method">
+            <field name="name">PartnerOutgoing</field>
+            <field name="description">Partner (outgoing)</field>
+            <field name="type">outgoing_data</field>
+            <field name="model_id" ref="model_res_partner" />
+            <field name="model_name">res.partner</field>
+        </record>
+
+        <record id="c77_outgoingdata_partner" model="ata.exchange.domain">
+            <field name="method" ref="partner_outgoing" />
             <field name="ext_system" ref="medicus_1c" />
         </record>
 
@@ -52,7 +81,7 @@
             <field name="methods_ids" eval="[(6, 0, [ref('td_medicus_exchange_base.product_incoming')])]" />
         </record>
 
-        <!-- INNER TYPES FOR MATCHING DATA -->
+        <!-- INNER TYPES for matching data -->
         <record id="inner_types_vendor_1c" model="ata.exchange.method">
             <field name="name">Vendor1C</field>
             <field name="description">Vendor from 1C</field>
