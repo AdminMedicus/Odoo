@@ -1,6 +1,6 @@
 {
     'name': 'Medicus Exchange (Base)',
-    'version': '18.0.1.4.1',
+    'version': '18.0.1.4.2',
     'summary': 'Base module for exchange integration',
     'description': """
         Base module for exchange integration with Medicus system.
@@ -10,10 +10,10 @@
     'website': 'https://todo.ltd',
     'license': 'LGPL-3',
     'depends': [
-        'base',
         'ata_exchange_v4',
         'product',
         'td_medicus_1c_integration',
+        'td_medicus_agreement',
     ],  
     'data': [
         'data/ata_exchange_method_data.xml',        
