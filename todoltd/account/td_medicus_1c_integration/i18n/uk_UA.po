@@ -525,6 +525,15 @@ msgid "You need to add at least one line to the document lines"
 msgstr "Потрібно додати хоча б один рядок у рядки документа"
 
 #. module: td_medicus_1c_integration
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__stock_picking__state__import
+msgid "Import data to 1C"
+msgstr "Надіслано дані в 1С"
+
+#. module: td_medicus_1c_integration
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_one_c_view_picking_form_inherited
+msgid "Send data to 1C"
+msgstr "Надіслати дані в 1С"
+
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__sale_order_price_subtotal
 msgid "Subtotal"
 msgstr "Загальна ціна з КП без податку"
