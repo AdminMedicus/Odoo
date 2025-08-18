@@ -102,11 +102,21 @@
                                     <field name="uktzed_code_id" widget="many2one" optional="show"/>
                                     <field name="quantity" optional="show"/>
                                     <field name="product_uom_id" optional="show"/>
+                                    <field name="sale_order_price" optional="show" column_invisible="True"/>
+                                    <field name="sale_order_quantity" optional="show" column_invisible="True"/>
+                                    <field name="sale_order_currency_id" optional="show" column_invisible="True"/>
+                                    <field name="sale_order_price_subtotal" optional="show"/>
+                                    <field name="invoice_price" optional="show" column_invisible="True"/>
+                                    <field name="invoice_quantity" optional="show" column_invisible="True"/>
+                                    <field name="invoice_currency_id" optional="show" column_invisible="True"/>
+                                    <field name="invoice_price_subtotal" optional="show" column_invisible="True"/>
+                                    <field name="vat_id" widget="many2one" optional="show"/>
+                                    <field name="vat_type" optional="show" column_invisible="True"/>
+                                    <field name="vat_price" optional="show"/>
+                                    <field name="sum_vat_price" optional="show" column_invisible="True"/>
                                     <field name="price_with_out_vat" optional="show"/>
                                     <field name="sum_price_with_out_vat" optional="show"/>
-                                    <field name="vat_id" widget="many2one" optional="show"/>
-                                    <field name="vat_price" optional="show"/>
-                                    <field name="price_with_vat" optional="show"/>
+                                    <field name="sum_price_with_vat" optional="show"/>
                                     <field name="corr_line_number" optional="show"/>
                                 </list>
                             </field>
