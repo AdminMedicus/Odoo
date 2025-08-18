@@ -22,7 +22,7 @@ class StockMove(models.Model):
     )
     td_price_subtotal = fields.Float(
         compute='_compute_td_price_unit',
-        store=True
+        # store=True
     )
     td_lot_ids = fields.Many2many(
         comodel_name='stock.lot'
@@ -46,10 +46,10 @@ class StockMove(models.Model):
         compute='_compute_td_picking_code'
     )
 
-    @api.depends('sale_line_id', 'product_id')
+    @api.depends('sale_line_id', 'product_id', 'quantity')
     def _compute_td_price_unit(self):
         for line in self:
-            if not line.td_price_unit and line.sale_line_id:
+            if line.sale_line_id:
                 line.td_price_unit = line.sale_line_id.price_unit
                 line.td_price_subtotal = line.sale_line_id.price_unit * line.quantity
             else:

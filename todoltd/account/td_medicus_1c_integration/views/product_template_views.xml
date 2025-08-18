@@ -13,4 +13,15 @@
             </xpath>
         </field>
     </record>
+
+    <record id="td_taxes_view_stock_product_template_tree" model="ir.ui.view">
+        <field name="name">td.taxes.product.template.stock.list.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <field name="uom_id" position="after">
+                <field name="taxes_id" widget="many2many_tags" optional="show"/>
+            </field>
+        </field>
+    </record>
 </odoo>
