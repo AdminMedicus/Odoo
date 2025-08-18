@@ -31,6 +31,13 @@ class StockPicking(models.Model):
         related='purchase_id.td_is_import'
     )
 
+    state = fields.Selection(
+        selection_add=[('import', 'Import data to 1C')],
+    )
+
+    def td_button_send_data_to_one_c(self):
+        pass
+
     @api.depends('td_currency_id')
     def _compute_currency_id_set_rate(self):
         for record in self:
@@ -55,14 +62,16 @@ class StockPicking(models.Model):
                 record.td_currency_rate = 1.0
 
     def button_validate(self):
-        res = super().button_validate()
-        if self and self.id:
-            for picking in self:
-                for move in picking.move_ids:
-                    for lot in move.lot_ids:
-                        uktzed_line = move.move_line_ids.filtered(lambda lin: lin.lot_id.id == lot.id)
-                        move.lot_ids.write({
-                            'td_uktzed_code_id': uktzed_line.td_uktzed_code_id.id if uktzed_line else False
-                        })
-                        move.td_uktzed_code_id = uktzed_line.td_uktzed_code_id.id if uktzed_line else False
-        return res
+        if not self.td_is_import:
+            res = super().button_validate()
+            if self and self.id:
+                for picking in self:
+                    for move in picking.move_ids:
+                        for lot in move.lot_ids:
+                            uktzed_line = move.move_line_ids.filtered(lambda lin: lin.lot_id.id == lot.id)
+                            move.lot_ids.write({
+                                'td_uktzed_code_id': uktzed_line.td_uktzed_code_id.id if uktzed_line else False
+                            })
+                            move.td_uktzed_code_id = uktzed_line.td_uktzed_code_id.id if uktzed_line else False
+            return res
+        return False
