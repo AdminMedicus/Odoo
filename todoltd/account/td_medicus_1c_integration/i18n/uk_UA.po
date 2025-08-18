@@ -534,6 +534,7 @@ msgstr "Надіслано дані в 1С"
 msgid "Send data to 1C"
 msgstr "Надіслати дані в 1С"
 
+#. module: td_medicus_1c_integration
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__sale_order_price_subtotal
 msgid "Subtotal"
 msgstr "Загальна ціна з КП без податку"
