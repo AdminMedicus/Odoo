@@ -8,24 +8,25 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='location_dest_id']" position="after">
                 <field name="td_is_import" invisible="1"/>
-                <field name="td_currency_id"/>
-                <field name="td_currency_rate"/>
+                <field name="td_currency_id" invisible="not td_is_import"/>
+                <field name="td_currency_rate" invisible="not td_is_import"/>
             </xpath>
             <xpath expr="//field[@name='owner_id']" position="after">
                 <field name="td_type_of_trade" invisible="not td_is_import"/>
             </xpath>
             <xpath expr="//field[@name='move_ids_without_package']//field[@name='td_uktzed_code_id']" position="after">
-                <field name="td_currency_rate" optional="show"/>
-                <field name="td_customs_rate" optional="show" widget="percentage"/>
+                <field name="td_currency_rate" optional="show" column_invisible="not parent.td_is_import"/>
+                <field name="td_customs_rate" optional="show" widget="percentage" column_invisible="not parent.td_is_import"/>
             </xpath>
             <xpath expr="//field[@name='move_ids_without_package']//field[@name='td_price_subtotal']" position="after">
-                <field name="td_customs_value_good" optional="show"/>
-                <field name="td_book_value" optional="show"/>
-                <field name="td_taxes" optional="show" widget="percentage"/>
-                <field name="td_taxes_price" optional="show"/>
-                <field name="td_price_total" optional="show"/>
+                <field name="td_customs_value_good" optional="show" column_invisible="not parent.td_is_import"/>
+                <field name="td_book_value" optional="show" column_invisible="not parent.td_is_import"/>
+                <field name="td_taxes" optional="show" widget="percentage" column_invisible="not parent.td_is_import"/>
+                <field name="td_taxes_price" optional="show" column_invisible="not parent.td_is_import"/>
+                <field name="td_price_total" optional="show" column_invisible="not parent.td_is_import"/>
             </xpath>
             <xpath expr="//button[@name='button_validate']" position="replace">
+                <button name="button_validate" invisible="state in ('draft', 'confirmed', 'done', 'cancel')" string="Validate" type="object" class="oe_highlight" groups="stock.group_stock_user" data-hotkey="v"/>
                 <button name="td_button_send_data_to_one_c" invisible="not td_is_import" string="Send data to 1C" type="object" class="btn btn-primary" data-hotkey="v"/>
             </xpath>
             <xpath expr="//field[@name='state']" position="replace">
