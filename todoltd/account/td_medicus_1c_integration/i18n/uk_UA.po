@@ -534,6 +534,7 @@ msgstr "Надіслано дані в 1С"
 msgid "Send data to 1C"
 msgstr "Надіслати дані в 1С"
 
+#. module: td_medicus_1c_integration
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__sale_order_price_subtotal
 msgid "Subtotal"
 msgstr "Загальна ціна з КП без податку"
@@ -547,3 +548,69 @@ msgstr "Загальна сума з податком"
 #: model:ir.actions.server,name:td_medicus_1c_integration.action_td_tax_invoice_mass_change_status
 msgid "Mass Change Status"
 msgstr "Загальна зміна статуса"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_purchase_order__td_type_of_trade
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_picking__td_type_of_trade
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_picking_type__td_type_of_trade
+msgid "Td Type Of Trade"
+msgstr "Вид торгівлі"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__purchase_order__td_type_of_trade__prepayment
+msgid "Prepayment"
+msgstr "Передоплата"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__purchase_order__td_type_of_trade__res_storage
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__stock_picking_type__td_type_of_trade__res_storage
+msgid "Responsible Storage"
+msgstr "Відп. зберігання"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__purchase_order__td_type_of_trade__credit
+msgid "Credit"
+msgstr "Кредит"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_picking__td_currency_id
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__invoice_currency_id
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__sale_order_currency_id
+msgid "Currency"
+msgstr "Валюта"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_move__td_currency_rate
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_picking__td_currency_rate
+msgid "Currency Rate"
+msgstr "Курс валют"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_move__td_customs_rate
+msgid "Td Customs Rate"
+msgstr "Ставка мита"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_move__td_price_total
+msgid "Td Price Total"
+msgstr "Повна сума"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_move__td_customs_value_good
+msgid "Td Customs Value Good"
+msgstr "Митна Вартість"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_move__td_book_value
+msgid "Td Book Value"
+msgstr "Облікова вартість"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_move__td_taxes
+msgid "Td Taxes"
+msgstr "ПДВ"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_move__td_taxes_price
+msgid "Td Taxes Price"
+msgstr "Сума ПДВ"
