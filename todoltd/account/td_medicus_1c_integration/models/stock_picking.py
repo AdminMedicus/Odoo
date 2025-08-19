@@ -15,7 +15,8 @@ class StockPicking(models.Model):
         string="Currency Rate",
         digits=(12, 6),
         compute='_compute_currency_id_set_rate',
-        readonly=True
+        readonly=False,
+        stroe=True
     )
 
     td_type_of_trade = fields.Selection(
@@ -40,7 +41,7 @@ class StockPicking(models.Model):
     def td_button_send_data_to_one_c(self):
         pass
 
-    @api.depends('td_currency_id')
+    @api.depends("td_currency_id")
     def _compute_currency_id_set_rate(self):
         for record in self:
             if not record.td_currency_id:
@@ -52,14 +53,18 @@ class StockPicking(models.Model):
                 record.td_currency_rate = 1.0
                 continue
 
-            # rate = self.env['res.currency.rate'].search(
-            #     [('currency_id', '=', record.td_currency_id.id)],
-            #     order='name desc',
-            #     limit=1
-            # )
+            today = fields.Date.context_today(record)
+            rate = self.env["res.currency.rate"].search(
+                [
+                    ("currency_id", "=", record.td_currency_id.id),
+                    ("name", "<=", today),
+                ],
+                order="name desc",
+                limit=1,
+            )
 
-            if record.td_currency_id:
-                record.td_currency_rate = record.td_currency_id.rate
+            if rate:
+                record.td_currency_rate = rate.inverse_company_rate
             else:
                 record.td_currency_rate = 1.0
 
