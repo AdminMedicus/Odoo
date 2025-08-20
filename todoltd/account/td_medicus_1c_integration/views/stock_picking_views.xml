@@ -12,7 +12,7 @@
                 <field name="td_currency_rate" invisible="not td_is_import"/>
             </xpath>
             <xpath expr="//field[@name='owner_id']" position="after">
-                <field name="td_type_of_trade" invisible="not td_is_import"/>
+                <field name="td_type_of_trade"/>
             </xpath>
             <xpath expr="//field[@name='move_ids_without_package']//field[@name='td_uktzed_code_id']" position="after">
                 <field name="td_currency_rate" optional="show" column_invisible="not parent.td_is_import"/>
