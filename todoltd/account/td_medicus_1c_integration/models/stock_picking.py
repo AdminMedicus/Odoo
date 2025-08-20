@@ -41,7 +41,7 @@ class StockPicking(models.Model):
     def td_button_send_data_to_one_c(self):
         pass
 
-    @api.depends("td_currency_id")
+    @api.depends('td_currency_id')
     def _compute_currency_id_set_rate(self):
         for record in self:
             if not record.td_currency_id:
@@ -53,18 +53,14 @@ class StockPicking(models.Model):
                 record.td_currency_rate = 1.0
                 continue
 
-            today = fields.Date.context_today(record)
-            rate = self.env["res.currency.rate"].search(
-                [
-                    ("currency_id", "=", record.td_currency_id.id),
-                    ("name", "<=", today),
-                ],
-                order="name desc",
-                limit=1,
-            )
+            # rate = self.env['res.currency.rate'].search(
+            #     [('currency_id', '=', record.td_currency_id.id)],
+            #     order='name desc',
+            #     limit=1
+            # )
 
-            if rate:
-                record.td_currency_rate = rate.inverse_company_rate
+            if record.td_currency_id:
+                record.td_currency_rate = record.td_currency_id.rate
             else:
                 record.td_currency_rate = 1.0
 
@@ -274,18 +270,20 @@ class StockPicking(models.Model):
                             'lot_id': lot.id,
                         })
 
-
     def button_validate(self):
         if not self.td_is_import:
+            self._create_lot_ids_for_move()
+
             res = super().button_validate()
-            if self and self.id:
-                for picking in self:
-                    for move in picking.move_ids:
-                        for lot in move.lot_ids:
-                            uktzed_line = move.move_line_ids.filtered(lambda lin: lin.lot_id.id == lot.id)
-                            move.lot_ids.write({
-                                'td_uktzed_code_id': uktzed_line.td_uktzed_code_id.id if uktzed_line else False
-                            })
-                            move.td_uktzed_code_id = uktzed_line.td_uktzed_code_id.id if uktzed_line else False
+
+            for picking in self:
+                for move in picking.move_ids:
+
+                    for lot in move.lot_ids:
+                        uktzed_line = move.move_line_ids.filtered(lambda lin: lin.lot_id.id == lot.id)
+                        move.lot_ids.write({
+                            'td_uktzed_code_id': uktzed_line.td_uktzed_code_id.id if uktzed_line else False
+                        })
+                        move.td_uktzed_code_id = uktzed_line.td_uktzed_code_id.id if uktzed_line else False
             return res
         return False
