@@ -138,11 +138,6 @@ msgid "Td Manufacturer Directory"
 msgstr "Виробник"
 
 #. module: td_medicus_1c_integration
-#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_manufacturer_directory__ukrainian_name
-msgid "Ukrainian Name"
-msgstr "Укр. Назва"
-
-#. module: td_medicus_1c_integration
 #: model:ir.model,name:td_medicus_1c_integration.model_stock_warehouse
 msgid "Warehouse"
 msgstr "Склад"
