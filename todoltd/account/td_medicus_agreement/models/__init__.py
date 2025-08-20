@@ -1,4 +1,5 @@
-from . import agreement
+from . import td_agreement
+from . import td_agreement_closing_reasons
 from . import account_move
 from . import sale_order
 from . import res_partner

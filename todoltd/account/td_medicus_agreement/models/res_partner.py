@@ -18,6 +18,7 @@ class ResPartner(models.Model):
         comodel_name='td.agreement',
         string='Standard contract (Act of custody)'
     )
+    td_ukrainian_name = fields.Char()
 
     def action_view_agreements(self):
         self.ensure_one()

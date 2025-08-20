@@ -13,6 +13,9 @@
                         <field string="Agreements" name="count_agreement" widget="statinfo"/>
                 </button>
             </xpath>
+            <xpath expr="//field[@name='full_partner_name']" position="after">
+                <field name="td_ukrainian_name"/>
+            </xpath>
         </field>
     </record>
 
