@@ -12,7 +12,12 @@
                 <field name="td_currency_rate" invisible="not td_is_import"/>
             </xpath>
             <xpath expr="//field[@name='owner_id']" position="after">
-                <field name="td_type_of_trade"/>
+                <field name="picking_code" invisible="1"/>
+                <field name="td_type_of_trade" invisible="picking_code"/>
+            </xpath>
+            <xpath expr="//field[@name='picking_type_id']" position="before">
+                <field name="td_supplier_document" invisible="picking_code"/>
+                <field name="td_date_supplier_document" invisible="picking_code"/>
             </xpath>
             <xpath expr="//field[@name='move_ids_without_package']//field[@name='td_uktzed_code_id']" position="after">
                 <field name="td_currency_rate" optional="show" column_invisible="not parent.td_is_import"/>
