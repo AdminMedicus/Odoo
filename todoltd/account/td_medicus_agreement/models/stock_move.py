@@ -18,11 +18,12 @@ class StockMove(models.Model):
     )
     td_price_unit = fields.Float(
         compute='_compute_td_price_unit',
-        store=True
+        store=True,
+        readonly=False
     )
     td_price_subtotal = fields.Float(
         compute='_compute_td_price_unit',
-        # store=True
+        store=True
     )
     td_lot_ids = fields.Many2many(
         comodel_name='stock.lot'
@@ -46,12 +47,15 @@ class StockMove(models.Model):
         compute='_compute_td_picking_code'
     )
 
-    @api.depends('sale_line_id', 'product_id', 'quantity')
+    @api.depends('purchase_line_id','sale_line_id', 'product_id', 'quantity')
     def _compute_td_price_unit(self):
         for line in self:
             if line.sale_line_id:
                 line.td_price_unit = line.sale_line_id.price_unit
                 line.td_price_subtotal = line.sale_line_id.price_unit * line.quantity
+            elif line.purchase_line_id:
+                line.td_price_unit = line.purchase_line_id.price_unit
+                line.td_price_subtotal = line.purchase_line_id.price_unit * line.quantity
             else:
                 line.td_price_unit = line.td_price_unit
                 line.td_price_subtotal = line.td_price_subtotal

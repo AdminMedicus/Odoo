@@ -38,8 +38,23 @@ class StockPicking(models.Model):
         selection_add=[('import', 'Import data to 1C')],
     )
 
+    picking_code = fields.Boolean(
+        compute="_compute_picking_code"
+    )
+
+    td_supplier_document = fields.Char()
+    td_date_supplier_document = fields.Date()
+
     def td_button_send_data_to_one_c(self):
         pass
+
+    @api.depends('picking_type_id')
+    def _compute_picking_code(self):
+        for rec in self:
+            rec.picking_code = True
+            if rec.picking_type_id and rec.picking_type_id.code:
+                if rec.picking_type_id.code == 'incoming':
+                    rec.picking_code = False
 
     @api.depends("td_currency_id")
     def _compute_currency_id_set_rate(self):

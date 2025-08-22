@@ -609,3 +609,19 @@ msgstr "ПДВ"
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_move__td_taxes_price
 msgid "Td Taxes Price"
 msgstr "Сума ПДВ"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_res_partner__td_manager_id
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_res_users__td_manager_id
+msgid "Td Manager"
+msgstr "Менеджер"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_picking__td_supplier_document
+msgid "Td Supplier Document"
+msgstr "Документ постачальника"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_picking__td_date_supplier_document
+msgid "Td Date Supplier Document"
+msgstr "Дата документу постачальника"

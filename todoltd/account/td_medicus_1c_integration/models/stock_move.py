@@ -37,16 +37,12 @@ class StockMove(models.Model):
         for move in self:
             move.td_price_total = move.td_book_value + move.td_taxes_price
 
-    @api.depends('td_currency_rate', 'td_price_unit', 'product_id')
+    @api.depends('td_currency_rate', 'td_price_unit', 'product_id', 'picking_id.td_currency_rate')
     def _compute_td_customs_value_good(self):
         for move in self:
-            move.td_customs_value_good = 0
+            rate = move.td_currency_rate or (move.picking_id and move.picking_id.td_currency_rate) or 0.0
+
             if move.product_id and move.td_price_unit:
-                if move.td_currency_rate:
-                    move.td_customs_value_good = (
-                        move.td_price_unit * move.td_currency_rate
-                    )
-                elif move.picking_id:
-                    move.td_customs_value_good = (
-                        move.td_price_unit * move.picking_id.td_currency_rate
-                    )
+                move.td_customs_value_good = move.td_price_unit * rate
+            else:
+                move.td_customs_value_good = 0.0
