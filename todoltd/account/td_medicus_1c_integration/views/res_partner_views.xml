@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="td_manager_view_partner_form" model="ir.ui.view">
+        <field name="name">td.res.partner.form.inherit.manager</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="account.view_partner_property_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='property_payment_term_id']" position="before">
+                <field name="td_manager_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
