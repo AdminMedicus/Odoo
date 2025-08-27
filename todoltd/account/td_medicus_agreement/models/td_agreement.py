@@ -75,6 +75,7 @@ class Agreement(models.Model):
     equal_parts = fields.Boolean(
         default=False,
     )
+    agreement_number = fields.Char()
 
     # ToDo Yaroslav Agreement Fields
 

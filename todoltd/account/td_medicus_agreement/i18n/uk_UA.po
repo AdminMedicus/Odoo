@@ -642,3 +642,8 @@ msgstr "Своєчасність оплати"
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_res_users__td_ukrainian_name
 msgid "Td Ukrainian Name"
 msgstr "Укр. Назва"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement__agreement_number
+msgid "Agreement Number"
+msgstr "Номер договору"
