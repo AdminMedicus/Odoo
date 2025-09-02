@@ -375,8 +375,8 @@ msgstr "Видаткова накладна"
 #: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__account_move__td_advance_payment_method__percentage
 #: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__sale_advance_payment_inv__td_advance_payment_method__percentage
 #: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__sale_advance_payment_inv__td_advance_payment_method_one__percentage
-msgid "Down payment (percentage)"
-msgstr "Попередня оплата (відсоток)"
+msgid "Down payment"
+msgstr "Попередня оплата"
 
 #. module: td_medicus_1c_integration
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_sale_advance_payment_inv__advance_payment_method
