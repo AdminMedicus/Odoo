@@ -42,10 +42,20 @@ class StockPicking(models.Model):
     @api.onchange('move_ids_without_package')
     def _compute_td_total_amount(self):
         for rec in self:
-            rec.td_total_amount = sum([
-                move.td_price_subtotal
-                for move in rec.move_ids_without_package
-            ])
+            # rec.td_total_amount = sum([
+            #     move.td_price_total * (move.td_currency_rate or 1)
+            #     for move in rec.move_ids_without_package
+            # ])
+            if rec.td_is_import:
+                rec.td_total_amount = sum([
+                    move.td_customs_value_good + move.td_taxes_price
+                    for move in rec.move_ids_without_package
+                ])
+            else:
+                rec.td_total_amount = sum([
+                    move.td_price_subtotal + move.td_taxes_price
+                    for move in rec.move_ids_without_package
+                ])
 
     def button_validate(self):
         res = super().button_validate()
