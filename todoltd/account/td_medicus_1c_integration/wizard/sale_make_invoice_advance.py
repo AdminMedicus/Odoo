@@ -8,19 +8,19 @@ class SaleMakeInvoiceAdvance(models.TransientModel):
     td_advance_payment_method = fields.Selection(
         selection=[
             ('delivered', "Regular invoice"),
-            ('percentage', "Down payment (percentage)"),
-            ('fixed', "Down payment (fixed amount)"),
+            ('percentage', "Down payment"),
+            # ('fixed', "Down payment (fixed amount)"),
         ],
         string="Create Invoice",
         default='delivered',
     )
     td_advance_payment_method_one = fields.Selection(
         selection=[
-            ('percentage', "Down payment (percentage)"),
-            ('fixed', "Down payment (fixed amount)"),
+            ('percentage', "Down payment"),
+            # ('fixed', "Down payment (fixed amount)"),
         ],
         string="Create Invoice",
-        default='fixed',
+        default='percentage',
     )
     td_choose_payment_method = fields.Boolean(
         compute='_compute_td_choose_payment_method'
@@ -28,15 +28,15 @@ class SaleMakeInvoiceAdvance(models.TransientModel):
     td_payment_method = fields.Selection(
         selection=[
             ('delivered', "Regular invoice"),
-            ('percentage', "Down payment (percentage)"),
-            ('fixed', "Down payment (fixed amount)"),
+            ('percentage', "Down payment"),
+            # ('fixed', "Down payment (fixed amount)"),
         ],
         compute='_compute_advance_payment_method'
     )
 
     advance_payment_method = fields.Selection(
         # compute='_compute_advance_payment_method',
-        default='fixed'
+        default='percentage'
     )
 
     amount = fields.Float(
@@ -63,10 +63,10 @@ class SaleMakeInvoiceAdvance(models.TransientModel):
             else:
                 line.td_choose_payment_method = False
 
-    @api.depends('td_advance_payment_method', 'td_advance_payment_method_one', 'td_choose_payment_method')
+    # @api.depends('td_advance_payment_method', 'td_advance_payment_method_one', 'td_choose_payment_method')
     def _compute_advance_payment_method(self):
         for line in self:
-            line.td_payment_method = 'fixed'
+            line.td_payment_method = 'percentage'
             if line.td_choose_payment_method:
                 if line.td_advance_payment_method:
                     line.td_payment_method = (
@@ -80,10 +80,11 @@ class SaleMakeInvoiceAdvance(models.TransientModel):
                         line.td_advance_payment_method_one
                     )
                 else:
-                    line.td_payment_method = 'fixed'
+                    line.td_payment_method = 'percentage'
             line.advance_payment_method = line.td_payment_method
 
     def create_invoices(self):
+        self._compute_advance_payment_method()
         self._check_amount_is_positive()
         invoices = self._create_invoices(self.sale_order_ids)
         sale_order = self.env.context.get("active_id")

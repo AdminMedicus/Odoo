@@ -237,3 +237,11 @@ class AccountMove(models.Model):
             move.amount_total_signed = abs(total) if move.move_type == 'entry' else -total
             move.amount_total_in_currency_signed = abs(move.amount_total) if move.move_type == 'entry' else -(
                     sign * move.amount_total)
+
+            if move.is_invoice(True) and move.td_order_id:
+                sale_order = move.td_order_id
+                if not move.td_prepayment:
+                    other_invoices = sale_order.invoice_ids.filtered(lambda inv: inv.id != move.id)
+                    if any(inv.td_prepayment for inv in other_invoices):
+                        move.amount_residual = 0.0
+                        move.amount_residual_signed = 0.0
