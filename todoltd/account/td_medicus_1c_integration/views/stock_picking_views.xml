@@ -26,9 +26,12 @@
             <xpath expr="//field[@name='move_ids_without_package']//field[@name='td_price_subtotal']" position="after">
                 <field name="td_customs_value_good" optional="show" column_invisible="not parent.td_is_import"/>
                 <field name="td_book_value" optional="show" column_invisible="not parent.td_is_import"/>
-                <field name="td_taxes" optional="show" widget="percentage" column_invisible="not parent.td_is_import"/>
-                <field name="td_taxes_price" optional="show" column_invisible="not parent.td_is_import"/>
-                <field name="td_price_total" optional="show" column_invisible="not parent.td_is_import"/>
+<!--                <field name="td_taxes" optional="show" widget="percentage" column_invisible="not parent.td_is_import"/>-->
+                <field name="td_taxes" optional="show" widget="percentage" />
+                <field name="td_taxes_price" optional="show"/>
+<!--                <field name="td_taxes_price" optional="show" column_invisible="not parent.td_is_import"/>-->
+<!--                <field name="td_price_total" optional="show" column_invisible="not parent.td_is_import"/>-->
+                <field name="td_price_total" optional="show"/>
             </xpath>
             <xpath expr="//button[@name='button_validate']" position="before">
                 <button name="td_button_send_data_to_one_c" invisible="not td_is_import" string="Send data to 1C" type="object" class="btn btn-primary" data-hotkey="v"/>
@@ -36,6 +39,11 @@
             <xpath expr="//field[@name='state']" position="replace">
                 <field name="state" widget="statusbar" invisible="picking_type_code != 'incoming' or td_is_import" statusbar_visible="draft,assigned,done"/>
                 <field name="state" widget="statusbar" invisible="picking_type_code != 'incoming' or not td_is_import" statusbar_visible="draft,assigned,done,import"/>
+            </xpath>
+            <xpath expr="//field[@name='td_total_amount']" position="before">
+                <field name="td_amount_origin_currency"/>
+                <field name="td_total_without_tax"/>
+                <field name="td_total_tax"/>
             </xpath>
         </field>
     </record>

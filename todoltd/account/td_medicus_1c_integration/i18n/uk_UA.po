@@ -625,3 +625,18 @@ msgstr "Документ постачальника"
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_picking__td_date_supplier_document
 msgid "Td Date Supplier Document"
 msgstr "Дата документу постачальника"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_picking__td_amount_origin_currency
+msgid "Td Amount Origin Currency"
+msgstr "Сума у оригінальні валюті"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_picking__td_total_without_tax
+msgid "Td Total Without Tax"
+msgstr "Рaзом без ПДВ"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_picking__td_total_tax
+msgid "Td Total Tax"
+msgstr "Сума ПДВ"
