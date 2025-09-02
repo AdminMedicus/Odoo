@@ -42,4 +42,8 @@ class AccountMoveLine(models.Model):
                 line.td_purchase_price = line.product_id.standard_price
 
             line.td_margin = (line.price_unit - line.td_purchase_price) * line.quantity
-            line.td_margin_percent = line.td_margin / (line.price_unit / 100)
+
+            if line.price_unit:
+                line.td_margin_percent = line.td_margin / (line.price_unit / 100)
+            else:
+                line.td_margin_percent = 0

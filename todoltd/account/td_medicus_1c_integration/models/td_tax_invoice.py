@@ -151,33 +151,57 @@ class TdTaxInvoice(models.Model):
                 rec.tax_guide_id = rec.tax_guide_id or False
 
     def recalculation_of_the_quantity_of_lines(self, recalc=True):
+        # for rec in self:
+        #     record = list(
+        #         filter(
+        #             lambda rec_: rec_['aml_id'] == rec.payment_id.id,
+        #             rec.invoice_id._get_all_reconciled_invoice_partials()
+        #         )
+        #     )
+        #     if not record:
+        #         continue
+        #
+        #     # amount = record[0]['amount']
+        #     # total = sum(line.price_with_vat or 0 for line in rec.td_invoice_line_ids)
+        #     #
+        #     # new_quantities = []
+        #     # for line in rec.td_invoice_line_ids:
+        #     #     line_total = line.sum_price_with_vat or 0
+        #     #     percent = (line_total / total) * 100 if total else 0
+        #     #     percent_qty = (line.quantity * percent) / 100
+        #     #     new_qty = (percent_qty * amount) / (percent * total / 100) if percent else 0
+        #     #
+        #     #     new_quantities.append((line, new_qty))
+        #     new_quantities = []
+        #     for line in rec.td_invoice_line_ids:
+        #         line_total = line.sale_order_price_subtotal or 0
+        #         new_qty = line.price_with_out_vat / line_total
+        #         new_quantities.append((line, round(new_qty, 5)))
+        #
+        #     for line, qty in new_quantities:
+        #         if rec.state not in ['confirm', 'confirm_finish']:
+        #             line.quantity = qty
         for rec in self:
-            record = list(
-                filter(
-                    lambda rec_: rec_['aml_id'] == rec.payment_id.id,
-                    rec.invoice_id._get_all_reconciled_invoice_partials()
-                )
-            )
-            if not record:
+            if not rec.payment_id or not rec.td_invoice_line_ids:
                 continue
 
-            # amount = record[0]['amount']
-            # total = sum(line.price_with_vat or 0 for line in rec.td_invoice_line_ids)
-            #
-            # new_quantities = []
-            # for line in rec.td_invoice_line_ids:
-            #     line_total = line.sum_price_with_vat or 0
-            #     percent = (line_total / total) * 100 if total else 0
-            #     percent_qty = (line.quantity * percent) / 100
-            #     new_qty = (percent_qty * amount) / (percent * total / 100) if percent else 0
-            #
-            #     new_quantities.append((line, new_qty))
+            payment_amount = rec.payment_id.credit or 0
+            if not payment_amount:
+                continue
+
+            total = sum(line.sum_price_with_out_vat or 0 for line in rec.td_invoice_line_ids)
+            if not total:
+                continue
+
             new_quantities = []
             for line in rec.td_invoice_line_ids:
-                line_total = line.sale_order_price_subtotal or 0
-                new_qty = line.price_with_out_vat / line_total
-                new_quantities.append((line, round(new_qty, 5)))
+                line_total = line.sum_price_with_out_vat or 0
+                proportion = line_total / total if total else 0
+                new_line_amount = payment_amount * proportion
+                unit_price = line.price_with_out_vat or 1
+                new_qty = new_line_amount / unit_price if unit_price else 0
 
+                new_quantities.append((line, round(new_qty, 5)))
             for line, qty in new_quantities:
                 if rec.state not in ['confirm', 'confirm_finish']:
                     line.quantity = qty
