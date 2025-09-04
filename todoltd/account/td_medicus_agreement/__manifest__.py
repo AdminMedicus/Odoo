@@ -20,6 +20,8 @@
     ],
 
     'data': [
+        # data
+        'data/td_agreement_types_data.xml',
         # security
         'security/ir.model.access.csv',
         # views
