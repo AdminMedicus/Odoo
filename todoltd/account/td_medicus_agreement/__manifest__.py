@@ -2,7 +2,7 @@
 {
     'name': "Modification ToDo Agreement",
     'summary': 'Additional for ToDo Agreement',
-    'version': '18.0.0.0.14',
+    'version': '18.0.0.0.15',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
@@ -20,8 +20,6 @@
     ],
 
     'data': [
-        # data
-        'data/td_agreement_types_data.xml',
         # security
         'security/ir.model.access.csv',
         # views
@@ -31,6 +29,7 @@
         'views/stock_picking_views.xml',
         'views/stock_move_views.xml',
         'views/stock_picking_type_views.xml',
+        'views/td_agreement_types_views.xml',
         # yaroslav agreement
         'views/td_agreements_reporting.xml',
         'views/td_agreement_closing_reasons_views.xml',
