@@ -45,14 +45,28 @@ class StockPicking(models.Model):
     td_supplier_document = fields.Char()
     td_date_supplier_document = fields.Date()
 
-    td_amount_origin_currency = fields.Float(
-        compute="_compute_total_amounts"
+    td_company_currency_id = fields.Many2one(
+        'res.currency',
+        related='company_id.currency_id',
+        readonly=True,
+        store=True
     )
-    td_total_without_tax = fields.Float(
-        compute="_compute_total_amounts"
+
+    td_amount_origin_currency = fields.Monetary(
+        compute="_compute_total_amounts",
+        currency_field="td_currency_id",
     )
-    td_total_tax = fields.Float(
-        compute="_compute_total_amounts"
+    td_total_without_tax = fields.Monetary(
+        compute="_compute_total_amounts",
+        currency_field="td_company_currency_id",
+    )
+    td_total_tax = fields.Monetary(
+        compute="_compute_total_amounts",
+        currency_field="td_company_currency_id",
+    )
+    td_total_amount = fields.Monetary(
+        compute='_compute_td_total_amount',
+        currency_field="td_company_currency_id",
     )
 
     def td_button_send_data_to_one_c(self):
@@ -63,8 +77,19 @@ class StockPicking(models.Model):
         for rec in self:
             lines = rec.move_ids_without_package
             rec.td_amount_origin_currency = sum(lines.mapped('td_price_subtotal')) or 0
-            rec.td_total_without_tax = sum(lines.mapped('td_price_subtotal')) or 0
+            # rec.td_total_without_tax = sum(lines.mapped('td_price_subtotal')) or 0
             rec.td_total_tax = sum(lines.mapped('td_taxes_price')) or 0
+
+            if rec.td_is_import:
+                rec.td_total_without_tax = sum([
+                    move.td_customs_value_good
+                    for move in rec.move_ids_without_package
+                ])
+            else:
+                rec.td_total_without_tax = sum([
+                    move.td_price_subtotal
+                    for move in rec.move_ids_without_package
+                ])
 
     @api.depends('picking_type_id')
     def _compute_picking_code(self):

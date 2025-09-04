@@ -8,7 +8,8 @@ class AccountMove(models.Model):
         comodel_name='td.tax.invoice'
     )
     td_tax_invoice_ids = fields.Many2many(
-        comodel_name='td.tax.invoice'
+        comodel_name='td.tax.invoice',
+        store=True
     )
     td_tax_invoice_name = fields.Char(
         compute='_compute_td_tax_invoice_name'
@@ -32,6 +33,11 @@ class AccountMove(models.Model):
     td_budget_funds = fields.Boolean(
         default=False,
         related='td_order_id.budget_funds'
+    )
+
+    td_paid_invoice = fields.Boolean()
+    td_tax_totals = fields.Binary(
+        compute='_compute_td_tax_totals'
     )
 
     def _get_next_sequence_format(self):
@@ -106,6 +112,7 @@ class AccountMove(models.Model):
 
 
             record = self.env['td.tax.invoice'].create(record_data)
+            record._compute_total_price()
             if record_data['invoice_type'] == 'regular':
                 move.td_tax_invoice_id = record.id
             else:
@@ -148,8 +155,6 @@ class AccountMove(models.Model):
             }) for line in self.invoice_line_ids
         ]
 
-
-
     def action_open_td_tax_invoice(self):
         self.ensure_one()
         if self.td_advance_payment_method == 'delivered':
@@ -170,6 +175,98 @@ class AccountMove(models.Model):
             'target': 'current',
         }
 
+    @api.depends_context('lang')
+    @api.depends(
+        'invoice_line_ids.currency_rate',
+        'invoice_line_ids.tax_base_amount',
+        'invoice_line_ids.tax_line_id',
+        'invoice_line_ids.price_total',
+        'invoice_line_ids.price_subtotal',
+        'invoice_payment_term_id',
+        'partner_id',
+        'currency_id',
+        'td_paid_invoice'
+    )
+    def _compute_td_tax_totals(self):
+        """ Computed field used for custom widget's rendering.
+            Only set on invoices.
+        """
+        for move in self:
+            if move.is_invoice(include_receipts=True):
+                base_lines, _tax_lines = move._get_rounded_base_and_tax_lines()
+                move.td_tax_totals = self.env['account.tax']._get_tax_totals_summary(
+                    base_lines=base_lines,
+                    currency=move.currency_id,
+                    company=move.company_id,
+                    cash_rounding=move.invoice_cash_rounding_id,
+                )
+                move.td_tax_totals['display_in_company_currency'] = (
+                        move.company_id.display_invoice_tax_company_currency
+                        and move.company_currency_id != move.currency_id
+                        and move.td_tax_totals['has_tax_groups']
+                        and move.is_sale_document(include_receipts=True)
+                )
+            else:
+                # Non-invoice moves don't support that field (because of multicurrency: all lines of the invoice share the same currency)
+                move.td_tax_totals = None
+
+    @api.depends_context('lang')
+    @api.depends(
+        'invoice_line_ids.currency_rate',
+        'invoice_line_ids.tax_base_amount',
+        'invoice_line_ids.tax_line_id',
+        'invoice_line_ids.price_total',
+        'invoice_line_ids.price_subtotal',
+        'invoice_payment_term_id',
+        'partner_id',
+        'currency_id',
+        'td_paid_invoice'
+    )
+    def _compute_tax_totals(self):
+        """ Computed field used for custom widget's rendering.
+            Only set on invoices.
+        """
+        for move in self:
+            if move.is_invoice(include_receipts=True):
+                base_lines, _tax_lines = move._get_rounded_base_and_tax_lines()
+                move.tax_totals = self.env['account.tax']._get_tax_totals_summary(
+                    base_lines=base_lines,
+                    currency=move.currency_id,
+                    company=move.company_id,
+                    cash_rounding=move.invoice_cash_rounding_id,
+                )
+                move.tax_totals['display_in_company_currency'] = (
+                        move.company_id.display_invoice_tax_company_currency
+                        and move.company_currency_id != move.currency_id
+                        and move.tax_totals['has_tax_groups']
+                        and move.is_sale_document(include_receipts=True)
+                )
+                if move.td_paid_invoice:
+                    move.tax_totals = self._zero_tax_amounts(move.tax_totals)
+            else:
+                # Non-invoice moves don't support that field (because of multicurrency: all lines of the invoice share the same currency)
+                move.tax_totals = None
+
+    def _zero_tax_amounts(self, tax_totals: dict) -> dict:
+        if not tax_totals:
+            return tax_totals
+
+        tax_totals = dict(tax_totals)
+
+        for key in ['total_amount_currency', 'total_amount',
+                    'tax_amount_currency', 'tax_amount']:
+            if key in tax_totals:
+                tax_totals[key] = 0.0
+
+        for subtotal in tax_totals.get('subtotals', []):
+            subtotal['tax_amount_currency'] = 0.0
+            subtotal['tax_amount'] = 0.0
+            for group in subtotal.get('tax_groups', []):
+                group['tax_amount_currency'] = 0.0
+                group['tax_amount'] = 0.0
+
+        return tax_totals
+
     @api.depends(
         'line_ids.matched_debit_ids.debit_move_id.move_id.origin_payment_id.is_matched',
         'line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual',
@@ -185,6 +282,7 @@ class AccountMove(models.Model):
         'line_ids.payment_id.state',
         'line_ids.full_reconcile_id',
         'line_ids.td_paid_price',
+        'td_paid_invoice',
         'state')
     def _compute_amount(self):
         for move in self:
@@ -245,3 +343,4 @@ class AccountMove(models.Model):
                     if any(inv.td_prepayment for inv in other_invoices):
                         move.amount_residual = 0.0
                         move.amount_residual_signed = 0.0
+                        move.td_paid_invoice = True

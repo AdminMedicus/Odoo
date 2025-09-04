@@ -77,7 +77,7 @@ class TdTaxInvoice(models.Model):
     )
     narration = fields.Text()
     price_with_out_tax = fields.Float(
-        compute='_compute_total_price'
+        compute='_compute_total_price',
     )
     price_vat = fields.Float(
         compute='_compute_total_price'
@@ -227,6 +227,7 @@ class TdTaxInvoice(models.Model):
             price_vat = []
             price_total = []
             for line in inv.td_invoice_line_ids:
+                line._compute_product_id()
                 price_with_out_tax.append(line.price_with_out_vat)
                 price_vat.append(line.vat_price)
                 price_total.append(line.sum_price_with_vat)
