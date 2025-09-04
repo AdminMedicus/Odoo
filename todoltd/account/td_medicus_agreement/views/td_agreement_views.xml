@@ -165,7 +165,7 @@
                     <field name="pricelist_id"/>
                     <field name="document_available"/>
 <!--                    <field name="main_contract"/>-->
-                    <field name="implementation_document"/>
+                    <field name="implementation_document" invisible="1"/>
                 </group>
             </xpath>
             <xpath expr="//page[@name='description']" position="after">
