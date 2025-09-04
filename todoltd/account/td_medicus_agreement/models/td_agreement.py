@@ -55,6 +55,9 @@ class Agreement(models.Model):
         compute='_compute_implementation_document',
         store=True
     )
+    implementation_document_additional = fields.Boolean(
+        compute='_compute_implementation_document'
+    )
 
     pre_payment = fields.Float()
     pre_payment_date_to = fields.Date()
@@ -137,6 +140,7 @@ class Agreement(models.Model):
         for rec in self:
 
             rec.implementation_document = False
+            rec.implementation_document_additional = False
 
             if rec.type_of_agreement and rec.type_of_agreement.implementation_document:
                 rec.implementation_document = rec.type_of_agreement.implementation_document
