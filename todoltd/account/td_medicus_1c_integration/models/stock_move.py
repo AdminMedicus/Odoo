@@ -13,7 +13,8 @@ class StockMove(models.Model):
 
 
     td_customs_value_good = fields.Float(
-        compute='_compute_td_customs_value_good'
+        compute='_compute_td_customs_value_good',
+        store=True
     )
     td_taxes_ids = fields.Many2many(
         comodel_name='account.tax',
@@ -37,7 +38,9 @@ class StockMove(models.Model):
 
             move.td_taxes_price = 0
             if move.td_taxes and move.td_price_unit:
-                move.td_taxes_price = move.td_price_unit * move.td_taxes
+                move.td_taxes_price = move.td_price_subtotal * move.td_taxes
+                if move.picking_id.td_is_import:
+                    move.td_taxes_price = move.td_customs_value_good * move.td_taxes
 
     @api.depends('td_taxes_price', 'td_book_value', 'td_customs_value_good', 'td_currency_rate')
     def _compute_td_price_total(self):

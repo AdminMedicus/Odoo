@@ -41,6 +41,7 @@
                 <field name="state" widget="statusbar" invisible="picking_type_code != 'incoming' or not td_is_import" statusbar_visible="draft,assigned,done,import"/>
             </xpath>
             <xpath expr="//field[@name='td_total_amount']" position="before">
+                <field name="td_company_currency_id" invisible="1"/>
                 <field name="td_amount_origin_currency"/>
                 <field name="td_total_without_tax"/>
                 <field name="td_total_tax"/>

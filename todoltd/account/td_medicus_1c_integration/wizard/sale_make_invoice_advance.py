@@ -106,10 +106,11 @@ class SaleMakeInvoiceAdvance(models.TransientModel):
             order_lines = sale_orders.order_line.filtered(lambda x: x.is_downpayment == True)
             for invoice_line in invoice.invoice_line_ids:
                 for order_line in order_lines.filtered(lambda rec: rec.product_id.id == invoice_line.product_id.id):
-                    invoice_line.price_unit = invoice_line.price_unit- order_line.price_unit
+                    # invoice_line.price_unit = invoice_line.price_unit- order_line.price_unit
                     invoice_line.td_paid_price = invoice_line.td_paid_price + order_line.price_unit
 
-            invoice.amount_residual = sum([line.price_unit for line in invoice.invoice_line_ids])
+            # invoice.amount_residual = sum([line.price_unit for line in invoice.invoice_line_ids])
+            invoice.td_paid_invoice = True
             return invoice
 
         self.sale_order_ids.ensure_one()
