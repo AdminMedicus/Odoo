@@ -51,7 +51,9 @@ class Agreement(models.Model):
             ('exp_inv', 'Expenditure invoice'),
             ('act_res_st', 'Act of responsible storage'),
             ('move', 'Movement')
-        ]
+        ],
+        compute='_compute_implementation_document',
+        store=True
     )
 
     pre_payment = fields.Float()
@@ -129,6 +131,23 @@ class Agreement(models.Model):
         string='Timeliness of Payment (%)',
         compute='_compute_timeline_percentage'
     )
+
+    @api.depends('type_of_agreement')
+    def _compute_implementation_document(self):
+        for rec in self:
+            exp_inv = self.env.ref('td_medicus_agreement.td_agreement_type_exp_inv').id
+            act_res_st = self.env.ref('td_medicus_agreement.td_agreement_type_act_res_st').id
+            move = self.env.ref('td_medicus_agreement.td_agreement_type_move').id
+
+            rec.implementation_document = False
+
+            if rec.type_of_agreement:
+                if rec.type_of_agreement.id == exp_inv:
+                    rec.implementation_document = 'exp_inv'
+                elif rec.type_of_agreement.id == act_res_st:
+                    rec.implementation_document = 'act_res_st'
+                elif rec.type_of_agreement.id == move:
+                    rec.implementation_document = 'move'
 
     @api.onchange('partner_id')
     def _compute_allowed_sub_client_ids(self):
