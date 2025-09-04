@@ -629,7 +629,7 @@ msgstr "Дата документу постачальника"
 #. module: td_medicus_1c_integration
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_picking__td_amount_origin_currency
 msgid "Td Amount Origin Currency"
-msgstr "Сума у оригінальні валюті"
+msgstr "Всього"
 
 #. module: td_medicus_1c_integration
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_picking__td_total_without_tax
