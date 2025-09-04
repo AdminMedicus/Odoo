@@ -59,6 +59,7 @@ msgstr "Умови договору"
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_sale_report__implementation_document
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_stock_picking__implementation_document
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement__implementation_document
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement_types__implementation_document
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_td_stock_report__implementation_document
 msgid "Implementation Document"
 msgstr "Документ реалізації"
@@ -68,6 +69,7 @@ msgstr "Документ реалізації"
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__sale_report__implementation_document__exp_inv
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__stock_picking__implementation_document__exp_inv
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__td_agreement__implementation_document__exp_inv
+#: model:ir.model.fields.selection,name:td_medicus_agreement.selection__td_agreement_types__implementation_document__exp_inv
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__td_stock_report__implementation_document__exp_inv
 #: model:td.agreement.types,name:td_medicus_agreement.td_agreement_type_exp_inv
 msgid "Expenditure invoice"
@@ -78,6 +80,7 @@ msgstr "Видаткова накладна"
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__sale_report__implementation_document__act_res_st
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__stock_picking__implementation_document__act_res_st
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__td_agreement__implementation_document__act_res_st
+#: model:ir.model.fields.selection,name:td_medicus_agreement.selection__td_agreement_types__implementation_document__act_res_st
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__td_stock_report__implementation_document__act_res_st
 #: model:td.agreement.types,name:td_medicus_agreement.td_agreement_type_act_res_st
 msgid "Act of responsible storage"
@@ -88,6 +91,7 @@ msgstr "Акт відповідального зберігання"
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__sale_report__implementation_document__move
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__stock_picking__implementation_document__move
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__td_agreement__implementation_document__move
+#: model:ir.model.fields.selection,name:td_medicus_agreement.selection__td_agreement_types__implementation_document__move
 #: model:ir.model.fields.selection,name:td_medicus_agreement.selection__td_stock_report__implementation_document__move
 #: model:td.agreement.types,name:td_medicus_agreement.td_agreement_type_move
 msgid "Movement"
