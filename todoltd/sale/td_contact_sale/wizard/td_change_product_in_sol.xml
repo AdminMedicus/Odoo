@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="td_change_product_in_sol_view_form" model="ir.ui.view">
+        <field name="name">td.change.product.in.sol.form</field>
+        <field name="model">td.change.product.in.sol</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="td_sale_order_line" readonly="1" invisible="1"/>
+                        <field name="td_product_template_ids" nolabel="1">
+                            <list>
+                                <button
+                                        name="action_choose_product_for_sol"
+                                        type="object"
+                                        string="Choose"
+                                        class="btn btn-primary"
+                                />
+                                <field name="name" optional="show"/>
+                                <field name="list_price" optional="show"/>
+                                <field name="standard_price" optional="show"/>
+                                <field name="taxes_id" widget="many2many_tags" optional="show"/>
+                            </list>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
