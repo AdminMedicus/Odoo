@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+
+    <t t-name="td_agreement.AccountReportFilterExtraOptions" t-inherit="account_reports.AccountReportFilterExtraOptions">
+        <xpath expr="//t[@t-if='controller.filters.show_all']" position="before">
+            <t>
+                <DropdownItem class="{'filter_groupby_contract_hook': true, 'selected': controller.options.td_custom_groupby == 'agreement' }"
+                              onSelected="() => controller.options.td_custom_groupby != 'agreement' ? this.filterClicked({ optionKey: 'td_custom_groupby', optionValue: 'agreement', reload: true}) : this.filterClicked({ optionKey: 'td_custom_groupby', optionValue: '', reload: true})">
+                    Group by Agreement
+                </DropdownItem>
+            </t>
+        </xpath>
+    </t>
+
+</templates>

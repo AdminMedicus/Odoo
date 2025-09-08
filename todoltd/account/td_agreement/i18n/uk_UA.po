@@ -1,0 +1,431 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* td_agreement
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-09-04 16:53+0000\n"
+"PO-Revision-Date: 2024-09-04 16:53+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__account_id
+msgid "Account"
+msgstr "Рахунок"
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__account_id_domain
+msgid "Account Id Domain"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: td_agreement
+#. odoo-javascript
+#: code:addons/td_agreement/static/src/components/bank_reconciliation/bank_rec_form.xml:0
+#: code:addons/td_agreement/static/src/components/bank_reconciliation/kanban.js:0
+#: model:ir.model,name:td_agreement.model_td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_account_bank_statement_line__td_agreement_id
+#: model:ir.model.fields,field_description:td_agreement.field_account_move__td_agreement_id
+#: model:ir.model.fields,field_description:td_agreement.field_account_move_line__td_agreement_id
+#: model:ir.model.fields,field_description:td_agreement.field_account_payment__td_agreement_id
+#: model:ir.model.fields,field_description:td_agreement.field_bank_rec_widget_line__td_agreement_id
+#: model:ir.model.fields,field_description:td_agreement.field_purchase_order__td_agreement_id
+#: model:ir.model.fields,field_description:td_agreement.field_sale_order__td_agreement_id
+#: model:ir.ui.menu,name:td_agreement.menu_td_agreement_root
+#: model_terms:ir.ui.view,arch_db:td_agreement.td_agreement_form
+#, python-format
+msgid "Agreement"
+msgstr "Договір"
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__name
+msgid "Agreement name"
+msgstr "Найменування"
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__number
+msgid "Agreement number"
+msgstr "Номер договору"
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__agreement_type
+msgid "Agreement type"
+msgstr "Тип договру"
+
+#. module: td_agreement
+#: model:ir.model,name:td_agreement.model_td_agreement_types
+msgid "Agreement types"
+msgstr "Типи договорів"
+
+#. module: td_agreement
+#: model:ir.actions.act_window,name:td_agreement.td_action_agreement_view_tree
+#: model:ir.ui.menu,name:td_agreement.menu_td_agreements
+msgid "Agreements"
+msgstr "Договора"
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model,name:td_agreement.model_account_bank_statement_line
+msgid "Bank Statement Line"
+msgstr "Рядок банківської виписки"
+
+#. module: td_agreement
+#: model:ir.model,name:td_agreement.model_bank_rec_widget
+msgid "Bank reconciliation widget for a single statement line"
+msgstr "Віджет узгодження банківської виписки для одного рядка виписки"
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__company_id
+msgid "Company"
+msgstr "Компанія"
+
+#. module: td_agreement
+#: model:ir.model.fields.selection,name:td_agreement.selection__td_agreement__agreement_type__contractor
+msgid "Contractor contract"
+msgstr "Договір з підрядником"
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__partner_id
+msgid "Counterparty"
+msgstr "Контрагент"
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__currency_id
+msgid "Currency"
+msgstr "Валюта"
+
+#. module: td_agreement
+#: model:ir.model.fields.selection,name:td_agreement.selection__td_agreement__agreement_type__customer
+msgid "Customer contract"
+msgstr "Договір з замовником"
+
+#. module: td_agreement
+#: model_terms:ir.ui.view,arch_db:td_agreement.td_agreement_form
+msgid "Description"
+msgstr "Опис"
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__end_date
+msgid "End date"
+msgstr "Дата закінчення"
+
+#. module: td_agreement
+#: model:ir.model.fields.selection,name:td_agreement.selection__td_agreement__agreement_type__finances
+msgid "Finances contract"
+msgstr "Договор з фін. установами"
+
+#. module: td_agreement
+#: model:ir.model.fields.selection,name:td_agreement.selection__td_agreement__agreement_type__other
+msgid "Other customers contract"
+msgstr "Договор з іншими покупцями"
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,help:td_agreement.field_td_agreement__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: td_agreement
+#. odoo-javascript
+#: code:addons/td_agreement/static/src/components/partner_ledger/filter_extra_options.xml:0
+#, python-format
+msgid "Group by Agreement"
+msgstr "Групувати за договорами"
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__id
+msgid "ID"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,help:td_agreement.field_td_agreement__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,help:td_agreement.field_td_agreement__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,help:td_agreement.field_td_agreement__message_has_error
+#: model:ir.model.fields,help:td_agreement.field_td_agreement__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields.selection,name:td_agreement.selection__td_agreement__agreement_type__internal
+msgid "Internal contract AVG"
+msgstr "Внутрішні договора AVG"
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model,name:td_agreement.model_account_move
+msgid "Journal Entry"
+msgstr "Запис у журналі"
+
+#. module: td_agreement
+#: model:ir.model,name:td_agreement.model_account_move_line
+msgid "Journal Item"
+msgstr "Елемент журналу"
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model,name:td_agreement.model_bank_rec_widget_line
+msgid "Line of the bank reconciliation widget"
+msgstr "Рядок віджета узгодження по банку"
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: td_agreement
+#. odoo-python
+#: code:addons/td_agreement/models/agreement.py:0
+#, python-format
+msgid "New"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,help:td_agreement.field_td_agreement__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,help:td_agreement.field_td_agreement__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields.selection,name:td_agreement.selection__td_agreement__agreement_type__office
+msgid "Office contract"
+msgstr "Договір з іншими постачальниками(офіс)"
+
+#. module: td_agreement
+#: model:ir.model,name:td_agreement.model_account_payment
+msgid "Payments"
+msgstr "Платежі"
+
+#. module: td_agreement
+#: model:ir.model,name:td_agreement.model_purchase_order
+msgid "Purchase Order"
+msgstr "Замовлення на купівлю"
+
+#. module: td_agreement
+#: model:ir.model.fields.selection,name:td_agreement.selection__td_agreement__agreement_type__purchase
+msgid "Purchase contract"
+msgstr "Договор з постачальником"
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model,name:td_agreement.model_account_payment_register
+msgid "Register Payment"
+msgstr "Зареєструвати платіж"
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model,name:td_agreement.model_sale_order
+msgid "Sales Order"
+msgstr "Замовлення на продаж"
+
+#. module: td_agreement
+#: model:ir.model.fields.selection,name:td_agreement.selection__td_agreement__agreement_type__sale
+msgid "Sales contract"
+msgstr "Договір з покупцем"
+
+#. module: td_agreement
+#: model:ir.ui.menu,name:td_agreement.td_agreement_menu
+msgid "Settings"
+msgstr "Налаштування"
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__signing_date
+msgid "Signing date"
+msgstr "Дата договору"
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__start_date
+msgid "Start date"
+msgstr "Дата початку"
+
+#. module: td_agreement
+#: model:ir.model.fields,help:td_agreement.field_td_agreement__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_account_payment__td_agreement_id_domain
+msgid "Td Agreement Id Domain"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__type_of_agreement
+msgid "Type of agreement"
+msgstr "Тип договору"
+
+#. module: td_agreement
+#: model:ir.actions.server,name:td_agreement.auto_reconcile_bank_statement_line_ir_actions_server
+msgid "Types of Agreement: fill new field with existing data"
+msgstr "Типи договорів: заповнити нові поля існуючими даними"
+
+#. module: td_agreement
+#: model:ir.actions.act_window,name:td_agreement.td_agreement_types_action
+#: model:ir.ui.menu,name:td_agreement.td_agreement_types_menu_action
+#: model_terms:ir.ui.view,arch_db:td_agreement.td_agreement_types_tree
+msgid "Types of Agreements"
+msgstr "Типи договорів"
+
+#. module: td_agreement
+#: model:ir.model.fields,help:td_agreement.field_td_agreement__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,field_description:td_agreement.field_td_agreement__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: td_agreement
+#: model:ir.model.fields,help:td_agreement.field_td_agreement__website_message_ids
+msgid "Website communication history"
+msgstr ""

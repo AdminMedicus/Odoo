@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_td_agreement_user,access.td.agreement.user,model_td_agreement,base.group_user,1,1,1,1
+access_td_agreement_system,access.td.agreement.system,model_td_agreement,base.group_system,1,1,1,1
+access_td_agreement_types,access_td_agreement_types,model_td_agreement_types,base.group_user,1,1,1,1
