@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_partner_form_td_region_inherit" model="ir.ui.view">
+        <field name="name">res.partner.td.region.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="region_id"/>
+            </xpath>
+            <xpath expr="//span[@name='address_name']" position="before">
+                <field name="full_partner_name"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Sub client" name="sub_client">
+                    <field name="sub_client_rel_ids">
+                        <list editable="bottom">
+                            <field name="sub_client_id" optional="show"/>
+                            <field name="is_typical" optional="show"/>
+                            <field name="city" optional="show"/>
+                            <field name="phone" optional="show"/>
+                            <field name="mobile" optional="show"/>
+                            <field name="user_id" optional="show"/>
+                            <field name="category_id" optional="show"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
