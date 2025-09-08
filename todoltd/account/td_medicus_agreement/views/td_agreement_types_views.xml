@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Form View to Modify it -->
+    <record id="td_medicus_agreement_types_view_form" model="ir.ui.view">
+		<field name="name">td.agreement.print.type.group.form</field>
+		<field name="model">td.agreement.types</field>
+        <field name="inherit_id" ref="td_agreement.td_agreement_types_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='td_type']" position="after">
+                <field name="implementation_document"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_td_res_partner_form_inherit" model="ir.ui.view">
+        <field name="name">td.res.partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_agreements" type="object"
+                        class="oe_stat_button" icon="fa-pencil-square-o"
+                        >
+                        <field string="Agreements" name="count_agreement" widget="statinfo"/>
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='full_partner_name']" position="after">
+                <field name="td_ukrainian_name"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_td_res_partner_form_inherit_standard_agreement" model="ir.ui.view">
+        <field name="name">td.res.partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="delivery.view_partner_property_form"/>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='property_delivery_carrier_id']" position="after">
+                <field name="standard_agreement_expense_id" domain="[('partner_id', '=', id), ('implementation_document', '=', 'exp_inv')]"/>
+                <field name="standard_agreement_custody_id" domain="[('partner_id', '=', id), ('implementation_document', '=', 'act_res_st')]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
