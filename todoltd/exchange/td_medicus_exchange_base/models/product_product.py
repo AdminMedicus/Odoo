@@ -1,58 +1,11 @@
 from odoo import api, Command, fields, models
-from typing import cast
 
 from odoo.addons.ata_exchange_v4.models.ata_exchange_method import AtaExchangeMethod
 from odoo.addons.ata_exchange_v4.models.ata_exchange_class  import AtaExchangeClass
 from odoo.addons.ata_exchange_v4.models.ata_exchange_model_handler_mixin import RecordHandlerParams
 
-#region types
-from enum import Enum
-from pydantic import BaseModel as BaseModelPydantic
-
-class ProductDataIncomingVendor(BaseModelPydantic):
-    id: int
-    name: str
-    name_full: str
-
-class TaxCodeEnum(str, Enum):
-    TAX_20 = "vat20"
-    TAX_14 = "vat14"
-    TAX_7 = "vat7"
-    TAX_0 = "vat0"
-    TAX_FREE = "vat_free"
-    TAX_NO = "vat_not"
-
-
-class ProductDataIncoming(BaseModelPydantic):
-    id: int
-    name: str
-    name_full: str
-    tax_code: TaxCodeEnum
-    category: str
-    vendor: ProductDataIncomingVendor
-    uktzed: str
-    account_code: str
-    supplier_code: str
-    tracking_lot: bool
-
-SALE_TAX_MAPPING = {
-    TaxCodeEnum.TAX_20: "account.1_sale_tax_template_vat20_psbo",
-    TaxCodeEnum.TAX_14: "account.1_sale_tax_template_vat14_psbo",
-    TaxCodeEnum.TAX_7:  "account.1_sale_tax_template_vat7_psbo",
-    TaxCodeEnum.TAX_0:  "account.1_sale_tax_template_vat0_psbo",
-    TaxCodeEnum.TAX_FREE: "account.1_sale_tax_template_vat_free_psbo",
-    TaxCodeEnum.TAX_NO: "account.1_sale_tax_template_vat_not_psbo",
-}
-
-PURCHASE_TAX_MAPPING = {
-    TaxCodeEnum.TAX_20: "account.1_purchase_tax_template_vat20_psbo",
-    TaxCodeEnum.TAX_14: "account.1_purchase_tax_template_vat14_psbo",
-    TaxCodeEnum.TAX_7:  "account.1_purchase_tax_template_vat7_psbo",
-    TaxCodeEnum.TAX_0:  "account.1_purchase_tax_template_vat0_psbo",
-    TaxCodeEnum.TAX_FREE: "account.1_purchase_tax_template_vat_free_psbo",
-    TaxCodeEnum.TAX_NO: "account.1_purchase_tax_template_vat_not_psbo",
-}    
-#endregion
+from .pydantic_model import ProductDataIncoming, SALE_TAX_MAPPING, PURCHASE_TAX_MAPPING
+from typing import cast
 
 class TdProductTemplateExchange(models.Model):
     _name = 'product.template'
@@ -77,7 +30,7 @@ class TdProductProductExchange(models.Model):
     #region outgoing function
     def ata_exchange_compute_methods(self) -> list[AtaExchangeMethod]:
         methods = [
-            self.env.ref('td_medicus_exchange_base.product_outgoing')
+            self.env.ref('td_medicus_exchange_base.product_odoo_1c')
         ]
         return methods
 
@@ -101,15 +54,15 @@ class TdProductProductExchange(models.Model):
                 return 'service'
             case _:
                 return 'product'
-
     #endregion
 
     #region incoming function
     def ata_exchange_prepare_vals(self,
         record_params: RecordHandlerParams) -> dict:
 
-        if record_params['search_params']['method_id'] == self.env.ref('td_medicus_exchange_base.product_incoming'):
-            return self.ata_exchange_prepare_vals_product(record_params)
+        if inc_params := record_params.incoming_params:
+            if inc_params.method_id == self.env.ref('td_medicus_exchange_base.product_1c_odoo'):
+                return self.ata_exchange_prepare_vals_product(record_params)
 
         return {}
 
@@ -117,7 +70,7 @@ class TdProductProductExchange(models.Model):
         record_params: RecordHandlerParams) -> dict[str, str|int|list]:
         
         product_data = cast(ProductDataIncoming,
-            self.ata_exchange_process_data_with_pydantic(record_params['data'], ProductDataIncoming))
+            self.ata_exchange_process_data_with_pydantic(record_params.data, ProductDataIncoming))
         
         vals: dict[str, str|int|list] = {
             "name":                 product_data.name,
@@ -145,59 +98,39 @@ class TdProductProductExchange(models.Model):
                 vals["supplier_taxes_id"] = [Command.set([purchase_tax_record.id])]
 
         # CATEGORY 1C
-        vals["td_one_c_category_id"] = self.ata_exchange_get_model_record({
-            **(default_params:=self.ata_exchange_get_default_record_handler_params('td.one_c.category')),
-            'data': {
-                'full_name': product_data.category
-            },
-            'create_record': True,
-            'search_params': {
-                **default_params['search_params'],
-                'search_domain': [
-                    ('full_name', '=', product_data.category)
-                ]
-            }
-        }).id
+        category_params = record_params.build(self.env, 'td.one_c.category')
+        category_params.data = {
+            'full_name': product_data.category
+        }
+        category_params.create_record = True
+        category_params.search_params.search_domain = [
+            ('full_name', '=', product_data.category)
+        ]
+        vals["td_one_c_category_id"] = self.ata_exchange_get_model_record(category_params).id
 
         # SUPPLIERINFO
-        # vals["seller_ids"] = [
-        #     Command.clear(),
-        #     Command.create({
-        #         "partner_id": self.ata_exchange_get_model_record({
-        #             **(default_params:=self.ata_exchange_get_default_record_handler_params('res.partner')),
-        #             'data': {
-        #                 'id': product_data.vendor.id,
-        #                 'name': product_data.vendor.name,
-        #                 'full_name': product_data.vendor.name_full,
-        #             },
-        #             'create_record': True,
-        #             'search_params': {
-        #                 **default_params['search_params'],
-        #                 'use_matching_data': True,
-        #                 'key_matching_data': 'id',
-        #                 'ext_system_id': record_params['search_params']['ext_system_id'],
-        #                 'method_id': self.env.ref('td_medicus_exchange_base.inner_types_vendor_1c'),
-        #                 'search_domain_second': [
-        #                     ('full_name', '=', product_data.vendor.name)
-        #                 ]
-        #             }
-        #         }).id,
-        #     })
-        # ]
+        seller_lines = []
+        if vendor_data := product_data.vendor:
+            vendor_params = record_params.build(self.env, 'res.partner',
+                self.env.ref('td_medicus_exchange_base.inner_types_vendor_1c'))
+            vendor_params.data = vendor_data.model_dump()
+            vendor_params.create_record = True
+            vendor_params.search_params.use_matching_data = True
+            vendor_params.search_params.key_matching_data = 'id'
+            
+            partner_id = self.ata_exchange_get_model_record(vendor_params).id
+            seller_lines.append(Command.create({"partner_id": partner_id}))
+
+        vals["seller_ids"] = [Command.clear()] + seller_lines
 
         #UKTZED
-        vals["td_uktzed_code_id"] = self.ata_exchange_get_model_record({
-            **(default_params:=self.ata_exchange_get_default_record_handler_params('td.uktzed')),
-            'search_params': {
-                **default_params['search_params'],
-                'search_domain': [
-                    ('code', '=', product_data.uktzed)
-                ]
-            }
-        }).id
+        uktzed_params = record_params.build(self.env, 'td.uktzed')
+        uktzed_params.search_params.search_domain = [
+            ('code', '=', product_data.uktzed)
+        ]
+        vals["td_uktzed_code_id"] = self.ata_exchange_get_model_record(uktzed_params).id
 
         #ACCOUNT CODE
-
 
         return vals
     #endregion

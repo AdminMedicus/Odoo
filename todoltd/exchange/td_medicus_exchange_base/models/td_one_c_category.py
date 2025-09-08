@@ -25,25 +25,19 @@ class TdOneCCategory(models.Model):
     def ata_exchange_prepare_vals(self,
         record_params: RecordHandlerParams) -> dict[str, str|int|list]:
 
-        full_name: str = record_params['data']['full_name']
+        full_name: str = record_params.data['full_name']
         name_list = full_name.split('/')
 
+        parent_category_1c_id = None
         if len(name_list) > 1:
-            parent_category_1c_id = self.ata_exchange_get_model_record({
-                **(default_params:=self.ata_exchange_get_default_record_handler_params('td.one_c.category')),
-                'data': {
-                    'full_name': (full_name_parent := "/".join(name_list[:-1]))
-                },
-                'create_record': True,
-                'search_params': {
-                    **default_params['search_params'],
-                    'search_domain': [
-                        ('full_name', '=', full_name_parent)
-                    ]
-                }
-            })
-        else:
-            parent_category_1c_id = None
+            full_name_parent = "/".join(name_list[:-1])
+            category_params = record_params.build(self.env, 'td.one_c.category')
+            category_params.data = {'full_name': full_name_parent}
+            category_params.create_record = True
+            category_params.search_params.search_domain = [
+                ('full_name', '=', full_name_parent)
+            ]
+            parent_category_1c_id = self.ata_exchange_get_model_record(category_params)
         
         vals = {
             "name": name_list[-1],

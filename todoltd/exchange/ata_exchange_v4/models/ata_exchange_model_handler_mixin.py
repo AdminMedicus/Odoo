@@ -38,28 +38,6 @@ class AtaExchangeModelHandlerMixin(models.AbstractModel):
     _description = "Exchange model handler methods"
 
     @api.model
-    def ata_exchange_get_default_record_handler_params(self,
-        model_name: str,
-        inc_req_params: IncomingRequestParam|None = None) -> RecordHandlerParams:
-
-        return {
-            'data': {},
-            'model_name': model_name,
-            'model': self.env[model_name],
-            'create_record': False,
-            'write_record': False,
-            'add_to_queue': False,
-            'search_params': {
-                'search_domain': None,
-                'search_domain_second': None,
-                'use_matching_data': False,
-                'key_matching_data': 'id_matching',
-                'ext_system_id': inc_req_params['ext_system_id'] if inc_req_params else None,
-                'method_id': inc_req_params['method_id'] if inc_req_params else None
-            }
-        }
-
-    @api.model
     def ata_exchange_get_model_record(self,        
         record_params: RecordHandlerParams) -> models.BaseModel:
 
