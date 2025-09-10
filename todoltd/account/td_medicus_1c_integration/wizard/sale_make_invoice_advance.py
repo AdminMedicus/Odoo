@@ -63,7 +63,6 @@ class SaleMakeInvoiceAdvance(models.TransientModel):
             else:
                 line.td_choose_payment_method = False
 
-    # @api.depends('td_advance_payment_method', 'td_advance_payment_method_one', 'td_choose_payment_method')
     def _compute_advance_payment_method(self):
         for line in self:
             line.td_payment_method = 'percentage'
@@ -103,13 +102,17 @@ class SaleMakeInvoiceAdvance(models.TransientModel):
                 final=self.deduct_down_payments,
                 grouped=not self.consolidated_billing
             )
-            order_lines = sale_orders.order_line.filtered(lambda x: x.is_downpayment == True)
+            order_lines = sale_orders.order_line.filtered(
+                lambda x: x.is_downpayment
+            )
             for invoice_line in invoice.invoice_line_ids:
-                for order_line in order_lines.filtered(lambda rec: rec.product_id.id == invoice_line.product_id.id):
-                    # invoice_line.price_unit = invoice_line.price_unit- order_line.price_unit
-                    invoice_line.td_paid_price = invoice_line.td_paid_price + order_line.price_unit
+                for order_line in order_lines.filtered(
+                    lambda rec: rec.product_id.id == invoice_line.product_id.id
+                ):
+                    invoice_line.td_paid_price = (
+                        invoice_line.td_paid_price + order_line.price_unit
+                    )
 
-            # invoice.amount_residual = sum([line.price_unit for line in invoice.invoice_line_ids])
             invoice.td_paid_invoice = True
             return invoice
 
@@ -155,24 +158,43 @@ class SaleMakeInvoiceAdvance(models.TransientModel):
             if fixed_amount <= 0:
                 raise ValidationError(_("Fixed amount must be positive."))
 
-            order_total = sum(line.price_unit * line.product_uom_qty for line in order.order_line.filtered(
-                lambda l: not l.display_type and l.product_id and l.qty_to_invoice > 0))
+            order_total = sum(
+                line.price_unit * line.product_uom_qty
+                for line in order.order_line.filtered(
+                    lambda ord_l: (
+                        not ord_l.display_type
+                        and ord_l.product_id
+                        and ord_l.qty_to_invoice > 0
+                    )
+                )
+            )
             if order_total <= 0:
-                raise UserError(_("The sales order has no invoiceable lines with positive total."))
+                raise UserError(
+                    _("The sales order has no invoiceable "
+                      "lines with positive total.")
+                )
 
             invoice_line_data = []
             for line in order.order_line.filtered(
-                    lambda l: not l.display_type and l.product_id and l.qty_to_invoice > 0):
+                    lambda ord_l: (
+                        not ord_l.display_type
+                        and ord_l.product_id
+                        and ord_l.qty_to_invoice > 0
+                    )
+            ):
                 line_total = line.price_unit * line.product_uom_qty
                 line_share = line_total / order_total
                 line_amount = fixed_amount * line_share
 
-                price_unit = line_amount / line.product_uom_qty if line.product_uom_qty else 0
+                price_unit = line_amount / line.product_uom_qty \
+                    if line.product_uom_qty else 0
 
                 invoice_line_data.append({
                     'origin_line': line,
                     'values': {
-                        'name': _('Down payment invoice %s') % line.product_id.name,
+                        'name': _(
+                            'Down payment invoice %s'
+                        ) % line.product_id.name,
                         'product_id': line.product_id.id,
                         'display_type': False,
                         'product_uom_qty': line.product_uom_qty,

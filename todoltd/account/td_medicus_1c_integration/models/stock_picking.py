@@ -303,14 +303,12 @@ class StockPicking(models.Model):
                 if not product or product.tracking != 'serial':
                     continue
 
-                for ml in move.move_line_ids.filtered(lambda l: l.lot_id):
+                for ml in move.move_line_ids.filtered(lambda m_l: m_l.lot_id):
                     ref_val = self._next_daily_serial_ref(today)
                     try:
                         ml.lot_id.write({'ref': ref_val})
                     except Exception:
                         pass
-
-
 
     def button_validate(self):
         # if not self.td_is_import:
@@ -324,10 +322,17 @@ class StockPicking(models.Model):
             for move in picking.move_ids:
 
                 for lot in move.lot_ids:
-                    uktzed_line = move.move_line_ids.filtered(lambda lin: lin.lot_id.id == lot.id)
+                    uktzed_line = move.move_line_ids.filtered(
+                        lambda lin: lin.lot_id.id == lot.id
+                    )
                     move.lot_ids.write({
-                        'td_uktzed_code_id': uktzed_line.td_uktzed_code_id.id if uktzed_line else False
+                        "td_uktzed_code_id": (
+                            uktzed_line.td_uktzed_code_id.id
+                            if uktzed_line else False
+                        )
                     })
-                    move.td_uktzed_code_id = uktzed_line.td_uktzed_code_id.id if uktzed_line else False
+                    move.td_uktzed_code_id = (
+                        uktzed_line.td_uktzed_code_id.id
+                        if uktzed_line else False
+                    )
         return res
-        # return False
