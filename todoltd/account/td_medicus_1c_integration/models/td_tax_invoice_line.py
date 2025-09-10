@@ -58,9 +58,6 @@ class TdTaxInvoiceLine(models.Model):
     vat_type = fields.Selection(
         related='vat_id.price_include_override'
     )
-    # vat_price = fields.Float()
-    # price_with_vat = fields.Float()
-
 
     price_with_out_vat = fields.Float()
     sum_price_with_out_vat = fields.Float()
@@ -68,7 +65,6 @@ class TdTaxInvoiceLine(models.Model):
     vat_price = fields.Float()
     sum_vat_price = fields.Float()
     sum_price_with_vat = fields.Float()
-
 
     # SaleOrder fields
     sale_order_price = fields.Float(
@@ -113,13 +109,17 @@ class TdTaxInvoiceLine(models.Model):
     def _compute_lot_ids(self):
         for rec in self:
             if rec.td_invoice_id.invoice_type == 'regular':
-                if rec.invoice_line_id and rec.invoice_line_id.td_order_line_id:
+                line = rec.invoice_line_id
+                if line and line.td_order_line_id:
                     records = self.env['stock.move'].search([
                         ('sale_line_id', '=',
                          rec.invoice_line_id.td_order_line_id.id)
                     ])
                     outgoing_record = records.filtered(
-                        lambda pick: pick.picking_id and pick.picking_id.picking_type_code == 'outgoing'
+                        lambda pick: (
+                            pick.picking_id
+                            and pick.picking_id.picking_type_code == "outgoing"
+                        )
                     )
                     if outgoing_record:
                         rec.lot_ids = [(6, 0, [
@@ -155,10 +155,16 @@ class TdTaxInvoiceLine(models.Model):
                     price_excluded = line.invoice_price / (1 + tax_rate)
 
                     line.price_with_out_vat = round(price_excluded, 2)
-                    line.vat_price = line.invoice_price - line.price_with_out_vat
+                    line.vat_price = (
+                        line.invoice_price - line.price_with_out_vat
+                    )
                     line.sum_vat_price = line.vat_price * line.invoice_quantity
-                    line.sum_price_with_out_vat = line.price_with_out_vat * line.invoice_quantity
-                    line.sum_price_with_vat = line.sum_price_with_out_vat + line.sum_vat_price
+                    line.sum_price_with_out_vat = (
+                        line.price_with_out_vat * line.invoice_quantity
+                    )
+                    line.sum_price_with_vat = (
+                        line.sum_price_with_out_vat + line.sum_vat_price
+                    )
 
                 elif line.vat_type == 'tax_excluded':
                     tax_rate = line.vat_id.amount / 100
@@ -167,8 +173,12 @@ class TdTaxInvoiceLine(models.Model):
                     line.price_with_out_vat = line.invoice_price
                     line.vat_price = round(price_excluded, 2)
                     line.sum_vat_price = line.vat_price * line.invoice_quantity
-                    line.sum_price_with_out_vat = line.price_with_out_vat * line.invoice_quantity
-                    line.sum_price_with_vat = line.sum_price_with_out_vat + line.sum_vat_price
+                    line.sum_price_with_out_vat = (
+                        line.price_with_out_vat * line.invoice_quantity
+                    )
+                    line.sum_price_with_vat = (
+                        line.sum_price_with_out_vat + line.sum_vat_price
+                    )
 
                 if line.lot_ids:
                     line.uktzed_code_id = (
