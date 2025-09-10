@@ -228,9 +228,9 @@ class TdTaxInvoice(models.Model):
             price_total = []
             for line in inv.td_invoice_line_ids:
                 line._compute_product_id()
-                price_with_out_tax.append(line.price_with_out_vat)
-                price_vat.append(line.vat_price)
-                price_total.append(line.sum_price_with_vat)
+                price_with_out_tax.append(line.price_with_out_vat * line.quantity)
+                price_vat.append(line.vat_price * line.quantity)
+                price_total.append(line.sum_price_with_vat * line.quantity)
 
             inv.price_with_out_tax = sum(price_with_out_tax)
             inv.price_vat = sum(price_vat)
