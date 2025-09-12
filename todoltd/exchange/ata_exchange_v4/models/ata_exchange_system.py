@@ -12,7 +12,6 @@ import logging
 _logger = logging.getLogger(__name__)
 
 from .ata_exchange_system_types import ExtResponse, ExtRequest, ExtRequestMethodParameters
-from .ata_exchange_method import AtaExchangeMethod
 
 
 class AtaExchangeSystem(models.Model):
@@ -129,11 +128,19 @@ class AtaExchangeSystem(models.Model):
         }
     #endregion
 
+    def add_meta_data(self, ext_request: ExtRequest):
+        body = ext_request["method_params"]['request_body']
+        if isinstance(body, dict) and 'meta' in body:
+            body['meta'] = {
+                **body['meta'],
+                'ext_system_id': self.id,
+                'ext_system_name': self.name,
+            }
+
     def execute(self, ext_request: ExtRequest) -> None:
+        self.add_meta_data(ext_request)
         self.execute_request(ext_request)
         if ext_request['response'] and ext_request['is_executed']:
-            # self.read_request(ext_request['response'])
-            
             ext_request['is_processed'] = True
             ext_request['processing_date'] = datetime.now()
         self.create_exchange_log(ext_request)        
@@ -159,7 +166,7 @@ class AtaExchangeSystem(models.Model):
         if self.content_type == 'jsonrpc':
             method_params['request_body'] = {
                 'jsonrpc': '2.0',
-                'method': ext_request["method"].id if ext_request["method"] else "",
+                'method': ext_request["method"].name if ext_request["method"] else ext_request["method_name"],
                 'params': method_params['request_body'],
                 'id': None
             }
@@ -198,7 +205,7 @@ class AtaExchangeSystem(models.Model):
                 **self.get_init_extresponse(),
                 'headers': response.headers,
                 'status_code': response.status_code,
-                'result': response.text,
+                'result': response.text or response.reason,
                 'start_date': start_date,
                 'finish_date': finish_date,
             }
@@ -213,31 +220,7 @@ class AtaExchangeSystem(models.Model):
                 'error_msg': msg
             }
             _logger.warning(msg)
-            
-    @api.model
-    def read_request(self, ext_response: ExtResponse):
-        if not ext_response["status_code"] in [200]:
-            ext_response["error"] = True
-            ext_response["error_msg"] = f'Status code is {ext_response["status_code"]}. {ext_response["result"]}'
-        if not ext_response["result"]:
-            ext_response["error"] = True
-            ext_response["error_msg"] = 'Result is empty'
 
-        if not ext_response["error"] and \
-            "application/json" in ext_response['headers'].get('Content-Type','').lower():
-            
-            result_json = self.env['ata.exchange.json'].loads(ext_response["result"])
-        
-            if isinstance(result_json, dict) and \
-                result_json.get("jsonrpc") == "2.0":
-                if (error_jsonrpc := result_json.get('error', False)):
-                    ext_response["error"] = True
-                    ext_response["error_msg"] = error_jsonrpc
-                else:
-                    ext_response["result_json"] = result_json.get("result", False)
-            else:
-                ext_response["result_json"] = result_json
-        
     @api.model
     def calc_url(self, ext_request: ExtRequest, resource_address: str = ""):
 
@@ -290,7 +273,7 @@ class AtaExchangeSystem(models.Model):
                     f"params['params'] is not a dictionary, skipping multipart encoding. Type: {type(params.get('params'))}"
                 )
 
-    def _handle_basic_auth(self, headers: CaseInsensitiveDict, params: ExtRequestMethodParameters) -> HTTPBasicAuth | None:
+    def calc_auth_basic(self, headers: CaseInsensitiveDict, params: ExtRequestMethodParameters):
         """
         Handles Basic authentication.
         Returns an HTTPBasicAuth object for use with requests library, or None if login is not set.
@@ -299,12 +282,12 @@ class AtaExchangeSystem(models.Model):
             del headers['Authorization']
 
         if self.login:
-            return HTTPBasicAuth(username=self.login, password=self.password)
+            params['auth'] = HTTPBasicAuth(username=self.login, password=self.password)
         else:
             _logger.warning(f"Basic authentication selected for system '{self.name}' (ID: {self.id}) but login is not set.")
             return None
 
-    def _handle_token_auth(self, headers: CaseInsensitiveDict):
+    def calc_auth_token(self, headers: CaseInsensitiveDict):
         """Handles Token authentication by fetching a token using the registered provider and adding it to headers."""
         if 'Authorization' in headers:
             del headers['Authorization']
@@ -347,7 +330,7 @@ class AtaExchangeSystem(models.Model):
                 f"Authorization header not set."
             )
 
-    def _handle_no_auth(self, headers: CaseInsensitiveDict):
+    def calc_auth_no(self, headers: CaseInsensitiveDict):
         if 'Authorization' in headers:
             del headers['Authorization']
         _logger.debug(f"No authentication selected for system '{self.name}' (ID: {self.id}).")        
@@ -376,12 +359,12 @@ class AtaExchangeSystem(models.Model):
         auth_object = None
 
         if auth_type == 'basic':
-            auth_object = self._handle_basic_auth(headers, params)
+            self.calc_auth_basic(headers, params)
         elif auth_type == 'token':
             # Token auth modifies headers directly, does not return an auth object for requests' `auth` param.
-            self._handle_token_auth(headers) 
+            self.calc_auth_token(headers) 
         elif auth_type == 'none':
-            self._handle_no_auth(headers)
+            self.calc_auth_no(headers)
         else:
             _logger.error(f"Unknown authentication type: {auth_type} for system '{self.name}' (ID: {self.id})")
             
@@ -427,12 +410,12 @@ class AtaExchangeSystem(models.Model):
                 ext_request['name'] = 'Test'
                 ext_request['method_name'] = 'check'
                 ext_request['method_params']['http_method'] = method_http
-                ext_request['method_params']['auth_type'] = 'none'
+                ext_request['method_params']['auth_type'] = self.authentication_type
                 self.calc_url(ext_request)
 
                 record.execute(ext_request)
 
-                if (ext_response := self.env['ata.exchange.method'].read_response_standart(ext_request)):
+                if (ext_response := self.env['ata.exchange.method'].read_response_standard(ext_request)):
                     if ext_response['error']:
                         result = ext_response['error_msg']
                     elif (response_data := ext_response['result_json']) and isinstance(response_data, dict):
@@ -459,29 +442,30 @@ class AtaExchangeSystem(models.Model):
     def action_synchronization(self):
         exchange_id = f'Synchronization: {self.name}'
         ext_request = self.get_init_extrequest()
-        ext_request['name'] = 'Synchronization'
-        ext_request['method_name'] = 'sync'
         ext_request['exchange_id'] = exchange_id
+        ext_request['name'] = 'Synchronization'
+        ext_request['method_name'] = 'sync'        
         ext_request['method_params']['request_body'] = {
-            'meta': {
-                'db_name': self.env.cr.dbname,
-            },
+            **self.env['ata.exchange.mixin'].get_meta_data(),
             'data': {
                 'id': self.id,
                 'name': self.name,
             }
         }
-        ext_request['method_params']['auth_type'] = 'none'
+        ext_request['method_params']['auth_type'] = self.authentication_type
+        self.calc_url(ext_request)
 
         self.execute(ext_request)
 
-        if (ext_response := self.env['ata.exchange.method'].read_response_standart(ext_request)):
+        if (ext_response := self.env['ata.exchange.method'].read_response_standard(ext_request)):
             if ext_response['error']:
                 result = ext_response['error_msg'].get('message', False) \
                     if isinstance(ext_response['error_msg'], dict) else ext_response['error_msg']
-                # result = ext_response['error_msg']
-            elif (response_data := ext_response['result_json']) and isinstance(response_data, dict):
-                result = response_data.get('status', False)
+            elif (response_data := ext_response['result_json']) and isinstance(response_data, dict) \
+                and (metadata := response_data.get('meta', False)) and isinstance(metadata, dict):
+                
+                result = f"Success. Access to exchange {'granted' if metadata.get('odoo_granted_status') else 'denied'}"\
+                    if metadata.get('odoo_db_name', "") == self._cr.dbname else "Failed"
             else:
                 result = "Invalid response data"
         else:
