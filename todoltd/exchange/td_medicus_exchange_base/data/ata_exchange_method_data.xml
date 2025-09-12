@@ -12,53 +12,129 @@
             <field name="authentication_type">basic</field>
             <field name="login">odoo_user</field>            
         </record>
-    </data>
-    
-    <data noupdate="0">
+
         <!-- QUEUE USAGE -->
         <record id="queue_usage" model="ata.exchange.queue.usage">
             <field name="usage">True</field>        
         </record>
-        
+    </data>
+    
+    <data noupdate="0">
         <!-- METHODS -->
         <!-- INCOMING methods -->
-        <record id="product_incoming" model="ata.exchange.method">
-            <field name="name">ProductIncoming</field>
-            <field name="description">Product (incoming)</field>
+        <!-- product -->
+        <record id="product_1c_odoo" model="ata.exchange.method">
+            <field name="name">Product_1C_Odoo</field>
+            <field name="description">Product (from 1C)</field>
             <field name="type">incoming_request</field>
             <field name="model_id" ref="model_ata_exchange_incomingrequest_product" />
-            <field name="model_name">ata.exchange.incomingrequest.product_product</field>
+            <field name="model_name">ata.exchange.incomingrequest.product</field>
+        </record>
+
+        <!-- partner -->
+        <record id="partner_1c_odoo" model="ata.exchange.method">
+            <field name="name">Partner_1C_Odoo</field>
+            <field name="description">Partner (from 1C)</field>
+            <field name="type">incoming_request</field>
+            <field name="model_id" ref="model_ata_exchange_incomingrequest_partner" />
+            <field name="model_name">ata.exchange.incomingrequest.partner</field>
+        </record>
+
+        <!-- agreement -->
+        <record id="agreement_1c_odoo" model="ata.exchange.method">
+            <field name="name">Agreement_1C_Odoo</field>
+            <field name="description">Agreement (from 1C)</field>
+            <field name="type">incoming_request</field>
+            <field name="model_id" ref="model_ata_exchange_incomingrequest_agreement" />
+            <field name="model_name">ata.exchange.incomingrequest.agreement</field>
         </record>
 
         <!-- OUTGOING methods -->
-        <!-- product to ext. system -->
-        <record id="product_outgoing" model="ata.exchange.method">
-            <field name="name">ProductOutgoing</field>
-            <field name="description">Product (outgoing)</field>
+        <!-- product -->
+        <record id="product_odoo_1c" model="ata.exchange.method">
+            <field name="name">Product_Odoo_1C</field>
+            <field name="description">Product (to 1C)</field>
             <field name="type">outgoing_data</field>
             <field name="model_id" ref="product.model_product_product" />
             <field name="model_name">product.product</field>
         </record>
 
-        <record id="bas_erp_outgoingdata_product_product" model="ata.exchange.domain">
-            <field name="method" ref="product_outgoing" />
+        <record id="c77_outgoingdata_product_product" model="ata.exchange.domain">
+            <field name="method" ref="product_odoo_1c" />
+            <field name="ext_system" ref="medicus_1c" />
+        </record>
+
+        <!-- partner -->
+        <record id="partner_odoo_1c" model="ata.exchange.method">
+            <field name="name">Partner_Odoo_1C</field>
+            <field name="description">Partner (to 1C)</field>
+            <field name="type">outgoing_data</field>
+            <field name="model_id" ref="model_res_partner" />
+            <field name="model_name">res.partner</field>
+        </record>
+
+        <record id="c77_outgoingdata_partner" model="ata.exchange.domain">
+            <field name="method" ref="partner_odoo_1c" />
+            <field name="ext_system" ref="medicus_1c" />
+        </record>
+
+        <!-- agreement -->
+        <record id="agreement_odoo_1c" model="ata.exchange.method">
+            <field name="name">Agreement_Odoo_1C</field>
+            <field name="description">Agreement (to 1C)</field>
+            <field name="type">outgoing_data</field>
+            <field name="model_id" ref="td_agreement.model_td_agreement" />
+            <field name="model_name">td.agreement</field>
+        </record>
+
+        <record id="c77_outgoingdata_td_agreement" model="ata.exchange.domain">
+            <field name="method" ref="agreement_odoo_1c" />
             <field name="ext_system" ref="medicus_1c" />
         </record>
 
         <!-- API KEYS -->
-        <record id="OneC_api_key" model="ata.exchange.api.key">
+        <record id="C77_api_key" model="ata.exchange.api.key">
             <field name="active">True</field>
             <field name="system_id" ref="medicus_1c" />
-            <field name="methods_ids" eval="[(6, 0, [ref('td_medicus_exchange_base.product_incoming')])]" />
+            <field name="methods_ids" eval="[(6, 0, [
+                ref('td_medicus_exchange_base.product_1c_odoo'),
+                ref('td_medicus_exchange_base.partner_1c_odoo'),
+                ref('td_medicus_exchange_base.agreement_1c_odoo'),
+            ])]" />
         </record>
 
-        <!-- INNER TYPES FOR MATCHING DATA -->
+        <!-- INNER TYPES for matching data -->
+        <!-- partner -->
         <record id="inner_types_vendor_1c" model="ata.exchange.method">
             <field name="name">Vendor1C</field>
-            <field name="description">Vendor from 1C</field>
+            <field name="description">Vendor (from 1C)</field>
             <field name="type">inner_types</field>
             <field name="model_id" ref="td_medicus_1c_integration.model_td_manufacturer_directory" />
             <field name="model_name">td.manufacturer.directory</field>
+        </record>
+        
+        <record id="inner_types_res_partner_chief" model="ata.exchange.method">
+            <field name="name">PartnerChief</field>
+            <field name="description">Chief of partner</field>
+            <field name="type">inner_types</field>
+            <field name="model_id" ref="model_res_partner" />
+            <field name="model_name">res.partner</field>
+        </record>
+
+        <record id="inner_types_res_partner_subclient" model="ata.exchange.method">
+            <field name="name">Subclient</field>
+            <field name="description">Subclient</field>
+            <field name="type">inner_types</field>
+            <field name="model_id" ref="model_res_partner"/>
+            <field name="model_name">res.partner</field>
+        </record>
+
+        <record id="inner_types_agreement_type" model="ata.exchange.method">
+            <field name="name">AgreementType</field>
+            <field name="description">Agreement type</field>
+            <field name="type">inner_types</field>
+            <field name="model_id" ref="model_td_agreement_types"/>
+            <field name="model_name">td.agreement.types</field>
         </record>
     </data>
 </odoo>
