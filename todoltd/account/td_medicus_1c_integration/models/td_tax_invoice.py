@@ -1,5 +1,4 @@
-from datetime import date, datetime, timedelta
-from calendar import monthrange
+from datetime import datetime
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
@@ -59,8 +58,8 @@ class TdTaxInvoice(models.Model):
     )
     invoice_type = fields.Selection(
         [
-            ('regular', 'Regular invoicing'), # Регулярне виставлення рахунку
-            ('invoice', 'Invoice'), # Рахунок фактура
+            ('regular', 'Regular invoicing'),
+            ('invoice', 'Invoice'),
         ],
         readonly=True
     )
@@ -96,10 +95,15 @@ class TdTaxInvoice(models.Model):
 
     def action_mass_change_status(self):
         if self.env.user.has_group('td_medicus_1c_integration.group_admin'):
-            for rec in self.filtered(lambda rec_: rec_.state != 'confirm_finish'):
+            for rec in self.filtered(
+                    lambda rec_: rec_.state != 'confirm_finish'
+            ):
                 rec.state = 'confirm_finish'
         else:
-            raise ValidationError(_("You can't change this record ( you don't have permission)"))
+            raise ValidationError(
+                _("You can't change this record "
+                  "( you don't have permission)")
+            )
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -108,7 +112,10 @@ class TdTaxInvoice(models.Model):
             user_is_system = self.env.user._is_system()
 
             if not has_lines and not user_is_system:
-                raise ValidationError(_("You need to add at least one line to the document lines"))
+                raise ValidationError(
+                    _("You need to add at least one "
+                      "line to the document lines")
+                )
 
         return super().create(vals_list)
 
@@ -118,11 +125,16 @@ class TdTaxInvoice(models.Model):
 
         if (
                 not self.env.context.get('skip_state_write_check')
-                and not self.env.user.has_group('td_medicus_1c_integration.group_admin')
+                and not self.env.user.has_group(
+                    'td_medicus_1c_integration.group_admin'
+                )
         ):
             for rec in self:
                 if rec.state == 'confirm_finish':
-                    raise ValidationError(_("You can't change this record ( you don't have permission)"))
+                    raise ValidationError(
+                        _("You can't change this record "
+                          "( you don't have permission)")
+                    )
 
         return super(TdTaxInvoice, self).unlink()
 
@@ -133,9 +145,13 @@ class TdTaxInvoice(models.Model):
         if (
                 not self.env.context.get('skip_state_write_check')
                 and self.state == 'confirm_finish'
-                and not self.env.user.has_group('td_medicus_1c_integration.group_admin')
+                and not self.env.user.has_group(
+                'td_medicus_1c_integration.group_admin')
         ):
-            raise ValidationError(_("You can't change this record ( you don't have permission)"))
+            raise ValidationError(
+                _("You can't change this record "
+                  "( you don't have permission)")
+            )
 
         return super().write(vals)
 
@@ -151,36 +167,6 @@ class TdTaxInvoice(models.Model):
                 rec.tax_guide_id = rec.tax_guide_id or False
 
     def recalculation_of_the_quantity_of_lines(self, recalc=True):
-        # for rec in self:
-        #     record = list(
-        #         filter(
-        #             lambda rec_: rec_['aml_id'] == rec.payment_id.id,
-        #             rec.invoice_id._get_all_reconciled_invoice_partials()
-        #         )
-        #     )
-        #     if not record:
-        #         continue
-        #
-        #     # amount = record[0]['amount']
-        #     # total = sum(line.price_with_vat or 0 for line in rec.td_invoice_line_ids)
-        #     #
-        #     # new_quantities = []
-        #     # for line in rec.td_invoice_line_ids:
-        #     #     line_total = line.sum_price_with_vat or 0
-        #     #     percent = (line_total / total) * 100 if total else 0
-        #     #     percent_qty = (line.quantity * percent) / 100
-        #     #     new_qty = (percent_qty * amount) / (percent * total / 100) if percent else 0
-        #     #
-        #     #     new_quantities.append((line, new_qty))
-        #     new_quantities = []
-        #     for line in rec.td_invoice_line_ids:
-        #         line_total = line.sale_order_price_subtotal or 0
-        #         new_qty = line.price_with_out_vat / line_total
-        #         new_quantities.append((line, round(new_qty, 5)))
-        #
-        #     for line, qty in new_quantities:
-        #         if rec.state not in ['confirm', 'confirm_finish']:
-        #             line.quantity = qty
         for rec in self:
             if not rec.payment_id or not rec.td_invoice_line_ids:
                 continue
@@ -189,7 +175,10 @@ class TdTaxInvoice(models.Model):
             if not payment_amount:
                 continue
 
-            total = sum(line.sum_price_with_out_vat or 0 for line in rec.td_invoice_line_ids)
+            total = sum(
+                line.sum_price_with_out_vat or 0
+                for line in rec.td_invoice_line_ids
+            )
             if not total:
                 continue
 
@@ -228,9 +217,13 @@ class TdTaxInvoice(models.Model):
             price_total = []
             for line in inv.td_invoice_line_ids:
                 line._compute_product_id()
-                price_with_out_tax.append(line.price_with_out_vat)
-                price_vat.append(line.vat_price)
-                price_total.append(line.sum_price_with_vat)
+                price_with_out_tax.append(
+                    line.price_with_out_vat * line.quantity
+                )
+                price_vat.append(line.vat_price * line.quantity)
+                price_total.append(
+                    line.sum_price_with_vat * line.quantity
+                )
 
             inv.price_with_out_tax = sum(price_with_out_tax)
             inv.price_vat = sum(price_vat)

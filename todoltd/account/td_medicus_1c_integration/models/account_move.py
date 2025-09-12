@@ -51,7 +51,8 @@ class AccountMove(models.Model):
 
         return format_string, format_values
 
-    @api.depends('posted_before', 'state', 'journal_id', 'date', 'move_type', 'origin_payment_id')
+    @api.depends('posted_before', 'state', 'journal_id',
+                 'date', 'move_type', 'origin_payment_id')
     def _compute_name(self):
         self = self.sorted(lambda m: (m.date, m.ref or '', m._origin.id))
 
@@ -61,7 +62,8 @@ class AccountMove(models.Model):
 
             move_has_name = move.name and move.name != '/'
             if not move.posted_before and not move._sequence_matches_date():
-                # The name does not match the date and the move is not the first in the period:
+                # The name does not match the date and the move is not the
+                # first in the period:
                 # Reset to draft
                 move.name = False
                 continue
@@ -85,8 +87,10 @@ class AccountMove(models.Model):
             record_data = {
                 'partner_id': move.partner_id.id,
                 'invoice_id': move.id,
-                'sale_order_id': move.td_order_id.id if move.td_order_id else False,
-                'tax_guide_id': move.td_tax_guide_id.id if move.td_tax_guide_id else False,
+                'sale_order_id': move.td_order_id.id
+                if move.td_order_id else False,
+                'tax_guide_id': move.td_tax_guide_id.id
+                if move.td_tax_guide_id else False,
                 'accounting_date': move.invoice_date,
                 'move_type': 'tax_inv',
                 'td_invoice_line_ids': [
