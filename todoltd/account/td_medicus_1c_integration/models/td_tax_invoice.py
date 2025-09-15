@@ -77,12 +77,18 @@ class TdTaxInvoice(models.Model):
     narration = fields.Text()
     price_with_out_tax = fields.Float(
         compute='_compute_total_price',
+        aggregator="sum",
+        store=True
     )
     price_vat = fields.Float(
-        compute='_compute_total_price'
+        compute='_compute_total_price',
+        aggregator="sum",
+        store=True
     )
     price_total = fields.Float(
-        compute='_compute_total_price'
+        compute='_compute_total_price',
+        aggregator="sum",
+        store=True
     )
 
     responsible_user_id = fields.Many2one(
@@ -175,22 +181,34 @@ class TdTaxInvoice(models.Model):
             if not payment_amount:
                 continue
 
-            total = sum(
-                line.sum_price_with_out_vat or 0
-                for line in rec.td_invoice_line_ids
-            )
+            total = 0
+            for line in rec.td_invoice_line_ids:
+                if line.vat_type == 'tax_included':
+                    total += line.sum_price_with_vat or 0
+                else:
+                    total += line.sum_price_with_out_vat or 0
+
             if not total:
                 continue
 
             new_quantities = []
+
             for line in rec.td_invoice_line_ids:
-                line_total = line.sum_price_with_out_vat or 0
-                proportion = line_total / total if total else 0
-                new_line_amount = payment_amount * proportion
-                unit_price = line.price_with_out_vat or 1
-                new_qty = new_line_amount / unit_price if unit_price else 0
+                if line.vat_type == 'tax_included':
+                    line_total = line.sum_price_with_vat or 0
+                    proportion = line_total / total if total else 0
+                    new_line_amount = payment_amount * proportion
+                    unit_price = line.sum_price_with_vat / line.quantity if line.quantity else 0
+                    new_qty = new_line_amount / unit_price if unit_price else 0
+                else:
+                    line_total = line.sum_price_with_out_vat or 0
+                    proportion = line_total / total if total else 0
+                    new_line_amount = payment_amount * proportion
+                    unit_price = line.price_with_out_vat or 1
+                    new_qty = new_line_amount / unit_price if unit_price else 0
 
                 new_quantities.append((line, round(new_qty, 5)))
+
             for line, qty in new_quantities:
                 if rec.state not in ['confirm', 'confirm_finish']:
                     line.quantity = qty
@@ -301,3 +319,15 @@ class TdTaxInvoice(models.Model):
                 'target': 'current',
             }
         return False
+
+    def action_update_data(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Update Data"),
+            "res_model": "td.tax.invoice",
+            "view_mode": "form",
+            "res_id": self.id,
+            "target": "current",
+            "context": dict(self.env.context, skip_state_write_check=True),
+        }

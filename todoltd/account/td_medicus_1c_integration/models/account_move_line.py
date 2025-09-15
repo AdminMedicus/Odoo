@@ -47,3 +47,11 @@ class AccountMoveLine(models.Model):
                 line.td_margin_percent = line.td_margin / (line.price_unit / 100)
             else:
                 line.td_margin_percent = 0
+
+    def _compute_display_name(self):
+        for rec in self:
+            date_str = rec.date.strftime("%Y-%m-%d") if rec.date else ""
+            comment = rec.name or rec.ref or "-"
+            amount = rec.debit - rec.credit
+            display_name = f"[{date_str}] {comment} - {amount:.2f}"
+            rec.display_name = display_name
