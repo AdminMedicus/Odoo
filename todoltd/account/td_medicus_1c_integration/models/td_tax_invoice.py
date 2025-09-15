@@ -210,8 +210,9 @@ class TdTaxInvoice(models.Model):
                 new_quantities.append((line, round(new_qty, 5)))
 
             for line, qty in new_quantities:
-                if rec.state not in ['confirm', 'confirm_finish']:
-                    line.quantity = qty
+                # if rec.state not in ['confirm', 'confirm_finish']:
+                line.quantity = qty
+            rec._compute_total_price()
 
     @api.depends('invoice_id')
     def _compute_domain_payment_ids(self):
@@ -230,22 +231,18 @@ class TdTaxInvoice(models.Model):
     @api.depends('td_invoice_line_ids')
     def _compute_total_price(self):
         for inv in self:
-            price_with_out_tax = []
-            price_vat = []
-            price_total = []
+            price_with_out_tax = 0.0
+            price_vat = 0.0
+
             for line in inv.td_invoice_line_ids:
                 line._compute_product_id()
-                price_with_out_tax.append(
-                    line.price_with_out_vat * line.quantity
-                )
-                price_vat.append(line.vat_price * line.quantity)
-                price_total.append(
-                    line.sum_price_with_vat * line.quantity
-                )
+                price_with_out_tax += line.price_with_out_vat * line.quantity
+                price_vat += line.vat_price * line.quantity
 
-            inv.price_with_out_tax = sum(price_with_out_tax)
-            inv.price_vat = sum(price_vat)
-            inv.price_total = sum(price_total)
+            inv.price_with_out_tax = price_with_out_tax
+            inv.price_vat = price_vat
+            inv.price_total = price_with_out_tax + price_vat
+
 
     @api.onchange('tax_guide_id')
     def _onchange_tax_guide_id(self):
@@ -322,12 +319,51 @@ class TdTaxInvoice(models.Model):
 
     def action_update_data(self):
         self.ensure_one()
+
+        move = self.invoice_id
+        if not move:
+            raise ValidationError(_("No invoice is linked to this tax invoice."))
+
+        # формуємо нові дані
+        record_data = {
+            'partner_id': move.partner_id.id,
+            'invoice_id': move.id,
+            'sale_order_id': move.td_order_id.id if move.td_order_id else False,
+            'tax_guide_id': move.td_tax_guide_id.id if move.td_tax_guide_id else False,
+            'accounting_date': move.invoice_date,
+            'move_type': 'tax_inv',
+            'td_invoice_line_ids': [(5, 0, 0)] + [
+                (0, 0, {
+                    'product_id': line.product_id.id,
+                    'name': line.name,
+                    'quantity': line.quantity,
+                    'invoice_line_id': line.id,
+                    'product_uom_id': line.product_uom_id.id,
+                    'td_sale_order_line_id': line.td_order_line_id.id if line.td_order_line_id else False,
+                    'price_with_out_vat': line.td_order_line_id.price_unit
+                    if line.td_order_line_id else line.price_unit,
+                }) for line in move.invoice_line_ids
+            ],
+        }
+
+        if move.td_advance_payment_method:
+            if move.td_advance_payment_method == 'delivered':
+                record_data['invoice_type'] = 'regular'
+                record_data['td_invoice_line_ids'] = move.recalculation_of_the_quantity_of_lines()
+            else:
+                record_data['invoice_type'] = 'invoice'
+
+        self.write(record_data)
+
+        self._compute_total_price()
+
+        self.recalculation_of_the_quantity_of_lines()
+
         return {
-            "type": "ir.actions.act_window",
-            "name": _("Update Data"),
-            "res_model": "td.tax.invoice",
-            "view_mode": "form",
-            "res_id": self.id,
-            "target": "current",
-            "context": dict(self.env.context, skip_state_write_check=True),
+            'type': 'ir.actions.act_window',
+            'name': _('Tax Invoice'),
+            'res_model': 'td.tax.invoice',
+            'view_mode': 'form',
+            'res_id': self.id,
+            'target': 'current',
         }
