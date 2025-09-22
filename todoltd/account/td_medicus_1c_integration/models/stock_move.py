@@ -30,6 +30,22 @@ class StockMove(models.Model):
         compute='_compute_td_price_total'
     )
 
+    td_lot_ids = fields.Many2many(
+        comodel_name='stock.lot',
+        compute='_compute_td_lot_ids'
+    )
+
+    @api.depends('lot_ids', 'move_line_ids', 'move_line_ids.quant_id')
+    def _compute_td_lot_ids(self):
+        for rec in self:
+            lots = []
+            for move_line in rec.move_line_ids:
+                if move_line.quant_id and move_line.quant_id.lot_id:
+                    lots.append(move_line.quant_id.lot_id.id)
+                elif move_line.lot_id:
+                    lots.append(move_line.lot_id.id)
+            rec.td_lot_ids = [(6, 0, lots)]
+
     @api.depends('td_taxes', 'td_taxes_ids')
     def _compute_td_taxes_price(self):
         for move in self:
