@@ -198,7 +198,10 @@ class TdTaxInvoice(models.Model):
                     line_total = line.sum_price_with_vat or 0
                     proportion = line_total / total if total else 0
                     new_line_amount = payment_amount * proportion
-                    unit_price = line.sum_price_with_vat / line.quantity if line.quantity else 0
+                    unit_price = (
+                        line.sum_price_with_vat / line.quantity
+                        if line.quantity else 0
+                    )
                     new_qty = new_line_amount / unit_price if unit_price else 0
                 else:
                     line_total = line.sum_price_with_out_vat or 0
@@ -242,7 +245,6 @@ class TdTaxInvoice(models.Model):
             inv.price_with_out_tax = price_with_out_tax
             inv.price_vat = price_vat
             inv.price_total = price_with_out_tax + price_vat
-
 
     @api.onchange('tax_guide_id')
     def _onchange_tax_guide_id(self):
@@ -322,14 +324,17 @@ class TdTaxInvoice(models.Model):
 
         move = self.invoice_id
         if not move:
-            raise ValidationError(_("No invoice is linked to this tax invoice."))
+            raise ValidationError(
+                _("No invoice is linked to this tax invoice.")
+            )
 
-        # формуємо нові дані
         record_data = {
             'partner_id': move.partner_id.id,
             'invoice_id': move.id,
-            'sale_order_id': move.td_order_id.id if move.td_order_id else False,
-            'tax_guide_id': move.td_tax_guide_id.id if move.td_tax_guide_id else False,
+            'sale_order_id': move.td_order_id.id
+            if move.td_order_id else False,
+            'tax_guide_id': move.td_tax_guide_id.id
+            if move.td_tax_guide_id else False,
             'accounting_date': move.invoice_date,
             'move_type': 'tax_inv',
             'td_invoice_line_ids': [(5, 0, 0)] + [
@@ -339,7 +344,8 @@ class TdTaxInvoice(models.Model):
                     'quantity': line.quantity,
                     'invoice_line_id': line.id,
                     'product_uom_id': line.product_uom_id.id,
-                    'td_sale_order_line_id': line.td_order_line_id.id if line.td_order_line_id else False,
+                    'td_sale_order_line_id': line.td_order_line_id.id
+                    if line.td_order_line_id else False,
                     'price_with_out_vat': line.td_order_line_id.price_unit
                     if line.td_order_line_id else line.price_unit,
                 }) for line in move.invoice_line_ids
@@ -349,7 +355,9 @@ class TdTaxInvoice(models.Model):
         if move.td_advance_payment_method:
             if move.td_advance_payment_method == 'delivered':
                 record_data['invoice_type'] = 'regular'
-                record_data['td_invoice_line_ids'] = move.recalculation_of_the_quantity_of_lines()
+                record_data['td_invoice_line_ids'] = (
+                    move.recalculation_of_the_quantity_of_lines()
+                )
             else:
                 record_data['invoice_type'] = 'invoice'
 
