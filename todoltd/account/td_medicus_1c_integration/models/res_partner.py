@@ -10,6 +10,21 @@ class ResPartner(models.Model):
         comodel_name='hr.employee'
     )
 
+    company_registry = fields.Char(
+        string="Code EDRPOU",
+        compute='_compute_company_registry',
+        store=True, readonly=False,
+        help="The registry number of the company. "
+             "Use it if it is different from the Tax ID. "
+             "It must be unique across all partners of "
+             "a same country"
+    )
+
+    ref = fields.Char(
+        string='Certificate number',
+        index=True
+    )
+
     @api.constrains("vat")
     def _check_vat_is_pn(self):
         for rec in self:
