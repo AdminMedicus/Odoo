@@ -673,3 +673,15 @@ msgid ""
 "12345678 or 1234567890."
 msgstr "Поле ЄДРПОУ / Company ID має містити рівно 8 або 10 цифр. "
 "Приклади: 12345678 або 1234567890."
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_res_partner__ref
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_res_users__ref
+msgid "Certificate number"
+msgstr "Номер свідоцтіва"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_res_partner__company_registry
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_res_users__company_registry
+msgid "Code EDRPOU"
+msgstr "Код ЄДРПОУ"
