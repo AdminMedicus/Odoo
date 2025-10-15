@@ -4,7 +4,19 @@
         <field name="name">td.one.c.sale.order.form.inherited</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="priority">99</field>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']//list//field[@name='product_id']" position="attributes">
+                <attribute name="options">"{'no_open': True, 'no_create': True, 'no_create_edit': True}"</attribute>
+                <attribute name="can_create">False</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//list//field[@name='product_template_id']" position="attributes">
+                <attribute name="options">"{'no_open': True, 'no_create': True, 'no_create_edit': True}"</attribute>
+                <attribute name="can_create">False</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name' and @widget='sol_text']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_open_tax_invoices"
                         class="oe_stat_button"
