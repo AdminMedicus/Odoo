@@ -48,7 +48,8 @@ class SaleMakeInvoiceAdvance(models.TransientModel):
         for line in self:
             if line.sale_order_ids:
                 outgoing = line.sale_order_ids.picking_ids.filtered(
-                    lambda pick: pick.picking_type_code == 'outgoing'
+                    # lambda pick: pick.picking_type_code == 'outgoing'
+                    lambda pick: pick.picking_type_code == 'internal'
                 )
                 if outgoing:
                     done = outgoing.filtered(
@@ -102,6 +103,13 @@ class SaleMakeInvoiceAdvance(models.TransientModel):
                 final=self.deduct_down_payments,
                 grouped=not self.consolidated_billing
             )
+            outgoing = sale_orders.picking_ids.filtered(
+                lambda pick: pick.picking_type_code == 'outgoing'
+            )
+            outgoing_products = outgoing.move_ids_without_package.mapped('product_id.id')
+            invoice.invoice_line_ids.filtered(
+                lambda rec: rec.product_id.id not in outgoing_products
+            ).unlink()
             order_lines = sale_orders.order_line.filtered(
                 lambda x: x.is_downpayment
             )
