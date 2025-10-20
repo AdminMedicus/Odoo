@@ -37,6 +37,11 @@
         'wizard/sale_make_invoice_advance.xml',
         'wizard/td_sale_order_low_margin_warning.xml'
     ],
+    "assets": {
+        "web.assets_backend": [
+            "td_medicus_1c_integration/static/src/js/sale_product_field.js",
+        ]
+    },
     "installable": True,
     "application": True,
 }
