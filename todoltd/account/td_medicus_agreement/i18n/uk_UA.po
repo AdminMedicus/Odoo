@@ -654,3 +654,9 @@ msgstr "Укр. Назва"
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_td_agreement__agreement_number
 msgid "Agreement Number"
 msgstr "Номер договору"
+
+#. module: td_medicus_agreement
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_stock_move__td_uktzed_code_id
+#: model:ir.model.fields,field_description:td_medicus_agreement.field_stock_move_line__td_uktzed_code_id
+msgid "Td Uktzed Code"
+msgstr "Код УКТЗЕД"

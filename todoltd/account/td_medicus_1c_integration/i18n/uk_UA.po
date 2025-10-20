@@ -685,3 +685,8 @@ msgstr "Номер свідоцтіва"
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_res_users__company_registry
 msgid "Code EDRPOU"
 msgstr "Код ЄДРПОУ"
+
+#. module: sale
+#: model:ir.actions.act_window,name:sale.action_view_sale_advance_payment_inv
+msgid "Create invoice(s)"
+msgstr "Створити інвойси"
