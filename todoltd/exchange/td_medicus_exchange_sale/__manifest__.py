@@ -1,9 +1,9 @@
 {
-    'name': 'Medicus Exchange (Base)',
-    'version': '18.0.1.4.5',
-    'summary': 'Base module for exchange integration',
+    'name': 'Medicus Exchange (Sale)',
+    'version': '18.0.1.4.4',
+    'summary': 'Sale/stock module for exchange integration',
     'description': """
-        Base module for exchange integration with Medicus system.
+        Sale/stock module for exchange integration with Medicus system.
     """,
     'category': 'Integration/Extension',
     'author': 'Todo',
@@ -11,11 +11,9 @@
     'license': 'LGPL-3',
     'depends': [
         'ata_exchange_v4',
-        'product',
-        'hr',
+        'td_medicus_exchange_base',
         'td_medicus_1c_integration',
-        'td_medicus_agreement',
-        'td_contact_sale',
+        'stock',
     ],  
     'data': [
         'data/ata_exchange_method_data.xml',        
