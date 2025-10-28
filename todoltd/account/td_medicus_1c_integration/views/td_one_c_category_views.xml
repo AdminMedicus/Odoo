@@ -23,6 +23,16 @@
         </field>
     </record>
 
+    <record id="td_td_one_c_category_view_search" model="ir.ui.view">
+        <field name="name">td.one_c.category.search</field>
+        <field name="model">td.one_c.category</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter name="td_leaf_category" string="Leaves only" domain="[('child_ids', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
     <record id="td_td_one_c_category_view_tree" model="ir.ui.view">
         <field name="name">td.one_c.category.form</field>
         <field name="model">td.one_c.category</field>

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields
+from odoo import models, fields, api
 
 
 class ToDoCountryRegion(models.Model):
@@ -19,3 +19,11 @@ class ToDoCountryRegion(models.Model):
         inverse_name='parent_region_id',
         string='Child Regions'
     )
+
+    @api.model
+    @api.readonly
+    def name_search(self, name='', args=None, operator='ilike', limit=100):
+        args = list(args or [])
+        if self.env.context.get('region_leaf_only'):
+            args += [('child_region_ids', '=', False)]
+        return super(ToDoCountryRegion, self).name_search(name=name, args=args, operator=operator, limit=limit)
