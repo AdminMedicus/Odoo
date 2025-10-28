@@ -33,6 +33,7 @@
         'views/stock_picking_views.xml',
         'views/stock_picking_type_views.xml',
         'views/res_partner_views.xml',
+        'views/product_product_views.xml',
         # wizard
         'wizard/sale_make_invoice_advance.xml',
         'wizard/td_sale_order_low_margin_warning.xml'

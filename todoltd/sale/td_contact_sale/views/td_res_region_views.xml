@@ -11,6 +11,16 @@
         </field>
     </record>
 
+    <record id="td_view_country_region_search" model="ir.ui.view">
+        <field name="name">td.res.country.region.search</field>
+        <field name="model">td.res.country.region</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter name="td_leaf" string="Leaves only" domain="[('child_region_ids', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
     <record id="view_country_region_form" model="ir.ui.view">
         <field name="name">td.res.country.region.form</field>
         <field name="model">td.res.country.region</field>
