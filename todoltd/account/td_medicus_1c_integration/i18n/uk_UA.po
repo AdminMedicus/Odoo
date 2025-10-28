@@ -138,6 +138,12 @@ msgid "Td Manufacturer Directory"
 msgstr "Виробник"
 
 #. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_product_product__td_manufacturer_directory_res_id
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_product_template__td_manufacturer_directory_res_id
+msgid "Td Manufacturer Directory Res"
+msgstr "Виробник"
+
+#. module: td_medicus_1c_integration
 #: model:ir.model,name:td_medicus_1c_integration.model_stock_warehouse
 msgid "Warehouse"
 msgstr "Склад"
