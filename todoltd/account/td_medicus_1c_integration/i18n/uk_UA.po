@@ -132,12 +132,6 @@ msgid "Td Code Integration One C"
 msgstr "Код"
 
 #. module: td_medicus_1c_integration
-#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_product_product__td_manufacturer_directory_id
-#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_product_template__td_manufacturer_directory_id
-msgid "Td Manufacturer Directory"
-msgstr "Виробник"
-
-#. module: td_medicus_1c_integration
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_product_product__td_manufacturer_directory_res_id
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_product_template__td_manufacturer_directory_res_id
 msgid "Td Manufacturer Directory Res"
