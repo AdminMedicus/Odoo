@@ -22,7 +22,6 @@
         'security/ir.model.access.csv',
         'security/tax_invoices_groups.xml',
         # views
-        'views/td_manufacturer_directory_views.xml',
         'views/td_one_c_category_views.xml',
         'views/product_template_views.xml',
         'views/stock_warehouse_views.xml',
