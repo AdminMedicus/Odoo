@@ -35,22 +35,24 @@ class TdStockPickingExchange(models.Model):
             "name":             self._str_empty(record.name),
             "date":             self._str_empty(record.date),
             "date_done":        self._str_empty(record.date_done),
+            "comment":          self._str_empty(record.purchase_id.name),
             "purchase_id":      record.purchase_id.id,
             "purchase_date":    self._str_empty(record.purchase_id.date_order),
             "partner":          record.partner_id.exchange_data,
-            "partner_doc_number": self._str_empty(record.purchase_id.partner_ref),
+            "partner_doc_number": self._str_empty(record.td_supplier_document),
             "partner_doc_date":   self._str_empty(record.td_date_supplier_document),
             "tax":              record.purchase_id and record.purchase_id.order_line and \
                 record.purchase_id.order_line[0].taxes_id.exchange_data,
             'agreement':        record.purchase_id.td_agreement_id.exchange_data,
-            "warehouse_code":   self._str_empty(record.location_dest_id.warehouse_id),
+            "warehouse_code":   record.location_dest_id.warehouse_id.id,
             "implementation_document": self._str_empty(record.implementation_document),
             "lines": [{
-                "product":      sm_line.product_id.exchange_data,
-                "quantity":     sm_line.product_uom_qty,
-                "uom":          sm_line.product_uom.exchange_data,
-                "tax":          sm_line.td_taxes_ids.exchange_data,
-            } for sm_line in record.move_ids]
+                "product":      sm.product_id.exchange_data,
+                "quantity":     sm.product_uom_qty,
+                "uom":          sm.product_uom.exchange_data,
+                "tax":          sm.td_taxes_ids.exchange_data,
+                "lots": [lot_id.exchange_data for lot_id in sm.lot_ids],
+            } for sm in record.move_ids]
         } for record in self]
 
      #endregion
