@@ -1,6 +1,6 @@
 {
     'name': 'Medicus Exchange (Sale)',
-    'version': '18.0.1.4.4',
+    'version': '18.0.1.4.5',
     'summary': 'Sale/stock module for exchange integration',
     'description': """
         Sale/stock module for exchange integration with Medicus system.
