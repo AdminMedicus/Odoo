@@ -2,6 +2,7 @@ from odoo import Command, models
 
 from odoo.addons.ata_exchange_v4.models.ata_exchange_method import AtaExchangeMethod
 from odoo.addons.ata_exchange_v4.models.ata_exchange_class  import AtaExchangeClass
+from odoo.addons.stock.models.stock_move import StockMove
 
 
 class TdStockPickingExchange(models.Model):
@@ -29,7 +30,19 @@ class TdStockPickingExchange(models.Model):
         return exchange_data
 
     def ata_exchange_get_data_incoming(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]|dict|str:
-        
+        def get_move_line_prices_dict(stock_move: StockMove) -> dict:
+            default_prices = {
+                "price_unit": 0.0,
+                "price_subtotal": 0.0,
+                "price_total": 0.0,
+            }
+            if (pol:=stock_move.purchase_line_id) and (amls:=pol.invoice_lines):
+                price_data = amls[:1].read(list(default_prices.keys()))
+                if price_data:
+                    default_prices.update(price_data[0])
+            
+            return default_prices
+
         return [{
             "id":               record.id,
             "name":             self._str_empty(record.name),
@@ -47,11 +60,16 @@ class TdStockPickingExchange(models.Model):
             "warehouse_code":   record.location_dest_id.warehouse_id.id,
             "implementation_document": self._str_empty(record.implementation_document),
             "lines": [{
-                "product":      sm.product_id.exchange_data,
-                "quantity":     sm.product_uom_qty,
-                "uom":          sm.product_uom.exchange_data,
-                "tax":          sm.td_taxes_ids.exchange_data,
-                "lots": [lot_id.exchange_data for lot_id in sm.lot_ids],
+                **{
+                    "product":  sm.product_id.exchange_data,
+                    "quantity": sm.product_uom_qty,
+                    "uom":      sm.product_uom.exchange_data,
+                },
+                **get_move_line_prices_dict(sm),
+                **{
+                    "tax":  sm.td_taxes_ids.exchange_data,
+                    "lots": [lot_id.exchange_data for lot_id in sm.lot_ids],
+                }
             } for sm in record.move_ids]
         } for record in self]
 
