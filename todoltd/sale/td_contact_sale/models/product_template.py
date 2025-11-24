@@ -13,6 +13,10 @@ class ProductTemplate(models.Model):
         column2 = 'related_template_id',
     )
 
+    description_sale = fields.Text(
+        tracking=True
+    )
+
     def action_choose_product_for_sol(self):
         self.ensure_one()
         sale_order_line_id = self.env.context.get('active_id')
