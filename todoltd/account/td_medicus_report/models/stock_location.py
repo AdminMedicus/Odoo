@@ -9,3 +9,4 @@ class StockLocation(models.Model):
         string='Storage Conditions',
         help='Storage conditions associated with this stock location.'
     )
+    
