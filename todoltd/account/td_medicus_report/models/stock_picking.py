@@ -5,68 +5,69 @@ from odoo import models, fields, api
 
 
 class StockPicking(models.Model):
-    _inherit = 'stock.picking'
+    _name = 'stock.picking'
+    _inherit = ['stock.picking', 'td.amount.to.words.mixin']
 
-    def _amount_to_words_ua(self, amount):
-        """Конвертує число в текст українською мовою"""
-        ones = ['', 'одна', 'дві', 'три', 'чотири', 'п\'ять', 'шість', 'сім', 'вісім', 'дев\'ять']
-        tens = ['', 'десять', 'двадцять', 'тридцять', 'сорок', 'п\'ятдесят', 
-                'шістдесят', 'сімдесят', 'вісімдесят', 'дев\'яносто']
-        teens = ['десять', 'одинадцять', 'дванадцять', 'тринадцять', 'чотирнадцять',
-                'п\'ятнадцять', 'шістнадцять', 'сімнадцять', 'вісімнадцять', 'дев\'ятнадцять']
-        hundreds = ['', 'сто', 'двісті', 'триста', 'чотириста', 'п\'ятсот',
-                    'шістсот', 'сімсот', 'вісімсот', 'дев\'ятсот']
-        thousands = ['тисяча', 'тисячі', 'тисяч']
+    # def _amount_to_words_ua(self, amount):
+    #     """Конвертує число в текст українською мовою"""
+    #     ones = ['', 'одна', 'дві', 'три', 'чотири', 'п\'ять', 'шість', 'сім', 'вісім', 'дев\'ять']
+    #     tens = ['', 'десять', 'двадцять', 'тридцять', 'сорок', 'п\'ятдесят', 
+    #             'шістдесят', 'сімдесят', 'вісімдесят', 'дев\'яносто']
+    #     teens = ['десять', 'одинадцять', 'дванадцять', 'тринадцять', 'чотирнадцять',
+    #             'п\'ятнадцять', 'шістнадцять', 'сімнадцять', 'вісімнадцять', 'дев\'ятнадцять']
+    #     hundreds = ['', 'сто', 'двісті', 'триста', 'чотириста', 'п\'ятсот',
+    #                 'шістсот', 'сімсот', 'вісімсот', 'дев\'ятсот']
+    #     thousands = ['тисяча', 'тисячі', 'тисяч']
         
-        def num_to_words(n):
-            if n == 0:
-                return 'нуль'
+    #     def num_to_words(n):
+    #         if n == 0:
+    #             return 'нуль'
             
-            if n < 10:
-                return ones[n]
-            elif n < 20:
-                return teens[n - 10]
-            elif n < 100:
-                return tens[n // 10] + (' ' + ones[n % 10] if n % 10 != 0 else '')
-            elif n < 1000:
-                return hundreds[n // 100] + (' ' + num_to_words(n % 100) if n % 100 != 0 else '')
-            elif n < 1000000:
-                thousands_digit = n // 1000
-                remainder = n % 1000
+    #         if n < 10:
+    #             return ones[n]
+    #         elif n < 20:
+    #             return teens[n - 10]
+    #         elif n < 100:
+    #             return tens[n // 10] + (' ' + ones[n % 10] if n % 10 != 0 else '')
+    #         elif n < 1000:
+    #             return hundreds[n // 100] + (' ' + num_to_words(n % 100) if n % 100 != 0 else '')
+    #         elif n < 1000000:
+    #             thousands_digit = n // 1000
+    #             remainder = n % 1000
                 
-                # Визначаємо форму слова "тисяча"
-                if thousands_digit % 10 == 1 and thousands_digit % 100 != 11:
-                    thousand_word = thousands[0]
-                elif thousands_digit % 10 in [2, 3, 4] and thousands_digit % 100 not in [12, 13, 14]:
-                    thousand_word = thousands[1]
-                else:
-                    thousand_word = thousands[2]
+    #             # Визначаємо форму слова "тисяча"
+    #             if thousands_digit % 10 == 1 and thousands_digit % 100 != 11:
+    #                 thousand_word = thousands[0]
+    #             elif thousands_digit % 10 in [2, 3, 4] and thousands_digit % 100 not in [12, 13, 14]:
+    #                 thousand_word = thousands[1]
+    #             else:
+    #                 thousand_word = thousands[2]
                 
-                result = num_to_words(thousands_digit) + ' ' + thousand_word
-                if remainder != 0:
-                    result += ' ' + num_to_words(remainder)
-                return result
-            else:
-                return str(n)
+    #             result = num_to_words(thousands_digit) + ' ' + thousand_word
+    #             if remainder != 0:
+    #                 result += ' ' + num_to_words(remainder)
+    #             return result
+    #         else:
+    #             return str(n)
         
-        # Розділяємо на цілу та дробову частини
-        whole_part = int(amount)
-        decimal_part = int(round((amount - whole_part) * 100))
+    #     # Розділяємо на цілу та дробову частини
+    #     whole_part = int(amount)
+    #     decimal_part = int(round((amount - whole_part) * 100))
         
-        result = num_to_words(whole_part).capitalize()
+    #     result = num_to_words(whole_part).capitalize()
         
-        # Додаємо гривні
-        if whole_part % 10 == 1 and whole_part % 100 != 11:
-            result += ' гривня'
-        elif whole_part % 10 in [2, 3, 4] and whole_part % 100 not in [12, 13, 14]:
-            result += ' гривні'
-        else:
-            result += ' гривень'
+    #     # Додаємо гривні
+    #     if whole_part % 10 == 1 and whole_part % 100 != 11:
+    #         result += ' гривня'
+    #     elif whole_part % 10 in [2, 3, 4] and whole_part % 100 not in [12, 13, 14]:
+    #         result += ' гривні'
+    #     else:
+    #         result += ' гривень'
         
-        # Додаємо копійки
-        result += f' {decimal_part:02d} копійок'
+    #     # Додаємо копійки
+    #     result += f' {decimal_part:02d} копійок'
         
-        return result
+    #     return result
 
     def get_amount_in_words(self):
         """Повертає суму в словах українською"""
@@ -102,8 +103,11 @@ class StockPicking(models.Model):
         company_partner = company.partner_id
         partner = self.partner_id
         order = self.sale_id
-        order_term_date = order.validity_date + timedelta(days=order.payment_term_id.line_ids[0].nb_days)
-        
+        order_term_date = order.validity_date
+
+        if order.payment_term_id:
+            order_term_date = order_term_date + timedelta(days=order.payment_term_id.line_ids[0].nb_days)
+            
         # Базові дані
         data = {
             'is_picking': True,
@@ -156,6 +160,13 @@ class StockPicking(models.Model):
             'tax_guide_name': order.td_tax_guide_id.name,
             'currency_symbol': order.currency_id.symbol,
         }
+
+        if order.partner_invoice_id != partner or order.partner_invoice_id.parent_id != partner:
+            payment_partner = order.partner_invoice_id
+            data['payment_partner'] = {
+                'name': payment_partner.name,
+                'street': payment_partner.street or '',
+            }
         
         # Формування товарних позицій
         line_num = 0
@@ -170,10 +181,10 @@ class StockPicking(models.Model):
             
             line_data = {
                 'sequence': line_num,
-                'product_name': move.product_id.name,
+                'product_name': move.product_id.description_sale or move.product_id.name,
                 'product_code': move.product_id.default_code or '',
-                'product_serial_number': lot_id,
-                'storage_conditions': move.product_id.td_product_conditions,
+                'product_serial_number': lot_id.name,
+                'storage_conditions': self.location_id.mapped('td_condition_ids.name'),
                 'quantity': move.product_uom_qty,
                 'uom': move.product_uom.name,
                 'price_unit': move.td_price_unit,

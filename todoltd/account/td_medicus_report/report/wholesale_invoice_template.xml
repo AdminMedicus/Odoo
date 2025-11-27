@@ -9,7 +9,7 @@
                     ЄДРПОУ <span t-esc="company_data['registry']"/>, р/р <span t-esc="company_partner_data['bank_account']"/><br/>
                     в АТ "<span t-esc="company_partner_data['bank_name']"/>" в м.Києві, МФО <span t-esc="company_partner_data['bank_bic']"/><br/>
                     ІПН <span t-esc="company_data['vat']"/>, номер свідоцтва <span t-esc="company_partner_data['ref']"/><br/>
-                    Ліцензія: <span t-esc="company_partner_data['license_issued_by']"/> № <span t-esc="company_partner_data['license_number']"/> від <span t-esc="company_partner_data['license_date']"/><br/>
+                    <!-- Ліцензія: <span t-esc="company_partner_data['license_issued_by']"/> № <span t-esc="company_partner_data['license_number']"/> від <span t-esc="company_partner_data['license_date']"/><br/> -->
                     Платник податку <span t-esc="company_partner_data['tax_position']"/><br/>
                     Юр. адреса: <span t-esc="company_data['street']"/><br/>
                     Фіз. адреса: <span t-esc="report_data['warehouse_address']"/>
@@ -29,16 +29,22 @@
             <strong>Одержувач: <span t-esc="partner_data['name']"/></strong><br/>
             Юр. адреса: <span t-esc="partner_data['street']"/><br/>
             Фіз. адреса: <span t-esc="partner_data['street']"/><br/>
-            Ліцензія: № від<br/>
-            по договору: № 
+            <!-- Ліцензія: № від<br/>
+            по договору: №  -->
             <span t-esc="agreement['number']"/> від 
             <span t-esc="agreement['date']"/>
         </div>
     </template>
 
     <template id="td_report_payment_info_1">
-        <div class="mb-1" style="font-size: 9px;">
-            <strong>Платник:</strong> той самий<br/>
+        <div class="mb-1" style="font-size: 9px;line-height: 1.3;">
+            <t t-if="report_data['payment_partner']">
+                <t t-set="payment_partner" t-value="report_data['payment_partner']"/>
+                <span><strong>Платник:</strong> <t t-esc="payment_partner['name']"/></span><br/>
+                Юр. адреса: <span t-esc="payment_partner['street']"/><br/>
+                Фіз. адреса: <span t-esc="payment_partner['street']"/><br/>
+            </t>
+            <span t-else=""><strong>Платник:</strong> той самий<br/></span>
             <strong>Термін сплати:</strong> 
             <span t-esc="report_data['payment_term']"/>
         </div>
@@ -81,7 +87,9 @@
                             <span t-esc="line['product_serial_number']"/><br/>
                         </td>
                         <td style="padding: 2px; vertical-align: top;">
-                            <span t-esc="line['storage_conditions']"/>
+                            <t t-foreach="line['storage_conditions']" t-as="condition">
+                                <span t-esc="condition"/><br/>
+                            </t>
                         </td>
                         <td class="text-center" style="padding: 2px; vertical-align: top;">
                             <span t-esc="line['quantity']"/>
@@ -163,11 +171,11 @@
                     <td style="width: 45%; vertical-align: top;">
                         <table border="0" class="table-sm o_ignore_layout_styling td_zero_border" style="width: 100%;">
                             <tr>
-                                <td>
+                                <td style="width: 25%; vertical-align: top;">
                                     <strong>Відвантажив</strong>
                                 </td>
-                                <td style="border-bottom: 1px solid #000;"></td>
-                                <td class="text-end">
+                                <td style="width: 50%;border-bottom: 1px solid #000;"></td>
+                                <td style="width: 25%;" class="text-end">
                                     <span t-esc="company_data['warehouse_manager']"/>
                                 </td>
                             </tr>
@@ -200,11 +208,11 @@
                     <td style="padding-top: 10px; vertical-align: top;">
                         <table border="0" class="table-sm o_ignore_layout_styling td_zero_border" style="width: 100%;">
                             <tr>
-                                <td>
+                                <td style="width: 25%; vertical-align: top;">
                                     <strong>Дозволено / не дозволено</strong>
                                 </td>
-                                <td style="border-bottom: 1px solid #000;"></td>
-                                <td class="text-end">
+                                <td style="width: 50%;border-bottom: 1px solid #000;"></td>
+                                <td style="width: 25%;" class="text-end">
                                     <span t-esc="company_data['medical_warehouse_manager']"/>
                                 </td>
                             </tr>
@@ -224,11 +232,11 @@
                     <td style="padding-top: 10px; vertical-align: top;">
                         <table border="0" class="table-sm o_ignore_layout_styling td_zero_border" style="width: 100%;">
                             <tr>
-                                <td>
+                                <td style="width: 25%; vertical-align: top;">
                                     <strong>Дозволено / не дозволено</strong>
                                 </td>
-                                <td style="border-bottom: 1px solid #000;"></td>
-                                <td class="text-end">
+                                <td style="width: 50%;border-bottom: 1px solid #000;"></td>
+                                <td style="width: 25%;" class="text-end">
                                     <span t-esc="company_data['medical_warehouse_manager']"/>
                                 </td>
                             </tr>
