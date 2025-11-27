@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_td_stock_condition_user,access.td.stock.condition.user,model_td_stock_condition,base.group_user,1,1,1,1
+access_td_amount_to_words_mixin,access.td.amount.to.words.mixin,model_td_amount_to_words_mixin,base.group_user,1,1,1,1
