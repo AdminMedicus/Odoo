@@ -116,3 +116,50 @@ class StockPicking(models.Model):
             data['lines'].append(line_data)
         
         return data
+
+    def td_get_report_lenses_data(self):
+        """
+        Preparation of data for the lenses report
+        """
+        self.ensure_one()
+        order = self.sale_id
+        delivery_datetime = order.commitment_date or self.scheduled_date
+        partner = self.partner_id
+        current_user = self.env.user.partner_id
+        
+        data = {
+            'name': order.name.replace('S', ''),
+            'date': order.date_order.date().strftime('%d.%m.%Y'),
+            'warehouse_name': self.location_id.warehouse_id.name,
+            'partner_name': partner.full_partner_name or partner.name,
+            'employee_name': current_user.full_partner_name or current_user.name,
+            'document': dict(self._fields['implementation_document']._description_selection(self.env)).get(self.implementation_document, ''),
+            'delivery_address': order.partner_shipping_id.street,
+            'delivery_method': partner.property_delivery_carrier_id.name,
+            'recipient_name': order.partner_shipping_id.full_partner_name,
+            'recipient_phone': order.partner_shipping_id.phone,
+            'delivery_time': delivery_datetime.time().strftime('%H:%M'),
+            'delivery_date': delivery_datetime.date().strftime('%d.%m.%Y'),
+            'lines': [],
+            'amount_untaxed': self.td_total_without_tax,
+            'amount_tax': self.td_total_tax,
+            'amount_total': self.td_total_amount,
+            'tax_guide_name': order.td_tax_guide_id.name,
+        }
+
+        line_num = 0
+        for move in self.move_ids_without_package:
+            line_num += 1
+            
+            line_data = {
+                'sequence': line_num,
+                'product_name': move.product_id.description_sale or move.product_id.name,
+                'product_manufacturer': move.product_id.td_manufacturer_directory_res_id.name,
+                'quantity': move.product_uom_qty,
+                'price_unit': move.td_price_unit,
+                'price_subtotal': move.td_price_subtotal,
+                # 'quant': 
+            }
+            data['lines'].append(line_data)
+        
+        return data
