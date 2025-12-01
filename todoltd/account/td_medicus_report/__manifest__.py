@@ -18,8 +18,8 @@
 
     'data': [
         'security/ir.model.access.csv',
-        'report/report_wholesale_invoice.xml',
-        'report/wholesale_invoice_template.xml',
+        'report/report_actions.xml',
+        'report/report_template.xml',
         'views/res_partner_views.xml',
         'views/res_company_views.xml',
         'views/stock_location_views.xml',
