@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from datetime import timedelta
 
-from odoo import models, fields, api
+from odoo import models
+from odoo.tools.misc import format_date
 
 
 class StockPicking(models.Model):
@@ -159,6 +160,50 @@ class StockPicking(models.Model):
                 'price_unit': move.td_price_unit,
                 'price_subtotal': move.td_price_subtotal,
                 # 'quant': 
+            }
+            data['lines'].append(line_data)
+        
+        return data
+
+    def td_get_report_waybill_data(self):
+        """
+        Preparation of data for the waybill report
+        """
+        self.ensure_one()
+        order = self.sale_id
+        company = self.company_id
+        partner = self.partner_id
+
+        data = {
+            'waybill_number': self.name.split('/')[-1],
+            'waybill_date': format_date(self.env, self.date_done, date_format='dd MMMM yyyy p.'),
+            'buyer': order.partner_invoice_id.full_partner_name or order.partner_invoice_id.name,
+            'shipper': 'Товариство з обмеженою відповідальністю "Медична компанія Медікус"',
+            'consignee': partner.full_partner_name or partner.name,
+            'delivery_address': partner.contact_address_complete,
+            'loading_point': self.warehouse_address_id.contact_address_complete or self.warehouse_address_id.name,
+            'warehouse_manager': company.td_warehouse_manager_id.name,
+            'medical_warehouse_manager': company.td_medical_warehouse_manager_id.name,
+            'total_amount': self._amount_to_words_ua(self.td_total_amount),
+            'tax_amount': self._amount_to_words_ua(self.td_total_tax),
+            'total': self.td_total_amount,
+            'lines': [],
+        }
+
+        line_num = 0
+        for move in self.move_ids_without_package:
+            line_num += 1
+            
+            line_data = {
+                'sequence': line_num,
+                'product_name': move.product_id.description_sale or move.product_id.name,
+                'uom': move.product_uom.name,
+                'quantity': move.product_uom_qty,
+                'price_unit': move.td_price_unit,
+                'price_subtotal': move.td_price_total,
+                # 'packaging_type': move.package_level_id.name or '',
+                'documents_with_cargo': self.origin or '',
+                # 'gross_weight': move.td_gross_weight or '',
             }
             data['lines'].append(line_data)
         
