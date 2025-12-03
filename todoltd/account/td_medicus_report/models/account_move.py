@@ -107,20 +107,25 @@ class AccountMove(models.Model):
             location = order.picking_ids.filtered(
                 lambda p: line.td_order_line_id in p.move_ids_without_package.sale_line_id
             ).location_id
-            expiration_dateline = line.sale_line_ids.move_ids.filtered(
+            move_line_ids = line.sale_line_ids.move_ids.filtered(
                 lambda m: m.picking_id.picking_type_code == 'outgoing'
-            ).mapped('move_line_ids.expiration_date')
+            ).mapped('move_line_ids')
             
             line_data = {
                 'sequence': line_num,
                 'product_name': line.product_id.description_sale,
                 'product_code': line.product_id.default_code or '',
-                'product_serial_number': line.product_id.default_code or '',
+                'product_serial_numbers': [
+                    l.name for l in move_line_ids.mapped('lot_id')]
+                    if move_line_ids else [],
+                'product_catalog_number': line.product_id.default_code or '',
                 'product_manufacturer': line.product_id.td_manufacturer_directory_res_id.name or '',
                 'storage_conditions': location.mapped('td_condition_ids.name'),
                 'quantity': line.quantity,
                 'uom': line.product_uom_id.name,
-                'expiration_date': min(expiration_dateline) if expiration_dateline else '',
+                'expiration_dates': [
+                    d.strftime('%d.%m.%Y') for d in move_line_ids.mapped('expiration_date')]
+                    if move_line_ids else [],
                 'price_unit': line.price_unit,
                 'price_subtotal': line.price_subtotal,
             }
