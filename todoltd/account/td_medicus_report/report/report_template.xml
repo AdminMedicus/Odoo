@@ -31,7 +31,7 @@
             <strong>Одержувач: <span t-esc="partner_data['name']"/></strong><br/>
             Юр. адреса: <span t-esc="partner_data['street'] or partner_data['fisical_address']"/><br/>
             Фіз. адреса: <span t-esc="partner_data['fisical_address'] or partner_data['street']"/><br/>
-            Ліцензія: № від<br/>
+            <!-- Ліцензія: № від<br/> -->
             по договору: № 
             <span t-esc="agreement['number']"/> від 
             <span t-esc="agreement['date']"/>
@@ -510,9 +510,20 @@
                             <span t-esc="line['product_serial_number']"/><br/>
                         </td>
                         <td style="padding: 2px; vertical-align: middle;">
-                            <t t-foreach="line['storage_conditions']" t-as="condition">
-                                <span t-esc="condition"/><br/>
-                            </t>
+                            <table class="td_zero_border" width="100%">
+                                <tr class="text-start">
+                                    <td>
+                                        <t t-foreach="line['storage_conditions']" t-as="condition">
+                                            <span t-esc="condition"/><br/>
+                                        </t>
+                                    </td>
+                                </tr>
+                                <tr class="text-end">
+                                    <td>
+                                        <span>Автоперевезення</span>
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                         <td class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['quantity']"/>
@@ -521,11 +532,7 @@
                             <span t-esc="line['uom']"/>
                         </td>
                         <td class="text-center" style="padding: 2px; vertical-align: middle;">
-                            <!-- <t t-if="move.td_lot_ids">
-                                <t t-foreach="move.td_lot_ids" t-as="lot">
-                                    <span t-if="lot.expiration_date" t-field="lot.expiration_date" t-options='{"format": "dd.MM.yy"}'/><br/>
-                                </t>
-                            </t> -->
+                            <span t-if="line['expiration_date']" t-esc="line['expiration_date']"/>
                         </td>
                         <td class="text-right" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="'%.2f' % line['price_unit']"/>

@@ -25,8 +25,8 @@ class AccountMove(models.Model):
         order = self.td_order_id
         company = self.company_id
         company_partner = company.partner_id
-        warehouse_manager_id = company.td_warehouse_manager_id.user_id.partner_id
-        medical_manager_id = company.td_medical_warehouse_manager_id.user_id.partner_id
+        warehouse_manager_id = company.td_warehouse_manager_id.work_contact_id
+        medical_manager_id = company.td_medical_warehouse_manager_id.work_contact_id
         partner = order.partner_shipping_id
         fisical_address_partner = company_partner.child_ids.filtered(
             lambda p: p.type == 'delivery'
@@ -66,8 +66,8 @@ class AccountMove(models.Model):
             'warehouse_city': '',
             
             'agreement': {
-                'number': self.td_agreement_id.number,
-                'date': self.td_agreement_id.start_date,
+                'number': '',
+                'date': '',
             },
             
             'document_number': order.name.replace('S', ''),
@@ -83,6 +83,10 @@ class AccountMove(models.Model):
             'tax_guide_name': self.td_tax_guide_id.name,
             'currency_symbol': self.currency_id.symbol,
         }
+
+        if self.td_agreement_id:
+            data['agreement']['number'] = self.td_agreement_id.agreement_number
+            data['agreement']['date'] = self.td_agreement_id.start_date.strftime('%d.%m.%Y')
 
         if order.partner_invoice_id and order.partner_invoice_id != partner:
             partner_root = partner.parent_id or partner
@@ -103,16 +107,20 @@ class AccountMove(models.Model):
             location = order.picking_ids.filtered(
                 lambda p: line.td_order_line_id in p.move_ids_without_package.sale_line_id
             ).location_id
+            expiration_dateline = line.sale_line_ids.move_ids.filtered(
+                lambda m: m.picking_id.picking_type_code == 'outgoing'
+            ).mapped('move_line_ids.expiration_date')
             
             line_data = {
                 'sequence': line_num,
-                'product_name': line.product_id.name,
+                'product_name': line.product_id.description_sale,
                 'product_code': line.product_id.default_code or '',
                 'product_serial_number': line.product_id.default_code or '',
                 'product_manufacturer': line.product_id.td_manufacturer_directory_res_id.name or '',
                 'storage_conditions': location.mapped('td_condition_ids.name'),
                 'quantity': line.quantity,
                 'uom': line.product_uom_id.name,
+                'expiration_date': min(expiration_dateline) if expiration_dateline else '',
                 'price_unit': line.price_unit,
                 'price_subtotal': line.price_subtotal,
             }
