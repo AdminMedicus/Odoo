@@ -54,11 +54,20 @@ class StockPicking(models.Model):
         Preparation of data for the wholesale invoice report
         """
         self.ensure_one()
-        invoice = self.sale_id.invoice_ids.filtered(
+        
+        invoices = self.sale_id.invoice_ids.filtered(
             lambda i: i.state == 'posted'
-        )[-1]
-        if not invoice:
-            raise ValueError("No posted invoice found for this picking.")
+        )
+        
+        if not invoices:
+            from odoo.exceptions import UserError
+            raise UserError(
+                f"Не можна надрукувати Оптову накладну:\n\n"
+                f"Для замовлення {self.sale_id.name} ще не створено та не підтверджено інвойс.\n"
+                f"Спочатку потрібно створити та підтвердити інвойс."
+            )
+        
+        invoice = invoices[-1]
         data = invoice.td_get_report_data()
         return data
 
