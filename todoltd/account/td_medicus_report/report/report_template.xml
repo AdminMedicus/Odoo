@@ -491,55 +491,51 @@
             <tbody>
                 <t t-foreach="lines" t-as="line">
                     <tr style="page-break-inside: avoid;">
-                        <td class="text-center" style="padding: 2px; vertical-align: middle;"><span t-esc="line['sequence']"/></td>
-                        <td style="padding: 2px; vertical-align: middle;">
-                            <table class="td_zero_border" width="100%">
-                                <tr>
-                                    <td class="text-start">
-                                        <span t-esc="line['product_name']"/><br/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-end">
-                                        <small style="font-size: 7px;"><span t-esc="line['product_manufacturer']"/></small>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                        <td style="padding: 2px; vertical-align: middle; text-align: center;">
-                            <span t-esc="line['product_serial_number']"/><br/>
+                        <td class="text-center" rowspan="2" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['sequence']"/>
                         </td>
                         <td style="padding: 2px; vertical-align: middle;">
-                            <table class="td_zero_border" width="100%">
-                                <tr class="text-start">
-                                    <td>
-                                        <t t-foreach="line['storage_conditions']" t-as="condition">
-                                            <span t-esc="condition"/><br/>
-                                        </t>
-                                    </td>
-                                </tr>
-                                <tr class="text-end">
-                                    <td>
-                                        <span>Автоперевезення</span>
-                                    </td>
-                                </tr>
-                            </table>
+                            <span t-esc="line['product_name']"/>
                         </td>
                         <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <t t-foreach="line['product_serial_numbers']" t-as="serial_number">
+                                <span t-esc="serial_number"/><br/>
+                            </t>
+                        </td>
+                        <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <t t-foreach="line['storage_conditions']" t-as="condition">
+                                <span t-esc="condition"/><br/>
+                            </t>
+                        </td>
+                        <td class="text-center" rowspan="2" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['quantity']"/>
                         </td>
-                        <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                        <td class="text-center" rowspan="2" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['uom']"/>
                         </td>
                         <td class="text-center" style="padding: 2px; vertical-align: middle;">
-                            <span t-if="line['expiration_date']" t-esc="line['expiration_date']"/>
+                            <t t-foreach="line['expiration_dates']" t-as="exp_date">
+                                <span t-esc="exp_date"/><br/>
+                            </t>
                         </td>
-                        <td class="text-right" style="padding: 2px; vertical-align: middle;">
+                        <td class="text-right" rowspan="2" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="'%.2f' % line['price_unit']"/>
                         </td>
-                        <td class="text-right" style="padding: 2px; vertical-align: middle;">
+                        <td class="text-right" rowspan="2" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="'%.4f' % line['price_subtotal']"/>
                         </td>
+                    </tr>
+                    <tr style="page-break-inside: avoid;">
+                        <td class="text-end" style="padding: 2px; vertical-align: middle;">
+                            <span style="font-size: 7px;" t-esc="line['product_manufacturer']"/>
+                        </td>
+                        <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['product_catalog_number']"/>
+                        </td>
+                        <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span>Автоперевезення</span>
+                        </td>
+                        <td/>
                     </tr>
                 </t>
                 <tr>
