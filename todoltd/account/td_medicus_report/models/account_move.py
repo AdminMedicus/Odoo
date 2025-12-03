@@ -25,19 +25,24 @@ class AccountMove(models.Model):
         order = self.td_order_id
         company = self.company_id
         company_partner = company.partner_id
-        partner = order.partner_id
+        warehouse_manager_id = company.td_warehouse_manager_id.user_id.partner_id
+        medical_manager_id = company.td_medical_warehouse_manager_id.user_id.partner_id
+        partner = order.partner_shipping_id
+        fisical_address_partner = company_partner.child_ids.filtered(
+            lambda p: p.type == 'delivery'
+        )[0] if company_partner.child_ids else company_partner
         
         data = {
             'is_picking': False,
             'is_invoice': True,
             'company': {
-                'name': company.name,
+                'name': company_partner.full_partner_name,
                 'registry': company.company_registry,
                 'vat': company.vat,
-                'street': company.street,
+                'street': company_partner.contact_address_complete,
                 'logo': company.logo,
-                'warehouse_manager': company.td_warehouse_manager_id.name,
-                'medical_warehouse_manager': company.td_medical_warehouse_manager_id.name,
+                'warehouse_manager': warehouse_manager_id.td_short_name or warehouse_manager_id.full_partner_name,
+                'medical_warehouse_manager': medical_manager_id.td_short_name or medical_manager_id.full_partner_name,
             },
             'company_partner': {
                 'ref': company_partner.ref or '',
@@ -50,8 +55,9 @@ class AccountMove(models.Model):
                 'tax_position': company_partner.property_account_position_id.name,
             },
             'partner': {
-                'name': partner.name,
-                'street': partner.street,
+                'name': partner.parent_id.full_partner_name or partner.full_partner_name,
+                'street': partner.parent_id.contact_address_complete,
+                'fisical_address': partner.contact_address_complete,
             },
             'payment_partner': False,
             'warehouse_address': '',
@@ -76,23 +82,22 @@ class AccountMove(models.Model):
             'currency_symbol': self.currency_id.symbol,
         }
 
-        if order.partner_invoice_id != partner or (
-            order.partner_invoice_id.parent_id and order.partner_invoice_id.parent_id != partner
-        ):
-            payment_partner = order.partner_invoice_id
-            data['payment_partner'] = {
-                'name': payment_partner.name,
-                'street': payment_partner.street or '',
-            }
+        if order.partner_invoice_id and order.partner_invoice_id != partner:
+            partner_root = partner.parent_id or partner
+            invoice_root = order.partner_invoice_id.parent_id or order.partner_invoice_id
+            
+            if invoice_root != partner_root:
+                payment_partner = order.partner_invoice_id
+                data['payment_partner'] = {
+                    'name': payment_partner.full_partner_name or payment_partner.name,
+                    'street': payment_partner.contact_address_complete or '',
+                }
         
         line_num = 0
         for line in self.invoice_line_ids:
             if not line.product_id:
                 continue
             line_num += 1
-            lot_id = line.product_id.stock_quant_ids.filtered(
-                lambda q: q.lot_id.sale_order_ids == order
-            ).lot_id
             location = order.picking_ids.filtered(
                 lambda p: line.td_order_line_id in p.move_ids_without_package.sale_line_id
             ).location_id
@@ -101,14 +106,15 @@ class AccountMove(models.Model):
                 'sequence': line_num,
                 'product_name': line.product_id.name,
                 'product_code': line.product_id.default_code or '',
-                'product_serial_number': lot_id.name,
+                'product_serial_number': line.product_id.default_code or '',
+                'product_manufacturer': line.product_id.td_manufacturer_directory_res_id.name or '',
                 'storage_conditions': location.mapped('td_condition_ids.name'),
                 'quantity': line.quantity,
                 'uom': line.product_uom_id.name,
                 'price_unit': line.price_unit,
                 'price_subtotal': line.price_subtotal,
             }
-            data['warehouse_address'] = line.sale_line_ids[0].warehouse_id.partner_id.street or ''
+            data['warehouse_address'] = fisical_address_partner.contact_address_complete
             data['lines'].append(line_data)
         
         return data
