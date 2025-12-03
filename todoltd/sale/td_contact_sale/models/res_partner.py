@@ -9,6 +9,9 @@ class Partner(models.Model):
         comodel_name='td.res.country.region'
     )
     full_partner_name = fields.Char()
+    td_short_name = fields.Char(
+        string='Short Name',
+    )
     sub_client_rel_ids = fields.One2many(
         comodel_name='td.res.partner.sub.client.rel',
         inverse_name='partner_id',
