@@ -78,4 +78,28 @@
         <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat_landscape"/>
     </record>
 
+    <record id="action_report_custody_transfer_act" model="ir.actions.report">
+        <field name="name">Акт передачі на відповідальне зберігання</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_print_custody_transfer_act</field>
+        <field name="report_file">td_medicus_report.report_print_custody_transfer_act</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[('picking_type_code', '=', 'outgoing')]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
+    <record id="action_report_custody_return_act" model="ir.actions.report">
+        <field name="name">Акт повернення з відповідального зберігання</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_print_custody_return_act</field>
+        <field name="report_file">td_medicus_report.report_print_custody_return_act</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[('picking_type_code', '=', 'outgoing')]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
 </odoo>

@@ -2,16 +2,17 @@
 {
     'name': "ToDo Medicus Reports",
     'summary': 'Друковані форми для Medicus',
-    'version': '18.0.0.0.2',
+    'version': '18.0.0.0.3',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
     'category': 'Reporting',
 
     'depends': [
-        'stock',
         'account',
         'sale',
+        'stock',
+        'td_contact_sale',
         'td_medicus_agreement',
         'td_medicus_1c_integration',
     ],

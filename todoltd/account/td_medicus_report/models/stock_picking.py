@@ -162,3 +162,86 @@ class StockPicking(models.Model):
             data['lines'].append(line_data)
         
         return data
+
+    def td_get_report_custody_act_data(self):
+        """
+        Preparation of data for the custody act report
+        """
+        self.ensure_one()
+        order = self.sale_id
+        company = self.company_id
+        company_partner = company.partner_id
+        warehouse_manager_id = company.td_warehouse_manager_id.work_contact_id
+        medical_manager_id = company.td_medical_warehouse_manager_id.work_contact_id
+        client_partner = self.td_parent_partner_id
+        shipper_partner = self.partner_id
+        
+        data = {
+            'company': {
+                'name': company_partner.full_partner_name,
+                'registry': company.company_registry,
+                'vat': company.vat,
+                'street': company_partner.contact_address_complete,
+                'logo': company.logo,
+                'ref': company_partner.ref or '',
+                'bank_account': company_partner.bank_ids[0].acc_number,
+                'bank_name': company_partner.bank_ids[0].bank_name,
+                'bank_bic': company_partner.bank_ids[0].bank_bic,
+                'license_issued_by': company_partner.td_license_issued_by,
+                'license_number': company_partner.td_license_number,
+                'license_date': company_partner.td_license_date,
+                'tax_position': company_partner.property_account_position_id.name,
+                'warehouse_manager': warehouse_manager_id.full_partner_name,
+                'medical_warehouse_manager': medical_manager_id.full_partner_name,
+                # 'warehouse_manager': warehouse_manager_id.td_short_name or warehouse_manager_id.full_partner_name,
+                # 'medical_warehouse_manager': medical_manager_id.td_short_name or medical_manager_id.full_partner_name,
+                'warehouse_address': self.warehouse_address_id.contact_address_complete or self.warehouse_address_id.name
+            },
+            'partner': {
+                'name': client_partner.parent_id.full_partner_name or client_partner.full_partner_name,
+                'registry': client_partner.company_registry,
+                'street': client_partner.parent_id.contact_address_complete,
+                'fisical_address': shipper_partner.contact_address_complete,
+            },
+            'lines': [],
+            'act_number': self.name.split('/')[-1],
+            'act_date': self.date_done.strftime('%d.%m.%Y'),
+            'agreement_number': order.td_agreement_id.agreement_number or '',
+            'agreement_date': order.td_agreement_id.start_date.strftime('%d.%m.%Y'),
+            'transfer_title': 'Акт передачі майна на відповідальне зберігання № ',
+            'return_title': 'Акт повернення майна з відповідального зберігання № ',
+            'transfer_subtitle': 'Депонент передав, а виконавець прийняв на відповідальне зберігання наступне майно:',
+            'return_subtitle': 'Депонент прийняв, а виконавець повернув з відповідального зберігання наступне майно:',
+            'amount_total': self.td_total_amount,
+            'amount_in_words': self.get_amount_in_words(),
+        }
+
+        line_num = 0
+        for line in self.move_ids_without_package:
+            if not line.product_id:
+                continue
+            line_num += 1
+            location = self.location_id
+            move_line_ids = line.mapped('move_line_ids')
+            
+            line_data = {
+                'sequence': line_num,
+                'product_name': line.product_id.description_sale,
+                'product_code': line.product_id.default_code or '',
+                'product_serial_numbers': [
+                    l.name for l in move_line_ids.mapped('lot_id')]
+                    if move_line_ids else [],
+                'product_catalog_number': line.product_id.default_code or '',
+                'product_manufacturer': line.product_id.td_manufacturer_directory_res_id.name or '',
+                'storage_conditions': location.mapped('td_condition_ids.name'),
+                'quantity': line.quantity,
+                'uom': line.product_uom.name,
+                'expiration_dates': [
+                    d.strftime('%d.%m.%Y') for d in move_line_ids.mapped('expiration_date')]
+                    if move_line_ids else [],
+                'price_unit': line.td_price_unit,
+                'price_subtotal': line.td_price_subtotal,
+            }
+            data['lines'].append(line_data)
+        
+        return data
