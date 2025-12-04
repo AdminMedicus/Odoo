@@ -78,6 +78,83 @@
         </div>
     </template>
 
+    <template id="td_report_custody_act_header">
+        <t t-set="company" t-value="report_data['company']"/>
+        <t t-set="partner" t-value="report_data['partner']"/>
+        <table class="td_zero_border"  style="font-size: 9px; line-height: 1.3; width: 100%">
+            <tr>
+                <td width="15%">
+                    <strong>Депонент (Поклажодавець):</strong>
+                </td>
+                <td>
+                    <span t-esc="company['name']"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Адреса:</strong>
+                </td>
+                <td>
+                    <span t-esc="company['street']"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>ЄДРПОУ:</strong>
+                </td>
+                <td>
+                    <span t-esc="company['ref']"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Банк:</strong>
+                </td>
+                <td>
+                    <span t-esc="company['bank_name']"/> в м.Києві, МФО 
+                    <span t-esc="company['bank_bic']"/>, Р/Р 
+                    <span t-esc="company['bank_account']"/>
+                </td>
+            </tr>
+        </table>
+        <table class="td_zero_border"  style="font-size: 9px; line-height: 1.3; width: 100%; margin-top: 5px;">
+            <tr>
+                <td width="15%">
+                    <strong>Виконавець (Зберігач):</strong>
+                </td>
+                <td>
+                    <span t-esc="partner['name']"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Адреса:</strong>
+                </td>
+                <td>
+                    <span t-esc="partner['street'] or partner['fisical_address']"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>ЄДРПОУ:</strong>
+                </td>
+                <td>
+                    <span t-esc="partner['registry']"/>
+                </td>
+            </tr>
+        </table>
+        <table class="td_zero_border"  style="font-size: 9px; line-height: 1.3; width: 100%; margin-top: 5px;">
+            <tr>
+                <td width="15%">
+                    <strong>Місце зберігання майна:</strong>
+                </td>
+                <td>
+                    <span t-esc="partner['fisical_address']"/>
+                </td>
+            </tr>
+        </table>
+    </template>
+
     <template id="td_report_header_waybill">
         <div class="mb-2">
             <div style="font-size: 9px; line-height: 1.3;">
@@ -111,6 +188,40 @@
                 № <span t-esc="report_data['waybill_number']"/> від <span t-esc="report_data['waybill_date']"/>
             </span>
         </div>
+    </template>
+
+    <template id="td_report_custody_act_title">
+        <div class="text-center mt-3 mb-1" style="font-size: 11px; padding: 2px;">
+            <p style="font-size: 11px; font-weight: 600; padding: 2px;">
+                <span t-if="is_transfer" t-esc="report_data['transfer_title']"/>
+                <span t-else="" t-esc="report_data['return_title']"/>
+                <span t-esc="report_data['act_number']"/> від <span t-esc="report_data['act_date']"/>
+            </p>
+        </div>
+        <table class="td_zero_border" width="100%" style="margin-bottom: 10px; font-size: 9px; line-height: 1.3;">
+            <tr>
+                <td>
+                    На підставі Договору відповідального зберігання № 
+                    <span t-esc="report_data['agreement_number']"/> від 
+                    <span t-esc="report_data['agreement_date']"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <t t-if="is_transfer" t-esc="report_data['transfer_subtitle']"/>
+                    <t t-else="" t-esc="report_data['return_subtitle']"/>
+                </td>
+            </tr>
+        </table>
+        <!-- <div style="font-size: 9px; line-height: 1.3;">
+            <p>
+                На підставі Договору відповідального зберігання № 
+                <span t-esc="report_data['agreement_number']"/> від 
+                <span t-esc="report_data['agreement_date']"/>
+            </p>
+            <p t-if="is_transfer" t-esc="report_data['transfer_subtitle']"/>
+            <p t-else="" t-esc="report_data['return_subtitle']"/>
+        </div> -->
     </template>
     
     <template id="td_report_waybill_info_1">
@@ -704,6 +815,87 @@
         </table> -->
     </template>
 
+    <template id="td_report_products_table_custody_act">
+        <t t-set="lines" t-value="report_data['lines']"/>
+        <table class="table table-sm table-bordered o_ignore_layout_styling" style="font-size: 8px; margin-bottom: 5px;">
+            <thead style="background-color: #f0f0f0;">
+                <tr>
+                    <th class="text-center" style="width: 2%; padding: 1px; vertical-align: middle;">№</th>
+                    <th class="text-center" style="width: 30%; padding: 1px; vertical-align: middle;">Найменування / Виробник</th>
+                    <th class="text-center" style="width: 10%; padding: 1px; vertical-align: middle;">Серія /<br/>Каталожний номер</th>
+                    <th class="text-center" style="width: 12%; padding: 1px; vertical-align: middle;">Умови зберігання</th>
+                    <th class="text-center" style="width: 7%; padding: 1px; vertical-align: middle;">Термін<br/>придатності</th>
+                    <th class="text-center" style="width: 5%; padding: 1px; vertical-align: middle;">Одиниця виміру</th>
+                    <th class="text-center" style="width: 5%; padding: 1px; vertical-align: middle;">Кількість</th>
+                    <th class="text-center" style="width: 12%; padding: 1px; vertical-align: middle;">Ціна/оціночна вартість</th>
+                    <th class="text-center" style="width: 17%; padding: 1px; vertical-align: middle;">Сума (грн.)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <t t-foreach="lines" t-as="line">
+                    <tr style="page-break-inside: avoid;">
+                        <td class="text-center" rowspan="2" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['sequence']"/>
+                        </td>
+                        <td style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['product_name']"/>
+                        </td>
+                        <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <t t-foreach="line['product_serial_numbers']" t-as="serial_number">
+                                <span t-esc="serial_number"/><br/>
+                            </t>
+                        </td>
+                        <td class="text-center" rowspan="2" style="padding: 2px; vertical-align: middle;">
+                            <t t-foreach="line['storage_conditions']" t-as="condition">
+                                <span t-esc="condition"/><br/>
+                            </t>
+                        </td>
+                        <td class="text-center" rowspan="2" style="padding: 2px; vertical-align: middle;">
+                            <t t-foreach="line['expiration_dates']" t-as="exp_date">
+                                <span t-esc="exp_date"/><br/>
+                            </t>
+                        </td>
+                        <td class="text-center" rowspan="2" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['uom']"/>
+                        </td>
+                        <td class="text-center" rowspan="2" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['quantity']"/>
+                        </td>
+                        <td class="text-center" rowspan="2" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="'%.2f' % line['price_unit']"/>
+                        </td>
+                        <td class="text-center" rowspan="2" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="'%.4f' % line['price_subtotal']"/>
+                        </td>
+                    </tr>
+                    <tr style="page-break-inside: avoid;">
+                        <td class="text-end" style="padding: 2px; vertical-align: middle;">
+                            <span style="font-size: 7px;" t-esc="line['product_manufacturer']"/>
+                        </td>
+                        <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['product_catalog_number']"/>
+                        </td>
+                    </tr>
+                </t>
+                <tr>
+                    <td style="padding: 2px; vertical-align: bottom; border-left: 1px solid transparent; border-rigth: 1px solid transparent; border-bottom: 1px solid transparent" colspan="7"/>
+                    <td class="text-end" style="padding: 2px; vertical-align: middle;">
+                        <strong>Всього:</strong>
+                    </td>
+                    <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                        <span t-esc="'%.2f' % report_data['amount_total']"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #fff"/>
+                    <td style="padding: 8px 2px 2px 2px; vertical-align: bottom; border-left: 0px solid transparent; border-right: 0px solid transparent; border-bottom: 1px solid transparent" colspan="8">
+                        Всього передано на суму: <span t-esc="report_data['amount_in_words']"/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </template>
+
     <template id="td_report_totals_2">
         <table class="table table-sm table-bordered o_ignore_layout_styling td_zero_border" style="font-size: 8px; margin-bottom: 5px;">
             <tbody>
@@ -941,6 +1133,84 @@
             </table>
         </div>
     </template>
+
+    <template id="td_report_signatures_3">
+        <div class="mt-2 display-inline mx-auto" style="font-size: 9px;max-width: 900px;">
+            <table class="table-sm o_ignore_layout_styling td_zero_border" width="100%">
+                <tr>
+                    <td style="width: 50%; vertical-align: top; text-align: center;">
+                        <table class="table-sm o_ignore_layout_styling td_zero_border" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <td/>
+                                    <td>
+                                        Депонент
+                                    </td>
+                                    <td/>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="width: 30%; text-align: start; padding-top: 25px;">
+                                        <t t-if="is_transfer" t-esc="'Передав'"/>
+                                        <t t-else="" t-esc="'Прийняв'"/>
+                                    </td>
+                                    <td style="border-bottom: 1px solid #000; padding-top: 25px;"/>
+                                    <td style="width: 35%; text-align: start; padding-top: 25px;">
+                                        /<span t-esc="report_data['company']['warehouse_manager']"/>/
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td/>
+                                    <td class="text-center" style="font-size: 7px;">
+                                        <span>завідувач складу</span>
+                                    </td>
+                                    <td/>
+                                </tr>
+                                <tr>
+                                    <td style="width: 30%; text-align: start;">
+                                        Уповноважена особа аптечного складу
+                                    </td>
+                                    <td style="border-bottom: 1px solid #000;"/>
+                                    <td style="width: 35%; text-align: start;">
+                                        /<span t-esc="report_data['company']['medical_warehouse_manager']"/>/
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-start" style="padding-top: 20px;">
+                                        Місце складання: <span t-esc="report_data['company']['warehouse_address']"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td style="width: 50%; vertical-align: top; text-align: center;">
+                        <table class="table-sm o_ignore_layout_styling td_zero_border" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <td/>
+                                    <td style="">
+                                        Виконавець
+                                    </td>
+                                    <td/>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="width: 20%; padding-top: 25px;">
+                                        <t t-if="is_transfer" t-esc="'Прийняв'"/>
+                                        <t t-else="" t-esc="'Повернув'"/>
+                                    </td>
+                                    <td style="border-bottom: 1px solid #000; padding-top: 25px;"/>
+                                    <td style="width: 35%"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </template>
     
 
     <!-- Documents -->
@@ -1005,6 +1275,27 @@
             </div>
         </t>
     </template>
+    
+    <template id="report_custody_act_document">
+        <t t-call="web.basic_layout">
+            <t t-set="o" t-value="o.with_context(lang=lang)"/>
+            <t t-set="report_data" t-value="o.td_get_report_custody_act_data()"/>
+            
+            <div class="page mx-auto" style="font-family: Arial, sans-serif; font-size: 11px; max-width: 900px;">
+                <style>
+                    .td_zero_border,
+                    .td_zero_border td,
+                    .td_zero_border th {
+                        border: 0px solid transparent;
+                    }
+                </style>
+                <t t-call="td_medicus_report.td_report_custody_act_header"/>
+                <t t-call="td_medicus_report.td_report_custody_act_title"/>
+                <t t-call="td_medicus_report.td_report_products_table_custody_act"/>
+                <t t-call="td_medicus_report.td_report_signatures_3"/>
+            </div>
+        </t>
+    </template>
 
 
     <!-- Reports -->
@@ -1036,6 +1327,24 @@
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-call="td_medicus_report.report_waybill_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_print_custody_transfer_act">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="is_transfer" t-value="True"/>
+                <t t-call="td_medicus_report.report_custody_act_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_print_custody_return_act">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="is_transfer" t-value="False"/>
+                <t t-call="td_medicus_report.report_custody_act_document" t-lang="o.partner_id.lang"/>
             </t>
         </t>
     </template>
