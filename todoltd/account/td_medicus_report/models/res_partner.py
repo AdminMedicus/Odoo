@@ -13,9 +13,9 @@ class ResPartner(models.Model):
     td_license_issued_by = fields.Char(
         string='License Issued By'
     )
-    td_partner_short_name = fields.Char(
-        string='Short Name'
-    )
+    # td_partner_short_name = fields.Char(
+    #     string='Short Name'
+    # )
     contact_address_complete = fields.Char(compute='_td_compute_complete_address', store=False)
 
 
