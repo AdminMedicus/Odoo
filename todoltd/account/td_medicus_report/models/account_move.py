@@ -41,10 +41,10 @@ class AccountMove(models.Model):
                 'vat': company.vat,
                 'street': company_partner.contact_address_complete,
                 'logo': company.logo,
-                'warehouse_manager': warehouse_manager_id.full_partner_name,
-                'medical_warehouse_manager': medical_manager_id.full_partner_name,
-                # 'warehouse_manager': warehouse_manager_id.td_short_name or warehouse_manager_id.full_partner_name,
-                # 'medical_warehouse_manager': medical_manager_id.td_short_name or medical_manager_id.full_partner_name,
+                # 'warehouse_manager': warehouse_manager_id.full_partner_name,
+                # 'medical_warehouse_manager': medical_manager_id.full_partner_name,
+                'warehouse_manager': warehouse_manager_id.td_partner_short_name or warehouse_manager_id.full_partner_name,
+                'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.full_partner_name,
             },
             'company_partner': {
                 'ref': company_partner.ref or '',
@@ -58,6 +58,7 @@ class AccountMove(models.Model):
             },
             'partner': {
                 'name': partner.parent_id.full_partner_name or partner.full_partner_name,
+                'registry': partner.company_registry or '',
                 'street': partner.parent_id.contact_address_complete,
                 'fisical_address': partner.contact_address_complete,
             },
@@ -95,6 +96,7 @@ class AccountMove(models.Model):
             if invoice_root != partner_root:
                 payment_partner = order.partner_invoice_id
                 data['payment_partner'] = {
+                    'registry': payment_partner.company_registry or '',
                     'name': payment_partner.full_partner_name or payment_partner.name,
                     'street': payment_partner.contact_address_complete or '',
                 }

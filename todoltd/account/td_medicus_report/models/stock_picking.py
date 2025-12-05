@@ -191,10 +191,10 @@ class StockPicking(models.Model):
                 'license_number': company_partner.td_license_number,
                 'license_date': company_partner.td_license_date,
                 'tax_position': company_partner.property_account_position_id.name,
-                'warehouse_manager': warehouse_manager_id.full_partner_name,
-                'medical_warehouse_manager': medical_manager_id.full_partner_name,
-                # 'warehouse_manager': warehouse_manager_id.td_short_name or warehouse_manager_id.full_partner_name,
-                # 'medical_warehouse_manager': medical_manager_id.td_short_name or medical_manager_id.full_partner_name,
+                # 'warehouse_manager': warehouse_manager_id.full_partner_name,
+                # 'medical_warehouse_manager': medical_manager_id.full_partner_name,
+                'warehouse_manager': warehouse_manager_id.td_partner_short_name or warehouse_manager_id.full_partner_name,
+                'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.full_partner_name,
                 'warehouse_address': self.warehouse_address_id.contact_address_complete or self.warehouse_address_id.name
             },
             'partner': {
