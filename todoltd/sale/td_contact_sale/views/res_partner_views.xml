@@ -10,7 +10,6 @@
             </xpath>
             <xpath expr="//span[@name='address_name']" position="before">
                 <field name="full_partner_name"/>
-                <!-- <field name="td_short_name"/> -->
             </xpath>
             <xpath expr="//notebook" position="inside">
                 <page string="Sub client" name="sub_client">
