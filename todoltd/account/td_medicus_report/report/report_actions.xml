@@ -51,7 +51,11 @@
         <field name="report_file">td_medicus_report.report_wholesale_invoice</field>
         <field name="binding_model_id" ref="account.model_account_move"/>
         <field name="binding_type">report</field>
-        <field name="domain" eval="[('move_type', '=', 'out_invoice'),('state', 'in', ['posted'])]"/>
+        <field name="domain" eval="[
+            ('move_type', '=', 'out_invoice'),
+            ('state', 'in', ['posted']),
+            ('td_order_implementation_document', '=', 'exp_inv')
+        ]"/>
         <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
     </record>
 
