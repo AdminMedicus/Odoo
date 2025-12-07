@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
 
-from odoo import models
+from odoo import api, fields, models
 from odoo.tools.misc import format_date
 
 
@@ -9,31 +9,123 @@ class StockPicking(models.Model):
     _name = 'stock.picking'
     _inherit = ['stock.picking', 'td.amount.to.words.mixin']
 
+    td_invoice_date = fields.Date(
+        string="Invoice Date",
+        help="Date of the invoice related to this delivery order",
+    )
+    td_custody_act_date = fields.Date(
+        string="Custody Act Date",
+        help="Date of the custody act related to this delivery order",
+    )
+    td_order_implementation_document = fields.Selection(
+        related="sale_id.implementation_document",
+    )
+    td_show_create_invoice_button = fields.Boolean(
+        string="Show Create Invoice Button",
+        compute='_compute_td_show_create_invoice_button',
+    )
+    td_show_create_custody_act_button = fields.Boolean(
+        string="Show Create Custody Act Button",
+        compute='_compute_td_show_create_custody_act_button',
+    )
 
-    # def button_validate(self):
-    #     res = super().button_validate()
+
+    def _compute_td_show_create_invoice_button(self):
+        for picking in self:
+            if picking.td_order_implementation_document == 'exp_inv':
+                internal_pickings = picking.sale_id.picking_ids.filtered(
+                    lambda p: p.picking_type_code == 'internal'
+                )
+                picking.td_show_create_invoice_button = (
+                    picking.picking_type_code in ['internal', 'outgoing'] and 
+                    internal_pickings.state == 'done' and 
+                    not picking.sale_id.td_invoice_from_delivery
+                )
+            elif picking.td_order_implementation_document == 'act_res_st':
+                picking.td_show_create_invoice_button = (
+                    picking.picking_type_code == 'incoming' and
+                    picking.state == 'done' and
+                    bool(picking.return_id) and
+                    not picking.sale_id.td_invoice_from_delivery
+                )
+            else:
+                picking.td_show_create_invoice_button = False
+
+    def _compute_td_show_create_custody_act_button(self):
+        for picking in self:
+            picking.td_show_create_custody_act_button = (
+                picking.state == 'done' and
+                picking.picking_type_code in ['outgoing', 'incoming'] and
+                picking.td_order_implementation_document == 'act_res_st'
+            )
+
+    def td_create_invoice(self):
+        """
+        Create invoice from delivery order and print it
+        """
+        self.ensure_one()
+        sale_order = self.sale_id
+        if not sale_order:
+            return
         
-    #     for picking in self:
-    #         if picking.picking_type_code == 'outgoing' and (order := picking.sale_id):
-    #             wizard = self.env['sale.advance.payment.inv'].with_context(
-    #                 active_ids=[order.id],
-    #                 active_model='sale.order',
-    #                 active_id=order.id,
-    #             ).create({
-    #                 'td_advance_payment_method': 'delivered',
-    #             })
-                
-    #             wizard.create_invoices()
-                
-    #             invoice = order.invoice_ids.filtered(
-    #                 lambda inv: inv.state == 'draft'
-    #             ).sorted('id', reverse=True)[:1]
-                
-    #             if invoice:
-    #                 invoice.invoice_date = datetime.now().date()
-    #                 invoice.action_post()
+        wizard = self.env['sale.advance.payment.inv'].with_context(
+            active_ids=[sale_order.id],
+            active_model='sale.order',
+            active_id=sale_order.id,
+        ).create({
+            'td_advance_payment_method': 'delivered',
+        })
         
-    #     return res
+        invoice_action = wizard.create_invoices()
+        
+        invoice = sale_order.invoice_ids.filtered(
+            lambda inv: inv.id == invoice_action['res_id']
+        )
+        
+        if invoice:
+            invoice.invoice_date = self.td_invoice_date or datetime.now().date()
+            invoice.action_post()
+            sale_order.td_invoice_from_delivery = True
+            
+            return self.env.ref('td_medicus_report.action_report_wholesale_invoice_invoice').report_action(invoice)
+
+    def td_create_custody_act(self):
+        """
+        Create custody act from delivery order and print it
+        """
+        self.ensure_one()
+        if not self.td_custody_act_date:
+            self.td_custody_act_date = datetime.now().date()
+
+        if self.picking_type_code == 'outgoing':
+            return self.env.ref('td_medicus_report.action_report_custody_transfer_act').report_action(self)
+        elif self.picking_type_code == 'incoming' and self.return_id:
+            return self.env.ref('td_medicus_report.action_report_custody_return_act').report_action(self)
+
+    @api.onchange('td_invoice_date')
+    def _onchange_td_invoice_date(self):
+        """
+        Synchronize td_invoice_date across all transfers in the chain
+        """
+        if self.td_invoice_date:
+            self._sync_invoice_date_in_chain(self.td_invoice_date)
+
+    def _sync_invoice_date_in_chain(self, invoice_date):
+        """
+        Synchronize invoice date across all related transfers in the chain
+        """
+        self.ensure_one()
+        if not self.sale_id:
+            return
+        
+        all_pickings = self.sale_id.picking_ids.filtered(
+            lambda p: p.state not in ['done', 'cancel'] and p.id != self.id
+        )
+        
+        if all_pickings:
+            all_pickings.write({
+                'td_invoice_date': invoice_date
+            })
 
     def get_amount_in_words(self):
         """
@@ -126,18 +218,21 @@ class StockPicking(models.Model):
         order = self.sale_id
         company = self.company_id
         partner = self.partner_id
+        warehouse_manager_id = company.td_warehouse_manager_id.work_contact_id
+        medical_manager_id = company.td_medical_warehouse_manager_id.work_contact_id
 
         data = {
             'waybill_number': self.name.split('/')[-1],
             'waybill_date': format_date(self.env, self.date_done, date_format='dd MMMM yyyy p.'),
             'buyer': order.partner_invoice_id.full_partner_name or order.partner_invoice_id.name,
             'shipper': company.partner_id.full_partner_name,
-            # 'shipper': 'Товариство з обмеженою відповідальністю "Медична компанія Медікус"',
             'consignee': partner.full_partner_name or partner.name,
             'delivery_address': partner.contact_address_complete,
             'loading_point': self.warehouse_address_id.contact_address_complete or self.warehouse_address_id.name,
-            'warehouse_manager': company.td_warehouse_manager_id.name,
-            'medical_warehouse_manager': company.td_medical_warehouse_manager_id.name,
+            # 'warehouse_manager': company.td_warehouse_manager_id.name,
+            # 'medical_warehouse_manager': company.td_medical_warehouse_manager_id.name,
+            'warehouse_manager': warehouse_manager_id.td_partner_short_name or warehouse_manager_id.full_partner_name,
+            'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.full_partner_name,
             'total_amount': self._amount_to_words_ua(self.td_total_amount),
             'tax_amount': self._amount_to_words_ua(self.td_total_tax),
             'total': self.td_total_amount,
@@ -155,9 +250,7 @@ class StockPicking(models.Model):
                 'quantity': move.product_uom_qty,
                 'price_unit': move.td_price_unit,
                 'price_subtotal': move.td_price_total,
-                # 'packaging_type': move.package_level_id.name or '',
                 'documents_with_cargo': self.origin or '',
-                # 'gross_weight': move.td_gross_weight or '',
             }
             data['lines'].append(line_data)
         
@@ -191,10 +284,10 @@ class StockPicking(models.Model):
                 'license_number': company_partner.td_license_number,
                 'license_date': company_partner.td_license_date,
                 'tax_position': company_partner.property_account_position_id.name,
-                'warehouse_manager': warehouse_manager_id.full_partner_name,
-                'medical_warehouse_manager': medical_manager_id.full_partner_name,
-                # 'warehouse_manager': warehouse_manager_id.td_partner_short_name or warehouse_manager_id.full_partner_name,
-                # 'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.full_partner_name,
+                # 'warehouse_manager': warehouse_manager_id.full_partner_name,
+                # 'medical_warehouse_manager': medical_manager_id.full_partner_name,
+                'warehouse_manager': warehouse_manager_id.td_partner_short_name or warehouse_manager_id.full_partner_name,
+                'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.full_partner_name,
                 'warehouse_address': self.warehouse_address_id.contact_address_complete or self.warehouse_address_id.name
             },
             'partner': {
@@ -205,7 +298,7 @@ class StockPicking(models.Model):
             },
             'lines': [],
             'act_number': self.name.split('/')[-1],
-            'act_date': self.date_done.strftime('%d.%m.%Y'),
+            'act_date': self.td_custody_act_date.strftime('%d.%m.%Y'),
             'agreement_number': order.td_agreement_id.agreement_number or '',
             'agreement_date': order.td_agreement_id.start_date.strftime('%d.%m.%Y'),
             'transfer_title': 'Акт передачі майна на відповідальне зберігання № ',
