@@ -103,15 +103,18 @@ class StockPicking(models.Model):
         elif self.picking_type_code == 'incoming' and self.return_id:
             return self.env.ref('td_medicus_report.action_report_custody_return_act').report_action(self)
 
-    @api.onchange('td_invoice_date')
-    def _onchange_td_invoice_date(self):
+    @api.onchange('td_invoice_date', 'td_custody_act_date')
+    def _onchange_td_dates(self):
         """
         Synchronize td_invoice_date across all transfers in the chain
         """
-        if self.td_invoice_date:
-            self._sync_invoice_date_in_chain(self.td_invoice_date)
+        if self.td_invoice_date or self.td_custody_act_date:
+            self._sync_invoice_date_in_chain(
+                invoice_date=self.td_invoice_date,
+                custody_date=self.td_custody_act_date
+            )
 
-    def _sync_invoice_date_in_chain(self, invoice_date):
+    def _sync_invoice_date_in_chain(self, invoice_date=None, custody_date=None):
         """
         Synchronize invoice date across all related transfers in the chain
         """
@@ -124,9 +127,12 @@ class StockPicking(models.Model):
         )
         
         if all_pickings:
-            all_pickings.write({
-                'td_invoice_date': invoice_date
-            })
+            data = {}
+            if invoice_date:
+                data['td_invoice_date'] = invoice_date
+            if custody_date:
+                data['td_custody_act_date'] = custody_date
+            all_pickings.write(data)
 
     def get_amount_in_words(self):
         """

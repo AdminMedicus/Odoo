@@ -92,7 +92,10 @@
         <field name="report_file">td_medicus_report.report_print_custody_transfer_act</field>
         <field name="binding_model_id" ref="stock.model_stock_picking"/>
         <field name="binding_type">report</field>
-        <field name="domain" eval="[('picking_type_code', '=', 'outgoing')]"/>
+        <field name="domain" eval="[
+            ('picking_type_code', '=', 'outgoing'),
+            ('td_order_implementation_document', '=', 'act_res_st')
+        ]"/>
         <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
     </record>
 
@@ -104,7 +107,10 @@
         <field name="report_file">td_medicus_report.report_print_custody_return_act</field>
         <field name="binding_model_id" ref="stock.model_stock_picking"/>
         <field name="binding_type">report</field>
-        <field name="domain" eval="[('picking_type_code', '=', 'outgoing')]"/>
+        <field name="domain" eval="[
+            ('picking_type_code', '=', 'incoming'),
+            ('td_order_implementation_document', '=', 'act_res_st')
+        ]"/>
         <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
     </record>
 

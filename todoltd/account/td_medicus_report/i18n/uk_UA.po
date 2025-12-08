@@ -720,7 +720,7 @@ msgstr "Відповідальні особи"
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_view_picking_form_inherit
 msgid "Return Act"
-msgstr "Сформувати акт зберігання"
+msgstr "Сформувати акт повернення"
 
 #. module: td_medicus_report
 #: model:ir.model,name:td_medicus_report.model_sale_order
@@ -773,7 +773,7 @@ msgstr "Переміщення"
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_view_picking_form_inherit
 msgid "Transfer Act"
-msgstr "Сформувати акт повернення"
+msgstr "Сформувати акт передачі"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,help:td_medicus_report.field_res_company__td_medical_warehouse_manager_id
