@@ -56,7 +56,7 @@
 
     <template id="td_report_header_2">
         <div class="row mb-2">
-            <div class="col-7">
+            <div>
                 <div style="font-size: 9px; line-height: 1.3;">
                     <strong>
                         Замовлення лінз № 
@@ -708,24 +708,28 @@
             <tbody>
                 <t t-foreach="lines" t-as="line">
                     <tr style="page-break-inside: avoid;">
-                        <td class="text-center" style="padding: 2px; vertical-align: top;">
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['sequence']"/>
                         </td>
-                        <td style="padding: 2px; vertical-align: top;">
+                        <td style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['product_name']"/><br/>
-                            <span t-esc="line['product_manufacturer']"/>
                         </td>
-                        <td class="text-center" style="padding: 2px; vertical-align: top;">
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['quantity']"/>
                         </td>
-                        <td class="text-center" style="padding: 2px; vertical-align: top;">
+                        <td rowspan="2" class="text-end" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['price_unit']"/>
                         </td>
-                        <td class="text-center" style="padding: 2px; vertical-align: top;">
+                        <td rowspan="2" class="text-end" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['price_subtotal']"/>
                         </td>
-                        <td class="text-center" style="padding: 2px; vertical-align: top;">
-                            <!-- <span t-esc="line['quant']"/> -->
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['stock_inventory']"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-end" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['product_manufacturer']"/>
                         </td>
                     </tr>
                 </t>
@@ -908,7 +912,7 @@
                     <td style="width: 15%; padding: 1px; vertical-align: middle;" class="text-end">
                         <span>Разом:</span>
                     </td>
-                    <td style="width: 15%; padding: 1px; vertical-align: middle;" class="text-start">
+                    <td style="width: 15%; padding: 1px; vertical-align: middle;" class="text-end">
                         <span t-esc="'%.2f' % report_data['amount_untaxed']"/>
                     </td>
                     <td style="width: 33%; padding: 1px; vertical-align: middle;"/>
@@ -922,7 +926,7 @@
                     <td style="padding: 1px; vertical-align: middle;" class="text-end">
                         <span t-esc="report_data['tax_guide_name']"/>:
                     </td>
-                    <td style="padding: 1px; vertical-align: middle;" class="text-start">
+                    <td style="padding: 1px; vertical-align: middle;" class="text-end">
                         <span t-esc="'%.2f' % report_data['amount_tax']"/>
                     </td>
                     <td style="padding: 1px; vertical-align: middle;"/>
@@ -934,7 +938,7 @@
                     <td style="padding: 1px; vertical-align: middle;" class="text-end">
                         Всього:
                     </td>
-                    <td style="padding: 1px; vertical-align: middle;" class="text-start">
+                    <td style="padding: 1px; vertical-align: middle;" class="text-end">
                         <span t-esc="'%.2f' % report_data['amount_total']"/>
                     </td>
                     <td style="padding: 1px; vertical-align: middle;"/>
