@@ -172,6 +172,12 @@ class StockPicking(models.Model):
         delivery_datetime = order.commitment_date or self.scheduled_date
         partner = self.partner_id
         current_user = self.env.user.partner_id
+        shipping_partner = order.partner_shipping_id.child_ids.filtered(
+            lambda p: p.type == 'contact'
+        )[0]
+
+        if not shipping_partner:
+            shipping_partner = order.partner_shipping_id
         
         data = {
             'name': order.name.replace('S', ''),
@@ -182,8 +188,10 @@ class StockPicking(models.Model):
             'document': dict(self._fields['implementation_document']._description_selection(self.env)).get(self.implementation_document, ''),
             'delivery_address': order.partner_shipping_id.street,
             'delivery_method': partner.property_delivery_carrier_id.name,
-            'recipient_name': order.partner_shipping_id.full_partner_name,
-            'recipient_phone': order.partner_shipping_id.phone,
+            # 'recipient_name': order.partner_shipping_id.full_partner_name,
+            # 'recipient_phone': order.partner_shipping_id.phone,
+            'recipient_name': shipping_partner.full_partner_name or shipping_partner.name,
+            'recipient_phone': shipping_partner.phone,
             'delivery_time': delivery_datetime.time().strftime('%H:%M'),
             'delivery_date': delivery_datetime.date().strftime('%d.%m.%Y'),
             'lines': [],
@@ -204,7 +212,7 @@ class StockPicking(models.Model):
                 'quantity': move.product_uom_qty,
                 'price_unit': move.td_price_unit,
                 'price_subtotal': move.td_price_subtotal,
-                # 'quant': 
+                'stock_inventory': move.product_id.property_stock_inventory.name or '',
             }
             data['lines'].append(line_data)
         
