@@ -19,6 +19,7 @@ class StockPicking(models.Model):
     )
     td_order_implementation_document = fields.Selection(
         related="sale_id.implementation_document",
+        store=True,
     )
     td_show_create_invoice_button = fields.Boolean(
         string="Show Create Invoice Button",
