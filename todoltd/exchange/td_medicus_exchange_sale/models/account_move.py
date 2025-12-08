@@ -4,7 +4,7 @@ from odoo.addons.ata_exchange_v4.models.ata_exchange_method import AtaExchangeMe
 from odoo.addons.ata_exchange_v4.models.ata_exchange_class  import AtaExchangeClass
 
 
-class TdStockPickingExchange(models.Model):
+class TdAccountMoveExchange(models.Model):
     _name = 'account.move'
     _inherit = ['account.move','ata.exchange.class']
 
