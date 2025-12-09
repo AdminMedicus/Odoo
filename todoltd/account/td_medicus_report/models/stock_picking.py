@@ -353,3 +353,67 @@ class StockPicking(models.Model):
             data['lines'].append(line_data)
         
         return data
+
+    def td_get_report_refund_data(self):
+        """
+        Preparation of data for the refund act report
+        """
+        self.ensure_one()
+        company = self.company_id
+        company_partner = company.partner_id
+        partner = self.partner_id
+        medical_manager_id = company.td_medical_warehouse_manager_id.work_contact_id
+       
+        data = {
+            'vendor_name': partner.full_partner_name or partner.name,
+            'vendor_address': partner.contact_address_complete,
+            'vendor_physical_address': self.td_parent_partner_id.contact_address_complete,
+            'vendor_phone': partner.phone or '',
+            'recipient_name': company_partner.full_partner_name,
+            'recipient_registry': company.company_registry,
+            'recipient_phone': company_partner.phone or '',
+            'recipient_address': company_partner.contact_address_complete,
+            'recipient_bank_account': company_partner.bank_ids[0].acc_number,
+            'recipient_bank_name': company_partner.bank_ids[0].bank_name,
+            'recipient_bank_bic': company_partner.bank_ids[0].bank_bic,
+            'recipient_vat': company.vat or '',
+            'recipient_ref': company_partner.ref or '',
+            'recipient_address': company_partner.contact_address_complete,
+            'recipient_physical_address': company_partner.contact_address_complete,
+            'document_number': self.name.split('/')[-1],
+            'document_date': format_date(self.env, self.date_done, date_format='dd MMMM yyyy p.'),
+            'tax_guide_name': self.sale_id.td_tax_guide_id.name,
+            'lines': [],
+            'amount_untaxed': self.td_total_without_tax,
+            'amount_tax': self.td_total_tax,
+            'amount_total': self.td_total_amount,
+            'amount_in_words': self.get_amount_in_words(),
+            'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.full_partner_name,
+        }
+
+        line_num = 0
+        for move in self.move_ids_without_package:
+            line_num += 1
+            move_line_ids = move.mapped('move_line_ids')
+            
+            line_data = {
+                'sequence': line_num,
+                'product_serial_numbers': [
+                    l.name for l in move_line_ids.mapped('lot_id')]
+                    if move_line_ids else [],
+                'expiration_dates': [
+                    d.strftime('%d.%m.%Y') for d in move_line_ids.mapped('expiration_date')]
+                    if move_line_ids else [],
+                'storage_conditions': move.location_id.mapped('td_condition_ids.name'),
+                'product_name': move.product_id.description_sale or move.product_id.name,
+                'product_manufacturer': move.product_id.td_manufacturer_directory_res_id.name or '',
+                'uom': move.product_uom.name,
+                'quantity': move.product_uom_qty,
+                'price_unit': move.td_price_unit,
+                'price_taxes': move.td_taxes_price,
+                'price_subtotal': move.td_price_total,
+                'price_total': move.td_price_total,
+            }
+            data['lines'].append(line_data)
+
+        return data
