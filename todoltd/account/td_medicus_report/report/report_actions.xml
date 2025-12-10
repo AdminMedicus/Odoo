@@ -112,7 +112,7 @@
         <field name="binding_type">report</field>
         <field name="domain" eval="[
             ('picking_type_code', '=', 'incoming'),
-            ('td_order_implementation_document', '=', 'act_res_st')
+            ('implementation_document', '=', 'act_res_st')
         ]"/>
         <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
     </record>
