@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
+from odoo import models
+from odoo.exceptions import UserError
 
 
 class AccountMove(models.Model):
@@ -25,8 +26,8 @@ class AccountMove(models.Model):
         order = self.td_order_id
         company = self.company_id
         company_partner = company.partner_id
-        warehouse_manager_id = company.td_warehouse_manager_id.work_contact_id
-        medical_manager_id = company.td_medical_warehouse_manager_id.work_contact_id
+        warehouse_manager_id = company.td_warehouse_manager_id
+        medical_manager_id = company.td_medical_warehouse_manager_id
         partner = order.partner_shipping_id
         fisical_address_partner = company_partner.child_ids.filtered(
             lambda p: p.type == 'delivery'
@@ -43,8 +44,8 @@ class AccountMove(models.Model):
                 'logo': company.logo,
                 # 'warehouse_manager': warehouse_manager_id.full_partner_name,
                 # 'medical_warehouse_manager': medical_manager_id.full_partner_name,
-                'warehouse_manager': warehouse_manager_id.td_partner_short_name or warehouse_manager_id.full_partner_name,
-                'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.full_partner_name,
+                'warehouse_manager': warehouse_manager_id.td_partner_short_name or warehouse_manager_id.name,
+                'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.name,
             },
             'company_partner': {
                 'ref': company_partner.ref or '',
@@ -86,9 +87,11 @@ class AccountMove(models.Model):
             'currency_symbol': self.currency_id.symbol,
         }
 
-        if self.td_agreement_id:
-            data['agreement']['number'] = self.td_agreement_id.agreement_number
-            data['agreement']['date'] = self.td_agreement_id.start_date.strftime('%d.%m.%Y')
+        if agreement := self.td_agreement_id:
+            if not agreement.start_date:
+                raise UserError(f'У договорі "{agreement.name}" не вказана дата початку.')
+            data['agreement']['number'] = agreement.agreement_number
+            data['agreement']['date'] = agreement.start_date.strftime('%d.%m.%Y')
 
         if order.partner_invoice_id and order.partner_invoice_id != partner:
             partner_root = partner.parent_id or partner
