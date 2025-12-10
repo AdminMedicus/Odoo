@@ -62,7 +62,7 @@
     </record>
 
     <record id="action_report_ordering_eye_lenses" model="ir.actions.report">
-        <field name="name">Замовлення лінз</field>
+        <field name="name">Для складу</field>
         <field name="model">stock.picking</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">td_medicus_report.report_ordering_eye_lenses</field>
