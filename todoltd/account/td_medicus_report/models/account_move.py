@@ -131,8 +131,10 @@ class AccountMove(models.Model):
                 'quantity': line.quantity,
                 'uom': line.product_uom_id.name,
                 'expiration_dates': [
-                    d.strftime('%d.%m.%Y') for d in move_line_ids.mapped('expiration_date')]
-                    if move_line_ids else [],
+                    d.strftime('%d.%m.%Y') if d else ''
+                    for d in move_line_ids.mapped('expiration_date')
+                ]
+                if move_line_ids else [],
                 'price_unit': line.price_unit,
                 'price_subtotal': line.price_subtotal,
             }
