@@ -64,7 +64,8 @@ class StockPicking(models.Model):
             picking.td_show_create_custody_act_button = (
                 picking.state == 'done' and
                 picking.picking_type_code in ['outgoing', 'incoming'] and
-                picking.td_order_implementation_document == 'act_res_st'
+                (picking.td_order_implementation_document == 'act_res_st' or
+                    picking.implementation_document == 'act_res_st')
             )
 
     def td_create_invoice(self):
@@ -106,9 +107,9 @@ class StockPicking(models.Model):
         if not self.td_custody_act_date:
             self.td_custody_act_date = datetime.now().date()
 
-        if self.picking_type_code == 'outgoing':
+        if self.picking_type_code == 'outgoing' and self.implementation_document == 'act_res_st':
             return self.env.ref('td_medicus_report.action_report_custody_transfer_act').report_action(self)
-        elif self.picking_type_code == 'incoming' and self.return_id:
+        elif self.picking_type_code == 'incoming' and self.implementation_document == 'act_res_st':
             return self.env.ref('td_medicus_report.action_report_custody_return_act').report_action(self)
 
     @api.onchange('td_invoice_date', 'td_custody_act_date')
@@ -287,11 +288,11 @@ class StockPicking(models.Model):
 
         order = self.sale_id
 
-        if not order.td_agreement_id:
-            raise UserError(f"У замовленні {order.name} не вказано договір.")
+        # if not order.td_agreement_id:
+        #     raise UserError(f"У замовленні {order.name} не вказано договір.")
 
-        if not order.td_agreement_id.start_date:
-            raise UserError(f'У договорі "{order.td_agreement_id.name}" не вказана дата початку.')
+        # if not order.td_agreement_id.start_date:
+        #     raise UserError(f'У договорі "{order.td_agreement_id.name}" не вказана дата початку.')
 
         company = self.company_id
         company_partner = company.partner_id
@@ -328,8 +329,8 @@ class StockPicking(models.Model):
             'lines': [],
             'act_number': self.name.split('/')[-1],
             'act_date': self.td_custody_act_date.strftime('%d.%m.%Y'),
-            'agreement_number': order.td_agreement_id.agreement_number or '',
-            'agreement_date': order.td_agreement_id.start_date.strftime('%d.%m.%Y'),
+            'agreement_number': '',
+            'agreement_date': '',
             'transfer_title': 'Акт передачі майна на відповідальне зберігання № ',
             'return_title': 'Акт повернення майна з відповідального зберігання № ',
             'transfer_subtitle': 'Депонент передав, а виконавець прийняв на відповідальне зберігання наступне майно:',
@@ -337,6 +338,11 @@ class StockPicking(models.Model):
             'amount_total': self.td_total_amount,
             'amount_in_words': self.get_amount_in_words(),
         }
+
+        if order.td_agreement_id:
+            agreement_date = order.td_agreement_id.start_date
+            data['agreement_number'] = order.td_agreement_id.agreement_number or ''
+            data['agreement_date'] = agreement_date.strftime('%d.%m.%Y') if agreement_date else ''
 
         line_num = 0
         for line in self.move_ids_without_package:
