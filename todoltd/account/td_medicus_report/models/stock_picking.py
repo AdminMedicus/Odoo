@@ -225,7 +225,8 @@ class StockPicking(models.Model):
                 'quantity': move.product_uom_qty,
                 'price_unit': move.td_price_unit,
                 'price_subtotal': move.td_price_subtotal,
-                'stock_inventory': move.product_id.property_stock_inventory.name or '',
+                # 'stock_inventory': move.product_id.property_stock_inventory.name or '',
+                'stock_inventory': move.move_line_ids.mapped('location_id.complete_name'),
             }
             data['lines'].append(line_data)
         
