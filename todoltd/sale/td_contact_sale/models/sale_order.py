@@ -64,7 +64,7 @@ class SaleOrder(models.Model):
 
                     if picking.state not in ['done', 'cancel'] \
                             and picking.picking_type_code == 'internal':
-                        picking.state = 'confirmed'
+                            picking.state = 'confirmed'
         return action
 
     def action_confirm_stock_status(self):
