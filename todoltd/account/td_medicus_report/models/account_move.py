@@ -62,6 +62,7 @@ class AccountMove(models.Model):
                 'registry': partner.company_registry or '',
                 'street': partner.parent_id.contact_address_complete,
                 'fisical_address': partner.contact_address_complete,
+                'phone': partner.phone or '',
             },
             'payment_partner': False,
             'warehouse_address': '',
