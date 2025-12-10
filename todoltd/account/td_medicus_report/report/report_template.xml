@@ -605,7 +605,8 @@
                     </td>
                     <td style="border-bottom: 1px solid #000; text-align: start;">
                         <span>
-                            <t t-esc="report_data['accompanying_document']"/>
+                            Фарм РН. № 
+                            <t t-esc="report_data['accompanying_document']"/> від 
                             <t t-esc="report_data['accompanying_document_full_date']"/>
                         </span>
                     </td>
@@ -867,6 +868,7 @@
                     </td>
                     <td class="text-center" style="padding: 2px; vertical-align: top;">
                         <span>
+                            Накл. № 
                             <t t-esc="report_data['accompanying_document']"/> від 
                             <t t-esc="report_data['accompanying_document_date']"/>
                         </span>
