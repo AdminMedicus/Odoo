@@ -20,17 +20,4 @@
         </field>
     </record>
 
-    <record id="res_partner_form__inherit" model="ir.ui.view">
-        <field name="name">res.partner.td.region.form.inherit</field>
-        <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.view_partner_form"/>
-        <field name="arch" type="xml">
-
-            <xpath expr="//field[@name='full_partner_name']" position="after">
-                <field name="td_partner_short_name"/>
-            </xpath>
-
-        </field>
-    </record>
-
 </odoo>

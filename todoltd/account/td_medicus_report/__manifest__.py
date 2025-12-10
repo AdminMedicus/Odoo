@@ -26,6 +26,7 @@
         'views/stock_location_views.xml',
         'views/td_stock_condition_views.xml',
         'views/stock_picking_views.xml',
+        'views/hr_employee_views.xml',
     ],
     
     'assets': {

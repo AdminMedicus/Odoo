@@ -603,7 +603,12 @@
                             Супровідні документи на вантаж
                         </span>
                     </td>
-                    <td style="border-bottom: 1px solid #000;"/>
+                    <td style="border-bottom: 1px solid #000; text-align: start;">
+                        <span>
+                            <t t-esc="report_data['accompanying_document']"/>
+                            <t t-esc="report_data['accompanying_document_full_date']"/>
+                        </span>
+                    </td>
                 </tr>
             </table>
             <table class="td_zero_border" width="100%">
@@ -703,15 +708,15 @@
                         <td class="text-center" rowspan="2" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['uom']"/>
                         </td>
-                        <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                        <td class="text-center" rowspan="2" style="padding: 2px; vertical-align: middle;">
                             <t t-foreach="line['expiration_dates']" t-as="exp_date">
                                 <span t-esc="exp_date"/><br/>
                             </t>
                         </td>
-                        <td class="text-right" rowspan="2" style="padding: 2px; vertical-align: middle;">
+                        <td class="text-end" rowspan="2" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="'%.2f' % line['price_unit']"/>
                         </td>
-                        <td class="text-right" rowspan="2" style="padding: 2px; vertical-align: middle;">
+                        <td class="text-end" rowspan="2" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="'%.2f' % line['price_subtotal']"/>
                         </td>
                     </tr>
@@ -725,7 +730,6 @@
                         <td class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span>Автоперевезення</span>
                         </td>
-                        <td/>
                     </tr>
                 </t>
                 <tr>
@@ -862,7 +866,10 @@
                         <!-- <span t-esc="line['packaging_type']"/> -->
                     </td>
                     <td class="text-center" style="padding: 2px; vertical-align: top;">
-                        <span t-esc="line['documents_with_cargo']"/>
+                        <span>
+                            <t t-esc="report_data['accompanying_document']"/> від 
+                            <t t-esc="report_data['accompanying_document_date']"/>
+                        </span>
                     </td>
                     <td class="text-center" style="padding: 2px; vertical-align: top;">
                         <!-- <span t-esc="line['gross_weight']"/> -->
@@ -1262,8 +1269,8 @@
                 <tr>
                     <td/>
                     <td style="border-bottom: 1px solid #000; text-align: center;">
-                        <span>Завідувач аптечного складу </span>
-                        <span t-esc="report_data['medical_warehouse_manager']"/>
+                        <span t-esc="report_data['medical_warehouse_manager']"/><br/>
+                        <span style="font-style: italic; font-size: 7px;">Завідувач аптечного складу </span>
                     </td>
                     <td/>
                     <td style="border-bottom: 1px solid #000;"/>
