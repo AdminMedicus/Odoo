@@ -254,7 +254,7 @@ class StockPicking(models.Model):
             'loading_point': self.warehouse_address_id.contact_address_complete or self.warehouse_address_id.name,
             'warehouse_manager': warehouse_manager_id.td_partner_short_name or warehouse_manager_id.name,
             'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.name,
-            'accompanying_document': f"Фарм РН. № {self.td_invoice_for_pick_id.name.split('/')[-1]} від ",
+            'accompanying_document': self.td_invoice_for_pick_id.name.split('/')[-1],
             'accompanying_document_date': self.td_invoice_for_pick_id.invoice_date.strftime('%d.%m.%Y'),
             'accompanying_document_full_date': format_date(self.env, self.td_invoice_for_pick_id.invoice_date, date_format='dd MMMM yyyy p.'),
             'total_amount': self._amount_to_words_ua(self.td_total_amount),
