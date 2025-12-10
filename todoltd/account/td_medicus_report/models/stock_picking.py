@@ -187,12 +187,10 @@ class StockPicking(models.Model):
         delivery_datetime = order.commitment_date or self.scheduled_date
         partner = self.partner_id
         current_user = self.env.user.partner_id
-        shipping_partner = order.partner_shipping_id.child_ids.filtered(
+        shipping_contacts = order.partner_shipping_id.child_ids.filtered(
             lambda p: p.type == 'contact'
-        )[0]
-
-        if not shipping_partner:
-            shipping_partner = order.partner_shipping_id
+        )
+        shipping_partner = shipping_contacts[0] if shipping_contacts else order.partner_shipping_id
         
         data = {
             'name': order.name.replace('S', ''),
