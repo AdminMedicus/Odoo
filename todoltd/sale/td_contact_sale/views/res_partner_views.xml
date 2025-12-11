@@ -26,6 +26,9 @@
                     </field>
                 </page>
             </xpath>
+            <xpath expr="//field[@name='child_ids']//form//field[@name='email']/.." position="inside">
+                <field name="td_delivery_type" invisible="type != 'delivery'"/>
+            </xpath>
         </field>
     </record>
 </odoo>
