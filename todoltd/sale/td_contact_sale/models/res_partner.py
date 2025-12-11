@@ -13,6 +13,10 @@ class Partner(models.Model):
         comodel_name='td.res.partner.sub.client.rel',
         inverse_name='partner_id',
     )
+    td_delivery_type = fields.Many2one(
+        comodel_name='delivery.carrier',
+        string='Delivery Type'
+    )
 
     @api.onchange('sub_client_rel_ids')
     def _onchange_sub_client_rel_ids(self):
