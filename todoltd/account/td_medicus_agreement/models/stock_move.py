@@ -52,10 +52,12 @@ class StockMove(models.Model):
         for line in self:
             if line.sale_line_id:
                 line.td_price_unit = line.sale_line_id.price_unit
-                line.td_price_subtotal = line.sale_line_id.price_unit * line.quantity
+                line.td_price_subtotal = line.sale_line_id.price_subtotal
+                # line.td_price_subtotal = line.sale_line_id.price_unit * line.quantity
             elif line.purchase_line_id:
                 line.td_price_unit = line.purchase_line_id.price_unit
-                line.td_price_subtotal = line.purchase_line_id.price_unit * line.quantity
+                line.td_price_subtotal = line.purchase_line_id.price_subtotal
+                # line.td_price_subtotal = line.purchase_line_id.price_unit * line.quantity
             else:
                 line.td_price_unit = line.td_price_unit
                 line.td_price_subtotal = line.td_price_subtotal
