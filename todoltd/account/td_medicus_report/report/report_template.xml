@@ -928,7 +928,7 @@
                             <span t-esc="line['price_subtotal']"/>
                         </td>
                         <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
-                            <span t-esc="line['stock_inventory']"/>
+                            <span t-foreach="line['stock_inventory']" t-as="inventory" t-esc="inventory"/>
                         </td>
                     </tr>
                     <tr>
