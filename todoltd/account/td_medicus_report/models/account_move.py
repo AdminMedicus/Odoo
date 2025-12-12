@@ -32,6 +32,9 @@ class AccountMove(models.Model):
         fisical_address_partner = company_partner.child_ids.filtered(
             lambda p: p.type == 'delivery'
         )[0] if company_partner.child_ids else company_partner
+        contact_partner = partner.child_ids.filtered(
+            lambda p: p.type == 'contact'
+        )[0] if partner.child_ids else partner
         
         data = {
             'is_picking': False,
@@ -42,10 +45,13 @@ class AccountMove(models.Model):
                 'vat': company.vat,
                 'street': company_partner.contact_address_complete,
                 'logo': company.logo,
+                'phone': company_partner.phone or '',
                 # 'warehouse_manager': warehouse_manager_id.full_partner_name,
                 # 'medical_warehouse_manager': medical_manager_id.full_partner_name,
                 'warehouse_manager': warehouse_manager_id.td_partner_short_name or warehouse_manager_id.name,
                 'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.name,
+                'responsible_manager': company.td_responsible_manager_id.td_partner_short_name or company.td_responsible_manager_id.name,
+                'president': company.td_president_id.td_partner_short_name or company.td_president_id.name,
             },
             'company_partner': {
                 'ref': company_partner.ref or '',
@@ -63,6 +69,7 @@ class AccountMove(models.Model):
                 'street': partner.parent_id.contact_address_complete,
                 'fisical_address': partner.contact_address_complete,
                 'phone': partner.phone or '',
+                'contact_person': contact_partner.name or '',
             },
             'payment_partner': False,
             'warehouse_address': '',
