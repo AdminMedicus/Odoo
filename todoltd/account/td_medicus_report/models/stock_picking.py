@@ -185,7 +185,7 @@ class StockPicking(models.Model):
         """
         self.ensure_one()
         order = self.sale_id
-        delivery_datetime = order.commitment_date or self.scheduled_date
+        delivery_datetime = self.date_done
         partner = self.partner_id
         current_user = self.env.user.partner_id
         shipping_contacts = order.partner_shipping_id.child_ids.filtered(
@@ -226,6 +226,7 @@ class StockPicking(models.Model):
                 'quantity': move.product_uom_qty,
                 'price_unit': move.td_price_unit,
                 'price_subtotal': move.td_price_subtotal,
+                'default_code': move.product_id.default_code or '',
                 # 'stock_inventory': move.product_id.property_stock_inventory.name or '',
                 'stock_inventory': move.move_line_ids.mapped('location_id.complete_name'),
             }
