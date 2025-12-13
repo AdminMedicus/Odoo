@@ -19,6 +19,6 @@ class TdAccountMoveExchange(models.Model):
                     ('purchase_id', 'in',
                         list(set(record.invoice_line_ids.filtered('purchase_line_id').mapped('purchase_line_id.order_id').ids)))
                 ]) 
-                self.env['ata.exchange.queue'].add_to_queue(sp)
+                self.env['ata.exchange.queue'].change_in_queue(sp)
    
-     #endregion
+    #endregion
