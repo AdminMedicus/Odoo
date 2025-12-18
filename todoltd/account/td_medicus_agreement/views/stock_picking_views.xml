@@ -28,6 +28,7 @@
             <xpath expr="//field[@name='move_ids_without_package']//field[@name='product_uom']" position="after">
                 <field name="sale_order_id" optional="show"/>
                 <field name="td_price_unit" optional="show"/>
+                <field name="td_untaxed_price_unit" optional="show" readonly="1"/>
                 <field name="td_price_subtotal" optional="show" readonly="1"/>
             </xpath>
             <xpath expr="//field[@name='move_ids_without_package']" position="after">
