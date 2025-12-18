@@ -2,7 +2,7 @@
 {
     'name': "Modification ToDo Agreement",
     'summary': 'Additional for ToDo Agreement',
-    'version': '18.0.0.0.16',
+    'version': '18.0.0.0.17',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
@@ -25,6 +25,7 @@
         # views
         'views/res_partner_views.xml',
         'views/account_move_views.xml',
+        'views/purchase_order_view.xml',
         'views/sale_order_views.xml',
         'views/stock_picking_views.xml',
         'views/stock_move_views.xml',
@@ -39,7 +40,7 @@
         'wizard/td_agreement_stock_move_views.xml',
         'wizard/td_agreement_closing_wizard_views.xml',
         # report
-        'report/td_stock_report.xml'
+        'report/td_stock_report.xml',
     ],
     'installable': 'True',
     'application': False,
