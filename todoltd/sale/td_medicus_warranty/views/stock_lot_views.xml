@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Stock Lot Form View Extension -->
+    <record id="view_production_lot_form_td_warranty_extend" model="ir.ui.view">
+        <field name="name">stock.lot.form.td.warranty</field>
+        <field name="model">stock.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_warranties" 
+                        type="object" 
+                        class="oe_stat_button" 
+                        icon="fa-shield"
+                        invisible="not td_has_warranty">
+                    <field name="td_warranty_count" widget="statinfo" string="Warranties"/>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Warranties" name="warranties" invisible="not td_has_warranty">
+                    <field name="td_warranty_ids">
+                        <list>
+                            <field name="name"/>
+                            <field name="warranty_type"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="status"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+            <field name="company_id" position="after">
+                <field name="td_has_warranty" invisible="1"/>
+            </field>
+        </field>
+    </record>
+    
+</odoo>

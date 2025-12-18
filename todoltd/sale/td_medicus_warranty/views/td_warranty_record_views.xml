@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    
+    <!-- Warranty Record List View -->
+    <record id="view_td_warranty_record_list" model="ir.ui.view">
+        <field name="name">td.warranty.record.list</field>
+        <field name="model">td.warranty.record</field>
+        <field name="arch" type="xml">
+            <list string="Warranties" decoration-muted="status == 'expired'">
+                <field name="name"/>
+                <field name="serial_id"/>
+                <field name="product_id"/>
+                <field name="partner_id"/>
+                <field name="warranty_type"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="duration_months"/>
+                <field name="status" decoration-success="status == 'active'" decoration-muted="status == 'expired'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Warranty Record Form View -->
+    <record id="view_td_warranty_record_form" model="ir.ui.view">
+        <field name="name">td.warranty.record.form</field>
+        <field name="model">td.warranty.record</field>
+        <field name="arch" type="xml">
+            <form string="Warranty">
+                <header>
+                    <field name="status" widget="statusbar" statusbar_visible="active,expired"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <!-- Add button boxes here if needed -->
+                    </div>
+                    <group>
+                        <group>
+                            <field name="warranty_type"/>
+                            <field name="serial_id" options="{'no_create': True}"/>
+                            <field name="product_id"/>
+                            <field name="partner_id"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="duration_months"/>
+                        </group>
+                    </group>
+                    <group string="Extended Warranty Details" invisible="warranty_type != 'extended'">
+                        <field name="sale_order_id"/>
+                        <field name="sale_order_line_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Warranty Record Search View -->
+    <record id="view_td_warranty_record_search" model="ir.ui.view">
+        <field name="name">td.warranty.record.search</field>
+        <field name="model">td.warranty.record</field>
+        <field name="arch" type="xml">
+            <search string="Search Warranties">
+                <field name="name"/>
+                <field name="serial_id"/>
+                <field name="product_id"/>
+                <field name="partner_id"/>
+                <filter string="Active" name="active" domain="[('status', '=', 'active')]"/>
+                <filter string="Expired" name="expired" domain="[('status', '=', 'expired')]"/>
+                <filter string="Manufacturer" name="manufacturer" domain="[('warranty_type', '=', 'manufacturer')]"/>
+                <filter string="Extended" name="extended" domain="[('warranty_type', '=', 'extended')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                    <filter string="Type" name="group_type" context="{'group_by': 'warranty_type'}"/>
+                    <filter string="Customer" name="group_partner" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Product" name="group_product" context="{'group_by': 'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Warranty Record Action -->
+    <record id="action_td_warranty_record" model="ir.actions.act_window">
+        <field name="name">Warranties</field>
+        <field name="res_model">td.warranty.record</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No warranties found. They will be created automatically when warranty products are delivered.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <!-- <menuitem id="menu_td_warranty_root"
+              name="Warranties"
+              sequence="100"/> -->
+    
+    <!-- <menuitem id="menu_td_warranty_periods"
+              name="Warranty Periods"
+              parent="menu_td_warranty_root"
+              action="action_td_warranty_period"
+              sequence="20"/> -->
+
+</odoo>

@@ -1,0 +1,138 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* td_medicus_warranty
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-12 16:26+0000\n"
+"PO-Revision-Date: 2025-12-12 16:26+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: td_medicus_warranty
+#. odoo-python
+#: code:addons/td_medicus_warranty/models/td_product_warranty.py:0
+msgid ""
+"A warranty with this combination of manufacturers and product categories "
+"already exists!"
+msgstr ""
+"Гарантія з цією комбінацією виробників та категорій продуктів вже існує!"
+
+#. module: td_medicus_warranty
+#: model_terms:ir.actions.act_window,help:td_medicus_warranty.td_product_warranty_action
+msgid "Create your first Product Warranty"
+msgstr "Створіть свою першу гарантію на продукт"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_product_warranty__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_product_warranty__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_product_warranty__description
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.td_product_warranty_form_view
+msgid "Description"
+msgstr "Опис"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_product_warranty__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_product_warranty__duration_months
+msgid "Duration (Months)"
+msgstr "Тривалість (місяців)"
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.td_product_warranty_search_view
+msgid "Group By"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_product_warranty__id
+msgid "ID"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_product_product__td_is_warranty_applicable
+#: model:ir.model.fields,help:td_medicus_warranty.field_product_template__td_is_warranty_applicable
+msgid "Indicates whether warranties can be applied to this product."
+msgstr "Вказує, чи можуть гарантії застосовуватися до цього продукту."
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_product_product__td_is_warranty_applicable
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_product_template__td_is_warranty_applicable
+msgid "Is Warranty Applicable"
+msgstr "Чи діє гарантія"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_product_warranty__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_product_warranty__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.td_product_warranty_search_view
+msgid "Manufacturer"
+msgstr "Виробник"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_product_warranty__manufacturer
+msgid "Manufacturers"
+msgstr "Виробники"
+
+#. module: td_medicus_warranty
+#: model:ir.model,name:td_medicus_warranty.model_product_template
+msgid "Product"
+msgstr "Товар"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_product_warranty__product_category
+msgid "Product Categories"
+msgstr "Категорії"
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.td_product_warranty_search_view
+msgid "Product Category"
+msgstr "Категорія"
+
+#. module: td_medicus_warranty
+#: model:ir.model,name:td_medicus_warranty.model_td_product_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.td_product_warranty_search_view
+msgid "Product Warranty"
+msgstr "Гарантії"
+
+#. module: td_medicus_warranty
+#: model:ir.actions.act_window,name:td_medicus_warranty.td_product_warranty_action
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_product_product__td_warranty_id
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_product_template__td_warranty_id
+#: model:ir.ui.menu,name:td_medicus_warranty.td_product_warranty_purchase_menu
+#: model:ir.ui.menu,name:td_medicus_warranty.td_product_warranty_sale_menu
+msgid "Warranties"
+msgstr "Гарантії"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_product_warranty__name
+msgid "Warranty Name"
+msgstr "Назва"
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.td_product_warranty_form_view
+msgid "e.g. 12 months"
+msgstr "н-д, 12 місяців"
