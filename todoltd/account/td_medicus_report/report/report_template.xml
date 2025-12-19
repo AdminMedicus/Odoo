@@ -833,7 +833,7 @@
                             </t>
                         </td>
                         <td class="text-end" rowspan="2" style="padding: 2px; vertical-align: middle;">
-                            <span t-esc="'%.2f' % line['price_unit']"/>
+                            <span t-esc="'%.2f' % line['price_untaxed']"/>
                         </td>
                         <td class="text-end" rowspan="2" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="'%.2f' % line['price_subtotal']"/>
@@ -922,7 +922,7 @@
                             <span t-esc="line['quantity']"/>
                         </td>
                         <td rowspan="2" class="text-end" style="padding: 2px; vertical-align: middle;">
-                            <span t-esc="line['price_unit']"/>
+                            <span t-esc="line['price_untaxed']"/>
                         </td>
                         <td rowspan="2" class="text-end" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['price_subtotal']"/>
@@ -974,7 +974,7 @@
                             <span t-esc="line['quantity']"/>
                         </td>
                         <td rowspan="2" class="text-end" style="padding: 2px; vertical-align: bottom;">
-                            <span t-esc="line['price_unit']"/>
+                            <span t-esc="line['price_untaxed']"/>
                         </td>
                         <td rowspan="2" class="text-end" style="padding: 2px; vertical-align: bottom;">
                             <span t-esc="line['price_subtotal']"/>
@@ -1792,7 +1792,6 @@
             </div>
         </t>
     </template>
-
 
     <!-- Reports -->
     <template id="report_wholesale_invoice">

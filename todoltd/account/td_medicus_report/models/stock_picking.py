@@ -185,7 +185,10 @@ class StockPicking(models.Model):
         """
         self.ensure_one()
         order = self.sale_id
-        delivery_datetime = self.date_done
+        delivery_datetime_utc = self.date_done
+        user_tz = self.env.user.tz or 'UTC'
+        delivery_datetime = fields.Datetime.context_timestamp(self.with_context(tz=user_tz), delivery_datetime_utc)
+        
         partner = self.partner_id
         current_user = self.env.user.partner_id
         shipping_contacts = order.partner_shipping_id.child_ids.filtered(
@@ -202,12 +205,10 @@ class StockPicking(models.Model):
             'document': dict(self._fields['implementation_document']._description_selection(self.env)).get(self.implementation_document, ''),
             'delivery_address': order.partner_shipping_id.street,
             'delivery_method': partner.property_delivery_carrier_id.name,
-            # 'recipient_name': order.partner_shipping_id.full_partner_name,
-            # 'recipient_phone': order.partner_shipping_id.phone,
             'recipient_name': shipping_partner.full_partner_name or shipping_partner.name,
             'recipient_phone': shipping_partner.phone,
-            'delivery_time': delivery_datetime.time().strftime('%H:%M'),
-            'delivery_date': delivery_datetime.date().strftime('%d.%m.%Y'),
+            'delivery_time': delivery_datetime.strftime('%H:%M'),
+            'delivery_date': delivery_datetime.strftime('%d.%m.%Y'),
             'lines': [],
             'amount_untaxed': self.td_total_without_tax,
             'amount_tax': self.td_total_tax,
@@ -224,7 +225,7 @@ class StockPicking(models.Model):
                 'product_name': move.product_id.description_sale or move.product_id.name,
                 'product_manufacturer': move.product_id.td_manufacturer_directory_res_id.name,
                 'quantity': move.product_uom_qty,
-                'price_unit': move.td_price_unit,
+                'price_untaxed': move.td_untaxed_price_unit,
                 'price_subtotal': move.td_price_subtotal,
                 'default_code': move.product_id.default_code or '',
                 # 'stock_inventory': move.product_id.property_stock_inventory.name or '',
