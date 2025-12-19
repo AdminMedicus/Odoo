@@ -142,7 +142,7 @@ class AccountMove(models.Model):
                     for d in move_line_ids.mapped('expiration_date')
                 ]
                 if move_line_ids else [],
-                'price_unit': line.price_unit,
+                'price_untaxed': line.td_untaxed_price_unit,
                 'price_subtotal': line.price_subtotal,
             }
             data['warehouse_address'] = fisical_address_partner.contact_address_complete
