@@ -1189,16 +1189,16 @@
                 <tr>
                     <th class="text-center" style="width: 2%; padding: 1px; vertical-align: middle;">№</th>
                     <th class="text-center" style="width: 10%; padding: 1px; vertical-align: middle;">Серія</th>
-                    <th class="text-center" style="width: 7%; padding: 1px; vertical-align: middle;">Термін<br/>придатності</th>
-                    <th class="text-center" style="width: 12%; padding: 1px; vertical-align: middle;">Умови зберігання / транспортування</th>
+                    <th class="text-center" style="width: 8%; padding: 1px; vertical-align: middle;">Термін<br/>придатності</th>
+                    <th class="text-center" style="width: 10%; padding: 1px; vertical-align: middle;">Умови зберігання/<br/>транспортування</th>
                     <th class="text-center" style="width: 20%; padding: 1px; vertical-align: middle;">Найменування / Виробник</th>
                     <th class="text-center" style="width: 5%; padding: 1px; vertical-align: middle;">Од.</th>
                     <th class="text-center" style="width: 5%; padding: 1px; vertical-align: middle;">К-ть</th>
                     <th class="text-center" style="width: 10%; padding: 1px; vertical-align: middle;">Ціна</th>
-                    <th class="text-center" style="width: 15%; padding: 1px; vertical-align: middle;">Сума</th>
-                    <th class="text-center" style="width: 7%; padding: 1px; vertical-align: middle;"
+                    <th class="text-center" style="width: 10%; padding: 1px; vertical-align: middle;">Сума</th>
+                    <th class="text-center" style="width: 10%; padding: 1px; vertical-align: middle;"
                         t-esc="report_data['tax_guide_name']"/>
-                    <th class="text-center" style="width: 7%; padding: 1px; vertical-align: middle;">Сума з ПДВ</th>
+                    <th class="text-center" style="width: 10%; padding: 1px; vertical-align: middle;">Сума з ПДВ</th>
                 </tr>
             </thead>
             <tbody>
@@ -1232,7 +1232,7 @@
                             <span t-esc="line['quantity']"/>
                         </td>
                         <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
-                            <span t-esc="'%.2f' % line['price_unit']"/>
+                            <span t-esc="'%.2f' % line['untaxed_price_unit']"/>
                         </td>
                         <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="'%.2f' % line['price_subtotal']"/>
@@ -1611,22 +1611,32 @@
                     <td style="width: 50%; vertical-align: top; text-align: center;">
                         <table class="table-sm o_ignore_layout_styling td_zero_border" style="width: 100%;">
                             <tr>
-                                <td style="width: 20%; padding-top: 25px;">
+                                <td style="text-align: start; width: 20%; padding-top: 25px;">
                                     Отримав
                                 </td>
+                                <td style="width: 15%; border-bottom: 1px solid #000; padding-top: 25px;"/>
                                 <td style="border-bottom: 1px solid #000; padding-top: 25px;"/>
                                 <td style="width: 35%">
                                     <span class="text-start">
-                                        /<t t-esc="report_data['medical_warehouse_manager']"/>/
+                                        /<t t-esc="report_data['warehouse_manager']"/>/
                                     </span>
                                 </td>
                             </tr>
                             <tr>
-                                <td/>
-                                <td style="text-align: center; vertical-align: top; padding-top: 0;">
-                                    <span style="font-size: 7px;">завідувач аптечного складу</span>
+                                <td style="text-align: start;">Посада</td>
+                                <td colspan="2" style="border-bottom: 1px solid #000; text-align: center;">
+                                    <span>завідувач аптечного складу</span>
                                 </td>
                                 <td/>
+                            </tr>
+                            <tr>
+                                <td style="text-align: start;" colspan="2">Уповноважена особа апт. складу</td>
+                                <td style="border-bottom: 1px solid #000;"/>
+                                <td>
+                                    <span class="text-start">
+                                        /<t t-esc="report_data['medical_warehouse_manager']"/>/
+                                    </span>
+                                </td>
                             </tr>
                         </table>
                     </td>
