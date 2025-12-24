@@ -384,7 +384,8 @@ class StockPicking(models.Model):
         company = self.company_id
         company_partner = company.partner_id
         partner = self.partner_id
-        medical_manager_id = company.td_medical_warehouse_manager_id.work_contact_id
+        manager_id = company.td_warehouse_manager_id
+        medical_manager_id = company.td_medical_warehouse_manager_id
        
         data = {
             'vendor_name': partner.full_partner_name or partner.name,
@@ -401,7 +402,8 @@ class StockPicking(models.Model):
             'recipient_vat': company.vat or '',
             'recipient_ref': company_partner.ref or '',
             'recipient_address': company_partner.contact_address_complete,
-            'recipient_physical_address': company_partner.contact_address_complete,
+            # 'recipient_physical_address': company_partner.contact_address_complete,
+            'recipient_physical_address': self.location_dest_id.warehouse_id.partner_id.contact_address_complete,
             'document_number': self.name.split('/')[-1],
             'document_date': format_date(self.env, self.date_done, date_format='dd MMMM yyyy p.'),
             'tax_guide_name': self.sale_id.td_tax_guide_id.name,
@@ -410,7 +412,8 @@ class StockPicking(models.Model):
             'amount_tax': self.td_total_tax,
             'amount_total': self.td_total_amount,
             'amount_in_words': self.get_amount_in_words(),
-            'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.full_partner_name,
+            'warehouse_manager': manager_id.td_partner_short_name or manager_id.name,
+            'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.name,
         }
 
         line_num = 0
@@ -424,16 +427,19 @@ class StockPicking(models.Model):
                     l.name for l in move_line_ids.mapped('lot_id')]
                     if move_line_ids else [],
                 'expiration_dates': [
-                    d.strftime('%d.%m.%Y') for d in move_line_ids.mapped('expiration_date')]
-                    if move_line_ids else [],
-                'storage_conditions': move.location_id.mapped('td_condition_ids.name'),
+                    d.strftime('%d.%m.%Y') if d else ''
+                    for d in move_line_ids.mapped('expiration_date')
+                ] if move_line_ids else [],
+                # 'storage_conditions': move.location_id.mapped('td_condition_ids.name'),
+                'storage_conditions': move.move_orig_ids.mapped('location_id.td_condition_ids.name'),
                 'product_name': move.product_id.description_sale or move.product_id.name,
                 'product_manufacturer': move.product_id.td_manufacturer_directory_res_id.name or '',
                 'uom': move.product_uom.name,
                 'quantity': move.product_uom_qty,
                 'price_unit': move.td_price_unit,
+                'untaxed_price_unit': move.td_untaxed_price_unit,
                 'price_taxes': move.td_taxes_price,
-                'price_subtotal': move.td_price_total,
+                'price_subtotal': move.td_price_subtotal,
                 'price_total': move.td_price_total,
             }
             data['lines'].append(line_data)
