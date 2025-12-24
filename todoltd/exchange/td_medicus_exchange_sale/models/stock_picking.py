@@ -12,6 +12,7 @@ class TdStockPickingExchange(models.Model):
 
     #region outgoing function
     def ata_exchange_compute_methods(self) -> list[AtaExchangeMethod]:
+        self.ensure_one()
         methods = []
 
         if (self.picking_type_id.code == 'incoming' and
@@ -101,19 +102,21 @@ class TdStockPickingExchange(models.Model):
             "date":             self._str_empty(record.date),
             "date_done":        self._str_empty(record.date_done),
             "date_scheduled":   record.scheduled_date.date(),
-            "partner":          record.partner_id.exchange_data,
+            "partner":          record.sale_id.partner_id.exchange_data,
+            "partner_invoice":  record.sale_id.partner_invoice_id.exchange_data,
+            "address_delivery": record.partner_id.ata_exchange_get_address_delivery(),
             "subclient":        record.sale_id.sub_client_id.exchange_data,
             "agreement":        record.sale_id.td_agreement_id.exchange_data,
             "warehouse_code":   record.location_id.warehouse_id.id,
             "tax":              record.sale_id and record.sale_id.order_line and \
                 record.sale_id.order_line[0].tax_id.exchange_data,
             "lines": [{
-                "product":  sm.product_id.exchange_data,
-                "quantity": sm.product_uom_qty,
-                "uom":      sm.product_uom.exchange_data,
-                "tax":  sm.td_taxes_ids.exchange_data,
+                "product":      sm.product_id.exchange_data,
+                "quantity":     sm.product_uom_qty,
+                "uom":          sm.product_uom.exchange_data,
+                "tax":          sm.td_taxes_ids.exchange_data,
                 "lots_data": [{
-                    "lot": sml.lot_id.exchange_data,
+                    "lot":      sml.lot_id.exchange_data,
                     "quantity": sml.quantity,
                 } for sml in sm.move_line_ids],
                 **get_move_line_prices_dict(sm)
