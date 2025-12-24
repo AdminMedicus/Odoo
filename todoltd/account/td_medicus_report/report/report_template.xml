@@ -1147,11 +1147,11 @@
                         <td class="text-center" rowspan="2" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['quantity']"/>
                         </td>
-                        <td class="text-center" rowspan="2" style="padding: 2px; vertical-align: middle;">
+                        <td class="text-end" rowspan="2" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="'%.2f' % line['price_unit']"/>
                         </td>
-                        <td class="text-center" rowspan="2" style="padding: 2px; vertical-align: middle;">
-                            <span t-esc="'%.4f' % line['price_subtotal']"/>
+                        <td class="text-end" rowspan="2" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="'%.2f' % line['price_subtotal']"/>
                         </td>
                     </tr>
                     <tr style="page-break-inside: avoid;">
@@ -1168,7 +1168,7 @@
                     <td class="text-end" style="padding: 2px; vertical-align: middle;">
                         <strong>Всього:</strong>
                     </td>
-                    <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                    <td class="text-end" style="padding: 2px; vertical-align: middle;">
                         <span t-esc="'%.2f' % report_data['amount_total']"/>
                     </td>
                 </tr>
@@ -1579,7 +1579,9 @@
                                         <t t-else="" t-esc="'Повернув'"/>
                                     </td>
                                     <td style="border-bottom: 1px solid #000; padding-top: 25px;"/>
-                                    <td style="width: 35%"/>
+                                    <td style="width: 35%">
+                                        <span t-esc="report_data['partner']['executant_name']"/>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>

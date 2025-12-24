@@ -327,6 +327,7 @@ class StockPicking(models.Model):
                 'registry': client_partner.company_registry,
                 'street': client_partner.parent_id.contact_address_complete,
                 'fisical_address': shipper_partner.contact_address_complete,
+                'executant_name': shipper_partner.full_partner_name or shipper_partner.display_name,
             },
             'lines': [],
             'act_number': self.name.split('/')[-1],
@@ -337,7 +338,7 @@ class StockPicking(models.Model):
             'return_title': 'Акт повернення майна з відповідального зберігання № ',
             'transfer_subtitle': 'Депонент передав, а виконавець прийняв на відповідальне зберігання наступне майно:',
             'return_subtitle': 'Депонент прийняв, а виконавець повернув з відповідального зберігання наступне майно:',
-            'amount_total': self.td_total_amount,
+            'amount_total': self.td_amount_origin_currency,
             'amount_in_words': self.get_amount_in_words(),
         }
 
@@ -363,13 +364,14 @@ class StockPicking(models.Model):
                     if move_line_ids else [],
                 'product_catalog_number': line.product_id.default_code or '',
                 'product_manufacturer': line.product_id.td_manufacturer_directory_res_id.name or '',
-                'storage_conditions': location.mapped('td_condition_ids.name'),
+                # 'storage_conditions': location.mapped('td_condition_ids.name'),
+                'storage_conditions': line.move_orig_ids.mapped('location_id.td_condition_ids.name'),
                 'quantity': line.quantity,
                 'uom': line.product_uom.name,
                 'expiration_dates': [
                     d.strftime('%d.%m.%Y') if d else None for d in move_line_ids.mapped('expiration_date') 
                 ] if move_line_ids else [],
-                'price_unit': line.td_price_unit,
+                'price_unit': line.td_untaxed_price_unit,
                 'price_subtotal': line.td_price_subtotal,
             }
             data['lines'].append(line_data)
