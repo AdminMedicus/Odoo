@@ -117,10 +117,10 @@
         <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
     </record>
 
-    <record id="action_report_refund_act" model="ir.actions.report">
+    <record id="action_report_refund_act_td" model="ir.actions.report">
         <field name="name">Накладна на повернення</field>
         <field name="model">stock.picking</field>
-        <field name="report_type">qweb-pdf</field>
+        <field name="report_type">qweb-html</field>
         <field name="report_name">td_medicus_report.report_print_refund_act</field>
         <field name="report_file">td_medicus_report.report_print_refund_act</field>
         <field name="binding_model_id" ref="stock.model_stock_picking"/>
