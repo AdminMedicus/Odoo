@@ -359,6 +359,24 @@
         </div>
     </template>
 
+    <template id="td_report_header_new_waybill">
+        <div class="mb-2">
+            <div style="font-size: 9px; line-height: 1.3;">
+                <table class="td_zero_border" width="100%">
+                    <tr>
+                        <td style="width:50%"/>
+                        <td class="test-start" style="width:50%">
+                            <span>Додаток 7</span><br/>
+                            <span>до Правил перевезення вантажів автомобільним транспортом в Україні</span><br/>
+                            <span>(пункт 11.1 глави 11)</span><br/>
+                            <span>Форма № 1-ТН</span><br/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </template>
+
     <template id="td_report_title_1">
         <div class="text-center mb-1" style="font-size: 11px; padding: 2px;">
             <strong>Видаткова накладна № 
@@ -742,6 +760,264 @@
             </table>
         </div>
     </template>
+    
+    <template id="td_report_new_waybill_info_1">
+        <div class="mb-2" style="font-size: 9px; line-height: 1.3;">
+            <t t-set="full_description" t-value="report_data['full_description']"/>
+            <table class="td_zero_border" width="100%">
+                <tr>
+                    <td style="width: 15%; padding-bottom: 15px;">
+                        <span>Місце складання</span>
+                    </td>
+                    <td style="padding-bottom: 15px;">
+                        <table class="td_zero_border" width="100%">
+                            <tr>
+                                <td style="width: 30%; border-bottom: 1px solid #000; text-align: start;">
+                                    <span t-esc="report_data['place_of_issue']"/>
+                                </td>
+                                <td/>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 15%">
+                        <span>Автомобіль</span>
+                    </td>
+                    <td>
+                        <table class="td_zero_border" width="100%">
+                            <tr>
+                                <td style="width: 30%; border-bottom: 1px solid #000;"/>
+                                <td style="width: 15%; text-align: end; padding-right: 10px;">
+                                    <span>Причіп/напівпричіп</span>
+                                </td>
+                                <td style="width: 30%; border-bottom: 1px solid #000;"/>
+                                <td style="width: 10%;">
+                                    <span>Вид перевезень</span>
+                                </td>
+                                <td style="width: 15%; border-bottom: 1px solid #000;"/>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr style="font-size: 7px">
+                    <td style="width: 15%"/>
+                    <td>
+                        <table class="td_zero_border" width="100%">
+                            <tr>
+                                <td style="width: 30%;" class="text-center">
+                                    <span>(марка, модель, тип, реєстраційний номер)</span>
+                                </td>
+                                <td style="width: 15%;" />
+                                <td style="width: 30%;" class="text-center">
+                                    <span>(марка, модель, тип, реєстраційний номер)</span>
+                                </td>
+                                <td style="width: 10%;"/>
+                                <td style="width: 15%;"/>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <table class="td_zero_border" width="100%">
+                <tr>
+                    <td style="width: 15%">
+                        <span>Автомобільий перевізник</span>
+                    </td>
+                    <td>
+                        <table class="td_zero_border" width="100%">
+                            <tr>
+                                <td style="width: 60%; border-bottom: 1px solid #000;"/>
+                                <td style="width: 10%; text-align: end; padding-right: 10px;">
+                                    <span>Водій</span>
+                                </td>
+                                <td style="width: 30%; border-bottom: 1px solid #000;"/>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr style="font-size: 7px">
+                    <td style="width: 15%"/>
+                    <td>
+                        <table class="td_zero_border" width="100%">
+                            <tr>
+                                <td style="width: 60%; vertical-align: top;" class="text-center"><span t-esc="full_description"/></td>
+                                <!-- <td class="text-center"><span>(повне найменування (прізвище (за наявності), власне ім'ята по-батькові (за наявності), унікальний номер запису в Єдиному державному демографічному реєстрі (за наявності), код платника податків згідно з Єдиним державним реєстром підприємств та організацій України або податковий номер (реєстраційний номер обліковойї картки платника податків або серія (за наявності) та номер паспорта громадянина України (для фізичних осіб, які через свої релігійні переконання відмовляються від прийняття реєстраційного номера облікової картки платника податків та повідомили про це відповідний контролюючий орган і мають відмітку в паспорті))))</span></td>
+                                <td/> -->
+                                <td style="width: 10%;"/>
+                                <td style="width: 30%; vertical-align: top;" class="text-center"><span>(прізвище (за наявності), власне ім'я та по-батькові (за наявності), унікальний номер запису в Єдиному державному демографічному реєстрі (за наявності), номер посвідчення водія)</span></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>    
+            <table class="td_zero_border" width="100%">
+                <tr>
+                    <td style="width: 15%">
+                        <span>Вантажовідправник</span>
+                    </td>
+                    <td style="border-bottom: 1px solid #000;">
+                        <span><t t-esc="report_data['shipper']"/>, код ЄДРПОУ <t t-esc="report_data['shipper_code']"/></span>
+                    </td>
+                </tr>
+                <tr style="font-size: 7px">
+                    <td />
+                    <td class="text-center"><span t-esc="full_description"/></td>
+                </tr>
+            </table>
+            <table class="td_zero_border" width="100%">
+                <tr>
+                    <td style="width: 15%">
+                        <span>Вантажоодержувач</span>
+                    </td>
+                    <td style="border-bottom: 1px solid #000;">
+                        <span><t t-esc="report_data['consignee']"/>, код ЄДРПОУ <t t-esc="report_data['consignee_code']"/></span>
+                    </td>
+                </tr>
+                <tr style="font-size: 7px">
+                    <td />
+                    <td class="text-center"><span t-esc="full_description"/></td>
+                    <!-- <td class="text-center"><span>(повне найменування, місцезнаходження/П.І.Б., місце проживання)</span></td> -->
+                </tr>
+            </table>
+            <table class="td_zero_border" width="100%">
+                <tr>
+                    <td style="width: 15%">
+                        <span>Пункт навантаження</span>
+                    </td>
+                    <td>
+                        <table class="td_zero_border" width="100%">
+                            <tr>
+                                <td style="width: 35%; border-bottom: 1px solid #000;" t-esc="report_data['loading_point']"/>
+                                <td style="width: 20%;text-align: end; padding-right: 10px;">
+                                    <span>Пункт розвантаження</span>
+                                </td>
+                                <td style="width: 45%; border-bottom: 1px solid #000;" t-esc="report_data['delivery_address']"/>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr style="font-size: 7px">
+                    <td style="width: 15%"/>
+                    <td>
+                        <table class="td_zero_border" width="100%">
+                            <tr>
+                                <td style="width: 35%;"/>
+                                <td style="width: 20%;"/>
+                                <td style="width: 45%;"/>
+                            </tr>
+                            <tr>
+                                <td class="text-center"><span>(місцезнаходження)</span></td>
+                                <td/>
+                                <td class="text-center"><span>(місцезнаходження)</span></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <table class="td_zero_border" width="100%">
+                <tr>
+                    <td style="width: 15%">
+                        <span>Переадресування вантажу</span>
+                    </td>
+                    <td style="border-bottom: 1px solid #000;"/>
+                </tr>
+                <tr style="font-size: 7px">
+                    <td />
+                    <td class="text-center"><span>(найменування, місцезнаходження / П.І.Б., місце проживання нового одержувача; П.І.Б., посада та підпис відповідальної особи)</span></td>
+                </tr>
+            </table>
+            <table class="td_zero_border" width="100%">
+                <tr>
+                    <td width="15%">
+                        <span>
+                            кількість місць
+                        </span>
+                    </td>
+                    <td width="5%" style="border-bottom: 1px solid #000;"/>
+                    <td width="10%">
+                        <span>, масою брутто, т.</span>
+                    </td>
+                    <td width="5%" style="border-bottom: 1px solid #000;"/>
+                    <td width="15%">
+                        <span>, отримав водій/експедитор</span>
+                    </td>
+                    <td style="border-bottom: 1px solid #000;"/>
+                </tr>
+                <tr style="font-size: 7px">
+                    <td/>
+                    <td class="text-center">
+                        <span>(словами)</span>
+                    </td>
+                    <td/>
+                    <td class="text-center">
+                        <span>(словами)</span>
+                    </td>
+                    <td/>
+                    <td class="text-center">
+                        <span>(прізвище (за наявності), власне ім'я та по-батькові (за наявності), унікальний номер запису в Єдиному державному демографічному реєстрі (за наявності), посада, підпис)</span>
+                    </td>
+                </tr>
+            </table>
+            <table class="td_zero_border" width="100%">
+                <tr>
+                    <td width="15%"><span>Відомості про транспортний засіб</span></td>
+                    <td width="10%" style="border-bottom: 1px solid #000;"/>
+                    <td width="5%" />
+                    <td width="10%" style="border-bottom: 1px solid #000;"/>
+                    <td width="5%" />
+                    <td width="10%" style="border-bottom: 1px solid #000;"/>
+                    <td width="5%" />
+                    <td style="border-bottom: 1px solid #000;"/>
+                </tr>
+                <tr style="font-size: 7px">
+                    <td><span>(автомобіль/автопоїзд/комбінований транспортний засіб)</span></td>
+                    <td class="text-center">(довжина, м)</td>
+                    <td/>
+                    <td class="text-center">(ширина, м)</td>
+                    <td/>
+                    <td class="text-center">(висота, м)</td>
+                    <td/>
+                    <td class="text-center">(загальна вага/маса з вантажем та маса брутто, т)</td>
+                    
+                </tr>
+            </table>
+            <table class="td_zero_border" width="100%">
+                <tr>
+                    <td width="15%">
+                        <span>
+                            Усього відпущено на загальну суму
+                        </span>
+                    </td>
+                    <td width="35%" style="border-bottom: 1px solid #000;">
+                        <span t-esc="report_data['total_amount']"/>
+                    </td>
+                    <td width="10%" class="text-center">
+                        <span>у т.ч. ПДВ</span>
+                    </td>
+                    <td style="border-bottom: 1px solid #000;">
+                        <span t-esc="report_data['tax_amount']"/>
+                    </td>
+                </tr>
+            </table>
+            <table class="td_zero_border" width="100%">
+                <tr>
+                    <td width="15%">
+                        <span>
+                            Супровідні документи на вантаж
+                        </span>
+                    </td>
+                    <td style="border-bottom: 1px solid #000; text-align: start;">
+                        <span>
+                            Видаткова накладна № 
+                            <t t-esc="report_data['accompanying_document']"/> від 
+                            <t t-esc="report_data['accompanying_document_full_date']"/>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </template>
 
     <template id="td_report_waybill_info_2">
         <div class="text-center mb-1" style="font-size: 11px; padding: 2px;">
@@ -784,6 +1060,51 @@
                 <td style="border: 1px solid #000;"/>
             </tr>
         </table>
+    </template>
+
+    <template id="td_report_new_waybill_info_2">
+        <div class="text-center mb-1" style="font-size: 11px; padding: 2px;">
+            <p style="font-size: 11px; font-weight: 600; padding: 0; margin: 0;">ВАНТАЖНО-РОЗВАНТАЖУВАЛЬНІ ОПЕРАЦІЇ</p>
+        </div>
+        <table class="table table-sm table-bordered o_ignore_layout_styling" style="font-size: 8px; margin-bottom: 0; border-collapse: collapse;">
+            <tr>
+                <td class="text-center" rowspan="2" style="width: 20%; padding: 2px; vertical-align: middle; border: 1px solid #000;">Операція</td>
+                <td class="text-center" rowspan="2" style="width: 10%; padding: 2px; vertical-align: middle; border: 1px solid #000;">Маса брутто, т</td>
+                <td class="text-center" colspan="3" style="width: 30%; padding: 2px; vertical-align: middle; border: 1px solid #000;">Час (год., хв.)</td>
+                <td class="text-center" rowspan="2" style="width: 40%; padding: 2px; vertical-align: middle; border: 1px solid #000;">Підпис відповідальної особи</td>
+            </tr>
+            <tr>
+                <td class="text-center" style="width: 10%; padding: 2px; vertical-align: middle; border: 1px solid #000;">прибуття</td>
+                <td class="text-center" style="width: 10%; padding: 2px; vertical-align: middle; border: 1px solid #000;">вибуття</td>
+                <td class="text-center" style="width: 10%; padding: 2px; vertical-align: middle; border: 1px solid #000;">простою</td>
+            </tr>
+            <tr>
+                <td class="text-center" style="padding: 2px; vertical-align: middle; border: 1px solid #000;"><strong>10</strong></td>
+                <td class="text-center" style="padding: 2px; vertical-align: middle; border: 1px solid #000;"><strong>11</strong></td>
+                <td class="text-center" style="padding: 2px; vertical-align: middle; border: 1px solid #000;"><strong>12</strong></td>
+                <td class="text-center" style="padding: 2px; vertical-align: middle; border: 1px solid #000;"><strong>13</strong></td>
+                <td class="text-center" style="padding: 2px; vertical-align: middle; border: 1px solid #000;"><strong>14</strong></td>
+                <td class="text-center" style="padding: 2px; vertical-align: middle; border: 1px solid #000;"><strong>15</strong></td>
+            </tr>
+            <tr>
+                <td class="text-center" style="padding: 2px; vertical-align: middle; border: 1px solid #000;">Навантаження</td>
+                <td style="border: 1px solid #000;"/>
+                <td style="border: 1px solid #000;"/>
+                <td style="border: 1px solid #000;"/>
+                <td style="border: 1px solid #000;"/>
+                <td style="border: 1px solid #000;"/>
+            </tr>
+            <tr>
+                <td class="text-center" style="padding: 2px; vertical-align: middle; border: 1px solid #000;">Розвантаження</td>
+                <td style="border: 1px solid #000;"/>
+                <td style="border: 1px solid #000;"/>
+                <td style="border: 1px solid #000;"/>
+                <td style="border: 1px solid #000;"/>
+                <td style="border: 1px solid #000;"/>
+            </tr>
+        </table>
+        <p class="m-0 pt-2">*Відомості заповнюються у разі перевезення туш, напівтуш, четвертин, відрубів, шматків м'яса.</p>
+        <p>**Відомості заповнюються у разі перевезення харчових продуктів, які потребують дотримання температурного режиму.</p>
     </template>
 
     <template id="td_report_products_table_1">
@@ -1090,6 +1411,85 @@
                 <td colspan="2" class="text-start" style="padding: 1px; vertical-align: middle;">Всього:</td>
                 <td/>
                 <td/>
+                <td class="text-center" style="padding: 1px; vertical-align: middle;">
+                    <span t-esc="'%.2f' % report_data['total']"/>
+                </td>
+                <td/>
+                <td/>
+                <td/>
+                <td/>
+            </tr>
+        </table>
+    </template>
+
+    <template id="td_report_products_table_new_waybill">
+        <t t-set="lines" t-value="report_data['lines']"/>
+
+        <div class="text-center mb-1" style="font-size: 11px; padding: 2px;">
+            <p style="font-size: 11px; font-weight: 600; padding: 0; margin: 0;">ВІДОМОСТІ ПРО ВАНТАЖ</p>
+        </div>
+        <table class="table table-sm table-bordered o_ignore_layout_styling mx-auto" style="font-size: 8px;margin-bottom: 0;max-width: 900px;">
+            <tr>
+                <td class="text-center" style="width: 3%; padding: 1px; vertical-align: middle;">№<br/>з/п</td>
+                <td class="text-center" style="width: 20%; padding: 1px; vertical-align: middle;">Найменування вантажу(туші, напівтуші, четвертини, відруби, шматки м'яса)* / номер контейнера; клас небезпечних речовин, до якого віднесено вантаж, у разі перевезення небезпечних  вантажів</td>
+                <td class="text-center" style="width: 7%; padding: 1px; vertical-align: middle;">Ідентифікаційний номер тварини від якої отримано сировину*</td>
+                <td class="text-center" style="width: 7%; padding: 1px; vertical-align: middle;">Вид тварини*</td>
+                <td class="text-center" style="width: 7%; padding: 1px; vertical-align: middle;">Температурний режим транспортування**</td>
+                <td class="text-center" style="width: 7%; padding: 1px; vertical-align: middle;">Одиниця вимірювання</td>
+                <td class="text-center" style="width: 7%; padding: 1px; vertical-align: middle;">Кількість місць</td>
+                <td class="text-center" style="width: 7%; padding: 1px; vertical-align: middle;">Ціна без ПДВ за одиницю, грн</td>
+                <td class="text-center" style="width: 10%; padding: 1px; vertical-align: middle;">Загальна сума з ПДВ, грн</td>
+                <td class="text-center" style="width: 5%; padding: 1px; vertical-align: middle;">Вид пакування</td>
+                <td class="text-center" style="width: 12%; padding: 1px; vertical-align: middle;">Документи з вантажем</td>
+                <td class="text-center" style="width: 8%; padding: 1px; vertical-align: middle;">Маса брутто, т</td>
+            </tr>
+            <tr>
+                <t t-foreach="[1,2,3,4,5,6,7,8,9,10,11,12]" t-as="i">
+                    <td class="text-center" style="padding: 2px; vertical-align: top;"><strong t-esc="i"/></td>
+                </t>
+            </tr>
+            <t t-foreach="lines" t-as="line">
+                <tr style="page-break-inside: avoid;">
+                    <td class="text-center" style="padding: 2px; vertical-align: top;">
+                        <span t-esc="line['sequence']"/>
+                    </td>
+                    <td style="padding: 2px; vertical-align: top;">
+                        <span t-esc="line['product_name']"/><br/>
+                        <small style="font-size: 7px;"></small>
+                    </td>
+                    <td/>
+                    <td/>
+                    <td/>
+                    <td class="text-center" style="padding: 2px; vertical-align: top;">
+                        <span t-esc="line['uom']"/>
+                    </td>
+                    <td class="text-center" style="padding: 2px; vertical-align: top;">
+                        <span t-esc="line['quantity']"/>
+                    </td>
+                    <td class="text-center" style="padding: 2px; vertical-align: top;">
+                        <span t-esc="'%.2f' % line['price_unit']"/>
+                    </td>
+                    <td class="text-center" style="padding: 2px; vertical-align: top;">
+                        <span t-esc="'%.2f' % line['price_subtotal']"/>
+                    </td>
+                    <td class="text-center" style="padding: 2px; vertical-align: top;">
+                        <!-- <span t-esc="line['packaging_type']"/> -->
+                    </td>
+                    <td class="text-center" style="padding: 2px; vertical-align: top;">
+                        <span>
+                            ВН № 
+                            <t t-esc="report_data['accompanying_document']"/> від 
+                            <t t-esc="report_data['accompanying_document_date']"/>
+                        </span>
+                    </td>
+                    <td class="text-center" style="padding: 2px; vertical-align: top;">
+                        <!-- <span t-esc="line['gross_weight']"/> -->
+                    </td>
+                </tr>
+            </t>
+            <tr>
+                <td colspan="2" class="text-start" style="padding: 1px; vertical-align: middle;">Всього:</td>
+                <td colspan="6"/>
                 <td class="text-center" style="padding: 1px; vertical-align: middle;">
                     <span t-esc="'%.2f' % report_data['total']"/>
                 </td>
@@ -1479,7 +1879,7 @@
                 <tr>
                     <td/>
                     <td style="border-bottom: 1px solid #000; text-align: center;">
-                        <span t-esc="report_data['medical_warehouse_manager']"/><br/>
+                        <span t-esc="report_data['warehouse_manager']"/><br/>
                         <span style="font-style: italic; font-size: 7px;">Завідувач аптечного складу </span>
                     </td>
                     <td/>
@@ -1506,6 +1906,45 @@
                     <td style="text-align: center;">
                         <span>(П.І.Б., посада, підпис, печатка)</span>
                     </td>
+                </tr>
+            </table>
+        </div>
+    </template>
+
+    <template id="td_report_new_waybill_signatures">
+        <div class="mt-2 display-inline mx-auto" style="font-size: 9px;max-width: 900px;">
+            <table border="0" class="table-sm o_ignore_layout_styling td_zero_border" width="100%">
+                <tr>
+                    <td/>
+                    <td style="width: 40%; vertical-align: middle; text-align: center;">
+                        <span>Здав (відповідальна особа вантажовідправника)</span>
+                    </td>
+                    <td style="width: 10%"/>
+                    <td style="width: 40%; vertical-align: middle; text-align: center;">
+                        <span>Прийняв (відповідальна особа вантажоодержувача)</span>
+                    </td>
+                    <td/>
+                </tr>
+                <tr>
+                    <td/>
+                    <td style="border-bottom: 1px solid #000; text-align: center;">
+                        <span style="font-style: italic; font-size: 7px;">Завідувач аптечного складу </span>
+                        <span t-esc="report_data['warehouse_manager']"/>
+                    </td>
+                    <td/>
+                    <td style="border-bottom: 1px solid #000;"/>
+                    <td/>
+                </tr>
+                <tr style="font-size: 7px">
+                    <td/>
+                    <td style="text-align: center;">
+                        <span>(прізвище (за наявності), власне ім'я та по-батькові (за наявності), посада, підпис)</span>
+                    </td>
+                    <td/>
+                    <td style="text-align: center;">
+                        <span>(прізвище (за наявності), власне ім'я та по-батькові (за наявності), посада, підпис)</span>
+                    </td>
+                    <td/>
                 </tr>
             </table>
         </div>
@@ -1736,6 +2175,29 @@
         </t>
     </template>
     
+    <template id="report_new_waybill_document">
+        <t t-call="web.basic_layout">
+            <t t-set="o" t-value="o.with_context(lang=lang)"/>
+            <t t-set="report_data" t-value="o.td_get_report_waybill_data()"/>
+            
+            <div class="page" style="font-family: Arial, sans-serif; font-size: 11px;">
+                <style>
+                    .td_zero_border,
+                    .td_zero_border td,
+                    .td_zero_border th {
+                        border: 0px solid transparent;
+                    }
+                </style>
+                <t t-call="td_medicus_report.td_report_header_new_waybill"/>
+                <t t-call="td_medicus_report.td_report_title_waybill"/>
+                <t t-call="td_medicus_report.td_report_new_waybill_info_1"/>
+                <t t-call="td_medicus_report.td_report_products_table_new_waybill"/>
+                <t t-call="td_medicus_report.td_report_new_waybill_signatures"/>
+                <t t-call="td_medicus_report.td_report_new_waybill_info_2"/>
+            </div>
+        </t>
+    </template>
+    
     <template id="report_custody_act_document">
         <t t-call="web.basic_layout">
             <t t-set="o" t-value="o.with_context(lang=lang)"/>
@@ -1834,6 +2296,14 @@
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-call="td_medicus_report.report_waybill_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_print_new_waybill">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="td_medicus_report.report_new_waybill_document" t-lang="o.partner_id.lang"/>
             </t>
         </t>
     </template>

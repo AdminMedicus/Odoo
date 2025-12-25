@@ -251,9 +251,12 @@ class StockPicking(models.Model):
             'waybill_date': format_date(self.env, self.date_done, date_format='dd MMMM yyyy p.'),
             'buyer': order.partner_invoice_id.full_partner_name or order.partner_invoice_id.name,
             'shipper': company.partner_id.full_partner_name,
+            'shipper_code': company.partner_id.company_registry or '',
             'consignee': partner.full_partner_name or partner.name,
+            'consignee_code': partner.company_registry or '',
             'delivery_address': partner.contact_address_complete,
-            'loading_point': self.warehouse_address_id.contact_address_complete or self.warehouse_address_id.name,
+            'loading_point': self.warehouse_address_id.contact_address_complete,
+            'place_of_issue': self.warehouse_address_id.state_id.name,
             'warehouse_manager': warehouse_manager_id.td_partner_short_name or warehouse_manager_id.name,
             'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.name,
             'accompanying_document': self.td_invoice_for_pick_id.name.split('/')[-1],
@@ -262,6 +265,9 @@ class StockPicking(models.Model):
             'total_amount': self._amount_to_words_ua(self.td_total_amount),
             'tax_amount': self._amount_to_words_ua(self.td_total_tax),
             'total': self.td_total_amount,
+            'full_description': """
+            (повне найменування (прізвище (за наявності), власне ім'ята по-батькові (за наявності), унікальний номер запису в Єдиному державному демографічному реєстрі (за наявності), код платника податків згідно з Єдиним державним реєстром підприємств та організацій України або податковий номер (реєстраційний номер обліковойї картки платника податків або серія (за наявності) та номер паспорта громадянина України (для фізичних осіб, які через свої релігійні переконання відмовляються від прийняття реєстраційного номера облікової картки платника податків та повідомили про це відповідний контролюючий орган і мають відмітку в паспорті))))
+            """,
             'lines': [],
         }
 
@@ -274,7 +280,7 @@ class StockPicking(models.Model):
                 'product_name': move.product_id.description_sale or move.product_id.name,
                 'uom': move.product_uom.name,
                 'quantity': move.product_uom_qty,
-                'price_unit': move.td_price_unit,
+                'price_unit': move.td_untaxed_price_unit,
                 'price_subtotal': move.td_price_total,
                 'documents_with_cargo': self.origin or '',
             }
