@@ -73,12 +73,26 @@
         <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
     </record>
 
-    <record id="action_report_waybill" model="ir.actions.report">
+    <!-- <record id="action_report_waybill" model="ir.actions.report">
         <field name="name">ТТН</field>
         <field name="model">stock.picking</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">td_medicus_report.report_print_waybill</field>
         <field name="report_file">td_medicus_report.report_print_waybill</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('td_invoice_for_pick_id', '!=', False)
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat_landscape"/>
+    </record> -->
+
+    <record id="action_report_waybill_new" model="ir.actions.report">
+        <field name="name">Товарно-транспортна</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_print_new_waybill</field>
+        <field name="report_file">td_medicus_report.report_print_new_waybill</field>
         <field name="binding_model_id" ref="stock.model_stock_picking"/>
         <field name="binding_type">report</field>
         <field name="domain" eval="[

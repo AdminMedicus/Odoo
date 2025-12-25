@@ -251,9 +251,12 @@ class StockPicking(models.Model):
             'waybill_date': format_date(self.env, self.date_done, date_format='dd MMMM yyyy p.'),
             'buyer': order.partner_invoice_id.full_partner_name or order.partner_invoice_id.name,
             'shipper': company.partner_id.full_partner_name,
+            'shipper_code': company.partner_id.company_registry or '',
             'consignee': partner.full_partner_name or partner.name,
+            'consignee_code': partner.company_registry or '',
             'delivery_address': partner.contact_address_complete,
-            'loading_point': self.warehouse_address_id.contact_address_complete or self.warehouse_address_id.name,
+            'loading_point': self.warehouse_address_id.contact_address_complete,
+            'place_of_issue': self.warehouse_address_id.state_id.name,
             'warehouse_manager': warehouse_manager_id.td_partner_short_name or warehouse_manager_id.name,
             'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.name,
             'accompanying_document': self.td_invoice_for_pick_id.name.split('/')[-1],
@@ -262,6 +265,9 @@ class StockPicking(models.Model):
             'total_amount': self._amount_to_words_ua(self.td_total_amount),
             'tax_amount': self._amount_to_words_ua(self.td_total_tax),
             'total': self.td_total_amount,
+            'full_description': """
+            (повне найменування (прізвище (за наявності), власне ім'ята по-батькові (за наявності), унікальний номер запису в Єдиному державному демографічному реєстрі (за наявності), код платника податків згідно з Єдиним державним реєстром підприємств та організацій України або податковий номер (реєстраційний номер обліковойї картки платника податків або серія (за наявності) та номер паспорта громадянина України (для фізичних осіб, які через свої релігійні переконання відмовляються від прийняття реєстраційного номера облікової картки платника податків та повідомили про це відповідний контролюючий орган і мають відмітку в паспорті))))
+            """,
             'lines': [],
         }
 
@@ -274,7 +280,7 @@ class StockPicking(models.Model):
                 'product_name': move.product_id.description_sale or move.product_id.name,
                 'uom': move.product_uom.name,
                 'quantity': move.product_uom_qty,
-                'price_unit': move.td_price_unit,
+                'price_unit': move.td_untaxed_price_unit,
                 'price_subtotal': move.td_price_total,
                 'documents_with_cargo': self.origin or '',
             }
@@ -327,6 +333,7 @@ class StockPicking(models.Model):
                 'registry': client_partner.company_registry,
                 'street': client_partner.parent_id.contact_address_complete,
                 'fisical_address': shipper_partner.contact_address_complete,
+                'executant_name': shipper_partner.full_partner_name or shipper_partner.display_name,
             },
             'lines': [],
             'act_number': self.name.split('/')[-1],
@@ -337,7 +344,7 @@ class StockPicking(models.Model):
             'return_title': 'Акт повернення майна з відповідального зберігання № ',
             'transfer_subtitle': 'Депонент передав, а виконавець прийняв на відповідальне зберігання наступне майно:',
             'return_subtitle': 'Депонент прийняв, а виконавець повернув з відповідального зберігання наступне майно:',
-            'amount_total': self.td_total_amount,
+            'amount_total': self.td_amount_origin_currency,
             'amount_in_words': self.get_amount_in_words(),
         }
 
@@ -363,13 +370,14 @@ class StockPicking(models.Model):
                     if move_line_ids else [],
                 'product_catalog_number': line.product_id.default_code or '',
                 'product_manufacturer': line.product_id.td_manufacturer_directory_res_id.name or '',
-                'storage_conditions': location.mapped('td_condition_ids.name'),
+                # 'storage_conditions': location.mapped('td_condition_ids.name'),
+                'storage_conditions': line.move_orig_ids.mapped('location_id.td_condition_ids.name'),
                 'quantity': line.quantity,
                 'uom': line.product_uom.name,
                 'expiration_dates': [
                     d.strftime('%d.%m.%Y') if d else None for d in move_line_ids.mapped('expiration_date') 
                 ] if move_line_ids else [],
-                'price_unit': line.td_price_unit,
+                'price_unit': line.td_untaxed_price_unit,
                 'price_subtotal': line.td_price_subtotal,
             }
             data['lines'].append(line_data)
