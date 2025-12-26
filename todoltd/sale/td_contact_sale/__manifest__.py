@@ -11,7 +11,8 @@
     'depends': [
         'contacts',
         'sale_management',
-        'stock'
+        'stock',
+        'delivery'
     ],
 
     'data': [
