@@ -10,8 +10,8 @@
                     <h1><field name='name' placeholder='e.g. 12 months'/></h1>
                 </div>
                 <group>
-                    <field name='manufacturer'/>
-                    <field name='product_category'/>
+                    <field name='manufacturer' widget='many2many_tags'/>
+                    <field name='product_category' widget='many2many_tags'/>
                 </group>
                 <group>
                     <field name='duration_months'/>
@@ -68,13 +68,13 @@
     </record>
 
     <menuitem
-        id="td_warranty_period_sale_menu"
+        id="warranty_period_sale_menu"
         name="Warranties"
         action="td_warranty_period_action"
         parent="sale.prod_config_main"
         sequence="30"/>
     <menuitem
-        id="td_warranty_period_purchase_menu"
+        id="warranty_period_purchase_menu"
         name="Warranties"
         action="td_warranty_period_action"
         parent="purchase.menu_product_in_config_purchase"
