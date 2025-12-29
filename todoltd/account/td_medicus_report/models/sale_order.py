@@ -17,4 +17,55 @@ class SaleOrder(models.Model):
             'td_invoice_from_delivery': False,
         })
         return super().copy(default=default)
+
+    def td_get_co_data(self):
+        self.ensure_one()
+
+        data = {
+            'company_info': {
+                'name': self.company_id.partner_id.full_partner_name or self.company_id.name,
+                'address': self.company_id.partner_id.contact_address_complete,
+                'phone': self.company_id.phone,
+                'registry': self.company_id.company_registry,
+                'vat': self.company_id.vat,
+                'sertificate_number': '35589038',
+                'account_position': self.company_id.partner_id.property_account_position_id.name,
+                'bank_account': self.company_id.partner_id.bank_ids[0].acc_number
+                if self.company_id.partner_id.bank_ids else '',
+                'bank_name': self.company_id.partner_id.bank_ids[0].bank_id.name
+                if self.company_id.partner_id.bank_ids else '',
+                'bank_bic': self.company_id.partner_id.bank_ids[0].bank_id.bic
+                if self.company_id.partner_id.bank_ids else '',
+            },
+            'co_date': self.date_order.strftime('%d.%m.%Y'),
+            'co_number': self.name.replace('S', ''),
+            'consignee': self.partner_id.full_partner_name or self.partner_id.name,
+            'co_manager': self.user_id.employee_id.td_partner_short_name or self.user_id.name,
+            'co_manager_number': self.user_id.phone,
+            'total': self.amount_total,
+            'lines': [],
+        }
+
+        line_num = 0
+        for line in self.order_line:
+            line_num += 1
+            bom_ids = line.product_id.bom_ids
+
+            data['lines'].append({
+                'line_num': line_num,
+                'product_code': line.product_id.default_code or '',
+                'product_name': line.product_id.description_sale or line.product_id.name,
+                'product_uom': line.product_uom.name,
+                'product_qty': line.product_uom_qty,
+                'product_price_unit': line.td_untaxed_price_unit,
+                'product_price_subtotal': line.price_total,
+                'bom_lines': [{
+                    'length': len(bom_ids),
+                    'bom_product_name': bom_line.product_id.name,
+                    'bom_product_uom': bom_line.product_uom_id.name,
+                    'bom_product_qty': bom_line.product_qty,
+                } for bom in bom_ids for bom_line in bom.bom_line_ids]
+            })
+
+        return data
     

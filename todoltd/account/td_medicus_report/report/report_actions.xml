@@ -163,4 +163,32 @@
         <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
     </record>
 
+    <record id="action_report_commercial_offer" model="ir.actions.report">
+        <field name="name">Комерційна пропозиція</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_print_commercial_offer</field>
+        <field name="report_file">td_medicus_report.report_print_commercial_offer</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('state', '=', 'sale'),
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
+    <record id="action_report_commercial_offer_inv" model="ir.actions.report">
+        <field name="name">Комерційна пропозиція</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_print_commercial_offer_inv</field>
+        <field name="report_file">td_medicus_report.report_print_commercial_offer_inv</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+        <!-- <field name="domain" eval="[
+            ('state', '=', 'sale'),
+        ]"/> -->
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
 </odoo>
