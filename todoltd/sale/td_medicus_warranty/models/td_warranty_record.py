@@ -22,18 +22,21 @@ class TdWarrantyRecord(models.Model):
         string='Serial Number',
         required=True,
         ondelete='cascade',
-        help='Serial number associated with the warranty.'
+        help='Serial number associated with the warranty.',
+        readonly=True,
     )
     product_id = fields.Many2one(
         comodel_name='product.product',
         related='serial_id.product_id',
         string='Product',
         store=True,
+        readonly=True,
         help='Product associated with the warranty.'
     )
     partner_id = fields.Many2one(
         comodel_name='res.partner',
         string='Customer',
+        readonly=True,
         help='Customer who owns this warranty.'
     )
     

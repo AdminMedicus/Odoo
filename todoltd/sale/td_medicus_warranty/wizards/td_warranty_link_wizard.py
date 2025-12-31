@@ -95,7 +95,7 @@ class TdWarrantyLinkWizard(models.TransientModel):
 
         # Update sale order line with linked serial
         self.sale_order_line_id.write({
-            'td_warranty_linked_serial_id': self.serial_id.id
+            'td_warranty_linked_serial_ids': [(6, 0, [self.serial_id.id])]
         })
 
         return {'type': 'ir.actions.act_window_close'}

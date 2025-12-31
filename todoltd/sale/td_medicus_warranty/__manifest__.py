@@ -22,6 +22,7 @@
         'views/td_warranty_record_views.xml',
         'views/product_template_views.xml',
         'wizards/td_warranty_link_wizard_views.xml',
+        'wizards/td_warranty_bulk_link_wizard_views.xml',
         'views/account_move_views.xml',
         'views/stock_picking_views.xml',
         'views/res_partner_views.xml',

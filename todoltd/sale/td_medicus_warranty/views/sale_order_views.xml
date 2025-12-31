@@ -1,23 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <!-- Sale Order Line Form View Extension -->
     <record id="view_order_form_td_warranty_extend" model="ir.ui.view">
         <field name="name">sale.order.form.td.warranty</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="td_date_commissioning" 
+                       invisible="not td_has_warranty_products"
+                       placeholder="Required for warranties using commissioning date"/>
+            </xpath>
+            
             <xpath expr="//field[@name='order_line']//list//field[@name='product_uom_qty']" position="after">
                 <field name="td_is_extended_warranty" column_invisible="True"/>
-                <field name="td_warranty_from_commissioning" optional="hide"/>
-                <field name="td_warranty_manual_start_date" optional="hide"/>
-                <field name="td_warranty_linked_serial_id" optional="show"/>
+                <field name="td_warranty_linked_serial_ids" 
+                       widget="many2many_tags"
+                       column_invisible="parent.td_has_warranty_products == False"
+                       readonly="1"
+                       optional="show"/>
+                <field name="td_warranty_from_commissioning" 
+                       column_invisible="parent.td_has_warranty_products == False"
+                       readonly="not td_is_extended_warranty"
+                       optional="show"/>
+                <field name="td_warranty_manual_start_date" 
+                       column_invisible="parent.td_has_warranty_products == False"
+                       readonly="td_warranty_from_commissioning or not td_is_extended_warranty"
+                       optional="show"/>
                 <button name="action_link_warranty_to_serial" 
                         type="object" 
                         string="Link Product" 
                         icon="fa-link"
-                        invisible="not td_show_link_product_button"/>
-                <field name="td_show_link_product_button" column_invisible="True"/>
+                        column_invisible="parent.td_has_warranty_products == False"
+                        invisible="not td_is_extended_warranty"/>
             </xpath>
         </field>
     </record>

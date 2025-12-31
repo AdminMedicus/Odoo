@@ -28,7 +28,7 @@ class ProductTemplate(models.Model):
         compute='_compute_td_warranty_count'
     )
 
-    @api.depends('categ_id', 'td_manufacturer_directory_res_id')
+    @api.depends('td_is_warranty_applicable')
     def _td_compute_warranty_period(self):
         """Auto-fill warranty period based on manufacturer and category.
         Only fills if there's exactly one match."""

@@ -10,20 +10,18 @@ class AccountMove(models.Model):
         tracking=True
     )
 
-    # @api.model
-    # def _get_invoice_in_picking_type_code(self):
-    #     """Override to allow editing date_commissioning after confirmation."""
-    #     return super()._get_invoice_in_picking_type_code()
-
     def write(self, vals):
         """Sync date_commissioning with related stock.picking."""
         res = super().write(vals)
         if 'td_date_commissioning' in vals:
             for move in self:
-                # Find related pickings
-                pickings = self.env['stock.picking'].search([
-                    ('sale_id', '=', move.invoice_origin if move.move_type == 'out_invoice' else False)
-                ])
+                order = move.td_order_id
+                if order and order.td_date_commissioning != vals['td_date_commissioning']:
+                    order.td_date_commissioning = vals['td_date_commissioning']
+
+                pickings = order.picking_ids.filtered(
+                    lambda p: p.picking_type_code == 'outgoing'
+                )
                 for picking in pickings:
                     if picking.td_date_commissioning != vals['td_date_commissioning']:
                         picking.td_date_commissioning = vals['td_date_commissioning']
