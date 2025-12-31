@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <record id='td_warranty_period_form_view' model='ir.ui.view'>
+        <field name='name'>td.warranty.period.form.view</field>
+        <field name='model'>td.warranty.period</field>
+        <field name='arch' type='xml'>
+            <form>
+                <div class='oe_title'>
+                    <label for='name'/>
+                    <h1><field name='name' placeholder='e.g. 12 months'/></h1>
+                </div>
+                <group>
+                    <field name='manufacturer' widget='many2many_tags'/>
+                    <field name='product_category' widget='many2many_tags'/>
+                </group>
+                <group>
+                    <field name='duration_months'/>
+                </group>
+                <notebook>
+                    <page name='description' string='Description'>
+                        <field name='description' nolabel='1' widget='html'/>
+                    </page>
+                </notebook>
+            </form>
+        </field>
+    </record>
+
+    <record id='td_warranty_period_list_view' model='ir.ui.view'>
+        <field name='name'>td.warranty.period.list.view</field>
+        <field name='model'>td.warranty.period</field>
+        <field name='arch' type='xml'>
+            <list>
+                <field name='name'/>
+                <field name='manufacturer'/>
+                <field name='product_category'/>
+                <field name='duration_months'/>
+            </list>
+        </field>
+    </record>
+
+    <record id='td_warranty_period_search_view' model='ir.ui.view'>
+        <field name='name'>td.warranty.period.search.view</field>
+        <field name='model'>td.warranty.period</field>
+        <field name='arch' type='xml'>
+            <search string='Product Warranty'>
+                <field name='name'/>
+                <field name='manufacturer'/>
+                <field name='product_category'/>
+                <separator/>
+                <group expand='0' string='Group By'>
+                    <filter string='Manufacturer' name='group_by_manufacturer' domain='[]' context='{"group_by": "manufacturer"}'/>
+                    <filter string='Product Category' name='group_by_product_category' domain='[]' context='{"group_by": "product_category"}'/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id='td_warranty_period_action' model='ir.actions.act_window'>
+        <field name='name'>Warranty Periods</field>
+        <field name='res_model'>td.warranty.period</field>
+        <field name='view_mode'>list,form</field>
+        <field name='search_view_id' ref='td_warranty_period_search_view'/>
+        <field name='help' type='html'>
+            <p class='o_view_nocontent_smiling_face'>
+                Create your first Product Warranty
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="warranty_period_sale_menu"
+        name="Warranties"
+        action="td_warranty_period_action"
+        parent="sale.prod_config_main"
+        sequence="30"/>
+    <menuitem
+        id="warranty_period_purchase_menu"
+        name="Warranties"
+        action="td_warranty_period_action"
+        parent="purchase.menu_product_in_config_purchase"
+        sequence="30"/>
+</odoo>
