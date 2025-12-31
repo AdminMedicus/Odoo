@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    
+    <record id='td_product_template_form_view_inherit' model='ir.ui.view'>
+        <field name='name'>td.product.template.form.view.inherit</field>
+        <field name='model'>product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name='arch' type='xml'>
+            
+            <group name="group_general" position="inside">
+                <field name="td_is_extended_warranty"/>
+                <field name="td_is_warranty_applicable" invisible="tracking != 'serial'"/>
+                <field name="td_warranty_period_id" invisible="not td_is_warranty_applicable" required="td_is_warranty_applicable"/>
+            </group>
+            
+            <div name="button_box" position="inside">
+                <button name="action_view_warranties" 
+                        type="object" 
+                        class="oe_stat_button" 
+                        icon="fa-shield"
+                        invisible="tracking != 'serial'">
+                    <field name="td_warranty_count" widget="statinfo" string="Warranties"/>
+                </button>
+            </div>
+
+        </field>
+    </record>
+
+</odoo>

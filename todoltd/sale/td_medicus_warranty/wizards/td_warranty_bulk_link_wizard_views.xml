@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_td_warranty_bulk_link_wizard_form" model="ir.ui.view">
+        <field name="name">td.warranty.bulk.link.wizard.form</field>
+        <field name="model">td.warranty.bulk.link.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Link Warranties to Serial Numbers">
+                <p class="alert alert-warning" role="alert">
+                    Please link each extended warranty to a serial number from the delivery.
+                </p>
+                
+                <group>
+                    <field name="sale_order_id"/>
+                    <field name="picking_id"/>
+                </group>
+                
+                <group string="Warranty Lines">
+                    <field name="line_ids" nolabel="1">
+                        <list editable="bottom" create="false" delete="false">
+                            <field name="product_id" readonly="1"/>
+                            <field name="quantity" readonly="1"/>
+                            <field name="available_serial_ids" column_invisible="1"/>
+                            <field name="serial_ids" 
+                                   widget="many2many_tags"
+                                   required="1"
+                                   placeholder="Select serial numbers..."
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="warranty_from_commissioning" readonly="1"/>
+                            <field name="warranty_start_date" 
+                                   readonly="1"
+                                   optional="show"/>
+                        </list>
+                    </field>
+                </group>
+                
+                <footer>
+                    <button string="Confirm &amp; Validate Delivery" 
+                            name="action_confirm" 
+                            type="object" 
+                            class="btn-primary"
+                            data-hotkey="q"/>
+                    <button string="Cancel" 
+                            class="btn-secondary" 
+                            special="cancel"
+                            data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
