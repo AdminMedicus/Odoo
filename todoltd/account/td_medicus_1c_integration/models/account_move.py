@@ -39,6 +39,12 @@ class AccountMove(models.Model):
     td_tax_totals = fields.Binary(
         compute='_compute_td_tax_totals'
     )
+    td_picking_id = fields.Many2one(
+        comodel_name="stock.picking",
+        string="Receipt",
+        copy=False,
+        index=True,
+    )
 
     def _get_next_sequence_format(self):
         format_string, format_values = super()._get_next_sequence_format()
