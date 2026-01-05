@@ -137,6 +137,15 @@
             <field name="model_name">res.partner</field>
         </record>
 
+        <record id="inner_types_res_partner_address_delivery" model="ata.exchange.method">
+            <field name="name">AddressDelivery</field>
+            <field name="description">Address delivery</field>
+            <field name="type">inner_types</field>
+            <field name="model_id" ref="model_res_partner"/>
+            <field name="model_name">res.partner</field>
+        </record>
+
+        <!-- agreement -->
         <record id="inner_types_agreement_type" model="ata.exchange.method">
             <field name="name">AgreementType</field>
             <field name="description">Agreement type</field>
