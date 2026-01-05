@@ -46,6 +46,15 @@ class ManufacturerDataIncoming(PartnerDataBase):
 class SupplierDataIncoming(PartnerDataBase):
     name_full: str
 
+class AddressDeliveryData(BaseModelPydantic):
+    id: str
+    name: str
+    ext_id: int | None = None
+    type: str
+    recipient: str
+    phone: str
+    time: str
+
 class PartnerDataFull(PartnerDataBase):
     name_full: str
     vat: str
@@ -58,6 +67,7 @@ class PartnerDataFull(PartnerDataBase):
     job_name: str
     manager: ManagerDataIncoming
     sub_clients: list[PartnerDataBase]
+    addresses_delivery: list[AddressDeliveryData]
 
 class AgreementType(BaseModelPydantic):
     id: str
