@@ -93,14 +93,35 @@
     </record>
 
     <!-- Menu Item -->
-    <!-- <menuitem id="menu_td_warranty_root"
-              name="Warranties"
-              sequence="100"/> -->
-    
-    <!-- <menuitem id="menu_td_warranty_periods"
-              name="Warranty Periods"
-              parent="menu_td_warranty_root"
-              action="action_td_warranty_period"
-              sequence="20"/> -->
+     <menuitem
+        id="td_warranty_sale_menu_root"
+        name="Warranty Records"
+        parent="sale.product_menu_catalog"
+        sequence="50"/>
+     <menuitem
+        id="td_warranty_records_sale_menu"
+        name="Warranties"
+        action="action_td_warranty_record"
+        parent="td_warranty_sale_menu_root"/>
+     <menuitem
+        id="td_warranty_purchase_menu_root"
+        name="Warranty Records"
+        parent="purchase.menu_purchase_products"
+        sequence="50"/>
+     <menuitem
+        id="td_warranty_records_purchase_menu"
+        name="Warranties"
+        action="action_td_warranty_record"
+        parent="td_warranty_purchase_menu_root"/>
+     <menuitem
+        id="td_warranty_stock_menu_root"
+        name="Warranty Records"
+        parent="stock.menu_stock_inventory_control"
+        sequence="50"/>
+     <menuitem
+        id="td_warranty_records_stock_menu"
+        name="Warranties"
+        action="action_td_warranty_record"
+        parent="td_warranty_stock_menu_root"/>
 
 </odoo>

@@ -35,6 +35,7 @@ class TdWarrantyRecord(models.Model):
     )
     partner_id = fields.Many2one(
         comodel_name='res.partner',
+        related="serial_id.last_delivery_partner_id",
         string='Customer',
         readonly=True,
         help='Customer who owns this warranty.'

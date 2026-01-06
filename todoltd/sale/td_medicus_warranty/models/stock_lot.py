@@ -53,9 +53,9 @@ class StockLot(models.Model):
 
 
     def _create_manufacturer_warranty(self, picking):
-        """Create manufacturer warranty when product is first delivered to customer.
-        This is called when a picking is validated.
-        The warranty start date is taken from the incoming purchase delivery."""
+        """Create manufacturer warranty when product is received from supplier.
+        This is called when an incoming picking is validated.
+        The warranty start date is taken from the supplier document date."""
         self.ensure_one()
         
         # Check if product has warranty enabled
@@ -76,33 +76,20 @@ class StockLot(models.Model):
         if not warranty_period:
             return False
 
-        # Find the incoming picking (purchase) for this serial number
-        # Get all stock moves for this serial number, ordered by date
-        incoming_moves = self.env['stock.move.line'].search([
-            ('lot_id', '=', self.id),
-            ('picking_id.picking_type_code', '=', 'incoming'),
-            ('state', '=', 'done')
-        ], order='date asc', limit=1)
-        
         # Determine start date from incoming picking
-        if incoming_moves and (incoming_picking := incoming_moves.picking_id):
-            # Use supplier document date if available, otherwise use picking done date
-            if hasattr(incoming_picking, 'td_date_supplier_document') and incoming_picking.td_date_supplier_document:
-                start_date = incoming_picking.td_date_supplier_document
-            else:
-                start_date = incoming_picking.date_done.date() if incoming_picking.date_done else fields.Date.today()
+        # Use supplier document date if available, otherwise use picking done date
+        if hasattr(picking, 'td_date_supplier_document') and picking.td_date_supplier_document:
+            start_date = picking.td_date_supplier_document
         else:
-            # Fallback to current delivery date
             start_date = picking.date_done.date() if picking.date_done else fields.Date.today()
 
         # Calculate end date
         end_date = start_date + relativedelta(months=warranty_period.duration_months)
 
-        # Create manufacturer warranty
+        # Create manufacturer warranty (no partner yet, will be set when sold)
         warranty_record = self.env['td.warranty.record'].create({
             'warranty_type': 'manufacturer',
             'serial_id': self.id,
-            'partner_id': picking.partner_id.id if picking.partner_id else False,
             'date_start': start_date,
             'date_end': end_date,
             'duration_months': warranty_period.duration_months,
