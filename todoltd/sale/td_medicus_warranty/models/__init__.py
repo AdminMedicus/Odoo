@@ -1,4 +1,5 @@
 from . import product_template
+from . import product_product
 from . import td_warranty_period
 from . import td_warranty_record
 from . import account_move

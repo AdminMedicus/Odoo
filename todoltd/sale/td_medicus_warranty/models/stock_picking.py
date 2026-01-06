@@ -49,16 +49,17 @@ class StockPicking(models.Model):
         
         res = super()._action_done()
         
-        # Create manufacturer warranties for products delivered to customers
+        # Create manufacturer warranties for purchased products with serial numbers
         for picking in self:
-            if picking.picking_type_code == 'outgoing' and picking.location_dest_id.usage == 'customer':
+            if picking.picking_type_code == 'incoming' and picking.location_dest_id.usage == 'internal':
                 # Process each move line with a serial number
                 for move_line in picking.move_line_ids:
                     if move_line.lot_id and move_line.lot_id.product_id.td_is_warranty_applicable:
                         # Create manufacturer warranty for this serial number
                         move_line.lot_id._create_manufacturer_warranty(picking)
-                
-                # Create extended warranties from sale order lines
+            
+            # Create extended warranties from sale order lines when delivering to customer
+            elif picking.picking_type_code == 'outgoing' and picking.location_dest_id.usage == 'customer':
                 if picking.sale_id and picking.sale_id.td_has_warranty_products:
                     picking.sale_id._validate_warranty_dates()
                     picking.sale_id._create_warranty_records()

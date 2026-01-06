@@ -2,7 +2,7 @@
 {
     'name': "Product Warranty Management",
     'summary': 'Manage product warranties and claims',
-    'version': '18.0.0.0.1',
+    'version': '18.0.0.0.2',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
@@ -21,7 +21,6 @@
         'views/td_warranty_period_views.xml',
         'views/td_warranty_record_views.xml',
         'views/product_template_views.xml',
-        'wizards/td_warranty_link_wizard_views.xml',
         'wizards/td_warranty_bulk_link_wizard_views.xml',
         'views/account_move_views.xml',
         'views/stock_picking_views.xml',
