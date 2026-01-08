@@ -98,7 +98,7 @@ class TdWarrantyRecord(models.Model):
     @api.ondelete(at_uninstall=False)
     def _unlink_except_draft_or_cancel(self):
         for record in self:
-            if record.status not in ['draft']:
+            if record.status not in ['draft'] and not self.env.context.get('disable_delete_warning'):
                 raise UserError(_("You can only delete warranties in Draft status."))
 
     # @api.depends('serial_id', 'warranty_type', 'date_start')
