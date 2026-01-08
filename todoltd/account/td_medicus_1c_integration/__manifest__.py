@@ -1,6 +1,6 @@
 {
     'name': 'TD Medicus 1C Integration',
-    "version": '18.0.0.0.33',
+    "version": '18.0.0.0.34',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
@@ -35,7 +35,8 @@
         'views/product_product_views.xml',
         # wizard
         'wizard/sale_make_invoice_advance.xml',
-        'wizard/td_sale_order_low_margin_warning.xml'
+        'wizard/td_sale_order_low_margin_warning.xml',
+        'data/delivery_carrier_data.xml',
     ],
     "assets": {
         "web.assets_backend": [
