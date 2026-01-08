@@ -166,17 +166,22 @@ class TdResPartnerExchange(models.Model):
     def ata_exchange_prepare_vals_address_delivery(self,
         record_params: RecordHandlerParams) -> dict[str, str|int|list|None]:
         
-        def get_delivery_carrier_id(delivery_carrier_name: str) -> int:
-            obj_params = record_params.build(self.env, 'delivery.carrier')
-            obj_params.search_params.search_domain = [('name', '=', delivery_carrier_name)]
-            return self.ata_exchange_get_model_record(obj_params).id
+        def get_delivery_carrier_id(delivery_carrier_name: str) -> int|None:
+            # found by xml id
+            delivery_carrier = self.env.ref(
+                f'td_medicus_1c_integration.td_{delivery_carrier_name.lower()}_delivery_carrier',
+                raise_if_not_found=False)
+            
+            return delivery_carrier.id if delivery_carrier else None
 
         partner_data = cast(AddressDeliveryData,
             self.ata_exchange_process_data_with_pydantic(record_params.data, AddressDeliveryData))
         
         return {
             'parent_id': record_params.data.get('parent_id',None),
+            'company_id': self.env.company.id,
             'company_type': 'person',
+            'type': 'delivery',
             'property_delivery_carrier_id': get_delivery_carrier_id(partner_data.type),
             'name': f"{partner_data.phone} {partner_data.time or ''}".strip(),
             'comment': partner_data.recipient or '',
