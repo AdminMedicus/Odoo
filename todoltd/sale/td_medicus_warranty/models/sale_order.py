@@ -65,6 +65,19 @@ class SaleOrder(models.Model):
         
         return res
 
+    def action_cancel(self):
+        res = super(SaleOrder, self).action_cancel()
+        if self.env.context.get('disable_cancel_warning'):
+            for order in self:
+                warranty_lines = order.order_line.filtered(lambda l: l.td_is_extended_warranty)
+                for line in warranty_lines:
+                    warranty_records = self.env['td.warranty.record'].search([
+                        ('sale_order_line_id', '=', line.id)
+                    ])
+                    for record in warranty_records:
+                        record.unlink()
+        return res
+
     def _validate_warranty_dates(self):
         """Validate that all required warranty dates are set."""
         errors = []

@@ -88,6 +88,7 @@ class StockLot(models.Model):
 
         # Create manufacturer warranty (no partner yet, will be set when sold)
         warranty_record = self.env['td.warranty.record'].create({
+            'status': 'active',
             'warranty_type': 'manufacturer',
             'serial_id': self.id,
             'date_start': start_date,

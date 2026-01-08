@@ -1,5 +1,7 @@
-from odoo import _, api, fields, models
 from dateutil.relativedelta import relativedelta
+
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 
 class SaleOrderLine(models.Model):
@@ -75,13 +77,14 @@ class SaleOrderLine(models.Model):
             start_date = self.td_warranty_manual_start_date or fields.Date.today()
 
         # Get duration from product
-        duration = self.product_template_id.td_warranty_period_id.duration_months if self.product_template_id.td_warranty_period_id else 12
+        duration = self.product_template_id.td_extended_warranty_period_id.duration_months if self.product_template_id.td_extended_warranty_period_id else 12
 
         # Calculate end date
         end_date = start_date + relativedelta(months=duration)
 
         # Create warranty record
-        warranty_record = self.env['td.warranty.record'].create({
+        warranty_record = self.env['td.warranty.record'].create([{
+            'status': 'active',
             'warranty_type': 'extended',
             'serial_id': serial.id,
             'partner_id': self.order_id.partner_id.id,
@@ -90,9 +93,23 @@ class SaleOrderLine(models.Model):
             'duration_months': duration,
             'sale_order_id': self.order_id.id,
             'sale_order_line_id': self.id,
-        } for serial in self.td_warranty_linked_serial_ids)
+        } for serial in self.td_warranty_linked_serial_ids])
         
         return warranty_record
+    
+    def action_update_extended_warranty_dates(self):
+        """Update the start and/or end dates of linked extended warranty records."""
+        self.ensure_one()
+        if not self.td_warranty_manual_start_date or (self.td_warranty_from_commissioning and not self.order_id.td_date_commissioning):
+            raise UserError(_("Please set a valid warranty start date before updating linked warranties."))
+        
+        warranty_records = self.env['td.warranty.record'].search([
+            ('sale_order_line_id', '=', self.id),
+            ('warranty_type', '=', 'extended')
+        ])
+        
+        for record in warranty_records:
+            record.date_start = self.td_warranty_manual_start_date or self.order_id.td_date_commissioning
 
     @api.onchange('td_warranty_from_commissioning')
     def _onchange_td_warranty_from_commissioning(self):
