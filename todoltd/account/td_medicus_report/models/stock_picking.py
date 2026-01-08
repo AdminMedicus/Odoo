@@ -384,6 +384,178 @@ class StockPicking(models.Model):
         
         return data
 
+    def td_get_custody_balance_data(self):
+        """
+        Preparation of data for the custody balance report.
+        Shows what's still in custody storage by partner.
+        Finds all custody transfers (outgoing) and calculates remaining balance
+        after subtracting returns (incoming).
+        """
+        self.ensure_one()
+
+        company = self.company_id
+        company_partner = company.partner_id
+        client_partner = self.td_parent_partner_id
+        shipper_partner = self.partner_id
+        warehouse_manager_id = company.td_warehouse_manager_id
+        
+        data = {
+            'company': {
+                'name': company_partner.full_partner_name,
+                'registry': company.company_registry,
+                'vat': company.vat,
+                'street': company_partner.contact_address_complete,
+                'ref': company_partner.ref or '',
+                'bank_account': company_partner.bank_ids[0].acc_number if company_partner.bank_ids else '',
+                'bank_name': company_partner.bank_ids[0].bank_name if company_partner.bank_ids else '',
+                'bank_bic': company_partner.bank_ids[0].bank_bic if company_partner.bank_ids else '',
+                'warehouse_manager': warehouse_manager_id.td_partner_short_name or warehouse_manager_id.name if warehouse_manager_id else '',
+            },
+            'partner': {
+                'name': client_partner.parent_id.full_partner_name or client_partner.full_partner_name,
+                'street': client_partner.parent_id.contact_address_complete or client_partner.contact_address_complete,
+                'registry': client_partner.company_registry,
+                'fisical_address': shipper_partner.contact_address_complete,
+                'executant_name': shipper_partner.full_partner_name or shipper_partner.display_name,
+            },
+            'lines': [],
+            'documents': [],
+            'act_date': fields.Date.today().strftime('%d.%m.%y'),
+            'agreement_number': '',
+            'agreement_date': '',
+            'amount_total': 0.0,
+            'amount_in_words': '',
+        }
+
+        outgoing_pickings = self.env['stock.picking'].search([
+            ('picking_type_code', '=', 'outgoing'),
+            ('td_order_implementation_document', '=', 'act_res_st'),
+            ('state', '=', 'done'),
+            ('td_parent_partner_id', '=', client_partner.id),
+        ])
+
+        product_balances = {}
+
+        for picking in outgoing_pickings:
+            sale_order = picking.sale_id
+            if not sale_order:
+                continue
+                
+            for move in picking.move_ids_without_package:
+                if not move.product_id:
+                    continue
+                    
+                move_line_ids = move.mapped('move_line_ids')
+                
+                for move_line in move_line_ids:
+                    lot_id = move_line.lot_id
+                    key = (sale_order.id, move.product_id.id, lot_id.id if lot_id else 0)
+                    
+                    if key not in product_balances:
+                        product_balances[key] = {
+                            'sale_order': sale_order,
+                            'product': move.product_id,
+                            'lot': lot_id,
+                            'transferred': 0.0,
+                            'returned': 0.0,
+                            'price_unit': move.td_untaxed_price_unit if hasattr(move, 'td_untaxed_price_unit') else 0,
+                            'expiration_date': move_line.expiration_date,
+                        }
+                    
+                    product_balances[key]['transferred'] += move_line.quantity
+
+        incoming_pickings = self.env['stock.picking'].search([
+            ('picking_type_code', '=', 'incoming'),
+            ('implementation_document', '=', 'act_res_st'),
+            ('state', '=', 'done'),
+            ('td_parent_partner_id', '=', client_partner.id),
+        ])
+
+        for picking in incoming_pickings:
+            for move in picking.move_ids_without_package:
+                if not move.product_id:
+                    continue
+                
+                sale_order = picking.sale_id
+                if not sale_order:
+                    continue
+                    
+                move_line_ids = move.mapped('move_line_ids')
+                
+                for move_line in move_line_ids:
+                    lot_id = move_line.lot_id
+                    key = (sale_order.id, move.product_id.id, lot_id.id if lot_id else 0)
+                    
+                    if key in product_balances:
+                        product_balances[key]['returned'] += move_line.quantity
+
+        line_num = 0
+        amount_total = 0.0
+        documents_dict = {}
+
+        for key, balance_data in product_balances.items():
+            remaining_qty = balance_data['transferred'] - balance_data['returned']
+            
+            if remaining_qty > 0:
+                line_num += 1
+                
+                sale_order = balance_data['sale_order']
+                product = balance_data['product']
+                lot = balance_data['lot']
+                
+                line_amount = remaining_qty * balance_data['price_unit']
+                amount_total += line_amount
+                
+                serial_display = lot.name if lot else ''
+                expiry_display = balance_data['expiration_date'].strftime('%d.%m.%Y') if balance_data['expiration_date'] else ''
+                
+                line_data = {
+                    'sequence': line_num,
+                    'document': sale_order.name,
+                    'product_name': product.description_sale or product.name,
+                    'product_manufacturer': product.td_manufacturer_directory_res_id.name or '',
+                    'serial': serial_display,
+                    'expiry_date': expiry_display,
+                    'quantity': remaining_qty,
+                    'price_unit': balance_data['price_unit'],
+                    'amount': line_amount,
+                }
+                
+                doc_name = sale_order.name
+                if doc_name not in documents_dict:
+                    documents_dict[doc_name] = {
+                        'document_name': doc_name,
+                        'agreement_number': sale_order.td_agreement_id.agreement_number if sale_order.td_agreement_id else '',
+                        'agreement_date': sale_order.td_agreement_id.start_date.strftime('%d.%m.%Y') if sale_order.td_agreement_id and sale_order.td_agreement_id.start_date else '',
+                        'lines': [],
+                        'subtotal': 0.0,
+                    }
+                
+                documents_dict[doc_name]['lines'].append(line_data)
+                documents_dict[doc_name]['subtotal'] += line_amount
+
+        data['documents'] = list(documents_dict.values())
+        data['amount_total'] = amount_total
+        
+        if documents_dict:
+            agreements = set()
+            for doc_data in documents_dict.values():
+                agreement_key = (doc_data.get('agreement_number', ''), doc_data.get('agreement_date', ''))
+                agreements.add(agreement_key)
+            
+            if len(agreements) == 1:
+                agreement_number, agreement_date = agreements.pop()
+                if agreement_number or agreement_date:
+                    data['agreement_number'] = agreement_number
+                    data['agreement_date'] = agreement_date
+        
+        if amount_total:
+            data['amount_in_words'] = self._amount_to_words_ua(amount_total)
+        else:
+            data['amount_in_words'] = ''
+        
+        return data
+
     def td_get_report_refund_data(self):
         """
         Preparation of data for the refund act report
@@ -410,7 +582,6 @@ class StockPicking(models.Model):
             'recipient_vat': company.vat or '',
             'recipient_ref': company_partner.ref or '',
             'recipient_address': company_partner.contact_address_complete,
-            # 'recipient_physical_address': company_partner.contact_address_complete,
             'recipient_physical_address': self.location_dest_id.warehouse_id.partner_id.contact_address_complete,
             'document_number': self.name.split('/')[-1],
             'document_date': format_date(self.env, self.date_done, date_format='dd MMMM yyyy p.'),
