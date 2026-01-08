@@ -1,6 +1,6 @@
 {
     'name': 'Medicus Exchange (Base)',
-    'version': '18.0.1.4.6',
+    'version': '18.0.1.4.7',
     'summary': 'Base module for exchange integration',
     'description': """
         Base module for exchange integration with Medicus system.
