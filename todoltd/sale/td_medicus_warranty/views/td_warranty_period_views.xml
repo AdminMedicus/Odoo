@@ -68,14 +68,14 @@
     </record>
 
     <menuitem
-        id="warranty_period_sale_menu"
-        name="Warranties"
+        id="warranty_periods_sale_menu"
+        name="Warranty Periods"
         action="td_warranty_period_action"
         parent="sale.prod_config_main"
         sequence="30"/>
     <menuitem
-        id="warranty_period_purchase_menu"
-        name="Warranties"
+        id="warranty_periods_purchase_menu"
+        name="Warranty Periods"
         action="td_warranty_period_action"
         parent="purchase.menu_product_in_config_purchase"
         sequence="30"/>
