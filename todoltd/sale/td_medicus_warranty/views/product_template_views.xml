@@ -8,7 +8,11 @@
         <field name='arch' type='xml'>
             
             <group name="group_general" position="inside">
-                <field name="td_is_extended_warranty"/>
+                <label for="td_is_extended_warranty" class="oe_inline" invisible="type != 'service'"/>
+                <div class="o_row w-100" invisible="type != 'service'">
+                    <field name="td_is_extended_warranty"/>
+                    <field name="td_extended_warranty_period_id" invisible="not td_is_extended_warranty" required="td_is_extended_warranty"/>
+                </div>
                 <field name="td_is_warranty_applicable" invisible="tracking != 'serial'"/>
                 <field name="td_warranty_period_id" invisible="not td_is_warranty_applicable" required="td_is_warranty_applicable"/>
             </group>

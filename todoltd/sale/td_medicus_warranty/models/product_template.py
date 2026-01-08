@@ -23,6 +23,11 @@ class ProductTemplate(models.Model):
         default=False,
         help='Indicates if this service is an extended warranty that can be sold separately.'
     )
+    td_extended_warranty_period_id = fields.Many2one(
+        comodel_name='td.warranty.period',
+        string='Extended Warranty Period',
+        help='Warranty period for the extended warranty service.'
+    )
     td_warranty_count = fields.Integer(
         string='Warranty Count',
         compute='_compute_td_warranty_count'
