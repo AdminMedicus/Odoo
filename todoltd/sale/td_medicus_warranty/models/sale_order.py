@@ -75,7 +75,7 @@ class SaleOrder(models.Model):
                         ('sale_order_line_id', '=', line.id)
                     ])
                     for record in warranty_records:
-                        record.unlink()
+                        record.with_context(disable_delete_warning=True).unlink()
         return res
 
     def _validate_warranty_dates(self):
