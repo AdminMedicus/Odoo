@@ -28,6 +28,8 @@
             <form string="Warranty">
                 <header>
                     <field name="status" widget="statusbar" statusbar_visible="active,expired"/>
+                    <button name="action_set_active" type="object" string="Set Active" invisible="status != 'draft'" class="oe_highlight"/>
+                    <button name="action_set_draft" type="object" string="Set Draft" invisible="status == 'draft'"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
@@ -36,21 +38,22 @@
                     <group>
                         <group>
                             <field name="warranty_type"/>
-                            <field name="serial_id" options="{'no_create': True}"/>
+                            <field name="serial_id" options="{'no_create': True}" readonly="status != 'draft'"/>
                             <field name="product_id"/>
-                            <field name="partner_id"/>
+                            <field name="partner_id" readonly="status != 'draft'"/>
                         </group>
                         <group>
-                            <field name="date_start"/>
+                            <field name="date_start" readonly="status != 'draft'"/>
                             <field name="date_end"/>
-                            <field name="duration_months"/>
+                            <field name="duration_months" readonly="status != 'draft'"/>
                         </group>
                     </group>
                     <group string="Extended Warranty Details" invisible="warranty_type != 'extended'">
-                        <field name="sale_order_id"/>
-                        <field name="sale_order_line_id"/>
+                        <field name="sale_order_id" readonly="status != 'draft'"/>
+                        <field name="sale_order_line_id" readonly="status != 'draft'" domain="[('order_id', '=', sale_order_id)]"/>
                     </group>
                 </sheet>
+                <chatter/>
             </form>
         </field>
     </record>

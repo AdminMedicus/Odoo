@@ -32,7 +32,13 @@
                         string="Link Product" 
                         icon="fa-link"
                         column_invisible="parent.td_has_warranty_products == False"
-                        invisible="not td_is_extended_warranty"/>
+                        invisible="not td_is_extended_warranty or parent.state not in ('draft')"/>
+                <button name="action_update_extended_warranty_dates"
+                        type="object" 
+                        string="Update Dates" 
+                        icon="fa-calendar"
+                        column_invisible="parent.td_has_warranty_products == False"
+                        invisible="not td_is_extended_warranty or parent.state not in ('sale')"/>
             </xpath>
         </field>
     </record>

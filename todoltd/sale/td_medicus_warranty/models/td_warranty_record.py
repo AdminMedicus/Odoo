@@ -5,17 +5,24 @@ from dateutil.relativedelta import relativedelta
 class TdWarrantyRecord(models.Model):
     _name = 'td.warranty.record'
     _description = 'Warranty Record'
-    _order = 'date_start desc'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = 'id desc'
 
     name = fields.Char(
         string='Warranty Reference',
         compute='_compute_name',
-        store=True
+        store=True,
+        tracking=True,
     )
     warranty_type = fields.Selection([
         ('manufacturer', 'Manufacturer Warranty'),
-        ('extended', 'Extended Warranty')
-    ], string='Warranty Type', required=True, readonly=True)
+        ('extended', 'Extended Warranty')],
+        default='extended',
+        string='Warranty Type',
+        required=True,
+        readonly=True,
+        tracking=True,
+    )
     
     serial_id = fields.Many2one(
         comodel_name='stock.lot',
@@ -23,7 +30,7 @@ class TdWarrantyRecord(models.Model):
         required=True,
         ondelete='cascade',
         help='Serial number associated with the warranty.',
-        readonly=True,
+        tracking=True,
     )
     product_id = fields.Many2one(
         comodel_name='product.product',
@@ -31,13 +38,13 @@ class TdWarrantyRecord(models.Model):
         string='Product',
         store=True,
         readonly=True,
+        tracking=True,
         help='Product associated with the warranty.'
     )
     partner_id = fields.Many2one(
         comodel_name='res.partner',
-        related="serial_id.last_delivery_partner_id",
         string='Customer',
-        readonly=True,
+        tracking=True,
         help='Customer who owns this warranty.'
     )
     
@@ -45,7 +52,7 @@ class TdWarrantyRecord(models.Model):
     date_start = fields.Date(
         string='Start Date',
         required=True,
-        readonly=True,
+        tracking=True,
         help='The date when the warranty starts.'
     )
     date_end = fields.Date(
@@ -58,27 +65,35 @@ class TdWarrantyRecord(models.Model):
     duration_months = fields.Integer(
         string='Duration (Months)',
         required=True,
-        readonly=True,
+        tracking=True,
         help='Warranty duration in months.'
     )
     
     # Status
     status = fields.Selection([
+        ('draft', 'Draft'),
         ('active', 'Active'),
-        ('expired', 'Expired')
-    ], string='Status', compute='_compute_status', store=True)
+        ('expired', 'Expired')],
+        default='draft',
+        string='Status',
+        compute='_compute_status',
+        store=True,
+        tracking=True,
+    )
     
     # Extended warranty specific fields
     sale_order_id = fields.Many2one(
         comodel_name='sale.order',
         string='Sale Order',
         readonly=True,
+        tracking=True,
         help='Sale order through which the extended warranty was purchased.'
     )
     sale_order_line_id = fields.Many2one(
         comodel_name='sale.order.line',
         string='Sale Order Line',
         readonly=True,
+        tracking=True,
         help='Specific line in the sale order for this warranty.'
     )
 
@@ -106,7 +121,19 @@ class TdWarrantyRecord(models.Model):
         """Determine if warranty is active or expired."""
         today = fields.Date.today()
         for record in self:
+            if record.status == 'draft':
+                continue
             if record.date_end:
                 record.status = 'expired' if record.date_end < today else 'active'
             else:
                 record.status = 'active'
+
+    def action_set_active(self):
+        """Set warranty status to active."""
+        for record in self:
+            record._compute_status()
+
+    def action_set_draft(self):
+        """Set warranty status to draft."""
+        for record in self:
+            record.status = 'draft'
