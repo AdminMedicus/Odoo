@@ -37,7 +37,7 @@
                     </div>
                     <group>
                         <group>
-                            <field name="warranty_type"/>
+                            <field name="warranty_type" readonly="status != 'draft'"/>
                             <field name="serial_id" options="{'no_create': True}" readonly="status != 'draft'"/>
                             <field name="product_id"/>
                             <field name="partner_id" readonly="status != 'draft'"/>

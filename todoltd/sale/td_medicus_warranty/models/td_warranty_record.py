@@ -1,5 +1,7 @@
-from odoo import _, api, fields, models
 from dateutil.relativedelta import relativedelta
+
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 
 class TdWarrantyRecord(models.Model):
@@ -11,7 +13,7 @@ class TdWarrantyRecord(models.Model):
     name = fields.Char(
         string='Warranty Reference',
         compute='_compute_name',
-        store=True,
+        # store=True,
         tracking=True,
     )
     warranty_type = fields.Selection([
@@ -47,7 +49,6 @@ class TdWarrantyRecord(models.Model):
         help='Customer who owns this warranty.'
     )
     
-    # Dates
     date_start = fields.Date(
         string='Start Date',
         required=True,
@@ -68,7 +69,6 @@ class TdWarrantyRecord(models.Model):
         help='Warranty duration in months.'
     )
     
-    # Status
     status = fields.Selection([
         ('draft', 'Draft'),
         ('active', 'Active'),
@@ -80,7 +80,6 @@ class TdWarrantyRecord(models.Model):
         tracking=True,
     )
     
-    # Extended warranty specific fields
     sale_order_id = fields.Many2one(
         comodel_name='sale.order',
         string='Sale Order',
@@ -96,11 +95,17 @@ class TdWarrantyRecord(models.Model):
         help='Specific line in the sale order for this warranty.'
     )
 
-    @api.depends('serial_id', 'warranty_type', 'date_start')
+    @api.ondelete(at_uninstall=False)
+    def _unlink_except_draft_or_cancel(self):
+        for record in self:
+            if record.status not in ['draft']:
+                raise UserError(_("You can only delete warranties in Draft status."))
+
+    # @api.depends('serial_id', 'warranty_type', 'date_start')
     def _compute_name(self):
         """Generate warranty reference name."""
         for record in self:
-            warranty_type_str = dict(record._fields['warranty_type'].selection).get(record.warranty_type, '')
+            warranty_type_str = dict(record._fields['warranty_type']._description_selection(self.env)).get(record.warranty_type, '')
             if record.serial_id and record.warranty_type:
                 record.name = f"{record.serial_id.name} - {warranty_type_str}"
             else:
