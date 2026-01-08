@@ -20,7 +20,6 @@ class TdWarrantyRecord(models.Model):
         default='extended',
         string='Warranty Type',
         required=True,
-        readonly=True,
         tracking=True,
     )
     
@@ -131,6 +130,7 @@ class TdWarrantyRecord(models.Model):
     def action_set_active(self):
         """Set warranty status to active."""
         for record in self:
+            record.status = 'active'
             record._compute_status()
 
     def action_set_draft(self):
