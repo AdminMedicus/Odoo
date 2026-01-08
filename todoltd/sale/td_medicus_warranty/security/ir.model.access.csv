@@ -1,6 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_td_warranty_period,td_warranty_period,model_td_warranty_period,base.group_user,1,1,1,1
 access_td_warranty_record,td_warranty_record,model_td_warranty_record,base.group_user,1,1,1,1
-access_td_warranty_link_wizard,td_warranty_link_wizard,model_td_warranty_link_wizard,base.group_user,1,1,1,1
 access_td_warranty_bulk_link_wizard,td_warranty_bulk_link_wizard,model_td_warranty_bulk_link_wizard,base.group_user,1,1,1,1
 access_td_warranty_bulk_link_wizard_line,td_warranty_bulk_link_wizard_line,model_td_warranty_bulk_link_wizard_line,base.group_user,1,1,1,1
