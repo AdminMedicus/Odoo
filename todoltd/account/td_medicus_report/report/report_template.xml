@@ -273,22 +273,22 @@
             <div>
                 <div style="font-size: 9px; line-height: 1.3;">
                     <strong>
-                        Замовлення лінз № 
+                        Замовлення № 
                         <span t-esc="report_data['name']"/> від 
                         <span t-esc="report_data['date']"/>
                     </strong><br/>
-                    <strong>Склад: <span t-esc="report_data['warehouse_name']"/></strong><br/>
+                    <strong t-if="not is_warehouse_order">Склад: <span t-esc="report_data['warehouse_name']"/></strong><br/>
                     <strong>Клієнт: <span t-esc="report_data['partner_name']"/></strong><br/>
-                    <strong>Співробітник: <span t-esc="report_data['employee_name']"/></strong><br/>
-                    <strong>Замовлення для док.: <span t-esc="report_data['document']"/></strong><br/>
-                    <strong>Адреса доставки: 
+                    <strong t-if="not is_warehouse_order">Співробітник: <span t-esc="report_data['employee_name']"/></strong><br/>
+                    <strong t-if="not is_warehouse_order">Замовлення для док.: <span t-esc="report_data['document']"/></strong><br/>
+                    <strong t-if="not is_warehouse_order">Адреса доставки: 
                         <span t-esc="report_data['delivery_address']"/>. Доставка: 
                         <span t-esc="report_data['delivery_method']"/>, контакти: 
                         <span t-esc="report_data['recipient_name']"/> <span t-esc="report_data['recipient_phone']"/>, 
                         час: <span t-esc="report_data['delivery_time']"/> дата відвантаження: 
                         <span t-esc="report_data['delivery_date']"/>
                     </strong><br/>
-                    <strong>Підстава: </strong>
+                    <strong t-if="not is_warehouse_order">Підстава: </strong>
                 </div>
             </div>
         </div>
@@ -1381,20 +1381,28 @@
 
     <template id="td_report_products_table_2">
         <t t-set="lines" t-value="report_data['lines']"/>
-        <table class="table table-sm table-bordered o_ignore_layout_styling" style="font-size: 8px; margin-bottom: 5px;">
+        <table class="table table-sm table-bordered o_ignore_layout_styling" style="font-size: 8px; margin-bottom: 0;">
             <thead style="background-color: #f0f0f0;">
                 <tr>
-                    <th class="text-center" style="width: 2%; padding: 1px; vertical-align: middle;">№<br/>з/п</th>
-                    <th class="text-center" style="width: 30%; padding: 1px; vertical-align: middle;">Найменування</th>
-                    <th class="text-center" style="width: 5%; padding: 1px; vertical-align: middle;">Каталожний номер</th>
+                    <th class="text-center" t-att-style="'width: ' + ('2%' if not is_warehouse_order else '5%') + '; padding: 1px; vertical-align: middle;'">№<br/>з/п</th>
+                    <th class="text-center" t-att-style="'width: ' + ('30%' if not is_warehouse_order else '50%') + '; padding: 1px; vertical-align: middle;'">Найменування</th>
+                    <th class="text-center" t-att-style="'width: ' + ('5%' if not is_warehouse_order else '10%') + '; padding: 1px; vertical-align: middle;'">
+                        <span t-if="not is_warehouse_order">Каталожний номер</span>
+                        <span t-else="">Серія / Каталожний номер</span>
+                    </th>
+                    <th t-if="is_warehouse_order" class="text-center" style="width: 10%; padding: 1px; vertical-align: middle;">
+                        Термін придатності
+                    </th>
                     <th class="text-center" style="width: 5%; padding: 1px; vertical-align: middle;">Кількість</th>
                     <th class="text-center" style="width: 10%; padding: 1px; vertical-align: middle;">
-                        Роздрібна <br/>ціна без ПДВ <br/>(грн.)
+                        <span t-if="not is_warehouse_order">Роздрібна <br/>ціна без ПДВ <br/>(грн.)</span>
+                        <span t-else="">Роздрібна <br/>ціна з ПДВ <br/>(грн.)</span>
                     </th>
-                    <th class="text-center" style="width: 15%; padding: 1px; vertical-align: middle;">
-                        Роздрібна <br/>сума без ПДВ <br/>(грн.)
+                    <th class="text-center" t-att-style="'width: ' + ('15%' if not is_warehouse_order else '10%') + '; padding: 1px; vertical-align: middle;'">
+                        <span t-if="not is_warehouse_order">Роздрібна <br/>сума без ПДВ <br/>(грн.)</span>
+                        <span t-else="">Роздрібна <br/>сума з ПДВ <br/>(грн.)</span>
                     </th>
-                    <th class="text-center" style="width: 33%; padding: 1px; vertical-align: middle;">Розташування</th>
+                    <th t-if="not is_warehouse_order" class="text-center" style="width: 33%; padding: 1px; vertical-align: middle;">Розташування</th>
                 </tr>
             </thead>
             <tbody>
@@ -1406,25 +1414,38 @@
                         <td style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['product_name']"/><br/>
                         </td>
-                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
-                            <span t-esc="line['default_code']"/>
+                        <td t-att-rowspan="1 if is_warehouse_order else 2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-if="not is_warehouse_order" t-esc="line['default_code']"/>
+                            <span t-else="" t-foreach="line['product_serial_numbers']" t-as="serial_number">
+                                <t t-esc="serial_number"/><br/>
+                            </span>
+                        </td>
+                        <td t-if="is_warehouse_order" rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <t t-foreach="line['expiration_dates']" t-as="exp_date">
+                                <span t-esc="exp_date"/><br/>
+                            </t>
                         </td>
                         <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['quantity']"/>
                         </td>
                         <td rowspan="2" class="text-end" style="padding: 2px; vertical-align: middle;">
-                            <span t-esc="line['price_untaxed']"/>
+                            <span t-if="not is_warehouse_order" t-esc="line['price_untaxed']"/>
+                            <span t-else="" t-esc="line['price_unit']"/>
                         </td>
                         <td rowspan="2" class="text-end" style="padding: 2px; vertical-align: middle;">
-                            <span t-esc="line['price_subtotal']"/>
+                            <span t-if="not is_warehouse_order" t-esc="line['price_subtotal']"/>
+                            <span t-else="" t-esc="line['price_total']"/>
                         </td>
-                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                        <td t-if="not is_warehouse_order" rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-foreach="line['stock_inventory']" t-as="inventory" t-esc="inventory"/>
                         </td>
                     </tr>
                     <tr>
                         <td class="text-end" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['product_manufacturer']"/>
+                        </td>
+                        <td t-if="is_warehouse_order" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['default_code']"/>
                         </td>
                     </tr>
                 </t>
@@ -2051,9 +2072,9 @@
     </template>
 
     <template id="td_report_totals_2">
-        <table class="table table-sm table-bordered o_ignore_layout_styling td_zero_border" style="font-size: 8px; margin-bottom: 5px;">
+        <table t-att-class="'table table-sm table-bordered o_ignore_layout_styling' + (' td_zero_border' if not is_warehouse_order else '')" style="font-size: 8px; margin-bottom: 5px;">
             <tbody>
-                <tr>
+                <tr t-if="not is_warehouse_order">
                     <td style="width: 2%; padding: 1px; vertical-align: middle;"/>
                     <td style="width: 30%; padding: 1px; vertical-align: middle;"/>
                     <td style="width: 5%; padding: 1px; vertical-align: middle;"/>
@@ -2065,7 +2086,7 @@
                     </td>
                     <td style="width: 33%; padding: 1px; vertical-align: middle;"/>
                 </tr>
-                <tr>
+                <tr t-if="not is_warehouse_order">
                     <td style="padding: 1px; vertical-align: middle;"/>
                     <td style="padding: 1px; vertical-align: middle;" class="text-start">
                         <span>Сума в роздрібних цінах:</span>
@@ -2079,7 +2100,7 @@
                     </td>
                     <td style="padding: 1px; vertical-align: middle;"/>
                 </tr>
-                <tr>
+                <tr t-if="not is_warehouse_order">
                     <td style="padding: 1px; vertical-align: middle;"/>
                     <td style="padding: 1px; vertical-align: middle;"/>
                     <td style="padding: 1px; vertical-align: middle;"/>
@@ -2091,7 +2112,7 @@
                     </td>
                     <td style="padding: 1px; vertical-align: middle;"/>
                 </tr>
-                <tr>
+                <tr t-if="not is_warehouse_order">
                     <td style="padding: 1px; vertical-align: middle;"/>
                     <td style="padding: 1px; vertical-align: middle;" class="text-start">
                         <table style="width: 100%;">
@@ -2108,7 +2129,32 @@
                     <td style="padding: 1px; vertical-align: middle;"/>
                     <td style="padding: 1px; vertical-align: middle;"/>
                 </tr>
+                <tr t-if="is_warehouse_order">
+                    <td style="width: 90%; padding: 1px; vertical-align: middle; border-left: 1px solid transparent; border-top: 1px solid transparent; border-bottom: 1px solid transparent;" class="text-end">
+                        Всього:
+                    </td>
+                    <td style="padding: 4px; vertical-align: middle; border-top: 1px solid transparent;" class="text-end">
+                        <span t-esc="'%.2f' % report_data['amount_total']"/>
+                    </td>
+                </tr>
             </tbody>
+        </table>
+        <table t-if="is_warehouse_order" class="td_zero_border" style="width: 100%; font-size: 8px; margin-bottom: 10px;">
+            <tr>
+                <td rowspan="2" width="5%"/>
+                <td width="30%" class="text-start">
+                    <strong>Сума в роздрібних цінах:</strong>
+                </td>
+                <td>
+                    <strong t-esc="report_data['amount_in_words']"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-start">
+                    <strong>Виписав:</strong>
+                </td>
+                <td/>
+            </tr>
         </table>
     </template>
 
@@ -2566,7 +2612,7 @@
             <t t-set="o" t-value="o.with_context(lang=lang)"/>
             <t t-set="report_data" t-value="o.td_get_report_lenses_data()"/>
             
-            <div class="page" style="font-family: Arial, sans-serif; font-size: 11px;">
+            <div class="page" style="font-family: Arial, sans-serif; font-size: 11px;max-width: 800px;">
                 <style>
                     .td_zero_border,
                     .td_zero_border td,
@@ -2767,6 +2813,15 @@
     <template id="report_ordering_eye_lenses">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
+                <t t-call="td_medicus_report.report_ordering_eye_lenses_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_warehouse_order">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="is_warehouse_order" t-value="True"/>
                 <t t-call="td_medicus_report.report_ordering_eye_lenses_document" t-lang="o.partner_id.lang"/>
             </t>
         </t>

@@ -213,6 +213,7 @@ class StockPicking(models.Model):
             'amount_untaxed': self.td_total_without_tax,
             'amount_tax': self.td_total_tax,
             'amount_total': self.td_total_amount,
+            'amount_in_words': self.get_amount_in_words(),
             'tax_guide_name': order.td_tax_guide_id.name,
         }
 
@@ -226,9 +227,16 @@ class StockPicking(models.Model):
                 'product_manufacturer': move.product_id.td_manufacturer_directory_res_id.name,
                 'quantity': move.product_uom_qty,
                 'price_untaxed': move.td_untaxed_price_unit,
+                'price_unit': move.td_price_unit,
                 'price_subtotal': move.td_price_subtotal,
+                'price_total': move.td_price_total,
                 'default_code': move.product_id.default_code or '',
-                # 'stock_inventory': move.product_id.property_stock_inventory.name or '',
+                'product_serial_numbers': [
+                    l.name for l in move.mapped('move_line_ids').mapped('lot_id')
+                ],
+                'expiration_dates': [
+                    d.strftime('%d.%m.%Y') if d else None for d in move.mapped('move_line_ids').mapped('expiration_date')
+                ],
                 'stock_inventory': move.move_line_ids.mapped('location_id.complete_name'),
             }
             data['lines'].append(line_data)
