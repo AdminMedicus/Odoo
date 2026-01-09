@@ -73,6 +73,20 @@
         <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
     </record>
 
+    <record id="action_report_warehouse_order" model="ir.actions.report">
+        <field name="name">Для складу (з серіями)</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_warehouse_order</field>
+        <field name="report_file">td_medicus_report.report_warehouse_order</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('picking_type_code', 'in', ['outgoing','internal'])
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
     <!-- <record id="action_report_waybill" model="ir.actions.report">
         <field name="name">ТТН</field>
         <field name="model">stock.picking</field>
