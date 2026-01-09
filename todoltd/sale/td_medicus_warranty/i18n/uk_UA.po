@@ -889,7 +889,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/td_medicus_warranty/models/td_warranty_record.py:0
 msgid "You can only delete warranties in Draft status."
-msgstr "Ви можете видалити гарантії лише у статусі "Чернетка"."
+msgstr "Ви можете видалити гарантії лише у статусі \"Чернетка\"."
 
 #. module: td_medicus_warranty
 #: model_terms:ir.ui.view,arch_db:td_medicus_warranty.td_warranty_period_form_view
