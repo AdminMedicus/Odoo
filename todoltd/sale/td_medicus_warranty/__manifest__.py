@@ -2,7 +2,7 @@
 {
     'name': "Product Warranty Management",
     'summary': 'Manage product warranties and claims',
-    'version': '18.0.0.0.9',
+    'version': '18.0.0.0.10',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
