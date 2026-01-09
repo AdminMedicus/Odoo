@@ -515,7 +515,7 @@
         <div class="text-center mb-1" style="font-size: 11px; padding: 2px;">
             <p style="font-size: 11px; font-weight: 600; padding: 2px;">ТОВАРНО-ТРАНСПОРТНА НАКЛАДНА</p>
             <span>
-                № <span t-esc="report_data['waybill_number']"/> від <span t-esc="report_data['waybill_date']"/>
+                № <span t-esc="report_data['accompanying_document']"/> від <span t-esc="report_data['accompanying_document_full_date']"/>
             </span>
         </div>
     </template>
