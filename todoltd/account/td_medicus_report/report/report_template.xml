@@ -93,6 +93,50 @@
             </table>
         </div>
     </template>
+    <template id="td_report_vendor_header_4">
+        <div class="row mb-2">
+            <table class="td_zero_border">
+                <tr>
+                    <td rowspan="7" style="width: 2%"/>
+                    <td rowspan="7" style="vertical-align: top; width: 12%">
+                        <strong>Відвантажувач:</strong><br/>
+                    </td>
+                    <td>
+                        <span t-esc="report_data['vendor_name']"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Код ЄДРПОУ: <span t-esc="report_data['vendor_registry']"/>, тел. <span t-esc="report_data['vendor_phone']"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Р/р <span t-esc="report_data['vendor_bank_account']"/> в 
+                        <span t-esc="report_data['vendor_bank_name']"/> МФО <span t-esc="report_data['vendor_bank_bic']"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        ІПН <span t-esc="report_data['vendor_vat']"/>, номер свідоцтва платника ПДВ <span t-esc="report_data['vendor_ref']"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Юр. адреса: <span t-esc="report_data['vendor_address']"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Фіз. адреса: <span t-esc="report_data['vendor_physical_address']"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td t-esc="report_data['vendor_tax_position']"/>
+                </tr>
+            </table>
+        </div>
+    </template>
 
     <template id="td_report_recipient_header_1">
         <t t-set="agreement" t-value="report_data['agreement']"/>
@@ -144,10 +188,7 @@
                 <tr>
                     <td>Фіз. адреса: <span t-esc="report_data['recipient_physical_address']"/></td>
                 </tr>
-                <!-- <tr>
-                    <td>№ ліцензії ,</td>
-                </tr> -->
-                <tr>
+                <tr t-if="is_show_warehouse_address">
                     <td>
                         <strong>Місце складання:</strong>
                     </td>
@@ -257,6 +298,45 @@
                     <tr>
                         <td rowspan="7" style="width: 2%"/>
                         <td rowspan="6" style="vertical-align: top; width: 12%">
+                            <strong>Платник:</strong><br/>
+                        </td>
+                        <td>
+                            той самий
+                        </td>
+                    </tr>
+                </t>
+            </table>
+        </div>
+    </template>
+
+    <template id="td_report_payment_info_3">
+        <div class="row mb-1">
+            <table class="td_zero_border" width="100%">
+                <t t-if="report_data['payment_partner']">
+                    <t t-set="payment_partner" t-value="report_data['payment_partner']"/>
+                    <tr>
+                        <td rowspan="4" style="width: 2%"/>
+                        <td rowspan="4" style="vertical-align: top; width: 12%">
+                            <strong>Платник:</strong><br/>
+                        </td>
+                        <td>
+                            <span t-esc="payment_partner['name']"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Адреса: <span t-esc="payment_partner['street']"/></td>
+                    </tr>
+                    <tr>
+                        <td>По договору: <span t-esc="payment_partner['agreement']"/> від <span t-esc="payment_partner['agreement_date']"/></td>
+                    </tr>
+                    <tr>
+                        <td>Термін сплати: <span t-esc="payment_partner['payment_term']"/></td>
+                    </tr>
+                </t>
+                <t t-else="">
+                    <tr>
+                        <td style="width: 2%"/>
+                        <td style="vertical-align: top; width: 12%">
                             <strong>Платник:</strong><br/>
                         </td>
                         <td>
@@ -1539,6 +1619,123 @@
         </table>
     </template>
 
+    <template id="td_report_products_table_4">
+        <t t-set="lines" t-value="report_data['lines']"/>
+        <table class="table table-sm table-bordered o_ignore_layout_styling" style="font-size: 8px; margin-bottom: 20px;">
+            <thead style="background-color: #f0f0f0;">
+                <tr>
+                    <th rowspan="2" class="text-center" style="width: 3%; padding: 1px; vertical-align: middle;">№<br/>з/п</th>
+                    <th rowspan="2" class="text-center" style="width: 25%; padding: 1px; vertical-align: middle;">Найменування</th>
+                    <th rowspan="2" class="text-center" style="width: 6%; padding: 1px; vertical-align: middle;">Серія</th>
+                    <th rowspan="2" class="text-center" style="width: 6%; padding: 1px; vertical-align: middle;">Термін придатності</th>
+                    <th rowspan="2" class="text-center" style="width: 8%; padding: 1px; vertical-align: middle;">Умови зберігання / транспортування</th>
+                    <th colspan="2" class="text-center" style="width: 10%; padding: 1px; vertical-align: middle;">Док. постачальника</th>
+                    <th rowspan="2" class="text-center" style="width: 6%; padding: 1px; vertical-align: middle;">Кількість</th>
+                    <th rowspan="2" class="text-center" style="width: 6%; padding: 1px; vertical-align: middle;">Од. виміру</th>
+                    <th rowspan="2" class="text-center" style="width: 6%; padding: 1px; vertical-align: middle;">Ціна за контрактом</th>
+                    <th rowspan="2" class="text-center" style="width: 6%; padding: 1px; vertical-align: middle;">Митна вартість</th>
+                    <th rowspan="2" class="text-center" style="width: 6%; padding: 1px; vertical-align: middle;">Націнка пост.</th>
+                    <th rowspan="2" class="text-center" style="width: 6%; padding: 1px; vertical-align: middle;">Ціна без ПДВ</th>
+                    <th rowspan="2" class="text-center" style="width: 6%; padding: 1px; vertical-align: middle;">Сума без ПДВ</th>
+                </tr>
+            </thead>
+            <tbody>
+                <t t-foreach="lines" t-as="line">
+                    <tr style="page-break-inside: avoid;">
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['sequence']"/>
+                        </td>
+                        <td style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['product_name']"/><br/>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <t t-foreach="line['product_serial_numbers']" t-as="serial_number">
+                                <span t-esc="serial_number"/><br/>
+                            </t>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <t t-foreach="line['expiration_dates']" t-as="exp_date">
+                                <span t-esc="exp_date"/><br/>
+                            </t>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <t t-foreach="line['storage_conditions']" t-as="condition">
+                                <span t-esc="condition"/><br/>
+                            </t>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['supplier_document_number']"/>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['supplier_document_date']"/>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['quantity']"/>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['uom']"/>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="'%.2f' % line['contract_price']"/>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="'%.2f' % line['customs_value']"/>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="'%.2f' % line['supplier_markup']"/>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="'%.2f' % line['price_untaxed']"/>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="'%.2f' % line['price_subtotal']"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-end" style="padding: 2px; vertical-align: middle;">
+                            <span style="font-size: 7px;" t-esc="line['product_manufacturer']"/>
+                        </td>
+                    </tr>
+                </t>
+                <tr>
+                    <td style="border-left: 1px solid transparent; border-bottom: 1px solid transparent; border-right: 1px solid transparent;"></td>
+                    <td colspan="10" style="padding: 2px; vertical-align: bottom; border-left: 1px solid transparent; border-bottom: 1px solid transparent">
+                        <strong>Всього на суму: </strong> 
+                        <strong t-esc="report_data['amount_in_words']"/>
+                    </td>
+                    <td colspan="2" class="text-end" style="padding: 2px; vertical-align: middle;">
+                        <strong>Всього без ПДВ:</strong>
+                    </td>
+                    <td class="text-end" style="padding: 2px; vertical-align: middle;">
+                        <strong t-esc="'%.2f' % report_data['amount_untaxed']"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-left: 1px solid transparent; border-bottom: 1px solid transparent; border-right: 1px solid transparent;"></td>
+                    <td colspan="10" style="padding: 2px; vertical-align: bottom; border-left: 1px solid transparent; border-bottom: 1px solid transparent">
+                        <strong>В тому числі ПДВ: </strong> 
+                        <strong t-esc="'%.2f' % report_data['amount_tax']"/> грн.
+                    </td>
+                    <td colspan="2" class="text-end" style="padding: 2px; vertical-align: middle;">
+                        <strong t-esc="report_data['tax_guide_name']"/>
+                    </td>
+                    <td class="text-end" style="padding: 2px; vertical-align: middle;">
+                        <strong t-esc="'%.2f' % report_data['amount_tax']"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="11" style="padding: 2px; vertical-align: bottom; border-left: 1px solid transparent; border-bottom: 1px solid transparent"/>
+                    <td colspan="2" class="text-end" style="padding: 2px; vertical-align: middle;">
+                        <strong>Всього з ПДВ:</strong>
+                    </td>
+                    <td class="text-end" style="padding: 2px; vertical-align: middle;">
+                        <strong t-esc="'%.2f' % report_data['amount_total']"/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </template>
+
     <template id="td_report_products_table_waybill">
         <t t-set="lines" t-value="report_data['lines']"/>
 
@@ -2523,6 +2720,108 @@
             </table>
         </div>
     </template>
+
+    <template id="td_report_signatures_6">
+        <div class="mt-2 display-inline mx-auto" style="font-size: 9px;max-width: 900px;">
+            <table class="table-sm o_ignore_layout_styling td_zero_border" width="100%">
+                <tr>
+                    <td width="3%"/>
+                    <td width="60%">
+                        <table class="table-sm o_ignore_layout_styling td_zero_border" style="width: 100%;">
+                            <tr>
+                                <td width="18%" class="p-0"/>
+                                <td width="22%" class="p-0"/>
+                                <td width="40%" class="p-0"/>
+                                <td class="p-0"/>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="text-align: start; padding: 5px 0;">
+                                    <strong>Уповноважена особа аптечного складу:</strong>
+                                </td>
+                                <td style="border-bottom: 1px solid #000; padding: 5px 0;"/>
+                                <td style="padding: 5px 10px;">
+                                    <span class="text-start">
+                                        /<t t-esc="report_data['company']['medical_warehouse_manager']"/>/
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="text-align: start; padding: 5px 0;">
+                                    <strong>Дозволено/не дозволено до транспортування:</strong>
+                                </td>
+                                <td style="border-bottom: 1px solid #000; padding: 5px 0;"/>
+                                <td style="padding: 5px 10px;">
+                                    <span class="text-start">
+                                        <t t-esc="report_data['company']['medical_warehouse_manager']"/>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr style="font-size: 7px;">
+                                <td colspan="2"/>
+                                <td class="text-center" vertical-align="top" style="padding-top: 0;">уповноважена особа аптечного складу, дата, підпис</td>
+                                <td/>
+                            </tr>
+                            <tr>
+                                <td style="text-align: start; padding: 5px 0;">
+                                    <strong>Відвантажив:</strong>
+                                </td>
+                                <td style="border-bottom: 1px solid #000; padding: 5px 0;"/>
+                                <td colspan="2" style="padding: 5px 10px;">
+                                    <span>
+                                        <t t-esc="report_data['company']['warehouse_manager']"/>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr style="font-size: 7px;">
+                                <td/>
+                                <td class="text-center" vertical-align="top" style="padding-top: 0;">завідувач аптечного складу</td>
+                                <td colspan="2"/>
+                            </tr>
+                            <tr>
+                                <td style="text-align: start; padding: 5px 0;">
+                                    <strong>Місце складання:</strong>
+                                </td>
+                                <td colspan="3" style="padding: 5px 0;">
+                                    <span class="text-start">
+                                        <t t-esc="report_data['company']['warehouse_address']"/>
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td>
+                        <table>
+                            <tr>
+                                <td width="15%" class="text-start">
+                                    <strong>Отримав:</strong>
+                                </td>
+                                <td width="35%" style="border-bottom: 1px solid #000;"/>
+                                <td width="15%" class="text-end">
+                                    <strong>П.І.Б.</strong>
+                                </td>
+                                <td style="border-bottom: 1px solid #000;"/>
+                            </tr>
+                            <tr>
+                                <td class="text-start">
+                                    <strong>Посада:</strong>
+                                </td>
+                                <td style="border-bottom: 1px solid #000;"/>
+                                <td colspan="2"/>
+                            </tr>
+                            <tr>
+                                <td class="text-start">
+                                    <strong>Довіреність:</strong>
+                                </td>
+                                <td colspan="3">
+                                    серія ______ номер ______
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </template>
     
     <template id="td_report_custody_balance_signatures">
         <div class="mt-2 display-inline mx-auto" style="font-size: 9px;max-width: 900px;">
@@ -2792,6 +3091,29 @@
             </div>
         </t>
     </template>
+    
+    <template id="report_vendor_refund_act_document">
+        <t t-call="web.basic_layout">
+            <t t-set="o" t-value="o.with_context(lang=lang)"/>
+            <t t-set="report_data" t-value="o.td_get_vendor_refund_act_data()"/>
+            
+            <div class="page mx-auto" style="font-family: Arial, sans-serif; font-size: 11px; max-width: 900px;">
+                <style>
+                    .td_zero_border,
+                    .td_zero_border td,
+                    .td_zero_border th {
+                        border: 0px solid transparent;
+                    }
+                </style>
+                <t t-call="td_medicus_report.td_report_vendor_header_4"/>
+                <t t-call="td_medicus_report.td_report_recipient_header_2"/>
+                <t t-call="td_medicus_report.td_report_payment_info_3"/>
+                <t t-call="td_medicus_report.td_report_title_2"/>
+                <t t-call="td_medicus_report.td_report_products_table_4"/>
+                <t t-call="td_medicus_report.td_report_signatures_6"/>
+            </div>
+        </t>
+    </template>
 
     <!-- Reports -->
     <template id="report_wholesale_invoice">
@@ -2898,6 +3220,15 @@
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-call="td_medicus_report.report_co_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_print_vendor_refund_act">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="is_show_warehouse_address" t-value="False"/>
+                <t t-call="td_medicus_report.report_vendor_refund_act_document" t-lang="o.partner_id.lang"/>
             </t>
         </t>
     </template>

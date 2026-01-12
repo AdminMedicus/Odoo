@@ -632,3 +632,132 @@ class StockPicking(models.Model):
             data['lines'].append(line_data)
 
         return data
+
+    def td_get_vendor_refund_act_data(self):
+        """
+        Preparation of data for the vendor refund act report
+        """
+        self.ensure_one()
+        
+        company = self.company_id
+        company_partner = company.partner_id
+        vendor_partner = self.partner_id
+        sale_order = self.sale_id
+        
+        invoice_partner = sale_order.partner_invoice_id if sale_order and sale_order.partner_invoice_id else vendor_partner
+        
+        shipping_partner = sale_order.partner_shipping_id if sale_order and sale_order.partner_shipping_id else vendor_partner
+        
+        payment_partner = None
+        if sale_order and sale_order.partner_invoice_id and sale_order.partner_invoice_id != vendor_partner:
+            agreement = sale_order.partner_invoice_id.td_agreement_id
+            payment_partner = {
+                'name': sale_order.partner_invoice_id.full_partner_name or sale_order.partner_invoice_id.name,
+                'street': sale_order.partner_invoice_id.contact_address_complete or '',
+                'agreement': agreement.name if agreement else '',
+                'agreement_date': format_date(self.env, agreement.start_date, date_format='dd.MM.yyyy') if agreement and agreement.start_date else '',
+                'payment_term': sale_order.payment_term_id.name if sale_order.payment_term_id else '',
+            }
+        
+        manager_id = company.td_warehouse_manager_id
+        medical_manager_id = company.td_medical_warehouse_manager_id
+        warehouse_address = self.location_dest_id.warehouse_id.partner_id.contact_address_complete if self.location_dest_id.warehouse_id else ''
+        
+        company_bank = company_partner.bank_ids[0] if company_partner.bank_ids else None
+        recipient_bank = invoice_partner.bank_ids[0] if invoice_partner.bank_ids else None
+        
+        company_tax_position = ''
+        if company_partner.property_account_position_id:
+            company_tax_position = company_partner.property_account_position_id.name
+        
+        data = {
+            'vendor_name': company_partner.full_partner_name or company_partner.name,
+            'vendor_registry': company.company_registry or '',
+            'vendor_vat': company.vat or '',
+            'vendor_address': company_partner.contact_address_complete or '',
+            'vendor_physical_address': self.location_dest_id.warehouse_id.partner_id.contact_address_complete if self.location_dest_id.warehouse_id else company_partner.contact_address_complete or '',
+            'vendor_phone': company_partner.phone or '',
+            'vendor_bank_account': company_bank.acc_number if company_bank else '',
+            'vendor_bank_name': company_bank.bank_id.name if company_bank and company_bank.bank_id else '',
+            'vendor_bank_bic': company_bank.bank_bic if company_bank else '',
+            'vendor_ref': company_partner.ref or '',
+            'vendor_tax_position': company_tax_position,
+            
+            'recipient_name': invoice_partner.full_partner_name or invoice_partner.name,
+            'recipient_registry': invoice_partner.company_registry or company.company_registry or '',
+            'recipient_phone': invoice_partner.phone or '',
+            'recipient_bank_account': recipient_bank.acc_number if recipient_bank else '',
+            'recipient_bank_name': recipient_bank.bank_id.name if recipient_bank and recipient_bank.bank_id else '',
+            'recipient_bank_bic': recipient_bank.bank_bic if recipient_bank else '',
+            'recipient_vat': invoice_partner.vat or company.vat or '',
+            'recipient_ref': invoice_partner.ref or '',
+            'recipient_address': invoice_partner.street or invoice_partner.contact_address_complete or '',
+            'recipient_physical_address': shipping_partner.contact_address_complete or '',
+            
+            'payment_partner': payment_partner,
+            
+            'document_number': self.name.split('/')[-1] if '/' in self.name else self.name,
+            'document_date': format_date(self.env, self.date_done, date_format='dd.MM.yyyy') if self.date_done else '',
+            
+            'tax_guide_name': sale_order.td_tax_guide_id.name if sale_order and sale_order.td_tax_guide_id else 'ПДВ',
+            
+            'amount_in_words': self.get_amount_in_words(),
+            'amount_untaxed': self.td_total_without_tax or 0.0,
+            'amount_tax': self.td_total_tax or 0.0,
+            'amount_total': self.td_total_amount or 0.0,
+            
+            'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.name if medical_manager_id else '',
+            'warehouse_manager': manager_id.td_partner_short_name or manager_id.name if manager_id else '',
+            'warehouse_address': warehouse_address,
+            
+            'company': {
+                'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.name if medical_manager_id else '',
+                'warehouse_manager': manager_id.td_partner_short_name or manager_id.name if manager_id else '',
+                'warehouse_address': warehouse_address,
+            },
+            
+            'lines': [],
+        }
+        
+        line_num = 0
+        for move in self.move_ids_without_package:
+            line_num += 1
+            move_line_ids = move.mapped('move_line_ids')
+            
+            serial_numbers = [l.lot_id.name for l in move_line_ids if l.lot_id] if move_line_ids else []
+            expiration_dates = []
+            for ml in move_line_ids:
+                if ml.lot_id and ml.lot_id.expiration_date:
+                    expiration_dates.append(ml.lot_id.expiration_date.strftime('%d.%m.%Y'))
+                elif ml.expiration_date:
+                    expiration_dates.append(ml.expiration_date.strftime('%d.%m.%Y'))
+            
+            storage_conditions = move.move_orig_ids.mapped('location_id.td_condition_ids.name') if move.move_orig_ids else []
+            
+            supplier_doc_number = ''
+            supplier_doc_date = ''
+            if hasattr(move, 'td_supplier_document'):
+                supplier_doc_number = move.td_supplier_document or ''
+            if hasattr(move, 'td_date_supplier_document') and move.td_date_supplier_document:
+                supplier_doc_date = move.td_date_supplier_document.strftime('%d.%m.%Y')
+            
+            line_data = {
+                'sequence': line_num,
+                'product_name': move.product_id.description_sale or move.product_id.name,
+                'product_manufacturer': move.product_id.td_manufacturer_directory_res_id.name or '',
+                'product_serial_numbers': serial_numbers,
+                'expiration_dates': expiration_dates,
+                'storage_conditions': storage_conditions,
+                'supplier_document_number': supplier_doc_number,
+                'supplier_document_date': supplier_doc_date,
+                'quantity': move.product_uom_qty,
+                'uom': move.product_uom.name,
+                'contract_price': getattr(move, 'td_contract_price', 0.0),
+                'customs_value': getattr(move, 'td_customs_value_good', 0.0),
+                'supplier_markup': getattr(move, 'td_supplier_markup', 0.0),
+                'price_untaxed': move.td_untaxed_price_unit if hasattr(move, 'td_untaxed_price_unit') else 0.0,
+                'price_subtotal': move.td_price_subtotal if hasattr(move, 'td_price_subtotal') else 0.0,
+            }
+            data['lines'].append(line_data)
+        
+        return data
