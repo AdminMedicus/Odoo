@@ -328,7 +328,7 @@ class StockPicking(models.Model):
                 'bank_account': company_partner.bank_ids[0].acc_number,
                 'bank_name': company_partner.bank_ids[0].bank_name,
                 'bank_bic': company_partner.bank_ids[0].bank_bic,
-                'license_issued_by': company_partner.td_license_issued_by,
+                # 'license_issued_by': company_partner.td_license_issued_by,
                 'license_number': company_partner.td_license_number,
                 'license_date': company_partner.td_license_date,
                 'tax_position': company_partner.property_account_position_id.name,

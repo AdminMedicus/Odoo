@@ -2,7 +2,7 @@
 {
     'name': "ToDo Medicus Reports",
     'summary': 'Друковані форми для Medicus',
-    'version': '18.0.0.0.18',
+    'version': '18.0.0.0.19',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
