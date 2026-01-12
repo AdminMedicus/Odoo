@@ -95,7 +95,10 @@ class StockPicking(models.Model):
             invoice.invoice_date = self.td_invoice_date or datetime.now().date()
             invoice.action_post()
             sale_order.td_invoice_from_delivery = True
-            self.td_invoice_for_pick_id = invoice.id
+            sale_order.picking_ids.write({
+                'td_invoice_for_pick_id': invoice.id,
+            })
+            # self.td_invoice_for_pick_id = invoice.id
             
             return self.env.ref('td_medicus_report.action_report_wholesale_invoice_invoice').report_action(invoice)
 
@@ -329,8 +332,8 @@ class StockPicking(models.Model):
                 'bank_name': company_partner.bank_ids[0].bank_name,
                 'bank_bic': company_partner.bank_ids[0].bank_bic,
                 # 'license_issued_by': company_partner.td_license_issued_by,
-                'license_number': company_partner.td_license_number,
-                'license_date': company_partner.td_license_date,
+                # 'license_number': company_partner.td_license_number,
+                # 'license_date': company_partner.td_license_date,
                 'tax_position': company_partner.property_account_position_id.name,
                 'warehouse_manager': warehouse_manager_id.td_partner_short_name or warehouse_manager_id.name,
                 'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.name,
