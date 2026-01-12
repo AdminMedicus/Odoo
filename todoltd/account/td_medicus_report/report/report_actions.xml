@@ -220,4 +220,19 @@
         <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
     </record>
 
+    <record id="action_report_vendor_refund_act" model="ir.actions.report">
+        <field name="name">Накладна на повернення</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_print_vendor_refund_act</field>
+        <field name="report_file">td_medicus_report.report_print_vendor_refund_act</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('picking_type_code', 'in', ['outgoing', 'internal']),
+            ('state', '=', 'done')
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
 </odoo>
