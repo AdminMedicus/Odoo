@@ -30,8 +30,9 @@ class AccountMove(models.Model):
         medical_manager_id = company.td_medical_warehouse_manager_id
         partner = order.partner_shipping_id
         delivery_partners = company_partner.child_ids.filtered(lambda p: p.type == 'delivery')
-        fisical_address_partner = delivery_partners[0] if delivery_partners else company_partner
         contact_partners = partner.child_ids.filtered(lambda p: p.type == 'contact')
+
+        fisical_address_partner = delivery_partners[0] if delivery_partners else company_partner
         contact_partner = contact_partners[0] if contact_partners else partner
         
         data = {
@@ -44,8 +45,6 @@ class AccountMove(models.Model):
                 'street': company_partner.contact_address_complete,
                 'logo': company.logo,
                 'phone': company_partner.phone or '',
-                # 'warehouse_manager': warehouse_manager_id.full_partner_name,
-                # 'medical_warehouse_manager': medical_manager_id.full_partner_name,
                 'warehouse_manager': warehouse_manager_id.td_partner_short_name or warehouse_manager_id.name,
                 'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.name,
                 'responsible_manager': company.td_responsible_manager_id.td_partner_short_name or company.td_responsible_manager_id.name,
