@@ -29,12 +29,10 @@ class AccountMove(models.Model):
         warehouse_manager_id = company.td_warehouse_manager_id
         medical_manager_id = company.td_medical_warehouse_manager_id
         partner = order.partner_shipping_id
-        fisical_address_partner = company_partner.child_ids.filtered(
-            lambda p: p.type == 'delivery'
-        )[0] if company_partner.child_ids else company_partner
-        contact_partner = partner.child_ids.filtered(
-            lambda p: p.type == 'contact'
-        )[0] if partner.child_ids else partner
+        delivery_partners = company_partner.child_ids.filtered(lambda p: p.type == 'delivery')
+        fisical_address_partner = delivery_partners[0] if delivery_partners else company_partner
+        contact_partners = partner.child_ids.filtered(lambda p: p.type == 'contact')
+        contact_partner = contact_partners[0] if contact_partners else partner
         
         data = {
             'is_picking': False,
