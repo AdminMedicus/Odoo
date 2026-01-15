@@ -87,9 +87,10 @@ class StockPicking(models.Model):
         
         invoice_action = wizard.create_invoices()
         
-        invoice = sale_order.invoice_ids.filtered(
-            lambda inv: inv.id == invoice_action['res_id']
-        )
+        # invoice = sale_order.invoice_ids.filtered(
+        #     lambda inv: inv.id == invoice_action['res_id']
+        # )
+        invoice = self.env['account.move'].browse(invoice_action['res_id'])
         
         if invoice:
             invoice.invoice_date = self.td_invoice_date or datetime.now().date()
