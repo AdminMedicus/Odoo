@@ -10,6 +10,7 @@
             <field name="name">StockPickingIncoming_Odoo_1C</field>
             <field name="description">Stock Picking incoming (to 1C FarmPrihod)</field>
             <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
             <field name="model_id" ref="stock.model_stock_picking" />
             <field name="model_name">stock.picking</field>
         </record>
@@ -23,6 +24,7 @@
             <field name="name">AccountMovePrepayment_Odoo_1C</field>
             <field name="description">Account Move prepayment (to 1C Rahunok-Faktura)</field>
             <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
             <field name="model_id" ref="account.model_account_move" />
             <field name="model_name">account.move</field>
         </record>
@@ -37,12 +39,43 @@
             <field name="name">StockPickingOutgoing_Odoo_1C</field>
             <field name="description">Stock Picking outgoing (to 1C FarmRashod)</field>
             <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
             <field name="model_id" ref="stock.model_stock_picking" />
             <field name="model_name">stock.picking</field>
         </record>
 
         <record id="c77_outgoingdata_stock_picking_outgoing" model="ata.exchange.domain">
             <field name="method" ref="stock_picking_outgoing_odoo_1c" />
+            <field name="ext_system" ref="td_medicus_exchange_base.medicus_1c" />
+        </record>
+
+        <!-- stock picking outgoing act to ActTransferToSafeKeeping -->
+        <record id="act_transfer_to_safekeeping_odoo_1c" model="ata.exchange.method">
+            <field name="name">ActTransferToSafeKeeping_Odoo_1C</field>
+            <field name="description">Act Transfer To Safekeeping (to 1C)</field>
+            <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
+            <field name="model_id" ref="stock.model_stock_picking" />
+            <field name="model_name">stock.picking</field>
+        </record>
+
+        <record id="c77_outgoingdata_act_transfer_to_safekeeping" model="ata.exchange.domain">
+            <field name="method" ref="act_transfer_to_safekeeping_odoo_1c" />
+            <field name="ext_system" ref="td_medicus_exchange_base.medicus_1c" />
+        </record>
+
+        <!-- stock picking incoming return act from ActReturnSafeKeeping -->
+        <record id="act_return_from_safekeeping_odoo_1c" model="ata.exchange.method">
+            <field name="name">ActReturnFromSafeKeeping_Odoo_1C</field>
+            <field name="description">Act Return From Safekeeping (from 1C)</field>
+            <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
+            <field name="model_id" ref="stock.model_stock_picking" />
+            <field name="model_name">stock.picking</field>
+        </record>
+
+        <record id="c77_outgoingdata_act_return_from_safekeeping" model="ata.exchange.domain">
+            <field name="method" ref="act_return_from_safekeeping_odoo_1c" />
             <field name="ext_system" ref="td_medicus_exchange_base.medicus_1c" />
         </record>
 
