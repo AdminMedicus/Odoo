@@ -50,20 +50,40 @@ class StockMove(models.Model):
     @api.depends('purchase_line_id','sale_line_id', 'product_id', 'quantity')
     def _compute_td_price_unit(self):
         for line in self:
-            if line.sale_line_id:
+            is_component = False
+            is_first_component = False
+            if line.sale_line_id and line.sale_line_id.order_id:
+                sale_order = line.sale_line_id.order_id
+                for so_line in sale_order.order_line:
+                    if so_line.product_id and so_line.product_id.bom_ids:
+                        for bom in so_line.product_id.bom_ids:
+                            component_products = bom.bom_line_ids.mapped('product_id')
+                            if line.product_id in component_products:
+                                is_component = True
+                                
+                                all_moves_with_same_product = self.search([
+                                    ('sale_line_id.order_id', '=', sale_order.id),
+                                    ('product_id', 'in', component_products.ids)
+                                ], order='id asc', limit=1)
+                                
+                                if all_moves_with_same_product and line in all_moves_with_same_product:
+                                    is_first_component = True
+                                break
+                    if is_component:
+                        break
+            
+            if is_component and not is_first_component:
+                line.td_price_unit = 0.0
+                line.td_untaxed_price_unit = 0.0
+            elif line.sale_line_id:
                 line.td_price_unit = line.sale_line_id.price_unit
                 line.td_untaxed_price_unit = line.sale_line_id.td_untaxed_price_unit
-                # line.td_price_subtotal = line.sale_line_id.price_subtotal
-                # line.td_price_subtotal = line.sale_line_id.price_unit * line.quantity
             elif line.purchase_line_id:
                 line.td_price_unit = line.purchase_line_id.price_unit
                 line.td_untaxed_price_unit = line.purchase_line_id.td_untaxed_price_unit
-                # line.td_price_subtotal = line.purchase_line_id.price_subtotal
-                # line.td_price_subtotal = line.purchase_line_id.price_unit * line.quantity
             else:
                 line.td_price_unit = line.td_price_unit
                 line.td_untaxed_price_unit = line.td_untaxed_price_unit
-                # line.td_price_subtotal = line.td_price_subtotal
 
             line.td_price_subtotal = line.td_untaxed_price_unit * line.quantity
 
