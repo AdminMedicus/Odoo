@@ -116,7 +116,7 @@ class TdStockPickingExchange(models.Model):
             "name":             self._str_empty(self.name),
             "date":             self._str_empty(self.date),
             "date_done":        self._str_empty(self.date_done),
-            "comment":          self._str_empty(origin and origin.name or self.name),            
+            "comment":          Markup(self.note or '').striptags(),
             "partner":          self.partner_id.exchange_data,            
             "tax":              get_tax_exchange_data(origin or self.move_ids[:1]),
             'agreement':        origin.td_agreement_id.exchange_data if origin else None,
