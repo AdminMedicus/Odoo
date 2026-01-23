@@ -1,4 +1,5 @@
 from odoo import Command, models
+from odoo.exceptions import UserError
 from markupsafe import Markup
 
 from odoo.addons.ata_exchange_v4.models.ata_exchange_method import AtaExchangeMethod
@@ -17,35 +18,50 @@ class TdStockPickingExchange(models.Model):
         self.ensure_one()
         methods = []
 
-        if (self.picking_type_id.code == 'incoming' and self.state == 'done'):
+        if (self.picking_type_code == 'incoming' and self.state == 'done'):
             if self.purchase_id:
                 methods.append(self.env.ref('td_medicus_exchange_sale.stock_picking_incoming_odoo_1c'))
-            elif self.sale_id and self.implementation_document:
-                methods.append(self.env.ref('td_medicus_exchange_sale.act_return_from_safekeeping_odoo_1c'))                
-        elif (self.picking_type_id.code == 'outgoing' and
-            self.state == 'done' and
-            self.sale_id):
-            if self.implementation_document == 'act_res_st':
-                methods.append(self.env.ref('td_medicus_exchange_sale.act_transfer_to_safekeeping_odoo_1c'))
-            else:
-                methods.append(self.env.ref('td_medicus_exchange_sale.stock_picking_outgoing_odoo_1c'))
+            elif self.sale_id and self.implementation_document == 'act_res_st':
+                methods.append(self.env.ref('td_medicus_exchange_sale.act_return_from_safekeeping_odoo_1c'))
+            elif self.implementation_document == 'move':
+                methods.append(self.env.ref('td_medicus_exchange_sale.return_products_relocation_odoo_1c'))
+        elif (self.picking_type_code == 'outgoing' and self.state == 'done'):
+            if self.sale_id:
+                if self.implementation_document == 'act_res_st':
+                    methods.append(self.env.ref('td_medicus_exchange_sale.act_transfer_to_safekeeping_odoo_1c'))
+                elif self.implementation_document == 'move':
+                    methods.append(self.env.ref('td_medicus_exchange_sale.products_relocation_odoo_1c'))
+                else:
+                    methods.append(self.env.ref('td_medicus_exchange_sale.stock_picking_outgoing_odoo_1c'))
 
         return methods
 
     @AtaExchangeClass.ata_exchange_get_data_record_format()
     def ata_exchange_get_data_record(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]|dict|str:
-        exchange_data = []
+        dispatch = {
+            'td_medicus_exchange_sale.stock_picking_incoming_odoo_1c':      self.ata_exchange_get_data_stock_picking_incoming,
+            'td_medicus_exchange_sale.stock_picking_outgoing_odoo_1c':      self.ata_exchange_get_data_outgoing,
+            'td_medicus_exchange_sale.act_transfer_to_safekeeping_odoo_1c': self.ata_exchange_get_data_outgoing,
+            'td_medicus_exchange_sale.act_return_from_safekeeping_odoo_1c': self.ata_exchange_get_data_return_from_safekeeping,
+            'td_medicus_exchange_sale.products_relocation_odoo_1c':         self.ata_exchange_get_data_outgoing,
+            'td_medicus_exchange_sale.return_products_relocation_odoo_1c':  self.ata_exchange_get_data_incoming,
+        }
 
-        if method == self.env.ref('td_medicus_exchange_sale.stock_picking_incoming_odoo_1c'):
-            exchange_data = self.ata_exchange_get_data_stock_picking_incoming(method, as_node, **kwargs)
-        elif method == self.env.ref('td_medicus_exchange_sale.act_return_from_safekeeping_odoo_1c'):            
-            exchange_data = self.ata_exchange_get_data_return_from_safekeeping(method, as_node, **kwargs)
-        elif (method == self.env.ref('td_medicus_exchange_sale.stock_picking_outgoing_odoo_1c') or
-            method == self.env.ref('td_medicus_exchange_sale.act_transfer_to_safekeeping_odoo_1c')):
-            
-            exchange_data = self.ata_exchange_get_data_outgoing(method, as_node, **kwargs)
+        method_xml_id = method.get_xml_id() if method else None
+        if handler := (dispatch.get(method_xml_id) if method_xml_id else None):
+            return handler(method, as_node, **kwargs)
         
-        return exchange_data
+        raise UserError("No handler found for method %s" % method_xml_id)
+
+    def ata_exchange_get_data_stock_picking_incoming(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
+        return [{
+            **self.ata_exchange_get_data_incoming(method, as_node,
+                **(kwargs | {"origin": record.purchase_id})),
+            "purchase_id":        record.purchase_id.id,
+            "purchase_date":      self._str_empty(record.purchase_id.date_order),
+            "partner_doc_number": self._str_empty(self.td_supplier_document),
+            "partner_doc_date":   self._str_empty(self.td_date_supplier_document),
+        } for record in self]
 
     def ata_exchange_get_data_return_from_safekeeping(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
         return [{
@@ -54,62 +70,56 @@ class TdStockPickingExchange(models.Model):
             "subclient": record.sale_id.sub_client_id.exchange_data,
         } for record in self]
 
-    def ata_exchange_get_data_stock_picking_incoming(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
-        return [{
-            **self.ata_exchange_get_data_incoming(method, as_node,
-                **(kwargs | {"origin": record.purchase_id})),
-            "purchase_id":      record.purchase_id.id,
-            "purchase_date":    self._str_empty(record.purchase_id.date_order),
-        } for record in self]
-
     def ata_exchange_get_data_incoming(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> dict:
         def get_move_line_prices_dict(stock_move: StockMove) -> dict:
-            default_prices = {
-                "td_untaxed_price_unit": 0.0,
-                "price_unit": 0.0,
-                "price_subtotal": 0.0,
-                "price_total": 0.0,
+            output_keys = ("price_unit_untaxed", "price_unit", "price_subtotal", "price_total")
+            field_maps = {
+                "doc": ("td_untaxed_price_unit", "price_unit", "price_subtotal", "price_total"),
+                "sm":  ("td_untaxed_price_unit", "td_price_unit", "td_price_subtotal", "td_price_total"),
             }
 
-            price_data = None
-            if (pol:=stock_move.purchase_line_id) and (amls:=pol.invoice_lines):
-                price_data = amls[:1].read(list(default_prices.keys()))                
-            elif (sol:=stock_move.sale_line_id):
-                price_data = sol.read(list(default_prices.keys()))
-                
-            if price_data:
-                default_prices.update(price_data[0])
-            
-            return {
-                "price_unit_untaxed": default_prices.pop("td_untaxed_price_unit"),
-                **default_prices,
-            }
+            if (pol := stock_move.purchase_line_id) and (amls := pol.invoice_lines):
+                record, fields = amls[:1], field_maps["doc"]
+            elif sol := stock_move.sale_line_id:
+                record, fields = sol, field_maps["doc"]
+            else:
+                record, fields = stock_move, field_maps["sm"]
 
-        def get_tax_exchange_data(origin: SaleOrder|PurchaseOrder) -> list[dict]|dict|str:
-            if not origin or not origin.order_line:
+            data = record.read(list(fields))[0] if record else {}
+            return {k: data.get(f, 0.0) for k, f in zip(output_keys, fields)}
+
+        def get_tax_exchange_data(origin: SaleOrder|PurchaseOrder|StockMove) -> list[dict]|dict|str:
+            if not origin:
                 return []
+            
             if isinstance(origin, SaleOrder):
+                if not origin.order_line:
+                    return []
                 line = origin.order_line[0]
                 taxes = line.tax_id
-            else:
+            elif isinstance(origin, PurchaseOrder):
+                if not origin.order_line:
+                    return []
                 line = origin.order_line[0]
                 taxes = line.taxes_id
+            else:
+                if not origin.td_taxes_ids:
+                    return []
+                taxes = origin.td_taxes_ids[0]
             
             return taxes.exchange_data
 
-        origin: SaleOrder|PurchaseOrder = kwargs.get("origin", self.purchase_id)
+        origin: SaleOrder|PurchaseOrder|None = kwargs.get("origin", None)
         
         return {
             "id":               self.id,
             "name":             self._str_empty(self.name),
             "date":             self._str_empty(self.date),
             "date_done":        self._str_empty(self.date_done),
-            "comment":          self._str_empty(origin.name),            
-            "partner":          self.partner_id.exchange_data,
-            "partner_doc_number": self._str_empty(self.td_supplier_document),
-            "partner_doc_date":   self._str_empty(self.td_date_supplier_document),
-            "tax":              get_tax_exchange_data(origin),
-            'agreement':        origin.td_agreement_id.exchange_data,
+            "comment":          Markup(self.note or '').striptags(),
+            "partner":          self.partner_id.exchange_data,            
+            "tax":              get_tax_exchange_data(origin or self.move_ids[:1]),
+            'agreement':        origin.td_agreement_id.exchange_data if origin else None,
             "warehouse_code":   self.location_dest_id.warehouse_id.id,
             "implementation_document": self._str_empty(self.implementation_document),
             "lines": [{
@@ -127,21 +137,11 @@ class TdStockPickingExchange(models.Model):
 
     def ata_exchange_get_data_outgoing(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]|dict|str:
         def get_move_line_prices_dict(stock_move: StockMove) -> dict:
-            default_prices = {
-                "td_untaxed_price_unit": 0.0,
-                "price_unit": 0.0,
-                "price_subtotal": 0.0,
-                "price_total": 0.0,
-            }
-            if (sol:=stock_move.sale_line_id):
-                price_data = sol.read(list(default_prices.keys()))
-                if price_data:
-                    default_prices.update(price_data[0])
-            
-            return {
-                "price_unit_untaxed": default_prices.pop("td_untaxed_price_unit"),
-                **default_prices,
-            }
+            output_keys = ("price_unit_untaxed", "price_unit", "price_subtotal", "price_total")
+            fields = ("td_untaxed_price_unit", "price_unit", "price_subtotal", "price_total")
+
+            data = stock_move.sale_line_id.read(list(fields))[0] if stock_move.sale_line_id else {}
+            return {k: data.get(f, 0.0) for k, f in zip(output_keys, fields)}
 
         return [{
             "id":               record.id,
