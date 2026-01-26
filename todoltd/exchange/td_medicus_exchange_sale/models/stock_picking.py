@@ -137,6 +137,7 @@ class TdStockPickingExchange(models.Model):
     def ata_exchange_get_data_outgoing_safekeeping(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
         return [{
             **self.ata_exchange_get_data_outgoing(method, as_node, **kwargs),
+            "partner":          record.sale_id.partner_id.exchange_data,
             "subclient":        record.sale_id.sub_client_id.exchange_data,
             "agreement":        record.sale_id.td_agreement_id.exchange_data,
         } for record in self]
