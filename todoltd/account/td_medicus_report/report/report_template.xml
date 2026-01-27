@@ -2180,7 +2180,7 @@
         <t t-foreach="report_data.get('documents', [])" t-as="doc">
             <!-- Document header -->
             <div style="font-size: 9px; font-weight: 600; margin-top: 10px; margin-bottom: 5px;">
-                Документ: <span t-esc="doc['document_name']"/>
+                Документ: <span t-esc="doc['document_name']"/> від <span t-esc="doc['document_date']"/>
             </div>
             
             <!-- Table for this document -->
@@ -2237,28 +2237,18 @@
                             <span t-esc="'%.2f' % doc['subtotal']"/>
                         </td>
                     </tr>
+                    <tr t-if="doc_last">
+                        <td style="border-top: 1px solid transparent;border-left: 1px solid transparent;border-bottom: 1px solid transparent;" colspan="5"></td>
+                        <td style="border-left: 1px solid transparent;border-bottom: 1px solid transparent;"></td>
+                        <td style="vertical-align: middle;text-align: end;padding: 4px;">
+                            <strong t-esc="'%.2f' % report_data['amount_total']"/>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </t>
-        <table width="100%" class="table table-sm table-bordered o_ignore_layout_styling" style="font-size: 8px;">
-            <tbody>
-                <tr>
-                    <td style="width: 88%;border-top: 1px solid transparent;border-left: 1px solid transparent;border-bottom: 1px solid transparent;"></td>
-                    <td style="vertical-align: middle;border-top: 1px solid transparent;text-align: end;padding: 2px;">
-                        <strong t-esc="'%.2f' % report_data['amount_total']"/>
-                    </td>
-                </tr>
-            </tbody>    
-        </table>
         
-        <!-- Total summary -->
         <table class="td_zero_border" width="100%" style="margin-top: 10px; font-size: 9px;">
-            <!-- <tr>
-                <td style="border: 1px solid #fff"/>
-                <td style="padding: 8px 2px 2px 2px; vertical-align: bottom; border: 0px solid transparent">
-                    <strong>Загальна сума: <span t-esc="'%.2f' % report_data['amount_total']"/> грн.</strong>
-                </td>
-            </tr> -->
             <tr>
                 <td style="border: 1px solid #fff"/>
                 <td style="padding: 2px 2px 2px 2px; vertical-align: bottom; border: 0px solid transparent">

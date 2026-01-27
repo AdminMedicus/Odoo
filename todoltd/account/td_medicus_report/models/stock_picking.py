@@ -537,6 +537,7 @@ class StockPicking(models.Model):
                 if doc_name not in documents_dict:
                     documents_dict[doc_name] = {
                         'document_name': doc_name,
+                        'document_date': sale_order.date_order.strftime('%d.%m.%Y'),
                         'agreement_number': sale_order.td_agreement_id.agreement_number if sale_order.td_agreement_id else '',
                         'agreement_date': sale_order.td_agreement_id.start_date.strftime('%d.%m.%Y') if sale_order.td_agreement_id and sale_order.td_agreement_id.start_date else '',
                         'lines': [],
