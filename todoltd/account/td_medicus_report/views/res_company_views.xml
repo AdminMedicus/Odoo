@@ -10,8 +10,11 @@
                 <group name="responsible_persons" string="Responsible Persons">
                     <field name="td_warehouse_manager_id"/>
                     <field name="td_medical_warehouse_manager_id"/>
+                    <field name="td_medical_equipment_engineer_id"/>
                     <field name="td_responsible_manager_id"/>
+                    <field name="td_head_medical_equipment_sales_id"/>
                     <field name="td_president_id"/>
+                    <field name="td_vice_president_id"/>
                 </group>
             </group>
 
