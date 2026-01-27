@@ -2838,6 +2838,13 @@
                                         /<span t-esc="report_data['company'].get('warehouse_manager', '')"/>/
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td/>
+                                    <td class="text-center" vertical-align="top" style="font-size: 7px;">
+                                        <span>завідувач складу</span>
+                                    </td>
+                                    <td/>
+                                </tr>
                             </tbody>
                         </table>
                     </td>
