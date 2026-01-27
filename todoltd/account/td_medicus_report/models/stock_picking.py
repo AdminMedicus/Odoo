@@ -656,7 +656,7 @@ class StockPicking(models.Model):
         
         payment_partner = None
         if sale_order and sale_order.partner_invoice_id and sale_order.partner_invoice_id != vendor_partner:
-            agreement = sale_order.partner_invoice_id.td_agreement_id
+            agreement = sale_order.td_agreement_id
             payment_partner = {
                 'name': sale_order.partner_invoice_id.full_partner_name or sale_order.partner_invoice_id.name,
                 'street': sale_order.partner_invoice_id.contact_address_complete or '',
