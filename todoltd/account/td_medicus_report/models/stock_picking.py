@@ -207,7 +207,7 @@ class StockPicking(models.Model):
             'partner_name': partner.full_partner_name or partner.name,
             'employee_name': current_user.full_partner_name or current_user.name,
             'document': dict(self._fields['implementation_document']._description_selection(self.env)).get(self.implementation_document, ''),
-            'delivery_address': order.partner_shipping_id.street,
+            'delivery_address': order.partner_shipping_id.contact_address_complete,
             'delivery_method': partner.property_delivery_carrier_id.name,
             'recipient_name': shipping_partner.full_partner_name or shipping_partner.name,
             'recipient_phone': shipping_partner.phone,
