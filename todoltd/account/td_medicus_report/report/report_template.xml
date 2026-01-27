@@ -346,6 +346,19 @@
                 </t>
             </table>
         </div>
+        <div class="row mb-1">
+            <table class="td_zero_border" width="100%">
+                <tr>
+                    <td rowspan="4" style="width: 2%"/>
+                    <td rowspan="4" style="vertical-align: top; width: 12%">
+                        <strong>Місце складання:</strong><br/>
+                    </td>
+                    <td>
+                        <span t-esc="report_data['vendor_physical_address']"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </template>
 
     <template id="td_report_header_2">
