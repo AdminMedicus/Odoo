@@ -570,7 +570,7 @@
                     <strong>Місце зберігання майна:</strong>
                 </td>
                 <td>
-                    <span t-esc="partner['fisical_address']"/>
+                    <span t-esc="partner['street']"/>
                 </td>
             </tr>
         </table>
