@@ -770,27 +770,23 @@ class StockPicking(models.Model):
 
     def td_get_completion_act_data(self):
         """
-        Підготовка даних для акту комплектації
+        Preparation of data for the completion act report
         """
         self.ensure_one()
         
-        # Базова інформація про компанію
         company = self.company_id
         partner = self.partner_id
         sale_order = self.sale_id
         
-        # Отримуємо інформацію про договір
         agreement = sale_order.td_agreement_id if sale_order else None
         agreement_name = agreement.name if agreement else ''
         agreement_number = agreement.agreement_number if agreement else ''
         agreement_date = agreement.start_date.strftime('%d.%m.%Y') if agreement and agreement.start_date else ''
         
-        # Дата та номер акту
         document_date = self.date_done.strftime('%d.%m.%Y') if self.date_done else ''
         doc_num = self.name.split('/')[-1] if self.name else ''
         document_number = doc_num.lstrip('0') or '0'
         
-        # Інформація про комісію
         commission_date = '01.01.25'
         commission_number = '02'
         company_ceo_name = company.td_vice_president_id.td_partner_short_name if company.td_vice_president_id else ''
@@ -820,7 +816,6 @@ class StockPicking(models.Model):
             'documents': [],
         }
         
-        # Обробка кожного продукту з ордера
         if not sale_order:
             return data
         
@@ -829,22 +824,18 @@ class StockPicking(models.Model):
             product = order_line.product_id
             product_sequence += 1
             
-            # Отримуємо основні дані продукту
             product_price_unit = order_line.price_unit or product.list_price or 0.0
             product_quantity = order_line.product_uom_qty
             product_price_subtotal = product_price_unit * product_quantity
             
-            # Податкова ставка продукту
             product_tax_rate = 0.0
             if product.taxes_id:
                 product_tax_rate = product.taxes_id[0].amount if product.taxes_id else 0.0
             
-            # УКТ ЗЕД продукту
             product_uktzed = ''
             if hasattr(product, 'td_uktzed_code_id') and product.td_uktzed_code_id:
                 product_uktzed = product.td_uktzed_code_id.code or product.td_uktzed_code_id.name or ''
             
-            # Додаємо продукт до списку products (для першої таблиці)
             data['products'].append({
                 'sequence': product_sequence,
                 'catalog_number': product.default_code or '',
@@ -858,7 +849,6 @@ class StockPicking(models.Model):
                 'price_subtotal': product_price_subtotal,
             })
             
-            # Шукаємо BOM для продукту
             bom = self.env['mrp.bom'].search([
                 '|',
                 ('product_id', '=', product.id),
@@ -867,7 +857,6 @@ class StockPicking(models.Model):
                 ('product_tmpl_id', '=', product.product_tmpl_id.id)
             ], limit=1)
             
-            # Якщо є BOM з компонентами, виводимо їх
             if bom and bom.bom_line_ids:
                 components = []
                 line_num = 0
@@ -878,20 +867,16 @@ class StockPicking(models.Model):
                     line_num += 1
                     component = bom_line.product_id
                     
-                    # Отримуємо ціну продажу з картки товару
-                    # lst_price - це роздрібна ціна (price list)
                     price_unit = component.list_price or 0.0
                     quantity = bom_line.product_qty
                     price_subtotal = price_unit * quantity
                     total_price_sum += price_unit
                     total_sum += price_subtotal
                     
-                    # Податкова ставка
                     tax_rate = 0.0
                     if component.taxes_id:
                         tax_rate = component.taxes_id[0].amount if component.taxes_id else 0.0
                     
-                    # УКТ ЗЕД
                     uktzed = ''
                     if hasattr(component, 'td_uktzed_code_id') and component.td_uktzed_code_id:
                         uktzed = component.td_uktzed_code_id.code or component.td_uktzed_code_id.name or ''
@@ -925,7 +910,6 @@ class StockPicking(models.Model):
                     'total': total_sum,
                 })
             else:
-                # Якщо компонентів немає, виводимо сам продукт
                 line_num = 1
                 
                 data['documents'].append({
