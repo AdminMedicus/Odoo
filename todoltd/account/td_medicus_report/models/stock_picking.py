@@ -781,9 +781,9 @@ class StockPicking(models.Model):
         
         # Отримуємо інформацію про договір
         agreement = sale_order.td_agreement_id if sale_order else None
-        agreement_name = agreement.partner_doc_type if agreement else ''
-        agreement_number = agreement.partner_doc_number if agreement else ''
-        agreement_date = agreement.partner_doc_date.strftime('%d.%m.%Y') if agreement and agreement.partner_doc_date else ''
+        agreement_name = agreement.name if agreement else ''
+        agreement_number = agreement.agreement_number if agreement else ''
+        agreement_date = agreement.start_date.strftime('%d.%m.%Y') if agreement and agreement.start_date else ''
         
         # Дата та номер акту
         document_date = self.date_done.strftime('%d.%m.%Y') if self.date_done else ''
