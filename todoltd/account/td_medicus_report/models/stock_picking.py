@@ -189,7 +189,7 @@ class StockPicking(models.Model):
         """
         self.ensure_one()
         order = self.sale_id
-        delivery_datetime_utc = self.date_deadline
+        delivery_datetime_utc = self.date_deadline or self.date_done
         user_tz = self.env.user.tz or 'UTC'
         delivery_datetime = fields.Datetime.context_timestamp(self.with_context(tz=user_tz), delivery_datetime_utc)
         
@@ -203,21 +203,30 @@ class StockPicking(models.Model):
         data = {
             'name': order.name.replace('S', ''),
             'date': order.date_order.date().strftime('%d.%m.%Y'),
+            'company_logo': self.company_id.logo,
             'warehouse_name': self.location_id.warehouse_id.name,
             'partner_name': partner.full_partner_name or partner.name,
             'employee_name': current_user.full_partner_name or current_user.name,
+            'employee_short_name': current_user.td_partner_short_name or current_user.name,
             'document': dict(self._fields['implementation_document']._description_selection(self.env)).get(self.implementation_document, ''),
             'delivery_address': order.partner_shipping_id.contact_address_complete,
             'delivery_method': partner.property_delivery_carrier_id.name,
             'recipient_name': shipping_partner.full_partner_name or shipping_partner.name,
+            'return_recipient_name': self.location_dest_id.warehouse_id.name,
+            'return_manager': self.user_id.full_partner_name or self.user_id.name or '',
             'recipient_phone': shipping_partner.phone,
             'delivery_time': delivery_datetime.strftime('%H:%M'),
             'delivery_date': delivery_datetime.strftime('%d.%m.%Y'),
             'lines': [],
+            'amount_account_untaxed': 0,
             'amount_untaxed': self.td_total_without_tax,
+            'amount_account_tax': 0,
             'amount_tax': self.td_total_tax,
+            'amount_account_total': 0,
             'amount_total': self.td_total_amount,
+            'amount_account_in_words': '',
             'amount_in_words': self.get_amount_in_words(),
+            'amount_tax_in_words': self._amount_to_words_ua(self.td_total_tax),
             'tax_guide_name': order.td_tax_guide_id.name,
         }
 
@@ -230,14 +239,20 @@ class StockPicking(models.Model):
                 'product_name': move.product_id.description_sale or move.product_id.name,
                 'product_manufacturer': move.product_id.td_manufacturer_directory_res_id.name,
                 'quantity': move.product_uom_qty,
+                'customs_value': 0,
                 'price_untaxed': move.td_untaxed_price_unit,
                 'price_unit': move.td_price_unit,
+                'account_price': 0,
                 'price_subtotal': move.td_price_subtotal,
                 'price_total': move.td_price_total,
+                'account_total': 0,
+                'markup_coefficient': 0,
                 'default_code': move.product_id.default_code or '',
                 'product_serial_numbers': [
                     l.name for l in move.mapped('move_line_ids').mapped('lot_id')
                 ],
+                'registration_certificate': '',
+                'quality_certificate': '',
                 'expiration_dates': [
                     d.strftime('%d.%m.%Y') if d else None for d in move.mapped('move_line_ids').mapped('expiration_date')
                 ],
@@ -349,7 +364,7 @@ class StockPicking(models.Model):
             },
             'lines': [],
             'act_number': self.name.split('/')[-1],
-            'act_date': self.td_custody_act_date.strftime('%d.%m.%Y'),
+            'act_date': self.td_custody_act_date.strftime('%d.%m.%Y') if self.td_custody_act_date else self.date_done.strftime('%d.%m.%Y'),
             'agreement_number': '',
             'agreement_date': '',
             'transfer_title': 'Акт передачі майна на відповідальне зберігання № ',

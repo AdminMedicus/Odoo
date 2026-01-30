@@ -87,6 +87,22 @@
         <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
     </record>
 
+    <record id="action_report_return_from_stock" model="ir.actions.report">
+        <field name="name">Повернення з переміщення</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_return_from_stock</field>
+        <field name="report_file">td_medicus_report.report_return_from_stock</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('picking_type_code', '=', 'incoming'),
+            ('return_id', '!=', False),
+            ('state', '=', 'done')
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
     <!-- <record id="action_report_waybill" model="ir.actions.report">
         <field name="name">ТТН</field>
         <field name="model">stock.picking</field>
