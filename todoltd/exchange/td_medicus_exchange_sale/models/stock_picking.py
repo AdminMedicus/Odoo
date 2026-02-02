@@ -49,7 +49,7 @@ class TdStockPickingExchange(models.Model):
             'td_medicus_exchange_sale.stock_picking_outgoing_return_odoo_1c': self.ata_exchange_get_data_incoming_return,
             'td_medicus_exchange_sale.act_transfer_to_safekeeping_odoo_1c':   self.ata_exchange_get_data_outgoing_safekeeping,
             'td_medicus_exchange_sale.act_return_from_safekeeping_odoo_1c':   self.ata_exchange_get_data_incoming_safekeeping,
-            'td_medicus_exchange_sale.products_relocation_odoo_1c':           self.ata_exchange_get_data_outgoing,
+            'td_medicus_exchange_sale.products_relocation_odoo_1c':           self.ata_exchange_get_data_outgoing_relocation,
             'td_medicus_exchange_sale.return_products_relocation_odoo_1c':    self.ata_exchange_get_data_incoming,
         }
 
@@ -148,6 +148,12 @@ class TdStockPickingExchange(models.Model):
             "purchase_id":      record.purchase_id.id,
             "partner":          record.partner_id.exchange_data,
             "agreement":        record.purchase_id.td_agreement_id.exchange_data,
+        } for record in self]
+
+    def ata_exchange_get_data_outgoing_relocation(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
+        return [{
+            **self.ata_exchange_get_data_outgoing(method, as_node, **kwargs),
+            "partner":          record.partner_id.exchange_data,            
         } for record in self]
 
     def ata_exchange_get_data_outgoing(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> dict:
