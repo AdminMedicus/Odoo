@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
+from werkzeug.urls import url_encode
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
@@ -199,12 +200,20 @@ class StockPicking(models.Model):
             lambda p: p.type == 'contact'
         )
         shipping_partner = shipping_contacts[0] if shipping_contacts else order.partner_shipping_id
-        
+        # barcode_params = url_encode({
+        #     'barcode_type': 'Code128',
+        #     'value': self.location_id.barcode,
+        #     'width': 400,
+        #     'height': 200,
+        # })
+
         data = {
             'name': order.name.replace('S', ''),
             'date': order.date_order.date().strftime('%d.%m.%Y'),
             'company_logo': self.company_id.logo,
             'warehouse_name': self.location_id.warehouse_id.name,
+            'location_barcode': self.location_id.barcode,
+            # 'warehouse_barcode': f'/report/barcode/?{barcode_params}',
             'partner_name': partner.full_partner_name or partner.name,
             'employee_name': current_user.full_partner_name or current_user.name,
             'employee_short_name': current_user.td_partner_short_name or current_user.name,
@@ -335,6 +344,12 @@ class StockPicking(models.Model):
         medical_manager_id = company.td_medical_warehouse_manager_id
         client_partner = self.td_parent_partner_id
         shipper_partner = self.partner_id
+        partner_name = (
+            client_partner.parent_id.full_partner_name or
+            client_partner.parent_id.name or
+            client_partner.full_partner_name or
+            client_partner.name 
+        )
         
         data = {
             'company': {
@@ -356,7 +371,7 @@ class StockPicking(models.Model):
                 'warehouse_address': self.warehouse_address_id.contact_address_complete or self.warehouse_address_id.name
             },
             'partner': {
-                'name': client_partner.parent_id.full_partner_name or client_partner.full_partner_name,
+                'name': partner_name,
                 'registry': client_partner.company_registry,
                 'street': client_partner.parent_id.contact_address_complete,
                 'fisical_address': shipper_partner.contact_address_complete,
@@ -385,7 +400,7 @@ class StockPicking(models.Model):
             if not line.product_id:
                 continue
             line_num += 1
-            location = self.location_id
+            location = line.move_orig_ids.mapped('location_id') or line.location_id
             move_line_ids = line.mapped('move_line_ids')
             
             line_data = {
@@ -397,8 +412,7 @@ class StockPicking(models.Model):
                     if move_line_ids else [],
                 'product_catalog_number': line.product_id.default_code or '',
                 'product_manufacturer': line.product_id.td_manufacturer_directory_res_id.name or '',
-                # 'storage_conditions': location.mapped('td_condition_ids.name'),
-                'storage_conditions': line.move_orig_ids.mapped('location_id.td_condition_ids.name'),
+                'storage_conditions': location.mapped('td_condition_ids.name'),
                 'quantity': line.quantity,
                 'uom': line.product_uom.name,
                 'expiration_dates': [
@@ -425,6 +439,12 @@ class StockPicking(models.Model):
         client_partner = self.td_parent_partner_id
         shipper_partner = self.partner_id
         warehouse_manager_id = company.td_warehouse_manager_id
+        partner_name = (
+            client_partner.parent_id.full_partner_name or
+            client_partner.parent_id.name or
+            client_partner.full_partner_name or
+            client_partner.name 
+        )
         
         data = {
             'company': {
@@ -439,7 +459,7 @@ class StockPicking(models.Model):
                 'warehouse_manager': warehouse_manager_id.td_partner_short_name or warehouse_manager_id.name if warehouse_manager_id else '',
             },
             'partner': {
-                'name': client_partner.parent_id.full_partner_name or client_partner.full_partner_name,
+                'name': partner_name,
                 'street': client_partner.parent_id.contact_address_complete or client_partner.contact_address_complete,
                 'registry': client_partner.company_registry,
                 'fisical_address': self.warehouse_address_id.contact_address_complete,
@@ -753,14 +773,11 @@ class StockPicking(models.Model):
                 elif ml.expiration_date:
                     expiration_dates.append(ml.expiration_date.strftime('%d.%m.%Y'))
             
-            storage_conditions = move.move_orig_ids.mapped('location_id.td_condition_ids.name') if move.move_orig_ids else []
+            location = move.move_orig_ids.mapped('location_id') or move.location_id
+            storage_conditions = location.mapped('td_condition_ids.name')
             
-            supplier_doc_number = ''
-            supplier_doc_date = ''
-            if hasattr(move, 'td_supplier_document'):
-                supplier_doc_number = move.td_supplier_document or ''
-            if hasattr(move, 'td_date_supplier_document') and move.td_date_supplier_document:
-                supplier_doc_date = move.td_date_supplier_document.strftime('%d.%m.%Y')
+            supplier_doc_number = self.td_supplier_document or ''
+            supplier_doc_date = self.td_date_supplier_document.strftime('%d.%m.%Y') if self.td_date_supplier_document else ''
             
             line_data = {
                 'sequence': line_num,
