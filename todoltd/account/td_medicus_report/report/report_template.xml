@@ -1773,9 +1773,9 @@
                 <col style="width: 6%;"/>
                 <col style="width: 6%;"/>
                 <col style="width: 6%;"/>
+                <!-- <col style="width: 6%;"/> -->
                 <col style="width: 6%;"/>
-                <col style="width: 6%;"/>
-                <col style="width: 6%;"/>
+                <!-- <col style="width: 6%;"/> -->
                 <col style="width: 6%;"/>
                 <col style="width: 6%;"/>
             </colgroup>
@@ -1789,9 +1789,9 @@
                     <th colspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Док. постачальника</th>
                     <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Кількість</th>
                     <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Од. виміру</th>
-                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Ціна за контрактом</th>
+                    <!-- <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Ціна за контрактом</th> -->
                     <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Митна вартість</th>
-                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Націнка пост.</th>
+                    <!-- <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Націнка пост.</th> -->
                     <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Ціна без ПДВ</th>
                     <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Сума без ПДВ</th>
                 </tr>
@@ -1836,15 +1836,15 @@
                         <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['uom']"/>
                         </td>
-                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                        <!-- <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="'%.2f' % line['contract_price']"/>
-                        </td>
+                        </td> -->
                         <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="'%.2f' % line['customs_value']"/>
                         </td>
-                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                        <!-- <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="'%.2f' % line['supplier_markup']"/>
-                        </td>
+                        </td> -->
                         <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="'%.2f' % line['price_untaxed']"/>
                         </td>
@@ -1863,7 +1863,7 @@
                 </t>
                 <tr>
                     <td style="border-left: 1px solid transparent; border-bottom: 1px solid transparent; border-right: 1px solid transparent;"></td>
-                    <td colspan="10" style="padding: 2px; vertical-align: bottom; border-left: 1px solid transparent; border-bottom: 1px solid transparent">
+                    <td colspan="8" style="padding: 2px; vertical-align: bottom; border-left: 1px solid transparent; border-bottom: 1px solid transparent">
                         <strong>Всього на суму: </strong> 
                         <strong t-esc="report_data['amount_in_words']"/>
                     </td>
@@ -1876,7 +1876,7 @@
                 </tr>
                 <tr>
                     <td style="border-left: 1px solid transparent; border-bottom: 1px solid transparent; border-right: 1px solid transparent;"></td>
-                    <td colspan="10" style="padding: 2px; vertical-align: bottom; border-left: 1px solid transparent; border-bottom: 1px solid transparent">
+                    <td colspan="8" style="padding: 2px; vertical-align: bottom; border-left: 1px solid transparent; border-bottom: 1px solid transparent">
                         <strong>В тому числі ПДВ: </strong> 
                         <strong t-esc="'%.2f' % report_data['amount_tax']"/> грн.
                     </td>
@@ -1888,7 +1888,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="11" style="padding: 2px; vertical-align: bottom; border-left: 1px solid transparent; border-bottom: 1px solid transparent"/>
+                    <td colspan="9" style="padding: 2px; vertical-align: bottom; border-left: 1px solid transparent; border-bottom: 1px solid transparent"/>
                     <td colspan="2" class="text-end" style="padding: 2px; vertical-align: middle;">
                         <strong>Всього з ПДВ:</strong>
                     </td>
