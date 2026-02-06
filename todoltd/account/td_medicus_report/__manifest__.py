@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
     'name': "ToDo Medicus Reports",
-    'summary': 'Друковані форми для Medicus',
-    'version': '18.0.1.0.34',
+    'summary': 'Reports for Medicus',
+    'version': '18.0.1.0.35',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',

@@ -222,7 +222,7 @@ class StockPicking(models.Model):
             'delivery_method': partner.property_delivery_carrier_id.name,
             'recipient_name': shipping_partner.full_partner_name or shipping_partner.name,
             'return_recipient_name': self.location_dest_id.warehouse_id.name,
-            'return_manager': self.user_id.full_partner_name or self.user_id.name or '',
+            'return_manager': self.env.user.full_partner_name or self.env.user.name or '',
             'recipient_phone': shipping_partner.phone,
             'delivery_time': delivery_datetime.strftime('%H:%M'),
             'delivery_date': delivery_datetime.strftime('%d.%m.%Y'),
@@ -648,6 +648,7 @@ class StockPicking(models.Model):
         for move in self.move_ids_without_package:
             line_num += 1
             move_line_ids = move.mapped('move_line_ids')
+            location = move.move_orig_ids.mapped('location_id') or move.location_id
             
             line_data = {
                 'sequence': line_num,
@@ -659,7 +660,7 @@ class StockPicking(models.Model):
                     for d in move_line_ids.mapped('expiration_date')
                 ] if move_line_ids else [],
                 # 'storage_conditions': move.location_id.mapped('td_condition_ids.name'),
-                'storage_conditions': move.move_orig_ids.mapped('location_id.td_condition_ids.name'),
+                'storage_conditions': location.mapped('td_condition_ids.name'),
                 'product_name': move.product_id.description_sale or move.product_id.name,
                 'product_manufacturer': move.product_id.td_manufacturer_directory_res_id.name or '',
                 'uom': move.product_uom.name,
@@ -773,7 +774,7 @@ class StockPicking(models.Model):
                 elif ml.expiration_date:
                     expiration_dates.append(ml.expiration_date.strftime('%d.%m.%Y'))
             
-            location = move.move_orig_ids.mapped('location_id') or move.location_id
+            location = move.location_id
             storage_conditions = location.mapped('td_condition_ids.name')
             
             supplier_doc_number = self.td_supplier_document or ''
