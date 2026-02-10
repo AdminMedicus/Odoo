@@ -30,7 +30,12 @@ class AccountMove(models.Model):
         medical_manager_id = company.td_medical_warehouse_manager_id
         partner = order.partner_shipping_id
         delivery_partners = company_partner.child_ids.filtered(lambda p: p.type == 'delivery')
-        contact_partners = partner.child_ids.filtered(lambda p: p.type == 'contact')
+        # contact_partners = partner.child_ids.filtered(lambda p: p.type == 'contact')
+
+        # Task N14224
+        contact_partners = partner.child_ids.filtered(
+            lambda p: p.type == 'contact' and p.td_is_counterparty_physical_person
+        )
 
         fisical_address_partner = delivery_partners[0] if delivery_partners else company_partner
         contact_partner = contact_partners[0] if contact_partners else partner
