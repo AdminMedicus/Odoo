@@ -196,9 +196,15 @@ class StockPicking(models.Model):
         
         partner = self.partner_id
         current_user = self.env.user.partner_id
+        # shipping_contacts = order.partner_shipping_id.child_ids.filtered(
+        #     lambda p: p.type == 'contact'
+        # )
+
+        # Task N14224
         shipping_contacts = order.partner_shipping_id.child_ids.filtered(
-            lambda p: p.type == 'contact'
+            lambda p: p.type == 'contact' and p.td_is_counterparty_physical_person
         )
+
         shipping_partner = shipping_contacts[0] if shipping_contacts else order.partner_shipping_id
         # barcode_params = url_encode({
         #     'barcode_type': 'Code128',
