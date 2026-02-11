@@ -398,12 +398,6 @@
                 </div>
             </t>
             <div class="text-end" t-att-class="'col-' + ('2' if not is_return else '4')">
-                <!-- <t t-if="not is_return">
-                    <t t-set="barcode_value" t-value="str(report_data.get('warehouse_id', '') or '')"/>
-                    <div class="text-center" t-if="barcode_value">
-                        <img t-att-src="'/report/barcode/Code128/' + barcode_value + '?width=400&amp;height=80&amp;humanreadable=1'" style="max-height: 90px; max-width: 100%;" alt="Barcode"/>
-                    </div>
-                </t> -->
                 <img t-att-src="image_data_uri(report_data['company_logo'])" style="max-height: 90px; max-width: 100%;" alt="Logo"/>
             </div>
         </div>
@@ -1649,12 +1643,12 @@
                             <span t-esc="line['quantity']"/>
                         </td>
                         <td rowspan="2" class="text-end" style="padding: 2px; vertical-align: middle;">
-                            <span t-if="not is_warehouse_order" t-esc="line['price_untaxed']"/>
-                            <span t-else="" t-esc="line['price_unit']"/>
+                            <span t-if="not is_warehouse_order" t-esc="'%.2f' % line['price_untaxed']"/>
+                            <span t-else="" t-esc="'%.2f' % line['price_unit']"/>
                         </td>
                         <td rowspan="2" class="text-end" style="padding: 2px; vertical-align: middle;">
-                            <span t-if="not is_warehouse_order" t-esc="line['price_subtotal']"/>
-                            <span t-else="" t-esc="line['price_total']"/>
+                            <span t-if="not is_warehouse_order" t-esc="'%.2f' % line['price_subtotal']"/>
+                            <span t-else="" t-esc="'%.2f' % line['price_total']"/>
                         </td>
                         <td t-if="not is_warehouse_order" rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-foreach="line['stock_inventory']" t-as="inventory" t-esc="inventory"/>
