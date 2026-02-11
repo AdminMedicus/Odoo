@@ -2,7 +2,7 @@
 {
     'name': "ToDo Medicus Reports",
     'summary': 'Reports for Medicus',
-    'version': '18.0.1.0.35',
+    'version': '18.0.1.0.36',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',

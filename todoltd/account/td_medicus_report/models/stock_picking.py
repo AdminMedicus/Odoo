@@ -200,12 +200,6 @@ class StockPicking(models.Model):
             lambda p: p.type == 'contact'
         )
         shipping_partner = shipping_contacts[0] if shipping_contacts else order.partner_shipping_id
-        # barcode_params = url_encode({
-        #     'barcode_type': 'Code128',
-        #     'value': self.location_id.barcode,
-        #     'width': 400,
-        #     'height': 200,
-        # })
 
         data = {
             'name': order.name.replace('S', ''),
@@ -213,7 +207,6 @@ class StockPicking(models.Model):
             'company_logo': self.company_id.logo,
             'warehouse_name': self.location_id.warehouse_id.name,
             'location_barcode': self.location_id.barcode,
-            # 'warehouse_barcode': f'/report/barcode/?{barcode_params}',
             'partner_name': partner.full_partner_name or partner.name,
             'employee_name': current_user.full_partner_name or current_user.name,
             'employee_short_name': current_user.td_partner_short_name or current_user.name,
