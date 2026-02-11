@@ -399,7 +399,7 @@ class StockPicking(models.Model):
             if not line.product_id:
                 continue
             line_num += 1
-            location = line.move_orig_ids.mapped('location_id') or line.location_id
+            location = line.move_orig_ids.mapped('location_dest_id') or line.location_dest_id
             move_line_ids = line.mapped('move_line_ids')
             
             line_data = {
