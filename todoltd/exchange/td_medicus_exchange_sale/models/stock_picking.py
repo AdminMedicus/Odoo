@@ -61,7 +61,7 @@ class TdStockPickingExchange(models.Model):
 
     def ata_exchange_get_data_incoming_main(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
         return [{
-            **self.ata_exchange_get_data_incoming(method, as_node, **kwargs),
+            **record.ata_exchange_get_data_incoming(method, as_node, **kwargs),
             "agreement":          record.purchase_id.td_agreement_id.exchange_data,
             "purchase_id":        record.purchase_id.id,
             "purchase_date":      self._str_empty(record.purchase_id.date_order),
@@ -72,14 +72,14 @@ class TdStockPickingExchange(models.Model):
 
     def ata_exchange_get_data_incoming_safekeeping(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
         return [{
-            **self.ata_exchange_get_data_incoming(method, as_node, **kwargs),
+            **record.ata_exchange_get_data_incoming(method, as_node, **kwargs),
             "agreement": record.sale_id.td_agreement_id.exchange_data,
             "subclient": record.sale_id.sub_client_id.exchange_data,
         } for record in self]
 
     def ata_exchange_get_data_incoming_return(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
         return [{
-            **self.ata_exchange_get_data_incoming(method, as_node, **kwargs),
+            **record.ata_exchange_get_data_incoming(method, as_node, **kwargs),
             "sale_id":   record.sale_id.id,
             "agreement": record.sale_id.td_agreement_id.exchange_data,
             "subclient": record.sale_id.sub_client_id.exchange_data,
@@ -127,7 +127,7 @@ class TdStockPickingExchange(models.Model):
     
     def ata_exchange_get_data_outgoing_main(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
         return [{
-            **self.ata_exchange_get_data_outgoing(method, as_node, **kwargs),
+            **record.ata_exchange_get_data_outgoing(method, as_node, **kwargs),
             "partner":          record.sale_id.partner_id.exchange_data,
             "partner_invoice":  record.sale_id.partner_invoice_id.exchange_data,
             "subclient":        record.sale_id.sub_client_id.exchange_data,
@@ -136,7 +136,7 @@ class TdStockPickingExchange(models.Model):
 
     def ata_exchange_get_data_outgoing_safekeeping(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
         return [{
-            **self.ata_exchange_get_data_outgoing(method, as_node, **kwargs),
+            **record.ata_exchange_get_data_outgoing(method, as_node, **kwargs),
             "partner":          record.sale_id.partner_id.exchange_data,
             "subclient":        record.sale_id.sub_client_id.exchange_data,
             "agreement":        record.sale_id.td_agreement_id.exchange_data,
@@ -144,7 +144,7 @@ class TdStockPickingExchange(models.Model):
 
     def ata_exchange_get_data_outgoing_return(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
         return [{
-            **self.ata_exchange_get_data_outgoing(method, as_node, **kwargs),
+            **record.ata_exchange_get_data_outgoing(method, as_node, **kwargs),
             "purchase_id":      record.purchase_id.id,
             "partner":          record.partner_id.exchange_data,
             "agreement":        record.purchase_id.td_agreement_id.exchange_data,
@@ -152,7 +152,7 @@ class TdStockPickingExchange(models.Model):
 
     def ata_exchange_get_data_outgoing_relocation(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
         return [{
-            **self.ata_exchange_get_data_outgoing(method, as_node, **kwargs),
+            **record.ata_exchange_get_data_outgoing(method, as_node, **kwargs),
             "partner":          record.partner_id.exchange_data,            
         } for record in self]
 

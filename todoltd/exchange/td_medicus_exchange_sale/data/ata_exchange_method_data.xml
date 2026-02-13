@@ -140,7 +140,37 @@
             <field name="ext_system" ref="td_medicus_exchange_base.medicus_1c" />
         </record>
 
+        <!-- tax invoice to 1C -->
+        <record id="tax_invoice_odoo_1c" model="ata.exchange.method">
+            <field name="name">TaxInvoice_Odoo_1C</field>
+            <field name="description">Tax Invoice (to 1C)</field>
+            <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
+            <field name="model_id" ref="td_medicus_1c_integration.model_td_tax_invoice" />
+            <field name="model_name">td.tax.invoice</field>
+        </record>
+
+        <record id="c77_outgoingdata_tax_invoice" model="ata.exchange.domain">
+            <field name="method" ref="tax_invoice_odoo_1c" />
+            <field name="ext_system" ref="td_medicus_exchange_base.medicus_1c" />
+        </record>
+
+        <!-- adjustment invoice to 1C -->
+        <record id="adj_tax_invoice_odoo_1c" model="ata.exchange.method">
+            <field name="name">AdjTaxInvoice_Odoo_1C</field>
+            <field name="description">Adjustment Tax Invoice (to 1C)</field>
+            <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
+            <field name="model_id" ref="td_medicus_1c_integration.model_td_tax_invoice" />
+            <field name="model_name">td.tax.invoice</field>
+        </record>
+
+        <record id="c77_outgoingdata_adj_tax_invoice" model="ata.exchange.domain">
+            <field name="method" ref="adj_tax_invoice_odoo_1c" />
+            <field name="ext_system" ref="td_medicus_exchange_base.medicus_1c" />
+        </record>
+
         <!-- INNER TYPES for matching data -->
-    
+
     </data>
 </odoo>
