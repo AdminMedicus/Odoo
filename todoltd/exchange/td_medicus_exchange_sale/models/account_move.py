@@ -50,24 +50,28 @@ class TdAccountMoveExchange(models.Model):
         as_node: bool = False, **kwargs) -> list[dict]|dict|str:
 
         return [{
+            "full_data":        False,
             "id":               record.id,
             "name":             record.name,
-            "comment":          Markup(record.narration or '').striptags(),
             "date":             record.invoice_date,
-            "date_due":         record.invoice_date_due,
-            "partner":          record.partner_id.exchange_data,
-            "agreement":        record.td_agreement_id.exchange_data,
-            "warehouse_code":   (record.invoice_line_ids and
-                (sale_line_id := record.invoice_line_ids.sale_line_ids[0]) and
-                (warehouse_id := sale_line_id.order_id.warehouse_id) and
-                warehouse_id.id) or '',
-            "tax":              record.invoice_line_ids and record.invoice_line_ids[0].tax_ids.exchange_data,
-            "lines": [{
-                "product":      aml.product_id.exchange_data,
-                "quantity":     aml.quantity,
-                "uom":          aml.product_uom_id.exchange_data,
-                "price_unit_untaxed": aml.td_untaxed_price_unit,                
-            } for aml in record.invoice_line_ids]
+            **({
+                "full_data":        True,
+                "date_due":         record.invoice_date_due,
+                "partner":          record.partner_id.exchange_data,
+                "agreement":        record.td_agreement_id.exchange_data,
+                "comment":          Markup(record.narration or '').striptags(),
+                "warehouse_code":   (record.invoice_line_ids and
+                    (sale_line_id := record.invoice_line_ids.sale_line_ids[0]) and
+                    (warehouse_id := sale_line_id.order_id.warehouse_id) and
+                    warehouse_id.id) or '',
+                "tax":              record.invoice_line_ids and record.invoice_line_ids[0].tax_ids.exchange_data,
+                "lines": [{
+                    "product":      aml.product_id.exchange_data,
+                    "quantity":     aml.quantity,
+                    "uom":          aml.product_uom_id.exchange_data,
+                    "price_unit_untaxed": aml.td_untaxed_price_unit,                
+                } for aml in record.invoice_line_ids]
+            } if as_node else {})
         } for record in self]
 
     #endregion
