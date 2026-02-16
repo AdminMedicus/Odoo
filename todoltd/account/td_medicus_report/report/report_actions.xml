@@ -223,6 +223,20 @@
         <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
     </record>
 
+    <record id="action_report_commercial_offer_components" model="ir.actions.report">
+        <field name="name">Комерційна пропозиція (компоненти)</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_print_commercial_offer_components</field>
+        <field name="report_file">td_medicus_report.report_print_commercial_offer_components</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('state', '=', 'sale'),
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
     <record id="action_report_commercial_offer_inv" model="ir.actions.report">
         <field name="name">Комерційна пропозиція</field>
         <field name="model">account.move</field>
@@ -255,7 +269,7 @@
     <record id="action_report_completion_act" model="ir.actions.report">
         <field name="name">Акт комплектації</field>
         <field name="model">stock.picking</field>
-        <field name="report_type">qweb-html</field>
+        <field name="report_type">qweb-pdf</field>
         <field name="report_name">td_medicus_report.report_print_completion_act</field>
         <field name="report_file">td_medicus_report.report_print_completion_act</field>
         <field name="binding_model_id" ref="stock.model_stock_picking"/>
