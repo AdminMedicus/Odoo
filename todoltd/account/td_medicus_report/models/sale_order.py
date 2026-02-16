@@ -43,29 +43,38 @@ class SaleOrder(models.Model):
             'co_manager': self.user_id.employee_id.td_partner_short_name or self.user_id.name,
             'co_manager_number': self.user_id.phone,
             'total': self.amount_total,
-            'lines': [],
+            'groups': [],
         }
 
+        current_group = None
         line_num = 0
+        
         for line in self.order_line:
-            line_num += 1
-            bom_ids = line.product_id.bom_ids
-
-            data['lines'].append({
-                'line_num': line_num,
-                'product_code': line.product_id.default_code or '',
-                'product_name': line.product_id.description_sale or line.product_id.name,
-                'product_uom': line.product_uom.name,
-                'product_qty': line.product_uom_qty,
-                'product_price_unit': line.td_untaxed_price_unit,
-                'product_price_subtotal': line.price_total,
-                'bom_lines': [{
-                    'length': len(bom_ids),
-                    'bom_product_name': bom_line.product_id.name,
-                    'bom_product_uom': bom_line.product_uom_id.name,
-                    'bom_product_qty': bom_line.product_qty,
-                } for bom in bom_ids for bom_line in bom.bom_line_ids]
-            })
+            if line.display_type == 'line_section':
+                current_group = {
+                    'section_name': line.name,
+                    'lines': []
+                }
+                data['groups'].append(current_group)
+            elif not line.display_type:
+                line_num += 1
+                
+                if current_group is None:
+                    current_group = {
+                        'section_name': '',
+                        'lines': []
+                    }
+                    data['groups'].append(current_group)
+                
+                current_group['lines'].append({
+                    'line_num': line_num,
+                    'product_code': line.product_id.default_code or '',
+                    'product_name': line.product_id.description_sale or line.product_id.name,
+                    'product_uom': line.product_uom.name,
+                    'product_qty': line.product_uom_qty,
+                    'product_price_unit': line.td_untaxed_price_unit,
+                    'product_price_subtotal': line.price_total,
+                })
 
         return data
     

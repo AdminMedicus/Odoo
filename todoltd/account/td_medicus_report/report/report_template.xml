@@ -2654,7 +2654,7 @@
     </template>
 
     <template id="td_report_products_table_co">
-        <t t-set="lines" t-value="report_data['lines']"/>
+        <t t-set="groups" t-value="report_data['groups']"/>
         <table class="table table-sm table-bordered o_ignore_layout_styling" style="font-size: 8px; margin-bottom: 20px;">
             <thead style="background-color: #f0f0f0;">
                 <tr>
@@ -2663,63 +2663,41 @@
                     <th class="text-center" style="width: 55%; padding: 4px; vertical-align: middle;">Найменування товару</th>
                     <th class="text-center" style="width: 15%; padding: 4px; vertical-align: middle;">Од. вим.</th>
                     <th class="text-center" style="width: 15%; padding: 4px; vertical-align: middle;">К-ть</th>
-                    <!-- <th class="text-center" style="width: 10%; padding: 4px; vertical-align: middle;">Ціна, грн.</th>
-                    <th class="text-center" style="width: 10%; padding: 4px; vertical-align: middle;">Сума, грн.</th> -->
+                    <th class="text-center" style="width: 10%; padding: 4px; vertical-align: middle;">Ціна, грн.</th>
+                    <th class="text-center" style="width: 10%; padding: 4px; vertical-align: middle;">Сума, грн.</th>
                 </tr>
             </thead>
             <tbody>
-                <t t-foreach="lines" t-as="line">
-                    <t t-set="bom_lines" t-value="line['bom_lines']"/>
-                    <tr style="page-break-inside: avoid;" t-if="line_index != 0 and len(bom_lines) > 0">
-                        <td colspan="7" style="vertical-align: middle; height: 10px;"/>
+                <t t-foreach="groups" t-as="group">
+                    <tr t-if="group['section_name']" style="background-color: #e9ecef;">
+                        <td colspan="7" class="text-start" style="padding: 6px; font-weight: bold;">
+                            <span t-esc="group['section_name']"/>
+                        </td>
                     </tr>
-                    <tr style="page-break-inside: avoid;">
-                        <td class="text-center" style="padding: 4px; vertical-align: middle;">
-                            <span t-esc="line['line_num']"/>
-                        </td>
-                        <td class="text-center" style="padding: 4px; vertical-align: middle;">
-                            <span t-esc="line['product_code']"/><br/>
-                        </td>
-                        <td class="text-center" style="padding: 4px; vertical-align: middle;">
-                            <span t-esc="line['product_name']"/>
-                        </td>
-                        <td class="text-center" style="padding: 4px; vertical-align: middle;">
-                            <span t-esc="line['product_uom']"/>
-                        </td>
-                        <td class="text-center" style="padding: 4px; vertical-align: middle;">
-                            <span t-esc="line['product_qty']"/>
-                        </td>
-                        <!-- <td class="text-center" style="padding: 4px; vertical-align: middle;">
-                            <span t-esc="line['product_price_unit']"/>
-                        </td>
-                        <td class="text-center" style="padding: 4px; vertical-align: middle;">
-                            <span t-esc="line['product_price_subtotal']"/>
-                        </td> -->
-                    </tr>
-                    <t t-if="bom_lines">
-                        <tr>
-                            <td colspan="7" class="text-center" style="padding: 2px; vertical-align: middle;">
-                                <span>в комплектації:</span>
+                    <t t-foreach="group['lines']" t-as="line">
+                        <tr style="page-break-inside: avoid;">
+                            <td class="text-center" style="padding: 4px; vertical-align: middle;">
+                                <span t-esc="line['line_num']"/>
+                            </td>
+                            <td class="text-center" style="padding: 4px; vertical-align: middle;">
+                                <span t-esc="line['product_code']"/><br/>
+                            </td>
+                            <td class="text-center" style="padding: 4px; vertical-align: middle;">
+                                <span t-esc="line['product_name']"/>
+                            </td>
+                            <td class="text-center" style="padding: 4px; vertical-align: middle;">
+                                <span t-esc="line['product_uom']"/>
+                            </td>
+                            <td class="text-center" style="padding: 4px; vertical-align: middle;">
+                                <span t-esc="line['product_qty']"/>
+                            </td>
+                            <td class="text-center" style="padding: 4px; vertical-align: middle;">
+                                <span t-esc="line['product_price_unit'] if components else ''"/>
+                            </td>
+                            <td class="text-center" style="padding: 4px; vertical-align: middle;">
+                                <span t-esc="line['product_price_subtotal'] if components else ''"/>
                             </td>
                         </tr>
-                        <t t-foreach="bom_lines" t-as="bom_line">
-                            <t t-set="rowspan_value" t-value="len(bom_lines)"/>
-                            <tr style="page-break-inside: avoid;">
-                                <td t-att-rowspan="rowspan_value" t-if="bom_line_index == 0"/>
-                                <td t-att-rowspan="rowspan_value" t-if="bom_line_index == 0"/>
-                                <td class="text-center" style="padding: 4px; vertical-align: middle;">
-                                    <span t-esc="bom_line['bom_product_name']"/>
-                                </td>
-                                <td class="text-center" style="padding: 4px; vertical-align: middle;">
-                                    <span t-esc="bom_line['bom_product_uom']"/>
-                                </td>
-                                <td class="text-center" style="padding: 4px; vertical-align: middle;">
-                                    <span t-esc="bom_line['bom_product_qty']"/>
-                                </td>
-                                <!-- <td t-att-rowspan="rowspan_value" t-if="bom_line_index == 0"/>
-                                <td t-att-rowspan="rowspan_value" t-if="bom_line_index == 0"/> -->
-                            </tr>
-                        </t>
                     </t>
                 </t>
             </tbody>
@@ -3908,6 +3886,15 @@
 
     <template id="report_print_commercial_offer">
         <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="td_medicus_report.report_co_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_print_commercial_offer_components">
+        <t t-call="web.html_container">
+            <t t-set="components" t-value="True"/>
             <t t-foreach="docs" t-as="o">
                 <t t-call="td_medicus_report.report_co_document" t-lang="o.partner_id.lang"/>
             </t>
