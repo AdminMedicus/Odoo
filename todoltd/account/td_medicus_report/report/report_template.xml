@@ -1453,8 +1453,8 @@
             <table class="td_zero_border" width="100%">
                 <tr>
                     <td width="5%" rowspan="7"/>
-                    <td width="10%" class="text-center">
-                        <span t-esc="report_data['co_date']"/>
+                    <td width="12%">
+                        <t t-esc="report_data['co_date']"/>
                     </td>
                     <td class="text-center">
                         КОМЕРЦІЙНА ПРОПОЗИЦІЯ № <t t-esc="report_data['co_number']"/>
@@ -1462,15 +1462,21 @@
                 </tr>
                 <tr>
                     <td class="text-start">Строк дії:</td>
-                    <td class="text-start">30 календарних днів</td>
+                    <td class="text-start">
+                        <t t-esc="report_data['co_validity_period']"/> днів
+                    </td>
                 </tr>
                 <tr>
                     <td class="text-start">Строк поставки:</td>
-                    <td class="text-start">до 30 робочих днів</td>
+                    <td class="text-start">
+                        <t t-esc="'до ' + str(report_data['co_delivery_period']) + ' днів'"/>
+                    </td>
                 </tr>
                 <tr>
                     <td class="text-start">Умови поставки:</td>
-                    <td class="text-start">DDP - за адресою Отримувача</td>
+                    <td class="text-start">
+                        <t t-esc="report_data['co_delivery_terms']"/>
+                    </td>
                 </tr>
                 <tr>
                     <td class="text-start">Умови сплати:</td>
@@ -2660,11 +2666,11 @@
                 <tr>
                     <th class="text-center" style="width: 5%; padding: 4px; vertical-align: middle;">№</th>
                     <th class="text-center" style="width: 10%; padding: 4px; vertical-align: middle;">Код НК</th>
-                    <th class="text-center" style="width: 55%; padding: 4px; vertical-align: middle;">Найменування товару</th>
-                    <th class="text-center" style="width: 15%; padding: 4px; vertical-align: middle;">Од. вим.</th>
-                    <th class="text-center" style="width: 15%; padding: 4px; vertical-align: middle;">К-ть</th>
-                    <th class="text-center" style="width: 10%; padding: 4px; vertical-align: middle;">Ціна, грн.</th>
-                    <th class="text-center" style="width: 10%; padding: 4px; vertical-align: middle;">Сума, грн.</th>
+                    <th class="text-center" style="width: 45%; padding: 4px; vertical-align: middle;">Найменування товару</th>
+                    <th class="text-center" style="width: 12%; padding: 4px; vertical-align: middle;">Од. вим.</th>
+                    <th class="text-center" style="width: 12%; padding: 4px; vertical-align: middle;">К-ть</th>
+                    <th class="text-center" style="width: 8%; padding: 4px; vertical-align: middle;">Ціна, грн.</th>
+                    <th class="text-center" style="width: 8%; padding: 4px; vertical-align: middle;">Сума, грн.</th>
                 </tr>
             </thead>
             <tbody>
