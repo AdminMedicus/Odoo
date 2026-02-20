@@ -1764,18 +1764,15 @@
         <table class="table table-sm table-bordered o_ignore_layout_styling" style="font-size: 8px; margin-bottom: 20px;">
             <colgroup>
                 <col style="width: 3%;"/>
-                <col style="width: 25%;"/>
+                <col style="width: 35%;"/>
                 <col style="width: 6%;"/>
                 <col style="width: 6%;"/>
-                <col style="width: 8%;"/>
+                <col style="width: 10%;"/>
                 <col style="width: 5%;"/>
                 <col style="width: 5%;"/>
                 <col style="width: 6%;"/>
                 <col style="width: 6%;"/>
                 <col style="width: 6%;"/>
-                <!-- <col style="width: 6%;"/> -->
-                <col style="width: 6%;"/>
-                <!-- <col style="width: 6%;"/> -->
                 <col style="width: 6%;"/>
                 <col style="width: 6%;"/>
             </colgroup>
@@ -3423,14 +3420,15 @@
                                 <td width="15%" class="text-end">
                                     <strong>П.І.Б.</strong>
                                 </td>
-                                <td style="border-bottom: 1px solid #000;"/>
+                                <td style="text-align: start; border-bottom: 1px solid #000;" t-esc="report_data['vendor_recipient']"/>
                             </tr>
                             <tr>
                                 <td class="text-start">
                                     <strong>Посада:</strong>
                                 </td>
-                                <td style="border-bottom: 1px solid #000;"/>
-                                <td colspan="2"/>
+                                <td colspan="3" style="border-bottom: 1px solid #000;">
+                                    менеджер по роботі з клієнтами
+                                </td>
                             </tr>
                             <tr>
                                 <td class="text-start">

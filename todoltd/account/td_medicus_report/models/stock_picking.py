@@ -361,9 +361,6 @@ class StockPicking(models.Model):
                 'bank_account': company_partner.bank_ids[0].acc_number,
                 'bank_name': company_partner.bank_ids[0].bank_name,
                 'bank_bic': company_partner.bank_ids[0].bank_bic,
-                # 'license_issued_by': company_partner.td_license_issued_by,
-                # 'license_number': company_partner.td_license_number,
-                # 'license_date': company_partner.td_license_date,
                 'tax_position': company_partner.property_account_position_id.name,
                 'warehouse_manager': warehouse_manager_id.td_partner_short_name or warehouse_manager_id.name,
                 'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.name,
@@ -688,6 +685,8 @@ class StockPicking(models.Model):
         invoice_partner = sale_order.partner_invoice_id if sale_order and sale_order.partner_invoice_id else vendor_partner
         
         shipping_partner = sale_order.partner_shipping_id if sale_order and sale_order.partner_shipping_id else vendor_partner
+        vendor_recipient = vendor_partner.child_ids.filtered(lambda p: p.type == 'contact' and p.use_in_vendor_refund_report)[0]
+        vendor_recipient_name = vendor_recipient.full_partner_name or vendor_recipient.name if vendor_recipient else ''
         
         payment_partner = None
         if sale_order and sale_order.partner_invoice_id and sale_order.partner_invoice_id != vendor_partner:
@@ -723,6 +722,7 @@ class StockPicking(models.Model):
             'vendor_bank_bic': company_bank.bank_bic if company_bank else '',
             'vendor_ref': company_partner.ref or '',
             'vendor_tax_position': company_tax_position,
+            'vendor_recipient': vendor_recipient_name,
             
             'recipient_name': invoice_partner.full_partner_name or invoice_partner.name,
             'recipient_registry': invoice_partner.company_registry or company.company_registry or '',
