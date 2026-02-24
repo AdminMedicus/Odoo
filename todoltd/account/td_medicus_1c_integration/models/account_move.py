@@ -5,11 +5,13 @@ class AccountMove(models.Model):
     _inherit = 'account.move'
 
     td_tax_invoice_id = fields.Many2one(
-        comodel_name='td.tax.invoice'
+        comodel_name='td.tax.invoice',
+        string="Tax Invoice Ref",
     )
     td_tax_invoice_ids = fields.Many2many(
         comodel_name='td.tax.invoice',
-        store=True
+        store=True,
+        string="Tax Invoices"
     )
     td_tax_invoice_name = fields.Char(
         compute='_compute_td_tax_invoice_name'
@@ -31,7 +33,6 @@ class AccountMove(models.Model):
         default='delivered',
     )
     td_budget_funds = fields.Boolean(
-        default=False,
         related='td_order_id.budget_funds'
     )
 
