@@ -36,7 +36,8 @@ class StockMove(models.Model):
     td_quantity = fields.Float()
     td_picking_type_id = fields.Many2one(
         comodel_name='stock.picking.type',
-        related='picking_id.picking_type_id'
+        related='picking_id.picking_type_id',
+        string="Internal Operation Type"
     )
     td_picking_code = fields.Selection(
         [

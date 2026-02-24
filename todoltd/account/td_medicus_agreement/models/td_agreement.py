@@ -47,16 +47,21 @@ class Agreement(models.Model):
         default="full",
     )
     implementation_document = fields.Selection(
-        selection=[
-            ('exp_inv', 'Expenditure invoice'),
-            ('act_res_st', 'Act of responsible storage'),
-            ('move', 'Movement')
-        ],
         compute='_compute_implementation_document',
-        store=True
+        selection=[
+            ('exp_inv', 'Expenditure Invoice'),
+            ('act_res_st', 'Act of Responsible Storage'),
+            ('move', 'Movement'),
+        ],
+        compute_sudo=True,
+        store=True,
+        string="Implementation Document"
     )
     implementation_document_additional = fields.Boolean(
-        compute='_compute_implementation_document'
+        compute='_compute_implementation_document',
+        compute_sudo=True,
+        store=True,
+        string="Is Additional Document"
     )
 
     pre_payment = fields.Float()
