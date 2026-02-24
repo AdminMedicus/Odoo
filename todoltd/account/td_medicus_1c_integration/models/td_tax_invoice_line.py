@@ -1,109 +1,113 @@
-from odoo import fields, models, api
+from odoo import _, api, fields, models
+from odoo.tools import float_round
 
 
 class TdTaxInvoiceLine(models.Model):
     _name = 'td.tax.invoice.line'
     _description = 'TdTaxInvoiceLine'
 
+    corr_line_number = fields.Integer(
+        string="Correction Line Number"
+    )
+    invoice_currency_id = fields.Many2one(
+        comodel_name='res.currency',
+        related='invoice_line_id.currency_id',
+        required=True,
+        string='Invoice Currency'
+    )
+    invoice_line_id = fields.Many2one(
+        comodel_name='account.move.line'
+    )
+    invoice_price = fields.Float(
+        related='invoice_line_id.price_unit',
+        string='Invoice Price'
+    )
+    invoice_price_subtotal = fields.Monetary(
+        currency_field='invoice_currency_id',
+        related='invoice_line_id.price_subtotal',
+        string='Invoice Subtotal')
+    invoice_quantity = fields.Float(
+        related='invoice_line_id.quantity',
+        string="Invoice Quantity"
+    )
+    lot_ids = fields.Many2many(
+        comodel_name='stock.lot',
+        compute='_compute_lot_ids'
+    )
+    name = fields.Text(
+        related='product_id.description_sale',
+        string='Description'
+    )
+    price_with_out_vat = fields.Float()
+    product_id = fields.Many2one(
+        comodel_name='product.product',
+        required=True,
+        string='Product Invoice'
+    )
+    product_uom_id = fields.Many2one(
+        comodel_name='uom.uom',
+        related='product_id.uom_id'
+    )
+    quantity = fields.Float(
+        default=1,
+        digits=(16, 5),
+        string='Quantity'
+    )
+    sale_order_currency_id = fields.Many2one(
+        comodel_name='res.currency',
+        related='td_sale_order_line_id.currency_id',
+        required=True,
+        string='Sale Order Currency'
+    )
+    sale_order_price = fields.Float(
+        related='td_sale_order_line_id.price_unit',
+        string='Sale Order Price'
+    )
+    sale_order_price_subtotal = fields.Monetary(
+        currency_field='sale_order_currency_id',
+        related='td_sale_order_line_id.price_subtotal',
+        string='Sale Order Subtotal')
+    sale_order_quantity = fields.Float(
+        related='td_sale_order_line_id.product_uom_qty',
+        string="Sale Order Quantity"
+    )
+    seq_line_number = fields.Integer(
+        compute="_compute_line_number",
+        store=True,
+        string="№"
+    )
+    sum_price_with_out_vat = fields.Float()
+    sum_price_with_vat = fields.Float()
+    sum_vat_price = fields.Float()
     td_invoice_id = fields.Many2one(
         comodel_name='td.tax.invoice'
     )
     td_sale_order_line_id = fields.Many2one(
         comodel_name='sale.order.line'
     )
-    seq_line_number = fields.Integer(
-        string="№",
-        compute="_compute_line_number",
-        store=True
-    )
-    invoice_line_id = fields.Many2one(
-        comodel_name='account.move.line'
-    )
-    corr_line_number = fields.Integer(
-        string="Correction Line Number"
-    )
-    product_id = fields.Many2one(
-        comodel_name='product.product',
-        required=True,
-        string='Product Invoice'
-    )
-    name = fields.Text(
-        string='Description',
-        related='product_id.description_sale'
-    )
-    lot_ids = fields.Many2many(
-        comodel_name='stock.lot',
-        compute='_compute_lot_ids'
-    )
     uktzed_code_id = fields.Many2one(
         comodel_name='td.uktzed',
         compute='_compute_product_id',
         readonly=False
     )
-    quantity = fields.Float(
-        default=1,
-        digits=(16, 5),
-    )
-    product_uom_id = fields.Many2one(
-        comodel_name='uom.uom',
-        related='product_id.uom_id'
-    )
-
-    # price_with_out_vat = fields.Float()
-    # sum_price_with_out_vat = fields.Float()
     vat_id = fields.Many2one(
         comodel_name='account.tax',
         related='td_invoice_id.tax_guide_id'
     )
+    vat_price = fields.Float()
     vat_type = fields.Selection(
         related='vat_id.price_include_override'
     )
 
-    price_with_out_vat = fields.Float()
-    sum_price_with_out_vat = fields.Float()
-
-    vat_price = fields.Float()
-    sum_vat_price = fields.Float()
-    sum_price_with_vat = fields.Float()
-
-    # SaleOrder fields
-    sale_order_price = fields.Float(
-        related='td_sale_order_line_id.price_unit'
-    )
-    sale_order_quantity = fields.Float(
-        related='td_sale_order_line_id.product_uom_qty'
-    )
-    sale_order_currency_id = fields.Many2one(
-        comodel_name='res.currency',
-        string='Currency',
-        required=True,
-        related='td_sale_order_line_id.currency_id',
-        default=lambda self: self.env.company.currency_id
-    )
-    sale_order_price_subtotal = fields.Monetary(
-        related='td_sale_order_line_id.price_subtotal',
-        currency_field='sale_order_currency_id',
-    )
-
-    # Invoice fields
-
-    invoice_price = fields.Float(
-        related='invoice_line_id.price_unit'
-    )
-    invoice_quantity = fields.Float(
-        related='invoice_line_id.quantity'
-    )
-    invoice_currency_id = fields.Many2one(
-        comodel_name='res.currency',
-        string='Currency',
-        required=True,
-        related='invoice_line_id.currency_id',
-        default=lambda self: self.env.company.currency_id
-    )
-    invoice_price_subtotal = fields.Monetary(
-        related='invoice_line_id.price_subtotal',
-        currency_field='invoice_currency_id',
-    )
+    @api.depends('td_invoice_id', 'td_invoice_id.td_invoice_line_ids')
+    def _compute_line_number(self):
+        for record in self:
+            if record.td_invoice_id:
+                lines = record.td_invoice_id.td_invoice_line_ids
+                for idx, line in enumerate(lines, start=1):
+                    line.seq_line_number = idx
+            else:
+                record.seq_line_number = 1
 
     @api.depends('invoice_line_id')
     def _compute_lot_ids(self):
@@ -132,35 +136,32 @@ class TdTaxInvoiceLine(models.Model):
             else:
                 rec.lot_ids = False
 
-    @api.depends('td_invoice_id', 'td_invoice_id.td_invoice_line_ids')
-    def _compute_line_number(self):
-        for record in self:
-            if record.td_invoice_id:
-                lines = record.td_invoice_id.td_invoice_line_ids
-                for idx, line in enumerate(lines, start=1):
-                    line.seq_line_number = idx
-            else:
-                record.seq_line_number = 1
-
-    # @api.onchange('product_id', 'lot_ids', 'vat_id', 'quantity')
     @api.depends('product_id', 'lot_ids', 'vat_id', 'quantity')
     def _compute_product_id(self):
         for line in self:
             product = line.product_id
             if product:
                 line.name = product.description
+                rounding = line.td_invoice_id.company_id.currency_id.rounding
 
                 if line.vat_type == 'tax_included':
                     tax_rate = line.vat_id.amount / 100
                     price_excluded = line.invoice_price / (1 + tax_rate)
 
-                    line.price_with_out_vat = round(price_excluded, 2)
+                    line.price_with_out_vat = float_round(
+                        price_excluded,
+                        precision_rounding=rounding
+                    )
                     line.vat_price = (
                         line.invoice_price - line.price_with_out_vat
                     )
-                    line.sum_vat_price = line.vat_price * line.invoice_quantity
-                    line.sum_price_with_out_vat = (
-                        line.price_with_out_vat * line.invoice_quantity
+                    line.sum_vat_price = float_round(
+                        line.vat_price * line.quantity,
+                        precision_rounding=rounding
+                    )
+                    line.sum_price_with_out_vat = float_round(
+                        line.price_with_out_vat * line.quantity,
+                        precision_rounding=rounding
                     )
                     line.sum_price_with_vat = (
                         line.sum_price_with_out_vat + line.sum_vat_price
@@ -168,13 +169,20 @@ class TdTaxInvoiceLine(models.Model):
 
                 elif line.vat_type == 'tax_excluded':
                     tax_rate = line.vat_id.amount / 100
-                    price_excluded = line.invoice_price * tax_rate
+                    vat_amount = line.invoice_price * tax_rate
 
                     line.price_with_out_vat = line.invoice_price
-                    line.vat_price = round(price_excluded, 2)
-                    line.sum_vat_price = line.vat_price * line.invoice_quantity
-                    line.sum_price_with_out_vat = (
-                        line.price_with_out_vat * line.invoice_quantity
+                    line.vat_price = float_round(
+                        vat_amount,
+                        precision_rounding=rounding
+                    )
+                    line.sum_vat_price = float_round(
+                        line.vat_price * line.quantity,
+                        precision_rounding=rounding
+                    )
+                    line.sum_price_with_out_vat = float_round(
+                        line.price_with_out_vat * line.quantity,
+                        precision_rounding=rounding
                     )
                     line.sum_price_with_vat = (
                         line.sum_price_with_out_vat + line.sum_vat_price
@@ -185,7 +193,8 @@ class TdTaxInvoiceLine(models.Model):
                         line.lot_ids[0].td_uktzed_code_id.id or False
                     )
                 if not line.uktzed_code_id:
-                    if product.td_uktzed_code_id:
-                        line.uktzed_code_id = product.td_uktzed_code_id.id
-                    else:
-                        line.uktzed_code_id = False
+                    line.uktzed_code_id = (
+                        product.td_uktzed_code_id.id
+                        if product.td_uktzed_code_id
+                        else False
+                    )
