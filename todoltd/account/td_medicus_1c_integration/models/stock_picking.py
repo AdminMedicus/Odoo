@@ -35,7 +35,8 @@ class StockPicking(models.Model):
     )
 
     state = fields.Selection(
-        selection_add=[('import', 'Import data to 1C')],
+        # selection_add=[('import', 'Import data to 1C')],
+        selection_add=[('import', 'Expects to spread costs over GTD')],
     )
 
     picking_code = fields.Boolean(
@@ -77,7 +78,34 @@ class StockPicking(models.Model):
     )
 
     def td_button_send_data_to_one_c(self):
-        pass
+        """
+        The "Prepared" button for imported receipts:
+        - changes the status to state='import' (Awaiting allocation of expenses from the customs declaration)
+        - adds to the exchange queue (ata.exchange.queue) so that 1C can retrieve the data
+        """
+        Queue = self.env["ata.exchange.queue"].sudo()
+
+        for picking in self:
+            if picking.picking_type_code != "incoming":
+                raise UserError(_("This action is only available for receipts."))
+            if not picking.td_is_import:
+                raise UserError(_("This action is only available for import receipts."))
+            if picking.state in ("done", "cancel"):
+                raise UserError(_("Unable to perform action for completed/canceled document."))
+            if not picking.move_ids_without_package:
+                raise UserError(_("Add at least one item to the shipment."))
+
+            if picking.state != "import":
+                picking.write({"state": "import"})
+
+            Queue.change_in_queue(picking.sudo())
+
+            picking.message_post(
+                body=_("Prepared. The document has been queued for exchange "
+                       "with 1C for posting expenses from the customs declaration.")
+            )
+
+        return True
 
     @api.depends('move_ids_without_package')
     def _compute_total_amounts(self):
