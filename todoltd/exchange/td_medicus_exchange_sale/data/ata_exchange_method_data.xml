@@ -172,5 +172,20 @@
 
         <!-- INNER TYPES for matching data -->
 
+        <!-- stock picking. incoming IMPORT prepared to 1C (for GTD cost allocation) TASK N14569-->
+        <record id="stock_picking_incoming_import_prepared_odoo_1c" model="ata.exchange.method">
+            <field name="name">StockPickingIncomingImportPrepared_Odoo_1C</field>
+            <field name="description">Stock Picking incoming import prepared (for GTD cost allocation)</field>
+            <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True"/>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="model_name">stock.picking</field>
+        </record>
+
+        <record id="c77_outgoingdata_stock_picking_incoming_import_prepared" model="ata.exchange.domain">
+            <field name="method" ref="stock_picking_incoming_import_prepared_odoo_1c"/>
+            <field name="ext_system" ref="td_medicus_exchange_base.medicus_1c"/>
+        </record>
+
     </data>
 </odoo>
