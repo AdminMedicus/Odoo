@@ -415,3 +415,57 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_1
 msgid "№<br/>з/п"
 msgstr ""
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__stock_picking__state__import
+msgid "Expects to spread costs over GTD"
+msgstr "Очікує рознесення витрат з ГТД"
+
+#. module: td_medicus_1c_integration
+#. odoo-python
+#: code:addons/td_medicus_1c_integration/models/stock_picking.py:0
+msgid "This action is only available for receipts."
+msgstr "Ця дія доступна лише для надходжень (Receipt)"
+
+#. module: td_medicus_1c_integration
+#. odoo-python
+#: code:addons/td_medicus_1c_integration/models/stock_picking.py:0
+msgid "This action is only available for import receipts."
+msgstr "Ця дія доступна лише для імпортних надходжень."
+
+#. module: td_medicus_1c_integration
+#. odoo-python
+#: code:addons/td_medicus_1c_integration/models/stock_picking.py:0
+msgid "Unable to perform action for completed/canceled document."
+msgstr "Неможливо виконати дію для виконаного/скасованого документа."
+
+#. module: td_medicus_1c_integration
+#. odoo-python
+#: code:addons/td_medicus_1c_integration/models/stock_picking.py:0
+msgid "Add at least one item to the shipment."
+msgstr "Додайте хоча б один товар у надходження."
+
+#. module: td_medicus_1c_integration
+#. odoo-python
+#: code:addons/td_medicus_1c_integration/models/stock_picking.py:0
+msgid ""
+"Prepared. The document has been queued for exchange with 1C for posting "
+"expenses from the customs declaration."
+msgstr "Підготовлено. Документ поставлено в чергу обміну з 1С для рознесення витрат з ГТД."
+
+#. module: td_medicus_1c_integration
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_one_c_view_picking_form_inherited
+msgid "Prepared"
+msgstr "Підготовлено"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__sale_order__td_tax_invoice_state__confirm
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__td_tax_invoice__state__confirm
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_one_c_integration_view_order_form_inherited
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_one_c_view_picking_form_inherited
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_tax_invoice_view_form
+msgid "Confirm"
+msgstr "Підтвердити"
+
+
+
