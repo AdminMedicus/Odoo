@@ -8,8 +8,7 @@ class StockPicking(models.Model):
 
     td_currency_id = fields.Many2one(
         comodel_name='res.currency',
-        related='purchase_id.currency_id',
-        string='Operation Currency'
+        related='purchase_id.currency_id'
     )
 
     td_currency_rate = fields.Float(
@@ -21,12 +20,17 @@ class StockPicking(models.Model):
     )
 
     td_type_of_trade = fields.Selection(
-        related='purchase_id.td_type_of_trade',
-        string="Type of Trade"
+        [
+            ('prepayment', 'Prepayment'),
+            ('credit', 'Credit'),
+            ('res_storage', 'Responsible Storage'),
+        ], default='prepayment',
+        related='purchase_id.td_type_of_trade'
     )
 
     td_is_import = fields.Boolean(
         string="Import",
+        default=False,
         related='purchase_id.td_is_import'
     )
 
@@ -46,8 +50,8 @@ class StockPicking(models.Model):
         'res.currency',
         related='company_id.currency_id',
         readonly=True,
-        store=True,
-        string="Company Currency")
+        store=True
+    )
 
     td_amount_origin_currency = fields.Monetary(
         compute="_compute_total_amounts",
