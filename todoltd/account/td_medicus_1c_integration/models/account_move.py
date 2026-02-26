@@ -1,5 +1,5 @@
 from odoo import models, fields, api, _
-
+from odoo.tools import float_round
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
@@ -108,8 +108,14 @@ class AccountMove(models.Model):
                         'product_uom_id': line.product_uom_id.id,
                         'td_sale_order_line_id': line.td_order_line_id.id
                         if line.td_order_line_id else False,
-                        'price_with_out_vat': line.td_order_line_id.price_unit
-                        if line.td_order_line_id else line.price_unit,
+                        'price_with_out_vat': float_round(
+                            line.td_order_line_id.price_unit, 
+                            precision_digits=2
+                        )
+                        if line.td_order_line_id else float_round(
+                            line.price_unit, 
+                            precision_digits=2
+                        ),
                     }) for line in move.invoice_line_ids
                 ],
             }
@@ -160,8 +166,14 @@ class AccountMove(models.Model):
                 'product_uom_id': line.product_uom_id.id,
                 'td_sale_order_line_id': line.td_order_line_id.id
                 if line.td_order_line_id else False,
-                'price_with_out_vat': line.td_order_line_id.price_unit
-                if line.td_order_line_id else line.price_unit,
+                'price_with_out_vat': float_round(
+                    line.td_order_line_id.price_unit,
+                    precision_digits=2
+                )
+                if line.td_order_line_id else float_round(
+                    line.price_unit,
+                    precision_digits=2
+                ),
             }) for line in self.invoice_line_ids
         ]
 
@@ -305,7 +317,7 @@ class AccountMove(models.Model):
 
             for line in move.line_ids:
                 if hasattr(line, 'td_paid_price') and line.td_paid_price:
-                    td_paid_price_sum += line.td_paid_price
+                    td_paid_price_sum += float_round(line.td_paid_price, precision_digits=2)
 
                 if move.is_invoice(True):
                     # === Invoices ===
@@ -336,8 +348,11 @@ class AccountMove(models.Model):
             move.amount_tax = sign * total_tax_currency
             move.amount_total = sign * total_currency
 
-            move.amount_residual = -sign * (total_residual_currency - td_paid_price_sum)
-            move.amount_residual_signed = total_residual - td_paid_price_sum
+            residual_currency = total_residual_currency - td_paid_price_sum
+            move.amount_residual = -sign * float_round(residual_currency, precision_digits=2)
+            
+            residual_signed = total_residual - td_paid_price_sum
+            move.amount_residual_signed = float_round(residual_signed, precision_digits=2)
 
             move.amount_untaxed_signed = -total_untaxed
             move.amount_untaxed_in_currency_signed = -total_untaxed_currency
