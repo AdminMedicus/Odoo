@@ -17,13 +17,9 @@ class TdStockPickingExchange(models.Model):
         self.ensure_one()
         methods = []
 
-<<<<<<< Updated upstream
-        if (self.picking_type_code == 'incoming' and self.state == 'done'):
-=======
         if self.picking_type_code == 'incoming' and self.td_is_import and self.state == 'import' and self.purchase_id:
             methods.append(self.env.ref('td_medicus_exchange_sale.stock_picking_incoming_import_prepared_odoo_1c'))
         elif (self.picking_type_code == 'incoming' and self.state == 'done'):
->>>>>>> Stashed changes
             if self.purchase_id:
                 methods.append(self.env.ref('td_medicus_exchange_sale.stock_picking_incoming_odoo_1c'))
             elif self.sale_id and self.implementation_document == 'act_res_st':
@@ -56,10 +52,7 @@ class TdStockPickingExchange(models.Model):
             'td_medicus_exchange_sale.act_return_from_safekeeping_odoo_1c':   self.ata_exchange_get_data_incoming_safekeeping,
             'td_medicus_exchange_sale.products_relocation_odoo_1c':           self.ata_exchange_get_data_outgoing_relocation,
             'td_medicus_exchange_sale.return_products_relocation_odoo_1c':    self.ata_exchange_get_data_incoming,
-<<<<<<< Updated upstream
-=======
             'td_medicus_exchange_sale.stock_picking_incoming_import_prepared_odoo_1c': self.ata_exchange_get_data_incoming_main,
->>>>>>> Stashed changes
         }
 
         method_xml_id = method.get_xml_id() if method else None

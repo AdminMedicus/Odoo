@@ -170,8 +170,6 @@
             <field name="ext_system" ref="td_medicus_exchange_base.medicus_1c" />
         </record>
 
-<<<<<<< Updated upstream
-=======
         <!-- stock picking. incoming IMPORT prepared to 1C (for GTD cost allocation) TASK N14569-->
         <record id="stock_picking_incoming_import_prepared_odoo_1c" model="ata.exchange.method">
             <field name="name">StockPickingIncomingImportPrepared_Odoo_1C</field>
@@ -187,7 +185,6 @@
             <field name="ext_system" ref="td_medicus_exchange_base.medicus_1c"/>
         </record>
 
->>>>>>> Stashed changes
         <!-- INNER TYPES for matching data -->
 
     </data>
