@@ -1,12 +1,11 @@
-from odoo import Command, models
+from odoo import models
 from odoo.exceptions import UserError
 from markupsafe import Markup
 
 from odoo.addons.ata_exchange_v4.models.ata_exchange_method import AtaExchangeMethod
 from odoo.addons.ata_exchange_v4.models.ata_exchange_class  import AtaExchangeClass
+from odoo.addons.stock.models.stock_picking import Picking
 from odoo.addons.stock.models.stock_move import StockMove
-from odoo.addons.sale.models.sale_order import SaleOrder
-from odoo.addons.purchase.models.purchase_order import PurchaseOrder
 
 
 class TdStockPickingExchange(models.Model):
@@ -18,11 +17,8 @@ class TdStockPickingExchange(models.Model):
         self.ensure_one()
         methods = []
 
-        #TASK 14569
         if self.picking_type_code == 'incoming' and self.td_is_import and self.state == 'import' and self.purchase_id:
             methods.append(self.env.ref('td_medicus_exchange_sale.stock_picking_incoming_import_prepared_odoo_1c'))
-
-        #EXISTING
         elif (self.picking_type_code == 'incoming' and self.state == 'done'):
             if self.purchase_id:
                 methods.append(self.env.ref('td_medicus_exchange_sale.stock_picking_incoming_odoo_1c'))
@@ -56,7 +52,6 @@ class TdStockPickingExchange(models.Model):
             'td_medicus_exchange_sale.act_return_from_safekeeping_odoo_1c':   self.ata_exchange_get_data_incoming_safekeeping,
             'td_medicus_exchange_sale.products_relocation_odoo_1c':           self.ata_exchange_get_data_outgoing_relocation,
             'td_medicus_exchange_sale.return_products_relocation_odoo_1c':    self.ata_exchange_get_data_incoming,
-            # TASK N14569
             'td_medicus_exchange_sale.stock_picking_incoming_import_prepared_odoo_1c': self.ata_exchange_get_data_incoming_main,
         }
 
@@ -66,6 +61,9 @@ class TdStockPickingExchange(models.Model):
         
         raise UserError("No handler found for method %s" % method_xml_id)
 
+    def _get_manager_data(self, sp: Picking) -> list[dict]|dict|str:
+        return sp.sale_id.user_id.exchange_data if sp.sale_id and sp.sale_id.user_id else ""
+    
     def ata_exchange_get_data_incoming_main(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
         return [{
             **record.ata_exchange_get_data_incoming(method, as_node, **kwargs),
@@ -78,10 +76,13 @@ class TdStockPickingExchange(models.Model):
         } for record in self]
 
     def ata_exchange_get_data_incoming_safekeeping(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
+        kwargs["compute_doc_id"] = True
+
         return [{
             **record.ata_exchange_get_data_incoming(method, as_node, **kwargs),
             "agreement": record.sale_id.td_agreement_id.exchange_data,
             "subclient": record.sale_id.sub_client_id.exchange_data,
+            "manager":   self._get_manager_data(record),
         } for record in self]
 
     def ata_exchange_get_data_incoming_return(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
@@ -90,6 +91,12 @@ class TdStockPickingExchange(models.Model):
             "sale_id":   record.sale_id.id,
             "agreement": record.sale_id.td_agreement_id.exchange_data,
             "subclient": record.sale_id.sub_client_id.exchange_data,
+        } for record in self]
+
+    def ata_exchange_get_data_incoming_relocation(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
+        return [{
+            **record.ata_exchange_get_data_incoming(method, as_node, **kwargs),
+            "manager": self._get_manager_data(record),
         } for record in self]
 
     def ata_exchange_get_data_incoming(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> dict:
@@ -110,6 +117,20 @@ class TdStockPickingExchange(models.Model):
             data = record.read(list(fields))[0] if record else {}
             return {k: data.get(f, 0.0) for k, f in zip(output_keys, fields)}
 
+        def get_doc_id():
+            if not kwargs.get("compute_doc_id", False) or not self.sale_id:
+                return ""
+            # Return last outgoing done stock.picking for the same sale order and implementation_document
+            if last_picking := self.env['stock.picking'].search([
+                ('sale_id', '=', self.sale_id.id),
+                ('picking_type_code', '=', 'outgoing'),
+                ('implementation_document', '=', self.implementation_document),
+                ('state', '=', 'done'),
+            ], order='date_done desc', limit=1):
+                return last_picking.id
+            
+            return ""
+
         return {
             "id":               self.id,
             "name":             self._str_empty(self.name),
@@ -124,6 +145,7 @@ class TdStockPickingExchange(models.Model):
                 "quantity":     sm.quantity,
                 "uom":          sm.product_uom.exchange_data,
                 "tax":          sm.td_taxes_ids.exchange_data,
+                "doc_id":       get_doc_id(),
                 "lots_data": [{
                     "lot":      sml.lot_id.exchange_data,
                     "quantity": sml.quantity,
@@ -147,6 +169,7 @@ class TdStockPickingExchange(models.Model):
             "partner":          record.sale_id.partner_id.exchange_data,
             "subclient":        record.sale_id.sub_client_id.exchange_data,
             "agreement":        record.sale_id.td_agreement_id.exchange_data,
+            "manager":          self._get_manager_data(record),
         } for record in self]
 
     def ata_exchange_get_data_outgoing_return(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
@@ -160,7 +183,8 @@ class TdStockPickingExchange(models.Model):
     def ata_exchange_get_data_outgoing_relocation(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
         return [{
             **record.ata_exchange_get_data_outgoing(method, as_node, **kwargs),
-            "partner":          record.partner_id.exchange_data,            
+            "partner":          record.partner_id.exchange_data,
+            "manager":          self._get_manager_data(record),
         } for record in self]
 
     def ata_exchange_get_data_outgoing(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> dict:
