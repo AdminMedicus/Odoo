@@ -55,6 +55,12 @@ class AddressDeliveryData(BaseModelPydantic):
     phone: str
     time: str
 
+class ContactData(BaseModelPydantic):
+    type: str
+    id: int | None = None
+    name: str
+    function: str
+
 class PartnerDataFull(PartnerDataBase):
     name_full: str
     vat: str
@@ -63,11 +69,10 @@ class PartnerDataFull(PartnerDataBase):
     address: str
     phone: str
     region: str
-    job_function: str
-    job_name: str
     manager: ManagerDataIncoming
     sub_clients: list[PartnerDataBase]
     addresses_delivery: list[AddressDeliveryData]
+    contacts: list[ContactData]
 
 class AgreementType(BaseModelPydantic):
     id: str
