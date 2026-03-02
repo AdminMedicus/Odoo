@@ -132,6 +132,14 @@
             <field name="model_name">res.partner</field>
         </record>
 
+        <record id="inner_types_res_partner_person" model="ata.exchange.method">
+            <field name="name">PartnerPerson</field>
+            <field name="description">Person of partner</field>
+            <field name="type">inner_types</field>
+            <field name="model_id" ref="model_res_partner" />
+            <field name="model_name">res.partner</field>
+        </record>
+
         <record id="inner_types_res_partner_subclient" model="ata.exchange.method">
             <field name="name">Subclient</field>
             <field name="description">Subclient</field>
