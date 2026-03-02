@@ -46,11 +46,9 @@ class MrpBom(models.Model):
 
         production.action_confirm()
         return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': _('Picking created'),
-                'message': _('Name: {name}').format(name=production.name),
-                'type': 'success',
-            }
+            'type': 'ir.actions.act_window',
+            'res_model': 'mrp.production',
+            'res_id': production.id,
+            'view_mode': 'form',
+            'target': 'current',
         }
