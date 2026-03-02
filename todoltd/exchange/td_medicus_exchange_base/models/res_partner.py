@@ -136,11 +136,6 @@ class TdResPartnerExchange(models.Model):
                 return self.ata_exchange_prepare_vals_address_delivery(record_params)            
             elif inc_params.method_id == self.env.ref('td_medicus_exchange_base.partner_1c_odoo'):
                 return self.ata_exchange_prepare_vals_partner(record_params)
-<<<<<<< Updated upstream
-        
-=======
-
->>>>>>> Stashed changes
         return super().ata_exchange_prepare_vals(record_params)
 
     def ata_exchange_get_category_id(self,
