@@ -2,8 +2,7 @@ from collections import Counter
 from itertools import groupby
 
 from odoo import _, api, fields, models
-from odoo.exceptions import AccessError, UserError, ValidationError
-from odoo.fields import Command
+from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_round
 
 
@@ -149,19 +148,20 @@ class AccountMove(models.Model):
                 
                 if not move.currency_id.is_zero(move.amount_total - expected_total):
                     diff = expected_total - move.amount_total
+                    move_ctx = move.with_context(check_move_validity=False)
                     
-                    tax_line = move.line_ids.filtered(lambda l: l.display_type == 'tax')[:1]
+                    tax_line = move_ctx.line_ids.filtered(lambda l: l.display_type == 'tax')[:1]
                     if tax_line:
-                        tax_line.amount_currency -= diff
                         tax_line.balance -= diff
+                        tax_line.amount_currency -= diff
                         tax_line.debit = max(tax_line.balance, 0)
                         tax_line.credit = max(-tax_line.balance, 0)
 
-                    term_line = move.line_ids.filtered(lambda l: l.display_type == 'payment_term')[:1]
+                    term_line = move_ctx.line_ids.filtered(lambda l: l.display_type == 'payment_term')[:1]
                     if term_line:
                         term_val = expected_total if move.move_type == 'out_invoice' else -expected_total
-                        term_line.amount_currency = term_val
                         term_line.balance = term_val
+                        term_line.amount_currency = term_val
                         term_line.debit = max(term_line.balance, 0)
                         term_line.credit = max(-term_line.balance, 0)
 
@@ -274,14 +274,14 @@ class AccountMove(models.Model):
                     (0, 0, {
                         'invoice_line_id': line.id,
                         'name': line.name,
-                        'product_id': line.product_id.id,
-                        'product_uom_id': line.product_uom_id.id,
-                        'quantity': line.quantity,
-                        'td_sale_order_line_id': line.td_order_line_id.id if line.td_order_line_id else False,
                         'price_with_out_vat': float_round(
                             line.td_order_line_id.price_unit if line.td_order_line_id else line.price_unit, 
                             precision_digits=2
                         ),
+                        'product_id': line.product_id.id,
+                        'product_uom_id': line.product_uom_id.id,
+                        'quantity': line.quantity,
+                        'td_sale_order_line_id': line.td_order_line_id.id if line.td_order_line_id else False,
                     }) for line in move.invoice_line_ids
                 ],
             }
@@ -318,14 +318,14 @@ class AccountMove(models.Model):
             (0, 0, {
                 'invoice_line_id': line.id,
                 'name': line.name,
-                'product_id': line.product_id.id,
-                'product_uom_id': line.product_uom_id.id,
-                'quantity': line.quantity - product_dict.get(line.product_id, 0.0),
-                'td_sale_order_line_id': line.td_order_line_id.id if line.td_order_line_id else False,
                 'price_with_out_vat': float_round(
                     line.td_order_line_id.price_unit if line.td_order_line_id else line.price_unit,
                     precision_digits=2
                 ),
+                'product_id': line.product_id.id,
+                'product_uom_id': line.product_uom_id.id,
+                'quantity': line.quantity - product_dict.get(line.product_id, 0.0),
+                'td_sale_order_line_id': line.td_order_line_id.id if line.td_order_line_id else False,
             }) for line in self.invoice_line_ids
         ]
 
