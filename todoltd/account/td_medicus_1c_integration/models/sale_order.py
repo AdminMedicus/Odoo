@@ -30,7 +30,8 @@ class SaleOrder(models.Model):
     )
     td_tax_invoice_ids = fields.Many2many(
         comodel_name='td.tax.invoice',
-        compute='_compute_td_tax_invoices'
+        compute='_compute_td_tax_invoices',
+        store=True
     )
     td_tax_invoice_state = fields.Selection(
         compute='_compute_td_tax_invoice_state',

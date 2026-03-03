@@ -143,7 +143,7 @@ class AccountMove(models.Model):
                         line.price_unit * line.quantity,
                         precision_rounding=move.currency_id.rounding
                     )
-                    for line in move.invoice_line_ids.filtered(lambda l: not l.display_type)
+                    for line in move.invoice_line_ids.filtered(lambda l: l.display_type == 'product' or not l.display_type)
                 )
                 
                 if not move.currency_id.is_zero(move.amount_total - expected_total):
