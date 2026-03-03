@@ -8,6 +8,7 @@
     'depends': [
         'stock',
         'sale',
+        'stock_account',
         'account',
         'hr',
         'purchase_stock',
