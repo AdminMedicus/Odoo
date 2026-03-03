@@ -103,7 +103,6 @@ class AccountMove(models.Model):
         'td_paid_invoice',
     )
     def _compute_amount(self):
-
         for move in self:
             total_untaxed, total_untaxed_currency = 0.0, 0.0
             total_tax, total_tax_currency = 0.0, 0.0
@@ -147,15 +146,30 @@ class AccountMove(models.Model):
                     )
                     for line in move.invoice_line_ids.filtered(lambda l: not l.display_type)
                 )
+                
                 if not move.currency_id.is_zero(move.amount_total - expected_total):
                     diff = expected_total - move.amount_total
+                    
+                    tax_line = move.line_ids.filtered(lambda l: l.display_type == 'tax')[:1]
+                    if tax_line:
+                        tax_line.amount_currency -= diff
+                        tax_line.balance -= diff
+                        tax_line.debit = max(tax_line.balance, 0)
+                        tax_line.credit = max(-tax_line.balance, 0)
+
+                    term_line = move.line_ids.filtered(lambda l: l.display_type == 'payment_term')[:1]
+                    if term_line:
+                        term_val = expected_total if move.move_type == 'out_invoice' else -expected_total
+                        term_line.amount_currency = term_val
+                        term_line.balance = term_val
+                        term_line.debit = max(term_line.balance, 0)
+                        term_line.credit = max(-term_line.balance, 0)
+
                     move.amount_tax += diff
                     move.amount_total = expected_total
 
-            residual_currency = total_residual_currency - td_paid_price_sum
-            move.amount_residual = -sign * float_round(residual_currency, precision_digits=2)
+            move.amount_residual = -sign * float_round(total_residual_currency - td_paid_price_sum, precision_digits=2)
             move.amount_residual_signed = float_round(total_residual - td_paid_price_sum, precision_digits=2)
-
             move.amount_untaxed_signed = -total_untaxed
             move.amount_untaxed_in_currency_signed = -total_untaxed_currency
             move.amount_tax_signed = -total_tax
@@ -211,7 +225,6 @@ class AccountMove(models.Model):
                 )
                 if move.td_paid_invoice:
                     summary = self._zero_tax_amounts(summary)
-                
                 move.tax_totals = summary
                 move.td_tax_totals = summary
             else:
@@ -241,11 +254,11 @@ class AccountMove(models.Model):
             if key in tax_totals:
                 tax_totals[key] = 0.0
         for subtotal in tax_totals.get('subtotals', []):
-            subtotal['tax_amount'] = 0.0
             subtotal['tax_amount_currency'] = 0.0
+            subtotal['tax_amount'] = 0.0
             for group in subtotal.get('tax_groups', []):
-                group['tax_amount'] = 0.0
                 group['tax_amount_currency'] = 0.0
+                group['tax_amount'] = 0.0
         return tax_totals
 
     def action_create_td_tax_invoice(self):
@@ -266,7 +279,7 @@ class AccountMove(models.Model):
                         'quantity': line.quantity,
                         'td_sale_order_line_id': line.td_order_line_id.id if line.td_order_line_id else False,
                         'price_with_out_vat': float_round(
-                            line.td_order_line_id.price_unit if line.td_order_line_id else line.price_unit,
+                            line.td_order_line_id.price_unit if line.td_order_line_id else line.price_unit, 
                             precision_digits=2
                         ),
                     }) for line in move.invoice_line_ids
@@ -333,3 +346,4 @@ class AccountMove(models.Model):
             'type': 'ir.actions.act_window',
             'views': [(False, 'list'), (False, 'form')],
         }
+        
