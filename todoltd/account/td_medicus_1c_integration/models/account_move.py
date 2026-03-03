@@ -99,6 +99,7 @@ class AccountMove(models.Model):
         'line_ids.payment_id.state',
         'line_ids.td_paid_price',
         'state',
+        'td_order_id',
         'td_paid_invoice',
     )
     def _compute_amount(self):
@@ -137,15 +138,16 @@ class AccountMove(models.Model):
             move.amount_tax = sign * total_tax_currency
             move.amount_total = sign * total_currency
 
-            if move.move_type in ('out_invoice', 'out_refund'):
-                expected_total = sum(
-                    float_round(
-                        line.price_unit * line.quantity,
-                        precision_rounding=move.currency_id.rounding
-                    )
-                    for line in move.invoice_line_ids.filtered(lambda l: l.display_type == 'product' or not l.display_type)
-                )
-                
+            if move.move_type in ('out_invoice', 'out_refund') and move.td_order_id:
+                expected_total = 0.0
+                for line in move.invoice_line_ids.filtered(lambda l: l.display_type == 'product' or not l.display_type):
+                    so_line = move.td_order_id.order_line.filtered(lambda sol: sol.product_id == line.product_id)[:1]
+                    if so_line and so_line.product_uom_qty:
+                        unit_price_with_tax = so_line.price_total / so_line.product_uom_qty
+                        expected_total += float_round(unit_price_with_tax * line.quantity, precision_rounding=move.currency_id.rounding)
+                    else:
+                        expected_total += line.price_total
+
                 if not move.currency_id.is_zero(move.amount_total - expected_total):
                     diff = expected_total - move.amount_total
                     move_ctx = move.with_context(check_move_validity=False)
@@ -175,7 +177,6 @@ class AccountMove(models.Model):
             move.amount_tax_signed = -total_tax
             move.amount_total_signed = abs(total) if move.move_type == 'entry' else -total
             move.amount_total_in_currency_signed = abs(move.amount_total) if move.move_type == 'entry' else -(sign * move.amount_total)
-
             if move.is_invoice(True) and move.td_order_id:
                 if not move.td_prepayment:
                     other_invoices = move.td_order_id.invoice_ids.filtered(lambda inv: inv.id != move.id)
