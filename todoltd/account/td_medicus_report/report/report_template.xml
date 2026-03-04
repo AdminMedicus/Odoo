@@ -2505,7 +2505,8 @@
                             </t>
                         </td>
                         <td class="text-center" rowspan="2" style="padding: 2px; vertical-align: middle;">
-                            <t t-foreach="line['storage_conditions']" t-as="condition">
+                            <t t-set="conditions" t-value="line['storage_conditions'] if is_transfer else line['storage_conditions_dest']"/>
+                            <t t-foreach="conditions" t-as="condition">
                                 <span t-esc="condition"/><br/>
                             </t>
                         </td>
