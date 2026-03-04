@@ -28,9 +28,17 @@ class AccountMove(models.Model):
         company_partner = company.partner_id
         warehouse_manager_id = company.td_warehouse_manager_id
         medical_manager_id = company.td_medical_warehouse_manager_id
-        partner = order.partner_shipping_id
+        partner = order.partner_shipping_id or order.partner_id
+        partner_name = (
+                partner.parent_id.full_partner_name or partner.parent_id.name
+            ) if partner.parent_id else (
+                partner.full_partner_name or partner.name
+            )
         delivery_partners = company_partner.child_ids.filtered(lambda p: p.type == 'delivery')
-        contact_partners = partner.child_ids.filtered(lambda p: p.type == 'contact')
+        
+        contact_partners = partner.child_ids.filtered(
+            lambda p: p.type == 'contact' and p.td_is_counterparty_physical_person
+        )
 
         fisical_address_partner = delivery_partners[0] if delivery_partners else company_partner
         contact_partner = contact_partners[0] if contact_partners else partner
@@ -61,7 +69,7 @@ class AccountMove(models.Model):
                 'tax_position': company_partner.property_account_position_id.name,
             },
             'partner': {
-                'name': partner.parent_id.full_partner_name or partner.full_partner_name,
+                'name': partner_name,
                 'registry': partner.company_registry or '',
                 'street': partner.parent_id.contact_address_complete,
                 'fisical_address': partner.contact_address_complete,
