@@ -1706,10 +1706,10 @@
                             <span t-esc="line['quantity']"/>
                         </td>
                         <td rowspan="2" class="text-end" style="padding: 2px; vertical-align: bottom;">
-                            <span t-esc="line['price_untaxed']"/>
+                            <span t-esc="'%.2f' % line['price_untaxed']"/>
                         </td>
                         <td rowspan="2" class="text-end" style="padding: 2px; vertical-align: bottom;">
-                            <span t-esc="line['price_subtotal']"/>
+                            <span t-esc="'%.2f' % line['price_subtotal']"/>
                         </td>
                     </tr>
                     <tr>
