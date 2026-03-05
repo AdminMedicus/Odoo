@@ -1502,15 +1502,15 @@
         <table class="table table-sm table-bordered o_ignore_layout_styling" style="font-size: 8px; margin-bottom: 5px;">
             <thead style="background-color: #f0f0f0;">
                 <tr>
-                    <th class="text-center" style="width: 2%; padding: 1px; vertical-align: middle;">№<br/>з/п</th>
-                    <th class="text-center" style="width: 30%; padding: 1px; vertical-align: middle;">Найменування</th>
-                    <th class="text-center" style="width: 10%; padding: 1px; vertical-align: middle;">Серія /<br/>Каталожний номер</th>
+                    <th class="text-center" style="width: 3%; padding: 1px; vertical-align: middle;">№<br/>з/п</th>
+                    <th class="text-center" style="width: 37%; padding: 1px; vertical-align: middle;">Найменування</th>
+                    <th class="text-center" style="width: 14%; padding: 1px; vertical-align: middle;">Серія /<br/>Каталожний номер</th>
                     <th class="text-center" style="width: 12%; padding: 1px; vertical-align: middle;">Умови зберігання /<br/>транспортування</th>
                     <th class="text-center" style="width: 5%; padding: 1px; vertical-align: middle;">Кількість</th>
-                    <th class="text-center" style="width: 4%; padding: 1px; vertical-align: middle;">Од.<br/>вим.</th>
+                    <th class="text-center" style="width: 6%; padding: 1px; vertical-align: middle;">Од.<br/>вим.</th>
                     <th class="text-center" style="width: 7%; padding: 1px; vertical-align: middle;">Термін<br/>придатності</th>
-                    <th class="text-center" style="width: 12%; padding: 1px; vertical-align: middle;">Відпускна<br/>ціна (грн.)</th>
-                    <th class="text-center" style="width: 18%; padding: 1px; vertical-align: middle;">Сума (грн.)</th>
+                    <th class="text-center" style="width: 8%; padding: 1px; vertical-align: middle;">Відпускна<br/>ціна (грн.)</th>
+                    <th class="text-center" style="width: 8%; padding: 1px; vertical-align: middle;">Сума (грн.)</th>
                 </tr>
             </thead>
             <tbody>
@@ -1519,7 +1519,7 @@
                         <td class="text-center" rowspan="2" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['sequence']"/>
                         </td>
-                        <td style="padding: 2px; vertical-align: middle;">
+                        <td style="padding: 2px; vertical-align: middle; border-bottom: 1px solid transparent;">
                             <span t-esc="line['product_name']"/>
                         </td>
                         <td class="text-center" style="padding: 2px; vertical-align: middle;">
@@ -1527,7 +1527,7 @@
                                 <span t-esc="serial_number"/><br/>
                             </t>
                         </td>
-                        <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                        <td class="text-center" style="padding: 2px; vertical-align: middle; border-bottom: 1px solid transparent;">
                             <t t-foreach="line['storage_conditions']" t-as="condition">
                                 <span t-esc="condition"/><br/>
                             </t>
@@ -1551,47 +1551,47 @@
                         </td>
                     </tr>
                     <tr style="page-break-inside: avoid;">
-                        <td class="text-end" style="padding: 2px; vertical-align: middle;">
+                        <td class="text-end" style="padding: 2px; vertical-align: middle; border-top: 1px solid transparent;">
                             <span style="font-size: 7px;" t-esc="line['product_manufacturer']"/>
                         </td>
                         <td class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['product_catalog_number']"/>
                         </td>
-                        <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                        <td class="text-center" style="padding: 2px; vertical-align: middle; border-top: 1px solid transparent;">
                             <span>Автоперевезення</span>
                         </td>
                     </tr>
                 </t>
-                <tr>
-                    <td style="padding: 2px; vertical-align: bottom; border-left: 0px solid transparent; border-bottom: 0px solid transparent" colspan="7">
+                <tr style="border-bottom: 1px solid transparent;">
+                    <td style="padding: 2px; vertical-align: bottom; border: none;" colspan="7">
                         <strong>До сплати:</strong> 
                         <span t-esc="report_data['amount_in_words']"/>
                     </td>
-                    <td class="text-end" style="padding: 2px; vertical-align: middle;">
+                    <td class="text-end" style="padding: 2px; vertical-align: middle; border: none;">
                         <strong>Разом:</strong>
                     </td>
-                    <td class="text-end" style="padding: 2px; vertical-align: middle;">
+                    <td class="text-end" style="padding: 2px; vertical-align: middle; border: none;">
                         <span t-esc="'%.2f' % report_data['amount_untaxed']"/>
                     </td>
                 </tr>
-                <tr>
-                    <td style="padding: 2px; vertical-align: bottom; border-left: 0px solid transparent; border-bottom: 0px solid transparent" colspan="7">
+                <tr style="border-bottom: 1px solid transparent;">
+                    <td style="padding: 2px; vertical-align: bottom; border: none;" colspan="7">
                         <strong>ПДВ:</strong> 
                         <span t-esc="'%.2f' % report_data['amount_tax']"/> грн.
                     </td>
-                    <td class="text-end" style="padding: 2px; vertical-align: middle;">
+                    <td class="text-end" style="padding: 2px; vertical-align: middle; border: none;">
                         <strong t-esc="report_data['tax_guide_name']"/>
                     </td>
-                    <td class="text-end" style="padding: 2px; vertical-align: middle;">
+                    <td class="text-end" style="padding: 2px; vertical-align: middle; border: none;">
                         <span t-esc="'%.2f' % (report_data['amount_tax'])"/>
                     </td>
                 </tr>
-                <tr>
-                    <td style="padding: 2px; vertical-align: bottom; border-left: 0px solid transparent; border-bottom: 0px solid transparent" colspan="7"/>
-                    <td class="text-end" style="padding: 2px; vertical-align: middle;">
+                <tr style="border-bottom: 1px solid transparent;">
+                    <td style="padding: 2px; vertical-align: bottom; border: none;" colspan="7"/>
+                    <td class="text-end" style="padding: 2px; vertical-align: middle; border: none;">
                         <strong>Всього:</strong>
                     </td>
-                    <td class="text-end" style="padding: 2px; vertical-align: middle;">
+                    <td class="text-end" style="padding: 2px; vertical-align: middle; border: none;">
                         <span t-esc="'%.2f' % report_data['amount_total']"/>
                     </td>
                 </tr>
@@ -1706,10 +1706,10 @@
                             <span t-esc="line['quantity']"/>
                         </td>
                         <td rowspan="2" class="text-end" style="padding: 2px; vertical-align: bottom;">
-                            <span t-esc="line['price_untaxed']"/>
+                            <span t-esc="'%.2f' % line['price_untaxed']"/>
                         </td>
                         <td rowspan="2" class="text-end" style="padding: 2px; vertical-align: bottom;">
-                            <span t-esc="line['price_subtotal']"/>
+                            <span t-esc="'%.2f' % line['price_subtotal']"/>
                         </td>
                     </tr>
                     <tr>
@@ -2505,7 +2505,8 @@
                             </t>
                         </td>
                         <td class="text-center" rowspan="2" style="padding: 2px; vertical-align: middle;">
-                            <t t-foreach="line['storage_conditions']" t-as="condition">
+                            <t t-set="conditions" t-value="line['storage_conditions'] if is_transfer else line['storage_conditions_dest']"/>
+                            <t t-foreach="conditions" t-as="condition">
                                 <span t-esc="condition"/><br/>
                             </t>
                         </td>
@@ -3014,12 +3015,6 @@
                                 </td>
                                 <td style="width: 50%;border-bottom: 1px solid #000; vertical-align: top; padding: 0 4px;"/>
                             </tr>
-                            <tr>
-                                <td style="vertical-align: top; padding: 0 4px;">
-                                    <span>Посада</span>
-                                </td>
-                                <td style="width: 50%;border-bottom: 1px solid #000; vertical-align: top; padding: 0 4px;"/>
-                            </tr>
                         </table>
                     </td>
                 </tr>
@@ -3039,6 +3034,17 @@
                                 <td class="text-center">
                                     <span style="font-size: 7px; vertical-align: top;">уповноважена особа аптечного складу, дата, підпис</span>
                                 </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td/>
+                    <td style="vertical-align: top;">
+                        <table border="0" class="table-sm o_ignore_layout_styling td_zero_border" style="width: 100%;">
+                            <tr>
+                                <td style="vertical-align: top; padding: 0 4px;">
+                                    <span>Посада</span>
+                                </td>
+                                <td style="width: 50%;border-bottom: 1px solid #000; vertical-align: top; padding: 0 4px;"/>
                             </tr>
                         </table>
                     </td>
