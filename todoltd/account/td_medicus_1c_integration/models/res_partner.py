@@ -47,3 +47,17 @@ class ResPartner(models.Model):
                     _("The EDRPOU / Company ID must contain exactly 8 or 10 digits. "
                       "Examples: 12345678 or 1234567890.")
                 )
+
+    @api.depends('vat')
+    def _get_report_info(self):
+        """
+        Заглушка для звітів Medicus, щоб не падало при виклику з партнера.
+        """
+        self.ensure_one()
+        return {
+            'name': self.name,
+            'address': self.contact_address,
+            'phone': self.phone,
+            'email': self.email,
+            # Якщо звіт захоче конкретні поля компанії, додамо їх сюди
+        }
