@@ -63,9 +63,6 @@ class AccountMove(models.Model):
                 'bank_account': company_partner.bank_ids[0].acc_number,
                 'bank_name': company_partner.bank_ids[0].bank_name,
                 'bank_bic': company_partner.bank_ids[0].bank_bic,
-                # 'license_issued_by': company_partner.td_license_issued_by,
-                # 'license_number': company_partner.td_license_number,
-                # 'license_date': company_partner.td_license_date,
                 'tax_position': company_partner.property_account_position_id.name,
             },
             'partner': {
@@ -122,35 +119,50 @@ class AccountMove(models.Model):
         for line in self.invoice_line_ids:
             if not line.product_id:
                 continue
-            line_num += 1
+
             location = order.picking_ids.filtered(
                 lambda p: line.td_order_line_id in p.move_ids_without_package.sale_line_id
             ).location_id
             move_line_ids = line.sale_line_ids.move_ids.filtered(
                 lambda m: m.picking_id.picking_type_code == 'outgoing'
             ).mapped('move_line_ids')
-            
-            line_data = {
-                'sequence': line_num,
-                'product_name': line.product_id.description_sale,
-                'product_code': line.product_id.default_code or '',
-                'product_serial_numbers': [
-                    l.name for l in move_line_ids.mapped('lot_id')]
-                    if move_line_ids else [],
-                'product_catalog_number': line.product_id.default_code or '',
-                'product_manufacturer': line.product_id.td_manufacturer_directory_res_id.name or '',
-                'storage_conditions': location.mapped('td_condition_ids.name'),
-                'quantity': line.quantity,
-                'uom': line.product_uom_id.name,
-                'expiration_dates': [
-                    d.strftime('%d.%m.%Y') if d else ''
-                    for d in move_line_ids.mapped('expiration_date')
-                ]
-                if move_line_ids else [],
-                'price_untaxed': line.td_untaxed_price_unit,
-                'price_subtotal': line.price_subtotal,
-            }
+
             data['warehouse_address'] = fisical_address_partner.contact_address_complete
-            data['lines'].append(line_data)
-        
+
+            if move_line_ids:
+                for ml in move_line_ids:
+                    line_num += 1
+                    line_data = {
+                        'sequence': line_num,
+                        'product_name': line.product_id.description_sale,
+                        'product_code': line.product_id.default_code or '',
+                        'product_serial_numbers': [ml.lot_id.name] if ml.lot_id else [],
+                        'product_catalog_number': line.product_id.default_code or '',
+                        'product_manufacturer': line.product_id.td_manufacturer_directory_res_id.name or '',
+                        'storage_conditions': location.mapped('td_condition_ids.name'),
+                        'quantity': ml.quantity,
+                        'uom': line.product_uom_id.name,
+                        'expiration_dates': [ml.expiration_date.strftime('%d.%m.%Y')] if ml.expiration_date else [],
+                        'price_untaxed': line.td_untaxed_price_unit,
+                        'price_subtotal': line.td_untaxed_price_unit * ml.quantity,
+                    }
+                    data['lines'].append(line_data)
+            else:
+                line_num += 1
+                line_data = {
+                    'sequence': line_num,
+                    'product_name': line.product_id.description_sale,
+                    'product_code': line.product_id.default_code or '',
+                    'product_serial_numbers': [],
+                    'product_catalog_number': line.product_id.default_code or '',
+                    'product_manufacturer': line.product_id.td_manufacturer_directory_res_id.name or '',
+                    'storage_conditions': location.mapped('td_condition_ids.name'),
+                    'quantity': line.quantity,
+                    'uom': line.product_uom_id.name,
+                    'expiration_dates': [],
+                    'price_untaxed': line.td_untaxed_price_unit,
+                    'price_subtotal': line.price_subtotal,
+                }
+                data['lines'].append(line_data)
+
         return data
