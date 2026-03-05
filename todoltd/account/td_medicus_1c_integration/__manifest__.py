@@ -14,7 +14,7 @@
         'purchase_stock',
         'sale_margin',
         'td_medicus_uktzed',
-        'td_medicus_agreement'
+        'td_medicus_agreement',
         'td_medicus_report',
     ],
     'data': [
