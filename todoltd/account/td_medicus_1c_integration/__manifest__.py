@@ -1,6 +1,6 @@
 {
     'name': 'TD Medicus 1C Integration',
-    "version": '18.0.0.0.50',
+    "version": '18.0.0.0.52',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
@@ -15,6 +15,7 @@
         'sale_margin',
         'td_medicus_uktzed',
         'td_medicus_agreement'
+        'td_medicus_report',
     ],
     'data': [
         # data
@@ -45,7 +46,6 @@
             "td_medicus_1c_integration/static/src/js/sale_product_field.js",
         ]
     },
-    'post_init_hook': 'post_init_hook_fix_balances',
     "installable": True,
     "application": True,
 }
