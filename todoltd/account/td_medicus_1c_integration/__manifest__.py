@@ -1,6 +1,6 @@
 {
     'name': 'TD Medicus 1C Integration',
-    "version": '18.0.0.0.53',
+    "version": '18.0.0.0.54',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
@@ -15,7 +15,6 @@
         'sale_margin',
         'td_medicus_uktzed',
         'td_medicus_agreement',
-        'td_medicus_report',
     ],
     'data': [
         # data
