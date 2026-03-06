@@ -154,10 +154,21 @@ class AccountMove(models.Model):
         missing_fields = {}
         
         required_fields = [
-            'co_number', 'co_validity_period', 'co_delivery_period', 'co_delivery_terms',
-            'co_manager', 'co_manager_number', 'consignee', 'consignee_code',
-            'partner_name', 'vendor_name', 'recipient_name', 'buyer', 'shipper',
-            'amount_in_words', 'tax_guide_name'
+            'co_number', 
+            'co_validity_period', 
+            'co_delivery_period', 
+            'co_delivery_terms',
+            'co_manager', 
+            'co_manager_number', 
+            'consignee', 
+            'consignee_code',
+            'partner_name', 
+            'vendor_name', 
+            'recipient_name', 
+            'buyer', 
+            'shipper',
+            'amount_in_words', 
+            'tax_guide_name'
         ]
         
         for field in required_fields:
@@ -488,23 +499,18 @@ class AccountMove(models.Model):
         res = super()._post(soft)
         
         for move in self:
-            payment_term_lines = move.line_ids.filtered(lambda l: l.display_type == 'payment_term')
-            for line in payment_term_lines:
-                line.amount_residual = line.balance
-                line.amount_residual_currency = line.amount_currency
+            if move.move_type not in ('out_invoice', 'in_invoice', 'out_refund', 'in_refund'):
+                continue
+            
+            move._compute_tax_totals() 
+            
+            for line in move.line_ids.filtered(lambda l: l.display_type == 'payment_term'):
+                line.with_context(check_move_validity=False).write({
+                    'amount_residual': line.balance,
+                    'amount_residual_currency': line.amount_currency,
+                })
 
-        self.invalidate_model(
-            [
-                'amount_residual', 
-                'amount_residual_signed', 
-                'payment_state'
-            ]
-        )
-        self.env['account.move.line'].flush_model(
-            [
-                'amount_residual', 
-                'amount_residual_currency'
-            ]
-        )
-
+        self.invalidate_recordset()
+        self.env['account.move.line'].invalidate_model(['amount_residual', 'amount_residual_currency'])
+        
         return res

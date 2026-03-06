@@ -107,24 +107,32 @@ class StockPicking(models.Model):
 
         return True
 
-    @api.depends('move_ids_without_package')
+    @api.depends(
+        'move_ids_without_package', 
+        'sale_id', 
+        'sale_id.amount_untaxed', 
+        'sale_id.amount_tax',
+        'td_total_tax',
+        'td_total_without_tax',
+    )
     def _compute_total_amounts(self):
         for rec in self:
-            lines = rec.move_ids_without_package
-            rec.td_amount_origin_currency = sum(lines.mapped('td_price_subtotal')) or 0
-            # rec.td_total_without_tax = sum(lines.mapped('td_price_subtotal')) or 0
-            rec.td_total_tax = sum(lines.mapped('td_taxes_price')) or 0
-
-            if rec.td_is_import:
-                rec.td_total_without_tax = sum([
-                    move.td_customs_value_good
-                    for move in rec.move_ids_without_package
-                ])
+            if rec.sale_id:
+                rec.td_total_without_tax = rec.sale_id.amount_untaxed
+                rec.td_total_tax = rec.sale_id.amount_tax
+                rec.td_amount_origin_currency = rec.sale_id.amount_total
             else:
-                rec.td_total_without_tax = sum([
-                    move.td_price_subtotal
-                    for move in rec.move_ids_without_package
-                ])
+                lines = rec.move_ids_without_package
+                rec.td_total_tax = sum(lines.mapped('td_taxes_price')) or 0.0
+                
+                if rec.td_is_import:
+                    rec.td_total_without_tax = sum(lines.mapped('td_customs_value_good')) or 0.0
+                else:
+                    rec.td_total_without_tax = sum(lines.mapped('td_price_subtotal')) or 0.0
+                
+                rec.td_amount_origin_currency = rec.td_total_without_tax + rec.td_total_tax
+            
+            rec.td_total_amount = rec.td_total_without_tax + rec.td_total_tax
 
     @api.depends('picking_type_id')
     def _compute_picking_code(self):
