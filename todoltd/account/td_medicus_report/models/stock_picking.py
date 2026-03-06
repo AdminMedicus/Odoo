@@ -751,8 +751,8 @@ class StockPicking(models.Model):
         invoice_partner = sale_order.partner_invoice_id if sale_order and sale_order.partner_invoice_id else vendor_partner
         
         shipping_partner = sale_order.partner_shipping_id if sale_order and sale_order.partner_shipping_id else vendor_partner
-        vendor_recipient = vendor_partner.child_ids.filtered(lambda p: p.type == 'contact' and p.use_in_vendor_refund_report)[0]
-        vendor_recipient_name = vendor_recipient.full_partner_name or vendor_recipient.name if vendor_recipient else ''
+        vendor_recipient = vendor_partner.child_ids.filtered(lambda p: p.type == 'contact' and p.use_in_vendor_refund_report)
+        vendor_recipient_name = vendor_recipient[0].full_partner_name or vendor_recipient[0].name if vendor_recipient else ''
         
         payment_partner = None
         if sale_order and sale_order.partner_invoice_id and sale_order.partner_invoice_id != vendor_partner:

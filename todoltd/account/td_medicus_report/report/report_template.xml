@@ -1786,9 +1786,7 @@
                     <th colspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Док. постачальника</th>
                     <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Кількість</th>
                     <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Од. виміру</th>
-                    <!-- <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Ціна за контрактом</th> -->
                     <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Митна вартість</th>
-                    <!-- <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Націнка пост.</th> -->
                     <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Ціна без ПДВ</th>
                     <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Сума без ПДВ</th>
                 </tr>
@@ -1833,15 +1831,9 @@
                         <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['uom']"/>
                         </td>
-                        <!-- <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
-                            <span t-esc="'%.2f' % line['contract_price']"/>
-                        </td> -->
                         <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="'%.2f' % line['customs_value']"/>
                         </td>
-                        <!-- <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
-                            <span t-esc="'%.2f' % line['supplier_markup']"/>
-                        </td> -->
                         <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="'%.2f' % line['price_untaxed']"/>
                         </td>
@@ -3433,7 +3425,7 @@
                                     <strong>Посада:</strong>
                                 </td>
                                 <td colspan="3" style="border-bottom: 1px solid #000;">
-                                    менеджер по роботі з клієнтами
+                                    Фах. по роботі з кліентами
                                 </td>
                             </tr>
                             <tr>
