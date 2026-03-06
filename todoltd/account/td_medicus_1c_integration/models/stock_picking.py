@@ -83,7 +83,6 @@ class StockPicking(models.Model):
         - changes the status to state='import' (Awaiting allocation of expenses from the customs declaration)
         - adds to the exchange queue (ata.exchange.queue) so that 1C can retrieve the data
         """
-        Queue = self.env["ata.exchange.queue"].sudo()
 
         for picking in self:
             if picking.picking_type_code != "incoming":
@@ -97,8 +96,6 @@ class StockPicking(models.Model):
 
             if picking.state != "import":
                 picking.write({"state": "import"})
-
-            Queue.change_in_queue(picking.sudo())
 
             picking.message_post(
                 body=_("Prepared. The document has been queued for exchange "
