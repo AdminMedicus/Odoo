@@ -284,7 +284,7 @@ class AccountMove(models.Model):
         'invoice_line_ids.tax_line_id',
         'invoice_payment_term_id',
         'partner_id',
-        'td_paid_invoice',
+        # 'td_paid_invoice',
     )
     def _compute_tax_totals(self):
         for move in self:
@@ -312,8 +312,8 @@ class AccountMove(models.Model):
                         and summary['has_tax_groups']
                         and move.is_sale_document(include_receipts=True)
                 )
-                if move.td_paid_invoice:
-                    summary = self._zero_tax_amounts(summary)
+                # if move.td_paid_invoice:
+                #     summary = self._zero_tax_amounts(summary)
                 move.tax_totals = summary
                 move.td_tax_totals = summary
             else:
@@ -330,25 +330,25 @@ class AccountMove(models.Model):
         'invoice_line_ids.tax_line_id',
         'invoice_payment_term_id',
         'partner_id',
-        'td_paid_invoice',
+        # 'td_paid_invoice',
     )
     def _compute_td_tax_totals(self):
         self._compute_tax_totals()
 
-    def _zero_tax_amounts(self, tax_totals: dict) -> dict:
-        if not tax_totals:
-            return tax_totals
-        tax_totals = dict(tax_totals)
-        for key in ['tax_amount', 'tax_amount_currency', 'total_amount', 'total_amount_currency']:
-            if key in tax_totals:
-                tax_totals[key] = 0.0
-        for subtotal in tax_totals.get('subtotals', []):
-            subtotal['tax_amount_currency'] = 0.0
-            subtotal['tax_amount'] = 0.0
-            for group in subtotal.get('tax_groups', []):
-                group['tax_amount_currency'] = 0.0
-                group['tax_amount'] = 0.0
-        return tax_totals
+    # def _zero_tax_amounts(self, tax_totals: dict) -> dict:
+    #     if not tax_totals:
+    #         return tax_totals
+    #     tax_totals = dict(tax_totals)
+    #     for key in ['tax_amount', 'tax_amount_currency', 'total_amount', 'total_amount_currency']:
+    #         if key in tax_totals:
+    #             tax_totals[key] = 0.0
+    #     for subtotal in tax_totals.get('subtotals', []):
+    #         subtotal['tax_amount_currency'] = 0.0
+    #         subtotal['tax_amount'] = 0.0
+    #         for group in subtotal.get('tax_groups', []):
+    #             group['tax_amount_currency'] = 0.0
+    #             group['tax_amount'] = 0.0
+    #     return tax_totals
 
     def action_create_td_tax_invoice(self):
         for move in self:
