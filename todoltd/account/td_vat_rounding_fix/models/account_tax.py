@@ -18,33 +18,46 @@ class AccountTax(models.Model):
         if not isinstance(taxes, models.BaseModel):
             taxes = self.env["account.tax"].browse([int(x) for x in taxes])
 
-        incl_percent = taxes.filtered(lambda t: t.price_include and t.amount_type == "percent")
-        if not incl_percent:
+        included_percent_taxes = taxes.filtered(
+            lambda tax: tax.price_include_override == "tax_included" and tax.amount_type == "percent"
+        )
+        if not included_percent_taxes:
             return
 
         currency = base_line.get("currency") or base_line.get("currency_id") or company.currency_id
         if isinstance(currency, int):
             currency = self.env["res.currency"].browse(currency)
 
-        qty = base_line.get("quantity") or 0.0
-        if not qty:
+        quantity = base_line.get("quantity") or 0.0
+        if not quantity:
             return
 
         price_unit = base_line.get("price_unit") or 0.0
         discount = base_line.get("discount") or 0.0
-        price_unit_disc = price_unit * (1.0 - (discount / 100.0))
+        discounted_price_unit = price_unit * (1.0 - (discount / 100.0))
 
-        rate = sum(incl_percent.mapped("amount")) / 100.0
+        rate = sum(included_percent_taxes.mapped("amount")) / 100.0
         if not rate:
             return
 
-        unit_excl = currency.round(price_unit_disc / (1.0 + rate))
-        total_excl = currency.round(unit_excl * qty)
+        unit_excluded = currency.round(discounted_price_unit / (1.0 + rate))
+        total_excluded = currency.round(unit_excluded * quantity)
 
-        td = base_line.get("tax_details") or {}
+        tax_details = base_line.get("tax_details") or {}
 
-        for k in ("raw_total_excluded_currency", "base_amount_currency", "total_excluded_currency"):
-            if k in td:
-                td[k] = total_excl
+        for key in (
+            "raw_total_excluded_currency",
+            "base_amount_currency",
+            "total_excluded_currency",
+        ):
+            if key in tax_details:
+                tax_details[key] = total_excluded
 
-        base_line["tax_details"] = td
+        if "raw_base_amount_currency" in tax_details:
+            tax_details["raw_base_amount_currency"] = total_excluded
+        if "base_amount" in tax_details:
+            tax_details["base_amount"] = total_excluded
+        if "raw_base_amount" in tax_details:
+            tax_details["raw_base_amount"] = total_excluded
+
+        base_line["tax_details"] = tax_details
