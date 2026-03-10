@@ -24,7 +24,6 @@ class AccountMoveLine(models.Model):
             discount = line.discount or 0.0
             price_unit_disc = line.price_unit * (1.0 - (discount / 100.0))
 
-            # Обычная логика для tax excluded / default
             if not line._td_has_tax_included_override():
                 taxes_res = line.tax_ids.compute_all(
                     price_unit_disc,
@@ -38,7 +37,6 @@ class AccountMoveLine(models.Model):
                 line.price_total = taxes_res["total_included"]
                 continue
 
-            # Кастомная логика для tax included
             included_taxes = line.tax_ids.filtered(
                 lambda tax: tax.price_include_override == "tax_included" and tax.amount_type == "percent"
             )
