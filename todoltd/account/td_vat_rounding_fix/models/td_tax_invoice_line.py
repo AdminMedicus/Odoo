@@ -138,17 +138,31 @@ class TdTaxInvoiceLine(models.Model):
                 continue
 
             last_line = lines[-1]
-            last_line.sum_price_with_vat = currency.round(last_line.sum_price_with_vat + delta)
-            last_line.sum_price_with_out_vat = currency.round(
-                last_line.sum_price_with_out_vat + delta
-            )
+            new_gross_total = currency.round(last_line.sum_price_with_vat + delta)
+
+            tax_rate = (last_line.vat_id.amount or 0.0) / 100.0
+            qty = last_line.quantity or last_line.invoice_quantity or last_line.sale_order_quantity or 0.0
+
+            last_line.sum_price_with_vat = new_gross_total
+
+            if tax_rate:
+                last_line.sum_price_with_out_vat = currency.round(
+                    new_gross_total / (1.0 + tax_rate)
+                )
+            else:
+                last_line.sum_price_with_out_vat = new_gross_total
+
             last_line.sum_vat_price = currency.round(
                 last_line.sum_price_with_vat - last_line.sum_price_with_out_vat
             )
-            qty = last_line.quantity or last_line.invoice_quantity or last_line.sale_order_quantity or 0.0
+
             if qty:
-                last_line.price_with_out_vat = currency.round(last_line.sum_price_with_out_vat / qty)
-                last_line.vat_price = currency.round(last_line.sum_vat_price / qty)
+                last_line.price_with_out_vat = currency.round(
+                    last_line.sum_price_with_out_vat / qty
+                )
+                last_line.vat_price = currency.round(
+                    last_line.sum_vat_price / qty
+                )
             else:
                 last_line.price_with_out_vat = 0.0
                 last_line.vat_price = 0.0
