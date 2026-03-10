@@ -6,3 +6,4 @@ from . import account_move
 from . import account_move_line
 from . import td_tax_invoice
 from . import td_tax_invoice_line
+from . import stock_move
