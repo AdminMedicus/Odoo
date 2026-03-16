@@ -1562,7 +1562,7 @@
                         </td>
                     </tr>
                 </t>
-                <tr style="border-bottom: 1px solid transparent;">
+                <tr style="border-bottom: 1px solid transparent; border-left: 1px solid transparent; border-right: 1px solid transparent;">
                     <td style="padding: 2px; vertical-align: bottom; border: none;" colspan="7">
                         <strong>До сплати:</strong> 
                         <span t-esc="report_data['amount_in_words']"/>
@@ -1574,7 +1574,7 @@
                         <span t-esc="'%.2f' % report_data['amount_untaxed']"/>
                     </td>
                 </tr>
-                <tr style="border-bottom: 1px solid transparent;">
+                <tr style="border-bottom: 1px solid transparent; border-left: 1px solid transparent; border-right: 1px solid transparent;">
                     <td style="padding: 2px; vertical-align: bottom; border: none;" colspan="7">
                         <strong>ПДВ:</strong> 
                         <span t-esc="'%.2f' % report_data['amount_tax']"/> грн.
@@ -3666,7 +3666,7 @@
     <template id="report_invoice_act_document">
         <t t-call="web.basic_layout">
             <t t-set="o" t-value="o.with_context(lang=lang)"/>
-            <t t-set="report_data" t-value="o.td_get_report_data()"/>
+            <t t-set="report_data" t-value="o.td_get_invoice_report_data()"/>
             <t t-set="company_data" t-value="report_data['company']"/>
             <t t-set="company_partner_data" t-value="report_data['company_partner']"/>
             <t t-set="partner_data" t-value="report_data['partner']"/>

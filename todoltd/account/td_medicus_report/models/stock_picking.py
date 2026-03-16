@@ -233,8 +233,6 @@ class StockPicking(models.Model):
             'tax_guide_name': order.td_tax_guide_id.name,
         }
 
-        lenses_category_keywords = ('лінз',)
-
         line_num = 0
         for move in self.move_ids_without_package:
             product = move.product_id
@@ -243,73 +241,56 @@ class StockPicking(models.Model):
             default_code = product.default_code or ''
             move_line_ids = move.move_line_ids
 
-            categ_name = (product.categ_id.complete_name or '').lower()
-            is_lenses = any(kw in categ_name for kw in lenses_category_keywords)
+            # Group move lines by lot for batch quantity transparency
+            lots = {}
+            for ml in move_line_ids:
+                lot_key = ml.lot_id.id or 0
+                if lot_key in lots:
+                    lots[lot_key]['quantity'] += ml.quantity
+                else:
+                    lots[lot_key] = {
+                        'lot_id': ml.lot_id,
+                        'quantity': ml.quantity,
+                        'expiration_date': ml.expiration_date,
+                        'location_id': ml.location_id,
+                    }
 
-            if is_lenses:
+            for lot_info in lots.values():
                 line_num += 1
+                lot = lot_info['lot_id']
+                serial_name = lot.name if lot else ''
+                product_name = base_product_name
+                if serial_name:
+                    product_name = '%s (%s)' % (base_product_name, serial_name)
+
+                exp_date = (
+                    lot_info['expiration_date'].strftime('%d.%m.%Y')
+                    if lot_info['expiration_date'] else None
+                )
+                qty = lot_info['quantity']
+
                 line_data = {
                     'sequence': line_num,
-                    'product_name': base_product_name,
+                    'product_name': product_name,
                     'product_manufacturer': manufacturer,
-                    'quantity': move.product_uom_qty,
+                    'quantity': qty,
                     'customs_value': 0,
                     'price_untaxed': move.td_untaxed_price_unit,
                     'price_unit': move.td_price_unit,
                     'account_price': 0,
-                    'price_subtotal': move.td_price_subtotal,
-                    'price_total': move.td_price_total,
+                    'price_subtotal': move.td_untaxed_price_unit * qty,
+                    'price_total': move.td_price_unit * qty,
                     'account_total': 0,
                     'markup_coefficient': 0,
                     'default_code': default_code,
-                    'product_serial_numbers': [
-                        lot.name for lot in move_line_ids.mapped('lot_id') if lot.name
-                    ],
+                    'product_serial_numbers': [serial_name] if serial_name else [],
                     'registration_certificate': '',
                     'quality_certificate': '',
-                    'expiration_dates': [
-                        d.strftime('%d.%m.%Y') if d else None
-                        for d in move_line_ids.mapped('expiration_date')
-                    ],
-                    'stock_inventory': move_line_ids.mapped('location_id.complete_name'),
+                    'expiration_dates': [exp_date] if exp_date else [],
+                    'stock_inventory': lot_info['location_id'].complete_name if lot_info['location_id'] else '',
                 }
                 data['lines'].append(line_data)
-            else:
-                for ml in move_line_ids:
-                    line_num += 1
-                    serial_name = ml.lot_id.name if ml.lot_id else ''
-                    product_name = base_product_name
-                    if serial_name:
-                        product_name = '%s (%s)' % (base_product_name, serial_name)
 
-                    exp_date = (
-                        ml.expiration_date.strftime('%d.%m.%Y')
-                        if ml.expiration_date else None
-                    )
-                    qty = ml.quantity
-
-                    line_data = {
-                        'sequence': line_num,
-                        'product_name': product_name,
-                        'product_manufacturer': manufacturer,
-                        'quantity': qty,
-                        'customs_value': 0,
-                        'price_untaxed': move.td_untaxed_price_unit,
-                        'price_unit': move.td_price_unit,
-                        'account_price': 0,
-                        'price_subtotal': move.td_untaxed_price_unit * qty,
-                        'price_total': move.td_price_unit * qty,
-                        'account_total': 0,
-                        'markup_coefficient': 0,
-                        'default_code': default_code,
-                        'product_serial_numbers': [serial_name] if serial_name else [],
-                        'registration_certificate': '',
-                        'quality_certificate': '',
-                        'expiration_dates': [exp_date] if exp_date else [],
-                        'stock_inventory': ml.location_id.complete_name if ml.location_id else '',
-                    }
-                    data['lines'].append(line_data)
-        
         return data
 
     def td_get_report_waybill_data(self):
