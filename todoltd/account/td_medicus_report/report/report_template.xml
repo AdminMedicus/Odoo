@@ -1562,7 +1562,7 @@
                         </td>
                     </tr>
                 </t>
-                <tr style="border-bottom: 1px solid transparent;">
+                <tr style="border-bottom: 1px solid transparent; border-left: 1px solid transparent; border-right: 1px solid transparent;">
                     <td style="padding: 2px; vertical-align: bottom; border: none;" colspan="7">
                         <strong>До сплати:</strong> 
                         <span t-esc="report_data['amount_in_words']"/>
@@ -1574,7 +1574,7 @@
                         <span t-esc="'%.2f' % report_data['amount_untaxed']"/>
                     </td>
                 </tr>
-                <tr style="border-bottom: 1px solid transparent;">
+                <tr style="border-bottom: 1px solid transparent; border-left: 1px solid transparent; border-right: 1px solid transparent;">
                     <td style="padding: 2px; vertical-align: bottom; border: none;" colspan="7">
                         <strong>ПДВ:</strong> 
                         <span t-esc="'%.2f' % report_data['amount_tax']"/> грн.
@@ -1786,9 +1786,7 @@
                     <th colspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Док. постачальника</th>
                     <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Кількість</th>
                     <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Од. виміру</th>
-                    <!-- <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Ціна за контрактом</th> -->
                     <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Митна вартість</th>
-                    <!-- <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Націнка пост.</th> -->
                     <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Ціна без ПДВ</th>
                     <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Сума без ПДВ</th>
                 </tr>
@@ -1833,15 +1831,9 @@
                         <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['uom']"/>
                         </td>
-                        <!-- <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
-                            <span t-esc="'%.2f' % line['contract_price']"/>
-                        </td> -->
                         <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="'%.2f' % line['customs_value']"/>
                         </td>
-                        <!-- <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
-                            <span t-esc="'%.2f' % line['supplier_markup']"/>
-                        </td> -->
                         <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="'%.2f' % line['price_untaxed']"/>
                         </td>
@@ -3433,7 +3425,7 @@
                                     <strong>Посада:</strong>
                                 </td>
                                 <td colspan="3" style="border-bottom: 1px solid #000;">
-                                    менеджер по роботі з клієнтами
+                                    Фах. по роботі з кліентами
                                 </td>
                             </tr>
                             <tr>
@@ -3674,7 +3666,7 @@
     <template id="report_invoice_act_document">
         <t t-call="web.basic_layout">
             <t t-set="o" t-value="o.with_context(lang=lang)"/>
-            <t t-set="report_data" t-value="o.td_get_report_data()"/>
+            <t t-set="report_data" t-value="o.td_get_invoice_report_data()"/>
             <t t-set="company_data" t-value="report_data['company']"/>
             <t t-set="company_partner_data" t-value="report_data['company_partner']"/>
             <t t-set="partner_data" t-value="report_data['partner']"/>
