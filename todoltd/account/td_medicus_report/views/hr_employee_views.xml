@@ -9,6 +9,7 @@
 
             <xpath expr="//field[@name='work_email']" position="before">
                 <field name="td_partner_short_name"/>
+                <field name="td_driver_license_number"/>
             </xpath>
 
         </field>
