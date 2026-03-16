@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="fleet_vehicle_view_form_ttn_inherit" model="ir.ui.view">
+        <field name="name">fleet.vehicle.form.ttn.inherit</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='license_plate']" position="after">
+                <field name="td_transport_ownership"/>
+            </xpath>
+
+            <xpath expr="//sheet//group" position="inside">
+                <group string="Параметри кузова">
+                    <field name="td_body_length"/>
+                    <field name="td_body_width"/>
+                    <field name="td_body_height"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
