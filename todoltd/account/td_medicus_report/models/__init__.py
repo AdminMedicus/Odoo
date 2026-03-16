@@ -9,3 +9,4 @@ from . import sale_order
 from . import stock_location
 from . import stock_picking
 from . import td_stock_condition
+from . import fleet_vehicle
