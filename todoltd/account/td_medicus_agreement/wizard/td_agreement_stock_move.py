@@ -1,5 +1,7 @@
+import logging
 from odoo import models, fields, api
 
+_logger = logging.getLogger(__name__)
 
 class TdStockMove(models.TransientModel):
     _name = "td.agreement.stock.move"
@@ -116,14 +118,16 @@ class TdStockMove(models.TransientModel):
             }
 
             lots = self._fifo_pick_move_lines(rec.move_id, rec.quantity, rec.product_uom)
+            _logger.info(f"Picked lots for move {rec.move_id.id}: {[(ml.id, qty) for ml, qty in lots]}")
             record['quantity'] = rec.quantity
 
             odoo_record = self.env['stock.move'].sudo().create(record)
+            _logger.info(f"Lines created for move {odoo_record.id}: {odoo_record.move_line_ids.ids}")
 
             if lots:
-                for odoo_id, odoo_rec in enumerate(odoo_record.move_line_ids):
-                    odoo_rec.quant_id = lots[odoo_id][0].quant_id.id
-                    odoo_rec.lot_id = lots[odoo_id][0].lot_id.id
+                for odoo_rec, (src_ml, _qty) in zip(odoo_record.move_line_ids, lots):
+                    odoo_rec.quant_id = src_ml.quant_id.id
+                    odoo_rec.lot_id = src_ml.lot_id.id
 
             odoo_record.quantity = rec.quantity
 
