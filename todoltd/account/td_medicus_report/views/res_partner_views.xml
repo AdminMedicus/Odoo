@@ -7,8 +7,7 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
 
-            <xpath expr="//field[@name='name']" position="after">
-                <field name="full_partner_name"/>
+            <xpath expr="//field[@name='full_partner_name']" position="after">
                 <field name="td_partner_short_name"/>
                 <field name="td_driver_license_number"/>
             </xpath>
