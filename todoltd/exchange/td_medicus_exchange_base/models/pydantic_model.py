@@ -39,9 +39,27 @@ class PartnerDataBase(BaseModelPydantic):
     name: str
     ext_id: int | None = None
 
-class VendorDataIncoming(PartnerDataBase):
+class ManufacturerDataIncoming(PartnerDataBase):
     name_full: str
     name_country: str
+
+class SupplierDataIncoming(PartnerDataBase):
+    name_full: str
+
+class AddressDeliveryData(BaseModelPydantic):
+    id: str
+    name: str
+    ext_id: int | None = None
+    type: str
+    recipient: str
+    phone: str
+    time: str
+
+class ContactData(BaseModelPydantic):
+    type: str
+    id: int | None = None
+    name: str
+    function: str
 
 class PartnerDataFull(PartnerDataBase):
     name_full: str
@@ -51,10 +69,10 @@ class PartnerDataFull(PartnerDataBase):
     address: str
     phone: str
     region: str
-    job_function: str
-    job_name: str
     manager: ManagerDataIncoming
     sub_clients: list[PartnerDataBase]
+    addresses_delivery: list[AddressDeliveryData]
+    contacts: list[ContactData]
 
 class AgreementType(BaseModelPydantic):
     id: str
@@ -112,10 +130,12 @@ class ProductDataIncoming(BaseModelPydantic):
     name_full: str
     tax_code: TaxCodeEnum
     category: str
-    vendor: VendorDataIncoming | None = None
+    manufacturer: ManufacturerDataIncoming | None = None
+    suppliers: list[SupplierDataIncoming]
     uktzed: str
     account_code: str
-    supplier_code: str
+    catalog_code: str
+    barcode: str = ''
     tracking_lot: StrBool
 
 SALE_TAX_MAPPING = {

@@ -4,12 +4,21 @@ from odoo.addons.ata_exchange_v4.models.ata_exchange_method import AtaExchangeMe
 from odoo.addons.ata_exchange_v4.models.ata_exchange_class  import AtaExchangeClass
 from odoo.addons.base.models.res_partner import Partner
 from odoo.addons.ata_exchange_v4.models.ata_exchange_model_handler_mixin import RecordHandlerParams
+from ...ata_exchange_v4.models.ata_exchange_system_types import ExtResponse
 
-from typing import cast
+from typing import cast, TypedDict
+
+
+class JobContacts(TypedDict):
+    director: Partner | None
+    persons: Partner
+    other_contacts: Partner
 from .pydantic_model import (
-    VendorDataIncoming,
+    ManufacturerDataIncoming,
+    SupplierDataIncoming,
     PartnerDataBase,
     PartnerDataWithAgreements,
+    AddressDeliveryData,
     ManagerDataIncoming,
     CleanInt
 )
@@ -17,6 +26,15 @@ from .pydantic_model import (
 class TdResPartnerExchange(models.Model):
     _name = 'res.partner'
     _inherit = ['res.partner','ata.exchange.class','ata.exchange.model.handler.mixin']
+
+    def write(self, vals):
+        over_write = super(TdResPartnerExchange, self).write(vals)
+        if over_write:
+            for record in self:
+                if record.parent_id and record.td_is_counterparty_physical_person:
+                    record.parent_id.ata_exchange_add_to_queue()
+
+        return over_write
 
     #region outgoing function
     def ata_exchange_compute_methods(self) -> list[AtaExchangeMethod]:
@@ -31,13 +49,20 @@ class TdResPartnerExchange(models.Model):
     @AtaExchangeClass.ata_exchange_get_data_record_format()
     def ata_exchange_get_data_record(self, method: AtaExchangeMethod|None = None, as_node = False) -> list[dict]|dict|str:
         def get_job_data(record: Partner) -> dict:
-            job_tuple = record.ata_exchange_get_job_contacts()
-            contact = job_tuple[0] or job_tuple[1]
+            job_contacts = record.ata_exchange_get_job_contacts()
+            chief_contact = job_contacts["director"] or job_contacts["other_contacts"][:1]
 
             return {
-                "job_function": contact.function,
-                "job_name": contact.name,
-            } if contact else {}
+                **({
+                    "job_function": chief_contact.function,
+                    "job_name": chief_contact.name,
+                } if chief_contact else {}),
+                "contacts": [{
+                    "id": contact.id,
+                    "name": contact.name,
+                    "function": contact.function,
+                } for contact in job_contacts["persons"]]
+            }
                     
         return [{
             "full_data":    False,
@@ -50,7 +75,7 @@ class TdResPartnerExchange(models.Model):
             "company_registry": self._str_empty(record.company_registry),
             **({
                 "full_data":   True,
-                "region":   self._str_empty(record.region_id.name),
+                "region":   self._str_empty(record.region_id.full_name),
                 "manager":  record.user_id.exchange_data,
                 "address":  self.ata_exchange_get_structured_address(),
                 "phone":    self._str_empty(record.phone),
@@ -62,24 +87,26 @@ class TdResPartnerExchange(models.Model):
                 **get_job_data(record),
             } if as_node else {}),
         } for record in self]
+    #endregion
 
-    def ata_exchange_get_job_contacts(self) -> tuple[Partner | None, Partner | None]:
-        """
-        Get job contacts for partner.
-        Returns:
-            tuple[Partner | None, Partner | None]: Tuple of director and first any contact.
-        """
+    def ata_exchange_get_job_contacts(self) -> JobContacts:
         self.ensure_one()
         job_function_name = 'Директор'
 
-        child_contacts = self.env['res.partner'].search([('parent_id', '=', self.id)])
-        director = child_contacts.filtered(
+        contacts = self.env['res.partner'].search([('parent_id', '=', self.id)])
+        director = contacts.filtered(
             lambda c: c.function and c.function.strip().lower() == job_function_name.lower()
         )
-        return (
-            director[0] if director else None,
-            child_contacts[0] if child_contacts else None
+        persons = contacts.filtered(
+            lambda c: c.td_is_counterparty_physical_person
         )
+        other_contacts = contacts - director - persons
+
+        return {
+            "director": director[0] if director else None,
+            "persons": persons,
+            "other_contacts": other_contacts,
+        }
 
     def ata_exchange_get_structured_address(self) -> dict:
         self.ensure_one()
@@ -93,40 +120,60 @@ class TdResPartnerExchange(models.Model):
             'country_name': self.country_id.name if self.country_id else '',
             'country_code': self.country_id.code if self.country_id else '',
         }
-    #endregion
 
     #region incoming function
     def ata_exchange_prepare_vals(self,
         record_params: RecordHandlerParams) -> dict:
 
         if inc_params := record_params.incoming_params:
-            if inc_params.method_id == self.env.ref('td_medicus_exchange_base.inner_types_vendor_1c'):
-                return self.ata_exchange_prepare_vals_vendor(record_params)
+            if inc_params.method_id   == self.env.ref('td_medicus_exchange_base.inner_types_manufacturer_1c'):
+                return self.ata_exchange_prepare_vals_manufacturer(record_params)
+            elif inc_params.method_id == self.env.ref('td_medicus_exchange_base.inner_types_product_supplier'):
+                return self.ata_exchange_prepare_vals_supplier(record_params)
             elif inc_params.method_id == self.env.ref('td_medicus_exchange_base.inner_types_res_partner_subclient'):
-                return self.ata_exchange_prepare_vals_subclient(record_params)
+                return self.ata_exchange_prepare_vals_subclient(record_params)            
+            elif inc_params.method_id == self.env.ref('td_medicus_exchange_base.inner_types_res_partner_address_delivery'):
+                return self.ata_exchange_prepare_vals_address_delivery(record_params)            
             elif inc_params.method_id == self.env.ref('td_medicus_exchange_base.partner_1c_odoo'):
                 return self.ata_exchange_prepare_vals_partner(record_params)
-        
         return super().ata_exchange_prepare_vals(record_params)
 
-    def ata_exchange_prepare_vals_vendor(self,
+    def ata_exchange_get_category_id(self,
+            record_params: RecordHandlerParams,
+            category_name: str) -> int:
+        
+        category_params = record_params.build(self.env, 'res.partner.category')
+        category_params.data = {'name': category_name}
+        category_params.create_record = True
+        category_params.search_params.search_domain = [('name', '=', category_name)]
+        return self.ata_exchange_get_model_record(category_params).id
+
+    def ata_exchange_prepare_vals_manufacturer(self,
         record_params: RecordHandlerParams) -> dict[str, str|int|list]:
         
-        partner_data = cast(VendorDataIncoming,
-            self.ata_exchange_process_data_with_pydantic(record_params.data, VendorDataIncoming))
-
-        vendor_name = "Виробник"
-        category_params = record_params.build(self.env, 'res.partner.category')
-        category_params.data = {'name': vendor_name}
-        category_params.create_record = True
-        category_params.search_params.search_domain = [('name', '=', vendor_name)]
-        category_id = self.ata_exchange_get_model_record(category_params).id
+        partner_data = cast(ManufacturerDataIncoming,
+            self.ata_exchange_process_data_with_pydantic(record_params.data, ManufacturerDataIncoming))
+        partner_category_name = "Виробник"
 
         return {
             "company_type":      "company",   
             "name":              partner_data.name,
             "full_partner_name": partner_data.name_full,
-            "category_id":       [Command.set([category_id])],
+            "category_id":       [Command.set([self.ata_exchange_get_category_id(record_params, partner_category_name)])],
+        }
+
+    def ata_exchange_prepare_vals_supplier(self,
+        record_params: RecordHandlerParams) -> dict[str, str|int|list]:
+        
+        partner_data = cast(SupplierDataIncoming,
+            self.ata_exchange_process_data_with_pydantic(record_params.data, SupplierDataIncoming))
+        partner_category_name = "Постачальник"
+        
+        return {
+            "company_type":      "company",   
+            "name":              partner_data.name,
+            "full_partner_name": partner_data.name_full,
+            "category_id":       [Command.set([self.ata_exchange_get_category_id(record_params, partner_category_name)])],
         }
 
     def ata_exchange_prepare_vals_subclient(self,
@@ -139,6 +186,31 @@ class TdResPartnerExchange(models.Model):
             'name'
         })
 
+    def ata_exchange_prepare_vals_address_delivery(self,
+        record_params: RecordHandlerParams) -> dict[str, str|int|list|None]:
+        
+        def get_delivery_carrier_id(delivery_carrier_name: str) -> int|None:
+            # found by xml id
+            delivery_carrier = self.env.ref(
+                f'td_medicus_1c_integration.td_{delivery_carrier_name.lower()}_delivery_carrier',
+                raise_if_not_found=False)
+            
+            return delivery_carrier.id if delivery_carrier else None
+
+        partner_data = cast(AddressDeliveryData,
+            self.ata_exchange_process_data_with_pydantic(record_params.data, AddressDeliveryData))
+        
+        return {
+            'parent_id': record_params.data.get('parent_id',None),
+            'company_id': self.env.company.id,
+            'company_type': 'person',
+            'type': 'delivery',
+            'property_delivery_carrier_id': get_delivery_carrier_id(partner_data.type),
+            'name': f"{partner_data.phone} {partner_data.time or ''}".strip(),
+            'comment': partner_data.recipient or '',
+            'street': partner_data.name or '',
+        }
+
     def ata_exchange_prepare_vals_partner(self,
         record_params: RecordHandlerParams) -> dict[str, str|int|list]:
 
@@ -147,9 +219,9 @@ class TdResPartnerExchange(models.Model):
 
         def get_region_id(region_name: str) -> int:
             region_params = record_params.build(self.env, 'td.res.country.region')
-            region_params.data = {'name': region_name}
+            region_params.data = {'full_name': region_name}
             region_params.create_record = True
-            region_params.search_params.search_domain = [('name', '=', region_name)]
+            region_params.search_params.search_domain = [('full_name', '=', region_name)]
             return self.ata_exchange_get_model_record(region_params).id
 
         def get_employee_id(manager_data: ManagerDataIncoming) -> int:
@@ -171,6 +243,7 @@ class TdResPartnerExchange(models.Model):
                 'phone',            
             }),
             "company_type":       "company",
+            "td_is_1c_partner":   True,
             "full_partner_name":  partner_data.name_full,
             "street":             partner_data.address,    
             "region_id":          get_region_id(partner_data.region),
@@ -187,39 +260,56 @@ class TdResPartnerExchange(models.Model):
         partner_data = cast(PartnerDataWithAgreements,
             self.ata_exchange_process_data_with_pydantic(record_params.data, PartnerDataWithAgreements))
         
-        # create job contacts
-        job_contact = self.ata_exchange_get_job_contacts()
-        if not job_contact[0] and partner_data.job_function and partner_data.job_name:
-            job_contact_params = record_params.build(self.env, 'res.partner',
-                self.env.ref('td_medicus_exchange_base.inner_types_res_partner_chief'))
-            job_contact_params.data = {
-                'is_company': False,
-                'parent_id': self.id,
-                'function': partner_data.job_function,
-                'name': partner_data.job_name,
-            }
-            job_contact_params.create_record = True
-            job_contact_params.search_params.search_domain = [
-                ('parent_id', '=', self.id),
-                ('function', '=', partner_data.job_function)]
-            
-            self.ata_exchange_get_model_record(job_contact_params)
-        
-        # create agreement 
-        for agreement_data in partner_data.agreements:
-            agreement_params = record_params.build(self.env, 'td.agreement',
-                self.env.ref('td_medicus_exchange_base.agreement_1c_odoo'))
-            agreement_params.data = {
-                'partner_id': self.id,
-                **agreement_data.model_dump()
-            }
-            agreement_params.create_record = True
-            agreement_params.search_params.use_matching_data = True
-            agreement_params.search_params.key_matching_data = 'id'
-            
-            self.ata_exchange_get_model_record(agreement_params)
+        def create_job_contact():
+            job_contacts = self.ata_exchange_get_job_contacts()
+            for contact_data in partner_data.contacts:
+                if contact_data.type == 'chief':
+                    if not job_contacts["director"]:
+                        job_contact_params = record_params.build(self.env, 'res.partner',
+                            self.env.ref('td_medicus_exchange_base.inner_types_res_partner_chief'))
+                        job_contact_params.data = {
+                            **contact_data.model_dump(include={'name','function'}),
+                            'is_company': False,
+                            'parent_id': self.id,                            
+                        }
+                        job_contact_params.create_record = True
+                        job_contact_params.search_params.search_domain = [
+                            ('parent_id', '=', self.id),
+                            ('function', '=', contact_data.function)]
+                        
+                        self.ata_exchange_get_model_record(job_contact_params)
+                elif contact_data.type == 'person':
+                    # Task N14224
+                    job_contact_params = record_params.build(self.env, 'res.partner',
+                        self.env.ref('td_medicus_exchange_base.inner_types_res_partner_person'))
+                    job_contact_params.data = {
+                        **contact_data.model_dump(include={'id','name'}),
+                        'is_company': False,
+                        'parent_id': self.id,
+                        'td_is_counterparty_physical_person': True,
+                        'function': self._td_counterparty_person_position(),                        
+                    }
+                    job_contact_params.create_record = True
+                    job_contact_params.write_record = True
+                    job_contact_params.search_params.use_matching_data = True
+                    job_contact_params.search_params.key_matching_data = 'id'
 
-        # set agreement in partner
+                    self.ata_exchange_get_model_record(job_contact_params)
+        
+        def create_agreement():
+            for agreement_data in partner_data.agreements:
+                agreement_params = record_params.build(self.env, 'td.agreement',
+                    self.env.ref('td_medicus_exchange_base.agreement_1c_odoo'))
+                agreement_params.data = {
+                    'partner_id': self.id,
+                    **agreement_data.model_dump()
+                }
+                agreement_params.create_record = True
+                agreement_params.search_params.use_matching_data = True
+                agreement_params.search_params.key_matching_data = 'id'
+                
+                self.ata_exchange_get_model_record(agreement_params)
+        
         def get_agreement_id(agreement_id: CleanInt, imp_document: str) -> int:
             agreement_params = record_params.build(self.env, 'td.agreement',
                 self.env.ref('td_medicus_exchange_base.agreement_1c_odoo'))
@@ -239,11 +329,32 @@ class TdResPartnerExchange(models.Model):
                 sub_client_lines.append(Command.create({"sub_client_id": sub_client_id}))
             return [Command.clear()] + sub_client_lines
 
+        def create_addresses_delivery():
+            for address_data in partner_data.addresses_delivery:
+                address_params = record_params.build(self.env, 'res.partner',
+                    self.env.ref('td_medicus_exchange_base.inner_types_res_partner_address_delivery'))
+                address_params.data = {
+                    'parent_id': self.id,
+                    **address_data.model_dump()
+                }
+                address_params.create_record = True
+                address_params.search_params.use_matching_data = True
+                address_params.search_params.key_matching_data = 'id'
+                # address_params.search_params.method_id = self.env.ref('td_medicus_exchange_base.partner_1c_odoo')
+                address_params.search_params.search_domain = [('id', '=', ext_id)] \
+                    if (ext_id := address_data.ext_id) else None
+                
+                self.ata_exchange_get_model_record(address_params)
+
+        create_job_contact()
+        create_agreement()
+        # set agreement, sub clients in partner
         self.write({
             'standard_agreement_expense_id': get_agreement_id(partner_data.agreement_main_id, "exp_inv"),
             'standard_agreement_custody_id': get_agreement_id(partner_data.agreement_custody_id, "act_res_st"),
             "sub_client_rel_ids": get_sub_client_rel_ids(partner_data.sub_clients),
         })
+        create_addresses_delivery()
 
     def ata_exchange_get_sub_client_id(self, record_params: RecordHandlerParams, client_data: PartnerDataBase | None) -> int | None:
         if not client_data:
@@ -265,3 +376,21 @@ class TdResPartnerExchange(models.Model):
         
         return self.ata_exchange_get_model_record(client_params).id
     #endregion
+
+class ResPartnerAtaExchangeMethod(models.Model):
+    _inherit = "ata.exchange.method"
+    
+    def response_post_processing(self,
+        response: ExtResponse,
+        response_data: dict,
+        record: 'AtaExchangeClass | None' = None) -> bool:
+
+        result = True
+
+        if record and isinstance(record, TdResPartnerExchange):
+            if self.get_xml_id() == 'td_medicus_exchange_base.partner_odoo_1c':
+                result = record.write({
+                    'td_is_1c_partner': True
+                })
+
+        return result and super().response_post_processing(response, response_data, record)

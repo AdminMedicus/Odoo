@@ -63,11 +63,28 @@
                             </div>
                         </button>
                     </div>
-                    <div class="oe_title">
-                        <span class="o_form_label"><field name="move_type" readonly="1" nolabel="1"/></span>
-                        <h1>
-                            <field name="name" readonly="1"/>
-                        </h1>
+                    <div class="oe_title oe_td_title">
+                        <div>
+                            <span class="o_form_label"><field name="move_type" readonly="1" nolabel="1"/></span>
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <div id="td_status_stock_button">
+                            <button name="action_update_data"
+                                    string="Update Data"
+                                    type="object"
+                                    class="btn-primary"
+                                    invisible="state == 'confirm_finish'"
+                                    groups="td_medicus_1c_integration.group_user"/>
+
+                            <button name="action_update_data"
+                                    string="Update Data"
+                                    type="object"
+                                    class="btn-primary"
+                                    invisible="state != 'confirm_finish'"
+                                    groups="td_medicus_1c_integration.group_admin"/>
+                        </div>
                     </div>
                     <group>
                         <group>
@@ -160,9 +177,9 @@
                 <field name="name"/>
                 <field name="partner_id" optional="show"/>
                 <field name="accounting_date" optional="show"/>
-                <field name="price_with_out_tax" optional="show"/>
-                <field name="price_vat" optional="hide"/>
-                <field name="price_total" optional="show"/>
+                <field name="price_with_out_tax" optional="show" sum="Total w/o Tax"/>
+                <field name="price_vat" optional="hide" sum="VAT Total"/>
+                <field name="price_total" optional="show" sum="Grand Total"/>
                 <field name="state" optional="show"/>
                 <field name="td_budget_funds" optional="show"/>
                 <field name="responsible_user_id" optional="show"/>

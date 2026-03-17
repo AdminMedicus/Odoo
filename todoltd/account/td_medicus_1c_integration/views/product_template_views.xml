@@ -6,10 +6,10 @@
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='barcode']" position="after">
-                <field name="td_manufacturer_directory_id"/>
+                <field name="td_manufacturer_directory_res_id"/>
             </xpath>
             <xpath expr="//field[@name='categ_id']" position="after">
-                <field name="td_one_c_category_id"/>
+                <field name="td_one_c_category_id" context="{'search_default_td_leaf_category': 1, 'category_leaf_only': 1}"/>
             </xpath>
         </field>
     </record>

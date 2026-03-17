@@ -1,4 +1,4 @@
-from odoo import api, models
+from odoo import api, fields, models
 
 from functools import wraps
 from datetime import date, datetime
@@ -38,16 +38,17 @@ class AtaExchangeClass(models.AbstractModel):
         return decorator
 
     @staticmethod
-    def _str_empty(value):
-        if value:
+    def _str_empty(value) -> str|date|datetime:
+        def value_to_str(value):
+            # date convert in ata.exchange.json
             if isinstance(value, datetime):
-                return value.strftime("%Y-%m-%d %H:%M:%S")
+                return value
             elif isinstance(value, date):
-                return value.strftime("%Y-%m-%d 00:00:00")
+                return value
             else:
                 return str(value)
-        else:
-            return ''
+
+        return value_to_str(value) if value else ''
 
     #region overload outgoingdata methods
     def ata_exchange_compute_methods(self) -> list[AtaExchangeMethod]:
@@ -81,6 +82,7 @@ class AtaExchangeClass(models.AbstractModel):
     def create(self, vals_list):
         records = self.env[self._name]
         for vals in vals_list:
+            self.ata_exchange_prepare_vals_before_write(vals)
             record = super().create([vals])
             records |= record
             if record._ata_exchange_check_add_to_queue(vals):
@@ -89,11 +91,22 @@ class AtaExchangeClass(models.AbstractModel):
         return records
 
     def write(self, vals):
-        over_write = super().write(vals)
         for record in self:
+            self.ata_exchange_prepare_vals_before_write(vals, record)
+            super(AtaExchangeClass, record).write(vals)
             if record._ata_exchange_check_add_to_queue(vals):
                 record.ata_exchange_add_to_queue()
-        return over_write
+        
+        return True
+
+    @api.model
+    def ata_exchange_prepare_vals_before_write(self, vals: dict, record: models.BaseModel|None = None):
+        """
+        change 'vals' before create/write
+
+        this is to remove double write of objects
+        """
+        pass
 
     def _ata_exchange_check_add_to_queue(self, vals: dict) -> bool:
         return True
@@ -101,11 +114,12 @@ class AtaExchangeClass(models.AbstractModel):
             
     def ata_exchange_add_to_queue(self):
         for record in self:
-            self.env['ata.exchange.queue'].add_to_queue(record)
+            self.env['ata.exchange.queue'].change_in_queue(record)
     #endregion
 
     #region outgoingdata methods
     def ata_exchange_notification(self, message: str, type: str = "mail.mt_note"):
+        # TODO move to the functions of Method and processed there
         for record in self:
             if isinstance(record, MailThread):
                 record.message_post(
@@ -115,6 +129,18 @@ class AtaExchangeClass(models.AbstractModel):
     def ata_exchange_get_ref_from_record(self) -> str|None:
         self.ensure_one()
         return "%s,%s" % (self._name, self.id) if self else None
+
+    def ref_cache_queue_possible(self) -> bool:
+        Queue = self.env['ata.exchange.queue']
+        ref_field = Queue._fields['ref_object']
+        return self._name in ref_field.get_values(Queue.env)
+
+    @property
+    def ref_cache(self) -> str|None:
+        Queue = self.env['ata.exchange.queue']
+        
+        return Queue._fields['ref_object'].convert_to_cache(self, Queue) \
+            if self.ref_cache_queue_possible() else ""
 
     def ata_exchange_validate_main(self, method: AtaExchangeMethod) -> bool:
         # перевірка заповненості полів в екземплярі моделі

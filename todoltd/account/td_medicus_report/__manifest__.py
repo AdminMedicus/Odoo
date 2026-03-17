@@ -13,6 +13,9 @@
         'mrp',
         'sale',
         'stock',
+        'hr',
+        'fleet',
+        'account_disallowed_expenses_fleet',
         'td_contact_sale',
         'td_medicus_agreement',
         'td_medicus_1c_integration',
@@ -28,14 +31,15 @@
         'views/td_stock_condition_views.xml',
         'views/stock_picking_views.xml',
         'views/hr_employee_views.xml',
+        'views/fleet_vehicle_views.xml',
     ],
-    
+
     'assets': {
         'web.report_assets_common': [
             'td_medicus_report/static/src/css/wholesale_invoice.css',
         ],
     },
-    
+
     'installable': True,
     'application': False,
 }

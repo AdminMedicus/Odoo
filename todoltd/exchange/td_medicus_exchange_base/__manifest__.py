@@ -1,6 +1,6 @@
 {
     'name': 'Medicus Exchange (Base)',
-    'version': '18.0.1.4.4',
+    'version': '18.0.1.4.10',
     'summary': 'Base module for exchange integration',
     'description': """
         Base module for exchange integration with Medicus system.
@@ -12,6 +12,7 @@
     'depends': [
         'ata_exchange_v4',
         'product',
+        'product_expiry',
         'hr',
         'td_medicus_1c_integration',
         'td_medicus_agreement',

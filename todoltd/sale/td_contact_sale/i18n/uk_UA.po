@@ -275,7 +275,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/td_contact_sale/models/res_partner.py:0
 msgid "This client can have only 1 typical subclient"
-msgstr "Цей клієнт може мати лише одного типового суб клієнта"
+msgstr "Цей клієнт може мати лише одну типову клініку"
 
 #. module: td_contact_sale
 #: model:ir.model,name:td_contact_sale.model_stock_picking

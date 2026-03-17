@@ -28,20 +28,20 @@ class TdOneCCategory(models.Model):
         full_name: str = record_params.data['full_name']
         name_list = full_name.split('/')
 
-        parent_category_1c_id = None
+        parent_id = None
         if len(name_list) > 1:
             full_name_parent = "/".join(name_list[:-1])
-            category_params = record_params.build(self.env, 'td.one_c.category')
-            category_params.data = {'full_name': full_name_parent}
-            category_params.create_record = True
-            category_params.search_params.search_domain = [
+            parent_params = record_params.build(self.env, 'td.one_c.category')
+            parent_params.data = {'full_name': full_name_parent}
+            parent_params.create_record = True
+            parent_params.search_params.search_domain = [
                 ('full_name', '=', full_name_parent)
             ]
-            parent_category_1c_id = self.ata_exchange_get_model_record(category_params)
+            parent_id = self.ata_exchange_get_model_record(parent_params)
         
         vals = {
             "name": name_list[-1],
-            **({"parent_id": parent_category_1c_id.id} if parent_category_1c_id else {})
+            **({"parent_id": parent_id.id} if parent_id else {})
         }
         
         return vals

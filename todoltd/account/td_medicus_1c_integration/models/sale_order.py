@@ -1,24 +1,21 @@
-from datetime import date
-from odoo import models, fields, api, _
-from odoo.fields import Command
-from itertools import groupby
-from odoo.exceptions import (
-    AccessError,
-    UserError,
-    ValidationError,
-)
 from collections import Counter
+from datetime import date
+from itertools import groupby
+
+from odoo import _, api, fields, models
+from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.fields import Command
+from odoo.tools import float_round
 
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    td_tax_invoice_ids = fields.Many2many(
-        comodel_name='td.tax.invoice',
-        compute='_compute_td_tax_invoices'
+    budget_funds = fields.Boolean(
+        related='td_agreement_id.budget_funds'
     )
-    td_tax_invoice_count = fields.Integer(
-        compute='_compute_td_tax_invoices'
+    td_budget_funds = fields.Boolean(
+        related='td_agreement_id.budget_funds'
     )
     td_show_create_invoice = fields.Boolean(
         compute='_compute_td_show_create_invoice'
@@ -28,24 +25,25 @@ class SaleOrder(models.Model):
         compute='_compute_td_tax_guide_id',
         readonly=False
     )
-    budget_funds = fields.Boolean(
-        default=False,
-        related='td_agreement_id.budget_funds'
+    td_tax_invoice_count = fields.Integer(
+        compute='_compute_td_tax_invoices'
     )
-    td_budget_funds = fields.Boolean(
-        default=False,
-        related='td_agreement_id.budget_funds'
+    td_tax_invoice_ids = fields.Many2many(
+        comodel_name='td.tax.invoice',
+        compute='_compute_td_tax_invoices',
+        store=True
     )
     td_tax_invoice_state = fields.Selection(
-        [
+        compute='_compute_td_tax_invoice_state',
+        default='draft',
+        selection=[
             ('budget', 'Budget funds'),
-            ('not_created', 'Not created'),
-            ('draft', 'Draft'),
+            ('cancel', 'Cancel'),
             ('confirm', 'Confirm'),
             ('confirm_finish', 'Confirmed (no adjustments are possible)'),
-            ('cancel', 'Cancel'),
-        ], default='draft',
-        compute='_compute_td_tax_invoice_state',
+            ('draft', 'Draft'),
+            ('not_created', 'Not created'),
+        ],
         store=True
     )
     td_tax_invoice_state_percentage = fields.Float(
@@ -53,39 +51,71 @@ class SaleOrder(models.Model):
         store=True
     )
 
-    @api.depends_context('lang')
     @api.depends('order_line.price_subtotal', 'currency_id', 'company_id', 'payment_term_id')
+    def _compute_amounts(self):
+
+        AccountTax = self.env['account.tax']
+        for order in self:
+            order_lines = order.order_line.filtered(lambda x: not x.display_type and not x.is_downpayment)
+            base_lines = [line._prepare_base_line_for_taxes_computation() for line in order_lines]
+            base_lines += order._add_base_lines_for_early_payment_discount()
+            
+            AccountTax._add_tax_details_in_base_lines(base_lines, order.company_id)
+            AccountTax._round_base_lines_tax_details(base_lines, order.company_id)
+            
+            tax_totals = AccountTax._get_tax_totals_summary(
+                base_lines=base_lines,
+                company=order.company_id,
+                currency=order.currency_id or order.company_id.currency_id,
+            )
+            
+
+            order.amount_untaxed = tax_totals['base_amount_currency']
+            order.amount_tax = tax_totals['tax_amount_currency']
+            order.amount_total = tax_totals['total_amount_currency']
+
+            expected_total = sum(
+                float_round(
+                    line.price_unit * line.product_uom_qty,
+                    precision_rounding=order.currency_id.rounding
+                )
+                for line in order_lines
+            )
+
+            if not order.currency_id.is_zero(order.amount_total - expected_total):
+                diff = expected_total - order.amount_total
+                order.amount_tax += diff
+                order.amount_total = expected_total
+
+    @api.depends_context('lang')
+    @api.depends('amount_total', 'order_line.price_subtotal', 'currency_id', 'company_id')
     def _compute_tax_totals(self):
         AccountTax = self.env['account.tax']
         for order in self:
             order_lines = order.order_line.filtered(lambda x: not x.display_type and not x.is_downpayment)
             base_lines = [line._prepare_base_line_for_taxes_computation() for line in order_lines]
             base_lines += order._add_base_lines_for_early_payment_discount()
+            
             AccountTax._add_tax_details_in_base_lines(base_lines, order.company_id)
             AccountTax._round_base_lines_tax_details(base_lines, order.company_id)
+            
             order.tax_totals = AccountTax._get_tax_totals_summary(
                 base_lines=base_lines,
-                currency=order.currency_id or order.company_id.currency_id,
                 company=order.company_id,
+                currency=order.currency_id or order.company_id.currency_id,
             )
+            
+            if order.tax_totals and 'total_amount_currency' in order.tax_totals:
+                if order.tax_totals['total_amount_currency'] != order.amount_total:
+                    diff = order.amount_total - order.tax_totals['total_amount_currency']
+                    order.tax_totals['total_amount_currency'] = order.amount_total
+                    if order.tax_totals.get('groups_by_subtotal'):
+                        for subtotal_name in order.tax_totals['groups_by_subtotal']:
+                            groups = order.tax_totals['groups_by_subtotal'][subtotal_name]
+                            if groups:
+                                groups[-1]['tax_group_amount_currency'] += diff
+                                break
 
-    @api.depends('order_line.price_subtotal', 'currency_id', 'company_id', 'payment_term_id')
-    def _compute_amounts(self):
-        AccountTax = self.env['account.tax']
-        for order in self:
-            order_lines = order.order_line.filtered(lambda x: not x.display_type and not x.is_downpayment)
-            base_lines = [line._prepare_base_line_for_taxes_computation() for line in order_lines]
-            base_lines += order._add_base_lines_for_early_payment_discount()
-            AccountTax._add_tax_details_in_base_lines(base_lines, order.company_id)
-            AccountTax._round_base_lines_tax_details(base_lines, order.company_id)
-            tax_totals = AccountTax._get_tax_totals_summary(
-                base_lines=base_lines,
-                currency=order.currency_id or order.company_id.currency_id,
-                company=order.company_id,
-            )
-            order.amount_untaxed = tax_totals['base_amount_currency']
-            order.amount_tax = tax_totals['tax_amount_currency']
-            order.amount_total = tax_totals['total_amount_currency']
 
     def _create_invoices(self, grouped=False, final=False, date=None):
         """ Create invoice(s) for the given Sales Order(s).
@@ -367,3 +397,105 @@ class SaleOrder(models.Model):
             'domain': [('id', 'in', self.td_tax_invoice_ids.ids)],
             'target': 'current',
         }
+
+    def td_get_co_data(self, template_xml=None):
+        """Генерує report_data без KeyError для шаблонів."""
+        self.ensure_one()
+        company = self.company_id
+        bank = company.bank_ids[:1] or None
+
+        def safe_get(obj, attr):
+            try:
+                return getattr(obj, attr, '') if obj else ''
+            except Exception:
+                return ''
+
+        company_info = {
+            'name': safe_get(company, 'name'),
+            'email': safe_get(company, 'email'),
+            'phone': safe_get(company, 'phone'),
+            'vat': safe_get(company, 'vat'),
+            'registry': safe_get(company, 'company_registry'),
+            'address': safe_get(getattr(company, 'partner_id', None), 'contact_address'),
+            'account_position': safe_get(safe_get(company, 'partner_id').property_account_position_id, 'name'),
+            'bank_account': safe_get(bank, 'acc_number'),
+            'bank_bic': safe_get(safe_get(bank, 'bank_id'), 'bic'),
+            'bank_name': safe_get(safe_get(bank, 'bank_id'), 'name'),
+            'sertificate_number': safe_get(company, 'td_sertificate_number'),
+        }
+
+        for key in company._fields:
+            if key.startswith('td_') and key not in company_info:
+                company_info[key] = safe_get(company, key)
+
+        company_info['logo'] = safe_get(company, 'logo')
+        company_info['logo_web'] = safe_get(company, 'logo_web')
+
+        report_data = {'company_info': company_info}
+
+        for key in self._fields:
+            report_data[key] = safe_get(self, key)
+
+        for key in ['co_date', 'create_date', 'write_date']:
+            report_data[key] = safe_get(self, key)
+
+        
+        missing_fields = {}
+        
+        required_fields = [
+            'co_number', 
+            'co_validity_period', 
+            'co_delivery_period', 
+            'co_delivery_terms',
+            'co_manager', 
+            'co_manager_number', 
+            'consignee', 
+            'consignee_code',
+            'partner_name', 
+            'vendor_name', 
+            'recipient_name', 
+            'buyer', 
+            'shipper',
+            'amount_in_words', 
+            'tax_guide_name'
+        ]
+        
+        for field in required_fields:
+            if field not in report_data:
+                if field == 'co_number':
+                    missing_fields[field] = safe_get(self, 'name')
+                elif field == 'co_validity_period':
+                    if self.validity_date:
+                        from datetime import date
+                        today = date.today()
+                        if self.validity_date > today:
+                            missing_fields[field] = (self.validity_date - today).days
+                        else:
+                            missing_fields[field] = 0
+                    else:
+                        missing_fields[field] = safe_get(self.company_id, 'quotation_validity_days') or 30
+                elif field == 'co_delivery_period':
+                    missing_fields[field] = 7
+                elif field == 'co_delivery_terms':
+                    missing_fields[field] = 'EXW'
+                elif field == 'co_manager':
+                    missing_fields[field] = safe_get(self, 'user_id.name') or 'Менеджер'
+                elif field == 'co_manager_number':
+                    missing_fields[field] = ''
+                elif field == 'consignee':
+                    missing_fields[field] = safe_get(self.partner_id, 'name')
+                elif field == 'consignee_code':
+                    missing_fields[field] = safe_get(self.partner_id, 'company_registry') or safe_get(self.partner_id, 'vat')
+                elif field in ['partner_name', 'vendor_name', 'recipient_name', 'buyer', 'shipper']:
+                    missing_fields[field] = safe_get(self.partner_id, 'name')
+                elif field == 'amount_in_words':
+                    amount_total = safe_get(self, 'amount_total')
+                    missing_fields[field] = self._get_amount_in_words(float(amount_total) if amount_total else 0)
+                elif field == 'tax_guide_name':
+                    missing_fields[field] = safe_get(self.td_tax_guide_id, 'name')
+        
+        report_data.update(missing_fields)
+
+        report_data['groups'] = self.order_line.filtered(lambda l: not l.display_type)
+
+        return report_data
