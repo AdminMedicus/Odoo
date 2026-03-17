@@ -1586,7 +1586,7 @@
                         <span t-esc="'%.2f' % (report_data['amount_tax'])"/>
                     </td>
                 </tr>
-                <tr style="border-bottom: 1px solid transparent;">
+                <tr style="border-bottom: 1px solid transparent; border-left: 1px solid transparent; border-right: 1px solid transparent;">
                     <td style="padding: 2px; vertical-align: bottom; border: none;" colspan="7"/>
                     <td class="text-end" style="padding: 2px; vertical-align: middle; border: none;">
                         <strong>Всього:</strong>
