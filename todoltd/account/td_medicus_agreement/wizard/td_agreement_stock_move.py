@@ -120,9 +120,10 @@ class TdStockMove(models.TransientModel):
 
             odoo_record = self.env['stock.move'].sudo().create(record)
 
-            for odoo_id, odoo_rec in enumerate(odoo_record.move_line_ids):
-                odoo_rec.quant_id = lots[odoo_id][0].quant_id.id
-                odoo_rec.lot_id = lots[odoo_id][0].lot_id.id
+            if lots:
+                for odoo_id, odoo_rec in enumerate(odoo_record.move_line_ids):
+                    odoo_rec.quant_id = lots[odoo_id][0].quant_id.id
+                    odoo_rec.lot_id = lots[odoo_id][0].lot_id.id
 
             odoo_record.quantity = rec.quantity
 
