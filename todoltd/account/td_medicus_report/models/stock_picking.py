@@ -159,7 +159,7 @@ class StockPicking(models.Model):
                 rec.td_ttn_driver_forwarder = False
                 return
 
-            partner = user.partner_id
+            partner = user.work_contact_id or user.user_id.partner_id
             rec.td_ttn_carrier_partner_id = rec.company_id.partner_id if rec.company_id.partner_id else False
             rec.td_ttn_driver_license_number = partner.td_driver_license_number if partner else False
             rec.td_ttn_driver_forwarder = (
