@@ -946,41 +946,65 @@ class StockPicking(models.Model):
 
         line_num = 0
         for move in self.move_ids_without_package:
-            line_num += 1
             move_line_ids = move.mapped('move_line_ids')
-
-            serial_numbers = [l.lot_id.name for l in move_line_ids if l.lot_id] if move_line_ids else []
-            expiration_dates = []
-            for ml in move_line_ids:
-                if ml.lot_id and ml.lot_id.expiration_date:
-                    expiration_dates.append(ml.lot_id.expiration_date.strftime('%d.%m.%Y'))
-                elif ml.expiration_date:
-                    expiration_dates.append(ml.expiration_date.strftime('%d.%m.%Y'))
-
             location = move.location_id
             storage_conditions = location.mapped('td_condition_ids.name')
-
             supplier_doc_number = self.td_supplier_document or ''
             supplier_doc_date = self.td_date_supplier_document.strftime('%d.%m.%Y') if self.td_date_supplier_document else ''
+            price_untaxed = move.td_untaxed_price_unit if hasattr(move, 'td_untaxed_price_unit') else 0.0
 
-            line_data = {
-                'sequence': line_num,
-                'product_name': move.product_id.description_sale or move.product_id.name,
-                'product_manufacturer': move.product_id.td_manufacturer_directory_res_id.name or '',
-                'product_serial_numbers': serial_numbers,
-                'expiration_dates': expiration_dates,
-                'storage_conditions': storage_conditions,
-                'supplier_document_number': supplier_doc_number,
-                'supplier_document_date': supplier_doc_date,
-                'quantity': move.product_uom_qty,
-                'uom': move.product_uom.name,
-                'contract_price': getattr(move, 'td_contract_price', 0.0),
-                'customs_value': getattr(move, 'td_customs_value_good', 0.0),
-                'supplier_markup': getattr(move, 'td_supplier_markup', 0.0),
-                'price_untaxed': move.td_untaxed_price_unit if hasattr(move, 'td_untaxed_price_unit') else 0.0,
-                'price_subtotal': move.td_price_subtotal if hasattr(move, 'td_price_subtotal') else 0.0,
-            }
-            data['lines'].append(line_data)
+            # Group move lines by lot
+            lots = {}
+            for ml in move_line_ids:
+                lot_key = ml.lot_id.id or 0
+                if lot_key in lots:
+                    lots[lot_key]['quantity'] += ml.quantity
+                else:
+                    lots[lot_key] = {
+                        'lot_id': ml.lot_id,
+                        'quantity': ml.quantity,
+                        'expiration_date': (
+                            ml.lot_id.expiration_date
+                            if ml.lot_id and ml.lot_id.expiration_date
+                            else ml.expiration_date
+                        ),
+                    }
+
+            if not lots:
+                lots[0] = {
+                    'lot_id': False,
+                    'quantity': move.product_uom_qty,
+                    'expiration_date': False,
+                }
+
+            for lot_info in lots.values():
+                line_num += 1
+                lot = lot_info['lot_id']
+                qty = lot_info['quantity']
+                serial_name = lot.name if lot else ''
+                exp_date = (
+                    lot_info['expiration_date'].strftime('%d.%m.%Y')
+                    if lot_info['expiration_date'] else ''
+                )
+
+                line_data = {
+                    'sequence': line_num,
+                    'product_name': move.product_id.description_sale or move.product_id.name,
+                    'product_manufacturer': move.product_id.td_manufacturer_directory_res_id.name or '',
+                    'product_serial_numbers': [serial_name] if serial_name else [],
+                    'expiration_dates': [exp_date] if exp_date else [],
+                    'storage_conditions': storage_conditions,
+                    'supplier_document_number': supplier_doc_number,
+                    'supplier_document_date': supplier_doc_date,
+                    'quantity': qty,
+                    'uom': move.product_uom.name,
+                    'contract_price': getattr(move, 'td_contract_price', 0.0),
+                    'customs_value': getattr(move, 'td_customs_value_good', 0.0),
+                    'supplier_markup': getattr(move, 'td_supplier_markup', 0.0),
+                    'price_untaxed': price_untaxed,
+                    'price_subtotal': price_untaxed * qty,
+                }
+                data['lines'].append(line_data)
 
         return data
 

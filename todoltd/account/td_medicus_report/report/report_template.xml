@@ -1797,7 +1797,7 @@
             </thead>
             <tbody>
                 <t t-foreach="lines" t-as="line">
-                    <tr style="page-break-inside: avoid;">
+                    <tr style="page-break-inside: avoid; border-bottom: 1px solid transparent;">
                         <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['sequence']"/>
                         </td>
@@ -1867,7 +1867,7 @@
                     <td style="border-left: 1px solid transparent; border-bottom: 1px solid transparent; border-right: 1px solid transparent;"></td>
                     <td colspan="8" style="padding: 2px; vertical-align: bottom; border-left: 1px solid transparent; border-bottom: 1px solid transparent">
                         <strong>В тому числі ПДВ: </strong> 
-                        <strong t-esc="'%.2f' % report_data['amount_tax']"/> грн.
+                        <strong><t t-esc="'%.2f' % report_data['amount_tax']"/> грн.</strong>
                     </td>
                     <td colspan="2" class="text-end" style="padding: 2px; vertical-align: middle;">
                         <strong t-esc="report_data['tax_guide_name']"/>
@@ -3354,22 +3354,22 @@
                                 <td class="p-0"/>
                             </tr>
                             <tr>
-                                <td colspan="2" style="text-align: start; padding: 5px 0;">
+                                <td colspan="2" style="text-align: start; padding: 5px 0; vertical-align: middle;">
                                     <strong>Уповноважена особа аптечного складу:</strong>
                                 </td>
                                 <td style="border-bottom: 1px solid #000; padding: 5px 0;"/>
-                                <td style="padding: 5px 10px;">
+                                <td style="padding: 5px 10px; vertical-align: middle;">
                                     <span class="text-start">
                                         /<t t-esc="report_data['company']['medical_warehouse_manager']"/>/
                                     </span>
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2" style="text-align: start; padding: 5px 0;">
+                                <td colspan="2" style="text-align: start; padding: 5px 0; vertical-align: middle;">
                                     <strong>Дозволено/не дозволено до транспортування:</strong>
                                 </td>
                                 <td style="border-bottom: 1px solid #000; padding: 5px 0;"/>
-                                <td style="padding: 5px 10px;">
+                                <td style="padding: 5px 10px; vertical-align: middle;">
                                     <span class="text-start">
                                         <t t-esc="report_data['company']['medical_warehouse_manager']"/>
                                     </span>
@@ -3384,8 +3384,8 @@
                                 <td style="text-align: start; padding: 5px 0;">
                                     <strong>Відвантажив:</strong>
                                 </td>
-                                <td style="border-bottom: 1px solid #000; padding: 5px 0;"/>
-                                <td colspan="2" style="padding: 5px 10px;">
+                                <td style="border-bottom: 1px solid #000; padding: 5px 0; vertical-align: middle;"/>
+                                <td colspan="2" style="padding: 5px 10px; vertical-align: middle;">
                                     <span>
                                         <t t-esc="report_data['company']['warehouse_manager']"/>
                                     </span>
