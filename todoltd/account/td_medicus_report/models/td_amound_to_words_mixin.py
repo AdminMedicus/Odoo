@@ -5,11 +5,12 @@ class TdAmountToWordsMixin(models.AbstractModel):
     _name = 'td.amount.to.words.mixin'
     _description = 'Mixin to convert amount to words in Ukrainian'
 
-    def _amount_to_words_ua(self, amount):
+    def _amount_to_words_ua(self, amount, count=False, weight=False):
         """
         Converts a number into Ukrainian words
         """
         ones = ['', 'одна', 'дві', 'три', 'чотири', 'п\'ять', 'шість', 'сім', 'вісім', 'дев\'ять']
+        ones_count = ['', 'один', 'два', 'три', 'чотири', 'п\'ять', 'шість', 'сім', 'вісім', 'дев\'ять']
         tens = ['', 'десять', 'двадцять', 'тридцять', 'сорок', 'п\'ятдесят', 
                 'шістдесят', 'сімдесят', 'вісімдесят', 'дев\'яносто']
         teens = ['десять', 'одинадцять', 'дванадцять', 'тринадцять', 'чотирнадцять',
@@ -18,18 +19,18 @@ class TdAmountToWordsMixin(models.AbstractModel):
                     'шістсот', 'сімсот', 'вісімсот', 'дев\'ятсот']
         thousands = ['тисяча', 'тисячі', 'тисяч']
         
-        def num_to_words(n):
+        def num_to_words(n, count=False):
             if n == 0:
                 return 'нуль'
             
             if n < 10:
-                return ones[n]
+                return ones_count[n] if count else ones[n]
             elif n < 20:
                 return teens[n - 10]
             elif n < 100:
-                return tens[n // 10] + (' ' + ones[n % 10] if n % 10 != 0 else '')
+                return tens[n // 10] + (' ' + (ones_count[n % 10] if count else ones[n % 10]) if n % 10 != 0 else '')
             elif n < 1000:
-                return hundreds[n // 100] + (' ' + num_to_words(n % 100) if n % 100 != 0 else '')
+                return hundreds[n // 100] + (' ' + num_to_words(n % 100, count) if n % 100 != 0 else '')
             elif n < 1000000:
                 thousands_digit = n // 1000
                 remainder = n % 1000
@@ -41,9 +42,9 @@ class TdAmountToWordsMixin(models.AbstractModel):
                 else:
                     thousand_word = thousands[2]
                 
-                result = num_to_words(thousands_digit) + ' ' + thousand_word
+                result = num_to_words(thousands_digit, count) + ' ' + thousand_word
                 if remainder != 0:
-                    result += ' ' + num_to_words(remainder)
+                    result += ' ' + num_to_words(remainder, count)
                 return result
             else:
                 return str(n)
@@ -51,15 +52,24 @@ class TdAmountToWordsMixin(models.AbstractModel):
         whole_part = int(amount)
         decimal_part = int(round((amount - whole_part) * 100))
         
-        result = num_to_words(whole_part).capitalize()
+        result = num_to_words(whole_part, count)
+        if not count and not weight:
+            result = result.capitalize()
         
-        if whole_part % 10 == 1 and whole_part % 100 != 11:
-            result += ' гривня'
-        elif whole_part % 10 in [2, 3, 4] and whole_part % 100 not in [12, 13, 14]:
-            result += ' гривні'
+        if count:
+            pass
+        elif weight:
+            result += f' т'
+            if decimal_part:
+                result += f' {decimal_part:02d} кг'
         else:
-            result += ' гривень'
-        
-        result += f' {decimal_part:02d} копійок'
+            if whole_part % 10 == 1 and whole_part % 100 != 11:
+                result += ' гривня'
+            elif whole_part % 10 in [2, 3, 4] and whole_part % 100 not in [12, 13, 14]:
+                result += ' гривні'
+            else:
+                result += ' гривень'
+            
+            result += f' {decimal_part:02d} копійок'
         
         return result

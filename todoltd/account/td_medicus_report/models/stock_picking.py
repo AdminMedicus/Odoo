@@ -41,79 +41,82 @@ class StockPicking(models.Model):
     # ---------------------------------------------------------
     td_ttn_transport_type = fields.Selection(
         selection=[
-            ('own', 'Власний автомобіль'),
-            ('hired', 'Сторонній перевізник'),
+            ('own', 'Own transport'),
+            ('hired', 'Involved carrier'),
         ],
-        string='Тип перевезення',
+        string='Transport Type',
         default='own',
         copy=False,
     )
 
     td_ttn_vehicle_id = fields.Many2one(
         comodel_name='fleet.vehicle',
-        string='Автомобіль',
+        string='Vehicle',
         domain="[('td_transport_ownership', '=', 'own')]",
         copy=False,
     )
 
     td_ttn_driver_employee_id = fields.Many2one(
         comodel_name='hr.employee',
-        string='Водій (користувач)',
+        string='Driver (User)',
         copy=False,
     )
 
     td_ttn_driver_partner_id = fields.Many2one(
         comodel_name='res.partner',
-        string='Водій (контрагент)',
+        string='Driver (Partner)',
         copy=False,
     )
 
     td_ttn_carrier_partner_id = fields.Many2one(
         comodel_name='res.partner',
-        string='Автомобільний перевізник',
+        string='Carrier (Partner)',
         copy=False,
     )
 
     td_ttn_driver_license_number = fields.Char(
-        string='Номер посвідчення водія',
+        string='Driver License Number',
         copy=False,
     )
 
     td_ttn_driver_forwarder = fields.Char(
-        string='Водій-експедитор',
+        string='Driver-Forwarder',
         copy=False,
     )
 
     td_ttn_places_count = fields.Char(
-        string='Кількість місць',
+        string='Number of Places',
         copy=False,
     )
 
     td_ttn_gross_weight = fields.Char(
-        string='Маса брутто (тонн)',
+        string='Gross Weight (tons)',
         copy=False,
     )
 
     td_ttn_vehicle_length = fields.Float(
-        string='Довжина, м',
+        string='Length, m',
+        related='td_ttn_vehicle_id.td_body_length',
         digits=(16, 3),
         copy=False,
     )
 
     td_ttn_vehicle_width = fields.Float(
-        string='Ширина, м',
+        string='Width, m',
+        related='td_ttn_vehicle_id.td_body_width',
         digits=(16, 3),
         copy=False,
     )
 
     td_ttn_vehicle_height = fields.Float(
-        string='Висота, м',
+        string='Height, m',
+        related='td_ttn_vehicle_id.td_body_height',
         digits=(16, 3),
         copy=False,
     )
 
     td_ttn_license_number = fields.Char(
-        string='Номер ліцензії',
+        string='License Number',
         copy=False,
     )
 
@@ -129,23 +132,22 @@ class StockPicking(models.Model):
             else:
                 rec.td_ttn_driver_employee_id = False
                 rec.td_ttn_vehicle_id = False
-                rec.td_ttn_vehicle_length = 0.0
-                rec.td_ttn_vehicle_width = 0.0
-                rec.td_ttn_vehicle_height = 0.0
-                # carrier для hired заповниться з партнера-водія або вручну
+    #             rec.td_ttn_vehicle_length = 0.0
+    #             rec.td_ttn_vehicle_width = 0.0
+    #             rec.td_ttn_vehicle_height = 0.0
 
-    @api.onchange('td_ttn_vehicle_id')
-    def _onchange_td_ttn_vehicle_id(self):
-        for rec in self:
-            vehicle = rec.td_ttn_vehicle_id
-            if vehicle:
-                rec.td_ttn_vehicle_length = vehicle.td_body_length or 0.0
-                rec.td_ttn_vehicle_width = vehicle.td_body_width or 0.0
-                rec.td_ttn_vehicle_height = vehicle.td_body_height or 0.0
-            else:
-                rec.td_ttn_vehicle_length = 0.0
-                rec.td_ttn_vehicle_width = 0.0
-                rec.td_ttn_vehicle_height = 0.0
+    # @api.onchange('td_ttn_vehicle_id')
+    # def _onchange_td_ttn_vehicle_id(self):
+    #     for rec in self:
+    #         vehicle = rec.td_ttn_vehicle_id
+    #         if vehicle:
+    #             rec.td_ttn_vehicle_length = vehicle.td_body_length or 0.0
+    #             rec.td_ttn_vehicle_width = vehicle.td_body_width or 0.0
+    #             rec.td_ttn_vehicle_height = vehicle.td_body_height or 0.0
+    #         else:
+    #             rec.td_ttn_vehicle_length = 0.0
+    #             rec.td_ttn_vehicle_width = 0.0
+    #             rec.td_ttn_vehicle_height = 0.0
 
     @api.onchange('td_ttn_driver_employee_id')
     def _onchange_td_ttn_driver_employee_id(self):
@@ -449,6 +451,7 @@ class StockPicking(models.Model):
         partner = self.partner_id
         warehouse_manager_id = company.td_warehouse_manager_id
         medical_manager_id = company.td_medical_warehouse_manager_id
+        transport_type = dict(self._fields['td_ttn_transport_type']._description_selection(self.env)).get(self.td_ttn_transport_type, '')
 
         data = {
             'waybill_number': self.name.split('/')[-1],
@@ -477,6 +480,21 @@ class StockPicking(models.Model):
             (повне найменування (прізвище (за наявності), власне ім'ята по-батькові (за наявності), унікальний номер запису в Єдиному державному демографічному реєстрі (за наявності), код платника податків згідно з Єдиним державним реєстром підприємств та організацій України або податковий номер (реєстраційний номер обліковойї картки платника податків або серія (за наявності) та номер паспорта громадянина України (для фізичних осіб, які через свої релігійні переконання відмовляються від прийняття реєстраційного номера облікової картки платника податків та повідомили про це відповідний контролюючий орган і мають відмітку в паспорті))))
             """,
             'lines': [],
+            'waybill_info': {
+                'vehicle': self.td_ttn_vehicle_id.name.replace('/', ' ') if self.td_ttn_vehicle_id else '',
+                'transport_type': transport_type,
+                'carrier_partner': self.td_ttn_carrier_partner_id.full_partner_name if self.td_ttn_carrier_partner_id else '',
+                'driver': self.td_ttn_driver_employee_id.name if self.td_ttn_driver_employee_id else '',
+                'driver_license': self.td_ttn_driver_license_number if self.td_ttn_driver_license_number else '',
+                # 'places_count': self.td_ttn_places_count if self.td_ttn_places_count else '',
+                # 'gross_weight': self.td_ttn_gross_weight if self.td_ttn_gross_weight else '',
+                'places_count': self._amount_to_words_ua(float(self.td_ttn_places_count), count=True) if self.td_ttn_places_count else '',
+                'gross_weight': self._amount_to_words_ua(float(self.td_ttn_gross_weight), weight=True) if self.td_ttn_gross_weight else '',
+                'driver_forwarder': self.td_ttn_driver_forwarder if self.td_ttn_driver_forwarder else '',
+                'vehicle_length': self.td_ttn_vehicle_length if self.td_ttn_vehicle_length else '',
+                'vehicle_width': self.td_ttn_vehicle_width if self.td_ttn_vehicle_width else '',
+                'vehicle_height': self.td_ttn_vehicle_height if self.td_ttn_vehicle_height else '',
+            }
         }
 
         line_num = 0
@@ -946,41 +964,65 @@ class StockPicking(models.Model):
 
         line_num = 0
         for move in self.move_ids_without_package:
-            line_num += 1
             move_line_ids = move.mapped('move_line_ids')
-
-            serial_numbers = [l.lot_id.name for l in move_line_ids if l.lot_id] if move_line_ids else []
-            expiration_dates = []
-            for ml in move_line_ids:
-                if ml.lot_id and ml.lot_id.expiration_date:
-                    expiration_dates.append(ml.lot_id.expiration_date.strftime('%d.%m.%Y'))
-                elif ml.expiration_date:
-                    expiration_dates.append(ml.expiration_date.strftime('%d.%m.%Y'))
-
             location = move.location_id
             storage_conditions = location.mapped('td_condition_ids.name')
-
             supplier_doc_number = self.td_supplier_document or ''
             supplier_doc_date = self.td_date_supplier_document.strftime('%d.%m.%Y') if self.td_date_supplier_document else ''
+            price_untaxed = move.td_untaxed_price_unit if hasattr(move, 'td_untaxed_price_unit') else 0.0
 
-            line_data = {
-                'sequence': line_num,
-                'product_name': move.product_id.description_sale or move.product_id.name,
-                'product_manufacturer': move.product_id.td_manufacturer_directory_res_id.name or '',
-                'product_serial_numbers': serial_numbers,
-                'expiration_dates': expiration_dates,
-                'storage_conditions': storage_conditions,
-                'supplier_document_number': supplier_doc_number,
-                'supplier_document_date': supplier_doc_date,
-                'quantity': move.product_uom_qty,
-                'uom': move.product_uom.name,
-                'contract_price': getattr(move, 'td_contract_price', 0.0),
-                'customs_value': getattr(move, 'td_customs_value_good', 0.0),
-                'supplier_markup': getattr(move, 'td_supplier_markup', 0.0),
-                'price_untaxed': move.td_untaxed_price_unit if hasattr(move, 'td_untaxed_price_unit') else 0.0,
-                'price_subtotal': move.td_price_subtotal if hasattr(move, 'td_price_subtotal') else 0.0,
-            }
-            data['lines'].append(line_data)
+            # Group move lines by lot
+            lots = {}
+            for ml in move_line_ids:
+                lot_key = ml.lot_id.id or 0
+                if lot_key in lots:
+                    lots[lot_key]['quantity'] += ml.quantity
+                else:
+                    lots[lot_key] = {
+                        'lot_id': ml.lot_id,
+                        'quantity': ml.quantity,
+                        'expiration_date': (
+                            ml.lot_id.expiration_date
+                            if ml.lot_id and ml.lot_id.expiration_date
+                            else ml.expiration_date
+                        ),
+                    }
+
+            if not lots:
+                lots[0] = {
+                    'lot_id': False,
+                    'quantity': move.product_uom_qty,
+                    'expiration_date': False,
+                }
+
+            for lot_info in lots.values():
+                line_num += 1
+                lot = lot_info['lot_id']
+                qty = lot_info['quantity']
+                serial_name = lot.name if lot else ''
+                exp_date = (
+                    lot_info['expiration_date'].strftime('%d.%m.%Y')
+                    if lot_info['expiration_date'] else ''
+                )
+
+                line_data = {
+                    'sequence': line_num,
+                    'product_name': move.product_id.description_sale or move.product_id.name,
+                    'product_manufacturer': move.product_id.td_manufacturer_directory_res_id.name or '',
+                    'product_serial_numbers': [serial_name] if serial_name else [],
+                    'expiration_dates': [exp_date] if exp_date else [],
+                    'storage_conditions': storage_conditions,
+                    'supplier_document_number': supplier_doc_number,
+                    'supplier_document_date': supplier_doc_date,
+                    'quantity': qty,
+                    'uom': move.product_uom.name,
+                    'contract_price': getattr(move, 'td_contract_price', 0.0),
+                    'customs_value': getattr(move, 'td_customs_value_good', 0.0),
+                    'supplier_markup': getattr(move, 'td_supplier_markup', 0.0),
+                    'price_untaxed': price_untaxed,
+                    'price_subtotal': price_untaxed * qty,
+                }
+                data['lines'].append(line_data)
 
         return data
 

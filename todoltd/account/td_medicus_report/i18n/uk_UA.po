@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-04 08:32+0000\n"
-"PO-Revision-Date: 2026-03-04 08:32+0000\n"
+"POT-Creation-Date: 2026-03-24 07:33+0000\n"
+"PO-Revision-Date: 2026-03-24 07:33+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -632,6 +632,11 @@ msgid "<span>Разом:</span>"
 msgstr ""
 
 #. module: td_medicus_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_new_waybill
+msgid "<span>Товари медичного призначення</span>"
+msgstr ""
+
+#. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>від</span>"
 msgstr ""
@@ -949,7 +954,27 @@ msgstr "Запис у журналі"
 #. odoo-python
 #: code:addons/td_medicus_report/models/ir_actions_report.py:0
 msgid "An error occurred while generating the report: %s"
-msgstr ""
+msgstr "Під час створення звіту сталася помилка: %s"
+
+#. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_fleet_vehicle__td_body_height
+msgid "Body Height, m"
+msgstr "Висота кузова, м"
+
+#. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_fleet_vehicle__td_body_length
+msgid "Body Length, m"
+msgstr "Довжина кузова, м"
+
+#. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_fleet_vehicle__td_body_width
+msgid "Body Width, m"
+msgstr "Ширина кузова, м"
+
+#. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_carrier_partner_id
+msgid "Carrier (Partner)"
+msgstr "Автомобільний перевізник"
 
 #. module: td_medicus_report
 #: model_terms:ir.actions.act_window,help:td_medicus_report.action_td_stock_condition
@@ -1023,14 +1048,52 @@ msgid "Display Name"
 msgstr ""
 
 #. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_driver_partner_id
+msgid "Driver (Partner)"
+msgstr "Водій (контрагент)"
+
+#. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_driver_employee_id
+msgid "Driver (User)"
+msgstr "Водій (користувач)"
+
+#. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_hr_employee__td_driver_license_number
+#: model:ir.model.fields,field_description:td_medicus_report.field_res_partner__td_driver_license_number
+#: model:ir.model.fields,field_description:td_medicus_report.field_res_users__td_driver_license_number
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_driver_license_number
+msgid "Driver License Number"
+msgstr "Номер посвідчення водія"
+
+#. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_driver_forwarder
+msgid "Driver-Forwarder"
+msgstr "Водій-експедитор"
+
+#. module: td_medicus_report
 #: model:ir.model,name:td_medicus_report.model_hr_employee
 msgid "Employee"
 msgstr "Співробітник"
 
 #. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_gross_weight
+msgid "Gross Weight (tons)"
+msgstr "Маса брутто (тонн)"
+
+#. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_res_company__td_head_medical_equipment_sales_id
 msgid "Head of Medical Equipment Sales Department"
 msgstr ""
+
+#. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_vehicle_height
+msgid "Height, m"
+msgstr "Висота, м"
+
+#. module: td_medicus_report
+#: model:ir.model.fields.selection,name:td_medicus_report.selection__fleet_vehicle__td_transport_ownership__hired
+msgid "Hired transport"
+msgstr "Найм"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_td_stock_condition__id
@@ -1075,6 +1138,11 @@ msgid "Invoice from Delivery"
 msgstr ""
 
 #. module: td_medicus_report
+#: model:ir.model.fields.selection,name:td_medicus_report.selection__stock_picking__td_ttn_transport_type__hired
+msgid "Involved carrier"
+msgstr "Сторонній перевізник"
+
+#. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_td_stock_condition__write_uid
 msgid "Last Updated by"
 msgstr ""
@@ -1083,6 +1151,16 @@ msgstr ""
 #: model:ir.model.fields,field_description:td_medicus_report.field_td_stock_condition__write_date
 msgid "Last Updated on"
 msgstr ""
+
+#. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_vehicle_length
+msgid "Length, m"
+msgstr "Довжина, м"
+
+#. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_license_number
+msgid "License Number"
+msgstr "Номер ліцензії"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_co_header
@@ -1105,6 +1183,22 @@ msgstr "Уповноважена особа з аптечного складу"
 #: model:ir.model,name:td_medicus_report.model_td_amount_to_words_mixin
 msgid "Mixin to convert amount to words in Ukrainian"
 msgstr ""
+
+#. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_places_count
+msgid "Number of Places"
+msgstr "Кількість місць"
+
+#. module: td_medicus_report
+#: model:ir.model.fields.selection,name:td_medicus_report.selection__fleet_vehicle__td_transport_ownership__own
+#: model:ir.model.fields.selection,name:td_medicus_report.selection__stock_picking__td_ttn_transport_type__own
+msgid "Own transport"
+msgstr "Власний автомобіль"
+
+#. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_fleet_vehicle__td_transport_ownership
+msgid "Ownership Type"
+msgstr "Власність"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_co_header
@@ -1196,6 +1290,11 @@ msgid "Transfer Act"
 msgstr "Сформувати акт передачі"
 
 #. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_transport_type
+msgid "Transport Type"
+msgstr "Тип перевезення"
+
+#. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_res_partner__use_in_vendor_refund_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_res_users__use_in_vendor_refund_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.res_partner_form_td_refund_inherit
@@ -1238,6 +1337,12 @@ msgid "User responsible for warehouse management tasks."
 msgstr ""
 
 #. module: td_medicus_report
+#: model:ir.model,name:td_medicus_report.model_fleet_vehicle
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_vehicle_id
+msgid "Vehicle"
+msgstr "Транспортний засіб"
+
+#. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_res_company__td_vice_president_id
 msgid "Vice President"
 msgstr ""
@@ -1246,6 +1351,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:td_medicus_report.field_res_company__td_warehouse_manager_id
 msgid "Warehouse Manager"
 msgstr "Завідувач складу"
+
+#. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_vehicle_width
+msgid "Width, m"
+msgstr "Ширина, м"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_payment_info_2
@@ -1365,6 +1475,11 @@ msgid ""
 msgstr ""
 
 #. module: td_medicus_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_report.td_view_picking_form_inherit
+msgid "Водій / перевізник"
+msgstr ""
+
+#. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_refund_act
 msgid "Всього на суму:"
 msgstr ""
@@ -1418,8 +1533,18 @@ msgid "Віце-президент"
 msgstr ""
 
 #. module: td_medicus_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_report.td_view_picking_form_inherit
+msgid "Габарити та вантаж"
+msgstr ""
+
+#. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_title_4
 msgid "Голова комісії:"
+msgstr ""
+
+#. module: td_medicus_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_report.td_view_picking_form_inherit
+msgid "Дані для ТТН"
 msgstr ""
 
 #. module: td_medicus_report
@@ -1767,6 +1892,11 @@ msgid "ПДВ:"
 msgstr ""
 
 #. module: td_medicus_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_report.fleet_vehicle_view_form_ttn_inherit
+msgid "Параметри кузова"
+msgstr ""
+
+#. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_payment_info_1
 msgid "Платник:"
 msgstr ""
@@ -2109,6 +2239,11 @@ msgid "Фарм РН. №"
 msgstr ""
 
 #. module: td_medicus_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_6
+msgid "Фах. по роботі з кліентами"
+msgstr ""
+
+#. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_payment_info_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_recipient_header_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_2
@@ -2267,11 +2402,6 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_6
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_title_4
 msgid "завідувач аптечного складу"
-msgstr ""
-
-#. module: td_medicus_report
-#: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_6
-msgid "менеджер по роботі з клієнтами"
 msgstr ""
 
 #. module: td_medicus_report

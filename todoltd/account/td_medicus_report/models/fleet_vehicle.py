@@ -7,22 +7,22 @@ class FleetVehicle(models.Model):
 
     td_transport_ownership = fields.Selection(
         selection=[
-            ('own', 'Власний транспорт'),
-            ('hired', 'Найм'),
+            ('own', 'Own transport'),
+            ('hired', 'Hired transport'),
         ],
-        string='Власність',
+        string='Ownership Type',
         default='own',
     )
 
     td_body_length = fields.Float(
-        string='Довжина кузова, м',
+        string='Body Length, m',
         digits=(16, 3),
     )
     td_body_width = fields.Float(
-        string='Ширина кузова, м',
+        string='Body Width, m',
         digits=(16, 3),
     )
     td_body_height = fields.Float(
-        string='Висота кузова, м',
+        string='Body Height, m',
         digits=(16, 3),
     )
