@@ -105,12 +105,17 @@ class StockPicking(models.Model):
         return True
 
     @api.depends(
-        'move_ids_without_package', 
-        'sale_id', 
-        'sale_id.amount_untaxed', 
+        'move_ids_without_package',
+        'move_ids_without_package.quantity',
+        'move_ids_without_package.td_price_unit',
+        'move_ids_without_package.td_price_subtotal',
+        'move_ids_without_package.td_taxes_price',
+        'sale_id',
+        'sale_id.amount_untaxed',
         'sale_id.amount_tax',
-        'td_total_tax',
-        'td_total_without_tax',
+        'sale_id.amount_total',
+        'td_currency_rate',
+        'td_is_import',
     )
     def _compute_total_amounts(self):
         for rec in self:
@@ -121,14 +126,25 @@ class StockPicking(models.Model):
             else:
                 lines = rec.move_ids_without_package
                 rec.td_total_tax = sum(lines.mapped('td_taxes_price')) or 0.0
-                
+
                 if rec.td_is_import:
-                    rec.td_total_without_tax = sum(lines.mapped('td_customs_value_good')) or 0.0
+                    amount_origin_currency = sum(
+                        (line.td_price_unit or 0.0) * (line.quantity or 0.0)
+                        for line in lines
+                    )
+                    total_without_tax = sum(
+                        ((line.td_price_unit or 0.0) * (line.quantity or 0.0)) * (
+                                line.td_currency_rate or rec.td_currency_rate or 0.0
+                        )
+                        for line in lines
+                    )
+
+                    rec.td_amount_origin_currency = amount_origin_currency
+                    rec.td_total_without_tax = total_without_tax
                 else:
                     rec.td_total_without_tax = sum(lines.mapped('td_price_subtotal')) or 0.0
-                
-                rec.td_amount_origin_currency = rec.td_total_without_tax + rec.td_total_tax
-            
+                    rec.td_amount_origin_currency = rec.td_total_without_tax + rec.td_total_tax
+
             rec.td_total_amount = rec.td_total_without_tax + rec.td_total_tax
 
     @api.depends('picking_type_id')
