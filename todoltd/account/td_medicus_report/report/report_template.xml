@@ -1105,6 +1105,7 @@
     <template id="td_report_new_waybill_info_1">
         <div class="mb-2" style="font-size: 9px; line-height: 1.3;">
             <t t-set="full_description" t-value="report_data['full_description']"/>
+            <t t-set="waybill_info" t-value="report_data['waybill_info']"/>
             <table class="td_zero_border" width="100%">
                 <tr>
                     <td style="width: 15%; padding-bottom: 15px;">
@@ -1128,7 +1129,7 @@
                     <td>
                         <table class="td_zero_border" width="100%">
                             <tr>
-                                <td style="width: 30%; border-bottom: 1px solid #000;"/>
+                                <td style="width: 30%; border-bottom: 1px solid #000; text-align: center" t-esc="waybill_info['vehicle']"/>
                                 <td style="width: 15%; text-align: end; padding-right: 10px;">
                                     <span>Причіп/напівпричіп</span>
                                 </td>
@@ -1136,7 +1137,7 @@
                                 <td style="width: 10%;">
                                     <span>Вид перевезень</span>
                                 </td>
-                                <td style="width: 15%; border-bottom: 1px solid #000;"/>
+                                <td style="width: 15%; border-bottom: 1px solid #000; text-align: center" t-esc="waybill_info['transport_type']"/>
                             </tr>
                         </table>
                     </td>
@@ -1168,11 +1169,16 @@
                     <td>
                         <table class="td_zero_border" width="100%">
                             <tr>
-                                <td style="width: 60%; border-bottom: 1px solid #000;"/>
+                                <td style="width: 60%; border-bottom: 1px solid #000;" t-esc="waybill_info['carrier_partner']"/>
                                 <td style="width: 10%; text-align: end; padding-right: 10px;">
                                     <span>Водій</span>
                                 </td>
-                                <td style="width: 30%; border-bottom: 1px solid #000;"/>
+                                <td style="width: 30%; border-bottom: 1px solid #000; text-align: center">
+                                    <span>
+                                        <t t-esc="waybill_info['driver']"/> 
+                                        <t t-esc="waybill_info['driver_license']"/>
+                                    </span>
+                                </td>
                             </tr>
                         </table>
                     </td>
@@ -1275,15 +1281,15 @@
                             кількість місць
                         </span>
                     </td>
-                    <td width="5%" style="border-bottom: 1px solid #000;"/>
+                    <td width="5%" style="border-bottom: 1px solid #000; text-align: center" t-esc="waybill_info['places_count']"/>
                     <td width="10%">
                         <span>, масою брутто, т.</span>
                     </td>
-                    <td width="5%" style="border-bottom: 1px solid #000;"/>
+                    <td width="10%" style="border-bottom: 1px solid #000; text-align: center" t-esc="waybill_info['gross_weight']"/>
                     <td width="15%">
                         <span>, отримав водій/експедитор</span>
                     </td>
-                    <td style="border-bottom: 1px solid #000;"/>
+                    <td style="border-bottom: 1px solid #000; text-align: center" t-esc="waybill_info['driver_forwarder']"/>
                 </tr>
                 <tr style="font-size: 7px">
                     <td/>
@@ -1303,11 +1309,11 @@
             <table class="td_zero_border" width="100%">
                 <tr>
                     <td width="15%"><span>Відомості про транспортний засіб</span></td>
-                    <td width="10%" style="border-bottom: 1px solid #000;"/>
+                    <td width="10%" style="border-bottom: 1px solid #000; text-align: center" t-esc="waybill_info['vehicle_length']"/>
                     <td width="5%" />
-                    <td width="10%" style="border-bottom: 1px solid #000;"/>
+                    <td width="10%" style="border-bottom: 1px solid #000; text-align: center" t-esc="waybill_info['vehicle_width']"/>
                     <td width="5%" />
-                    <td width="10%" style="border-bottom: 1px solid #000;"/>
+                    <td width="10%" style="border-bottom: 1px solid #000; text-align: center" t-esc="waybill_info['vehicle_height']"/>
                     <td width="5%" />
                     <td style="border-bottom: 1px solid #000;"/>
                 </tr>
@@ -2413,29 +2419,32 @@
                     <td class="text-center" style="padding: 2px; vertical-align: top;"><strong t-esc="i"/></td>
                 </t>
             </tr>
-            <t t-foreach="lines" t-as="line">
+            <!-- <t t-foreach="lines" t-as="line"> -->
                 <tr style="page-break-inside: avoid;">
                     <td class="text-center" style="padding: 2px; vertical-align: top;">
-                        <span t-esc="line['sequence']"/>
+                        1
+                        <!-- <span t-esc="line['sequence']"/> -->
                     </td>
                     <td style="padding: 2px; vertical-align: top;">
-                        <span t-esc="line['product_name']"/><br/>
-                        <small style="font-size: 7px;"></small>
+                        <span>Товари медичного призначення</span>
+                        <!-- <span t-esc="line['product_name']"/><br/>
+                        <small style="font-size: 7px;"></small> -->
                     </td>
                     <td/>
                     <td/>
                     <td/>
                     <td class="text-center" style="padding: 2px; vertical-align: top;">
-                        <span t-esc="line['uom']"/>
+                        <!-- <span t-esc="line['uom']"/> -->
                     </td>
                     <td class="text-center" style="padding: 2px; vertical-align: top;">
-                        <span t-esc="line['quantity']"/>
+                        <!-- <span t-esc="line['quantity']"/> -->
                     </td>
                     <td class="text-center" style="padding: 2px; vertical-align: top;">
-                        <span t-esc="'%.2f' % line['price_unit']"/>
+                        <!-- <span t-esc="'%.2f' % line['price_unit']"/> -->
                     </td>
                     <td class="text-center" style="padding: 2px; vertical-align: top;">
-                        <span t-esc="'%.2f' % line['price_subtotal']"/>
+                        <span t-esc="'%.2f' % report_data['total']"/>
+                        <!-- <span t-esc="'%.2f' % line['price_subtotal']"/> -->
                     </td>
                     <td class="text-center" style="padding: 2px; vertical-align: top;">
                         <!-- <span t-esc="line['packaging_type']"/> -->
@@ -2451,7 +2460,7 @@
                         <!-- <span t-esc="line['gross_weight']"/> -->
                     </td>
                 </tr>
-            </t>
+            <!-- </t> -->
             <tr>
                 <td colspan="2" class="text-start" style="padding: 1px; vertical-align: middle;">Всього:</td>
                 <td colspan="6"/>
@@ -3602,7 +3611,7 @@
             <t t-set="o" t-value="o.with_context(lang=lang)"/>
             <t t-set="report_data" t-value="o.td_get_report_waybill_data()"/>
             
-            <div class="page" style="font-family: Arial, sans-serif; font-size: 11px;">
+            <div class="page mx-auto" style="font-family: Arial, sans-serif; font-size: 11px; max-width: 900px;">
                 <style>
                     .td_zero_border,
                     .td_zero_border td,
