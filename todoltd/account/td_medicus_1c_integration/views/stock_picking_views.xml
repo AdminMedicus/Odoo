@@ -33,35 +33,54 @@
 <!--                <field name="td_price_total" optional="show" column_invisible="not parent.td_is_import"/>-->
                 <field name="td_price_total" optional="show"/>
             </xpath>
-            <xpath expr="//button[@name='button_validate']" position="before">
-<!--                <button name="td_button_send_data_to_one_c" invisible="not td_is_import" string="Send data to 1C" type="object" class="btn btn-primary" data-hotkey="v"/>-->
+<!--            <xpath expr="//button[@name='button_validate']" position="before">-->
+<!--&lt;!&ndash;                <button name="td_button_send_data_to_one_c" invisible="not td_is_import" string="Send data to 1C" type="object" class="btn btn-primary" data-hotkey="v"/>&ndash;&gt;-->
+<!--                <button-->
+<!--                    name="td_button_send_data_to_one_c"-->
+<!--                    type="object"-->
+<!--                    class="btn btn-primary"-->
+<!--                    data-hotkey="v"-->
+<!--                    string="Prepared"-->
+<!--                    invisible="not td_is_import or state in ('import','done','cancel')"-->
+<!--                />-->
+<!--            </xpath>-->
+
+            <xpath expr="(//button[@name='button_validate'])[1]" position="before">
                 <button
                     name="td_button_send_data_to_one_c"
                     type="object"
                     class="btn btn-primary"
                     data-hotkey="v"
                     string="Prepared"
-                    invisible="not td_is_import or state in ('import','done','cancel')"
+                    invisible="not td_is_import or state not in ('assigned','confirmed')"
                 />
             </xpath>
 
-            <xpath expr="//button[@name='button_validate']" position="replace">
-                <button
-                    name="button_validate"
-                    type="object"
-                    class="btn btn-primary"
-                    string="Confirm"
-                    invisible="td_is_import or state not in ('assigned','confirmed')"
-                />
-
-                <button
-                    name="button_validate"
-                    type="object"
-                    class="btn btn-primary"
-                    string="Confirm"
-                    invisible="not td_is_import or state in ('import','done','cancel') or state not in ('assigned','confirmed')"
-                />
+            <xpath expr="(//button[@name='button_validate'])[1]" position="attributes">
+                <attribute name="invisible">td_is_import or state not in ('assigned','confirmed')</attribute>
             </xpath>
+
+            <xpath expr="(//button[@name='button_validate'])[2]" position="attributes">
+                <attribute name="invisible">td_is_import or state not in ('assigned','confirmed')</attribute>
+            </xpath>
+
+<!--            <xpath expr="//button[@name='button_validate']" position="replace">-->
+<!--                <button-->
+<!--                    name="button_validate"-->
+<!--                    type="object"-->
+<!--                    class="btn btn-primary"-->
+<!--                    string="Confirm"-->
+<!--                    invisible="td_is_import or state not in ('assigned','confirmed')"-->
+<!--                />-->
+
+<!--                <button-->
+<!--                    name="button_validate"-->
+<!--                    type="object"-->
+<!--                    class="btn btn-primary"-->
+<!--                    string="Confirm"-->
+<!--                    invisible="not td_is_import or state in ('import','done','cancel') or state not in ('assigned','confirmed')"-->
+<!--                />-->
+<!--            </xpath>-->
 
             <xpath expr="//field[@name='state']" position="replace">
                 <field name="state" widget="statusbar" invisible="picking_type_code != 'incoming' or td_is_import" statusbar_visible="draft,assigned,done"/>

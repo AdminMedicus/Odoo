@@ -7,10 +7,8 @@ class StockMove(models.Model):
     td_currency_rate = fields.Float(
         string="Currency Rate",
         digits=(12, 6),
-        # related="picking_id.td_currency_rate"
     )
     td_customs_rate = fields.Float()
-
 
     td_customs_value_good = fields.Float(
         compute='_compute_td_customs_value_good',
@@ -47,7 +45,19 @@ class StockMove(models.Model):
                     lots.append(move_line.lot_id.id)
             rec.td_lot_ids = [(6, 0, lots)]
 
-    @api.depends('td_taxes', 'td_taxes_ids', 'quantity', 'td_price_unit', 'td_untaxed_price_unit')
+    def _td_get_effective_currency_rate(self):
+        self.ensure_one()
+        return self.td_currency_rate or (self.picking_id and self.picking_id.td_currency_rate) or 0.0
+
+    def _td_get_origin_amount_total(self):
+        self.ensure_one()
+        return (self.td_price_unit or 0.0) * (self.quantity or 0.0)
+
+    def _td_get_company_amount_total(self):
+        self.ensure_one()
+        return self._td_get_origin_amount_total() * self._td_get_effective_currency_rate()
+
+    @api.depends('td_taxes', 'td_taxes_ids', 'quantity', 'td_price_unit', 'td_untaxed_price_unit', 'picking_id.td_is_import', 'td_currency_rate', 'picking_id.td_currency_rate')
     def _compute_td_taxes_price(self):
         for move in self:
             is_import = move.picking_id.td_is_import if move.picking_id else False
@@ -60,18 +70,15 @@ class StockMove(models.Model):
             if not is_import:
                 move.td_taxes = move.td_taxes_ids[0].amount / 100 if move.td_taxes_ids else 0
 
-            move.td_taxes_price = 0
+            move.td_taxes_price = 0.0
+
             if current_line and not is_import:
-                # move.td_taxes_price = current_line.price_tax
                 move.td_taxes_price = abs(move.td_price_unit - move.td_untaxed_price_unit) * move.quantity
 
             if move.td_taxes and move.td_price_unit and is_import:
-                move.td_taxes_price = move.td_customs_value_good * move.td_taxes
-                # move.td_taxes_price = move.td_price_subtotal * move.td_taxes
-                # if is_import:
-                #     move.td_taxes_price = move.td_customs_value_good * move.td_taxes
+                move.td_taxes_price = move._td_get_company_amount_total() * move.td_taxes
 
-    @api.depends('td_taxes_price', 'td_book_value', 'td_customs_value_good', 'td_currency_rate')
+    @api.depends('td_taxes_price', 'td_book_value', 'td_customs_value_good', 'td_currency_rate', 'quantity', 'td_price_unit', 'picking_id.td_is_import')
     def _compute_td_price_total(self):
         for move in self:
             current_line = False
@@ -81,15 +88,14 @@ class StockMove(models.Model):
                 current_line = move.purchase_line_id
 
             if move.picking_id.td_is_import:
-                move.td_price_total = move.td_book_value + move.td_taxes_price
+                move.td_price_total = move._td_get_company_amount_total() + move.td_taxes_price
             else:
-                # move.td_price_total = current_line.price_total if current_line else 0.0
                 move.td_price_total = move.td_price_subtotal + move.td_taxes_price
 
     @api.depends('td_currency_rate', 'td_price_unit', 'product_id', 'picking_id.td_currency_rate')
     def _compute_td_customs_value_good(self):
         for move in self:
-            rate = move.td_currency_rate or (move.picking_id and move.picking_id.td_currency_rate) or 0.0
+            rate = move._td_get_effective_currency_rate()
 
             if move.product_id and move.td_price_unit:
                 move.td_customs_value_good = move.td_price_unit * rate
