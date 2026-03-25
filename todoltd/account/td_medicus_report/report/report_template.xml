@@ -1803,11 +1803,11 @@
             </thead>
             <tbody>
                 <t t-foreach="lines" t-as="line">
-                    <tr style="page-break-inside: avoid; border-bottom: 1px solid transparent;">
+                    <tr style="page-break-inside: avoid;">
                         <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['sequence']"/>
                         </td>
-                        <td style="padding: 2px; vertical-align: middle;">
+                        <td style="padding: 2px; vertical-align: middle; border-bottom: 1px solid transparent;">
                             <span t-esc="line['product_name']"/><br/>
                         </td>
                         <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
@@ -1820,7 +1820,7 @@
                                 <span t-esc="exp_date"/><br/>
                             </t>
                         </td>
-                        <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                        <td class="text-center" style="padding: 2px; vertical-align: middle; border-bottom: 1px solid transparent;">
                             <t t-foreach="line['storage_conditions']" t-as="condition">
                                 <span t-esc="condition"/><br/>
                             </t>
