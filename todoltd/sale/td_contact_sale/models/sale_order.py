@@ -1,4 +1,7 @@
 from odoo import models, fields, api
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class SaleOrder(models.Model):
@@ -110,19 +113,77 @@ class SaleOrder(models.Model):
         - Old (pick_ship / pick_pack_ship): set internal to assigned (as your old logic)
         - New (ship_only): reserve outgoing via action_assign()
         """
-        for res in self:
-            if res.stock_button_active:
-                if res.picking_ids:
-                    pickings_to_control = res._td_get_pickings_to_control()
+        StockQuant = self.env['stock.quant']
 
-                    for picking in pickings_to_control:
-                        if picking.picking_type_code == 'internal':
-                            # OLD LOGIC (2/3-step): keep as-is
-                            picking.state = 'assigned'
-                        else:
-                            # NEW LOGIC (1-step): properly reserve stock
-                            picking.action_assign()
-                res.stock_status_assigned = True
+        for order in self:
+            if not order.stock_button_active:
+                continue
+
+            pickings_to_control = order._td_get_pickings_to_control()
+
+            for picking in pickings_to_control.filtered(lambda p: p.state not in ("done", "cancel")):
+                if picking.picking_type_code == "internal":
+                    # Keep old behavior for internal pickings.
+                    picking.state = "assigned"
+                    continue
+
+                # First, try standard Odoo reservation.
+                picking.action_assign()
+                picking.invalidate_recordset()
+
+                for move in picking.move_ids.filtered(lambda m: m.state not in ("done", "cancel")):
+                    move.invalidate_recordset()
+
+                    # Do not override already reserved quantity.
+                    if move.quantity:
+                        continue
+
+                    available_qty = StockQuant._get_available_quantity(
+                        move.product_id,
+                        move.location_id,
+                        lot_id=False,
+                        package_id=False,
+                        owner_id=False,
+                        strict=False,
+                    )
+
+                    if available_qty <= 0:
+                        continue
+
+                    qty_to_set = min(available_qty, move.product_uom_qty)
+
+                    if qty_to_set <= 0:
+                        continue
+
+                    _logger.info(
+                        "TD stock fallback reservation: order=%s picking=%s move=%s "
+                        "available_qty=%s demand=%s qty_to_set=%s",
+                        order.name,
+                        picking.name,
+                        move.id,
+                        available_qty,
+                        move.product_uom_qty,
+                        qty_to_set,
+                    )
+
+                    move.quantity = qty_to_set
+                    move.invalidate_recordset()
+
+                    if not move.move_line_ids or not move.quantity:
+                        _logger.warning(
+                            "TD stock fallback reservation did not fully apply: "
+                            "order=%s picking=%s move=%s state=%s quantity=%s move_lines=%s",
+                            order.name,
+                            picking.name,
+                            move.id,
+                            move.state,
+                            move.quantity,
+                            move.move_line_ids.ids,
+                        )
+
+                picking.invalidate_recordset()
+
+            order.stock_status_assigned = True
 
     def action_rejected_stock_status(self):
         """
