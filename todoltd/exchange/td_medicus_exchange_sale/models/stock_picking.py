@@ -54,7 +54,7 @@ class TdStockPickingExchange(models.Model):
             'td_medicus_exchange_sale.act_transfer_to_safekeeping_odoo_1c':   self.ata_exchange_get_data_outgoing_safekeeping,
             'td_medicus_exchange_sale.act_return_from_safekeeping_odoo_1c':   self.ata_exchange_get_data_incoming_safekeeping,
             'td_medicus_exchange_sale.products_relocation_odoo_1c':           self.ata_exchange_get_data_outgoing_relocation,
-            'td_medicus_exchange_sale.return_products_relocation_odoo_1c':    self.ata_exchange_get_data_incoming,
+            'td_medicus_exchange_sale.return_products_relocation_odoo_1c':    self.ata_exchange_get_data_incoming_relocation,
             'td_medicus_exchange_sale.stock_picking_incoming_import_prepared_odoo_1c': self.ata_exchange_get_data_incoming_import_prepared,
         }
 
@@ -157,6 +157,7 @@ class TdStockPickingExchange(models.Model):
                 "quantity":     sm.quantity,
                 "uom":          sm.product_uom.exchange_data,
                 "tax":          sm.td_taxes_ids.exchange_data,
+                "currency_rate": sm.td_currency_rate,
                 "doc_id":       get_doc_id(),
                 "lots_data": [{
                     "lot":      sml.lot_id.exchange_data,
@@ -206,16 +207,19 @@ class TdStockPickingExchange(models.Model):
                 "doc": ("td_untaxed_price_unit", "price_unit", "price_subtotal", "price_total"),
                 "sm":  ("td_untaxed_price_unit", "td_price_unit", "td_price_subtotal", "td_price_total"),
             }
+            add_fields = {}
 
             if sol := stock_move.sale_line_id:
                 record, fields = sol, field_maps["doc"]
+                add_fields["currency_id"] = sol.currency_id.exchange_data
             elif pol := stock_move.purchase_line_id:
                 record, fields = pol[:1], field_maps["doc"]
+                add_fields["currency_id"] = pol[:1].currency_id.exchange_data
             else:
                 record, fields = stock_move, field_maps["sm"]
 
             data = record.read(list(fields))[0] if record else {}
-            return {k: data.get(f, 0.0) for k, f in zip(output_keys, fields)}
+            return {k: data.get(f, 0.0) for k, f in zip(output_keys, fields)} | add_fields
 
         return {
             "id":               self.id,
