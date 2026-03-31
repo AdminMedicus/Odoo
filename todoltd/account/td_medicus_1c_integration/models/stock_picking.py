@@ -35,7 +35,6 @@ class StockPicking(models.Model):
     )
 
     state = fields.Selection(
-        # selection_add=[('import', 'Import data to 1C')],
         selection_add=[('import', 'Expects to spread costs over GTD')],
     )
 
@@ -78,12 +77,6 @@ class StockPicking(models.Model):
     )
 
     def td_button_send_data_to_one_c(self):
-        """
-        The "Prepared" button for imported receipts:
-        - changes the status to state='import' (Awaiting allocation of expenses from the customs declaration)
-        - adds to the exchange queue (ata.exchange.queue) so that 1C can retrieve the data
-        """
-
         for picking in self:
             if picking.picking_type_code != "incoming":
                 raise UserError(_("This action is only available for receipts."))
@@ -129,13 +122,11 @@ class StockPicking(models.Model):
 
                 if rec.td_is_import:
                     amount_origin_currency = sum(
-                        (line.td_price_unit or 0.0) * (line.quantity or 0.0)
+                        line._td_get_origin_amount_total()
                         for line in lines
                     )
                     total_without_tax = sum(
-                        ((line.td_price_unit or 0.0) * (line.quantity or 0.0)) * (
-                                line.td_currency_rate or rec.td_currency_rate or 0.0
-                        )
+                        line._td_get_company_amount_untaxed_total()
                         for line in lines
                     )
 
@@ -220,14 +211,17 @@ class StockPicking(models.Model):
         seq = Seq.search([('code', '=', code)], limit=1)
         if not seq:
             seq = Seq.create({
-                'name': 'TD Serial Auto Name',
+                'name': 'Stock Lot Auto Sequence',
                 'code': code,
                 'implementation': 'no_gap',
-                'use_date_range': False,
-                'prefix': 'SN-',
-                'padding': 6,
+                'prefix': '',
+                'padding': 4,
             })
         return seq
+
+    def _compute_td_total_amount(self):
+        for rec in self:
+            rec.td_total_amount = rec.td_total_without_tax + rec.td_total_tax
 
     def _next_daily_lot_name(self, for_date=None):
         self.ensure_one()
@@ -351,7 +345,7 @@ class StockPicking(models.Model):
             processed_ml_ids = set()
             for ml in picking.move_line_ids.filtered(
                     lambda lin: lin.product_id
-                    and lin.product_id.tracking == 'lot'
+                                and lin.product_id.tracking == 'lot'
             ):
                 if ml.id in processed_ml_ids:
                     continue
@@ -679,31 +673,3 @@ class StockPicking(models.Model):
             chatter_message=_("Перенесено коригування даних з 1С"),
         )
         return True
-
-    # def button_validate(self):
-    #     # if not self.td_is_import:
-    #
-    #     res = super().button_validate()
-    #
-    #     if not self.sale_id:
-    #         self._assign_serial_ref()
-    #         self._create_lot_ids_for_move()
-    #
-    #     for picking in self:
-    #         for move in picking.move_ids:
-    #
-    #             for lot in move.lot_ids:
-    #                 uktzed_line = move.move_line_ids.filtered(
-    #                     lambda lin: lin.lot_id.id == lot.id
-    #                 )
-    #                 move.lot_ids.write({
-    #                     "td_uktzed_code_id": (
-    #                         uktzed_line.td_uktzed_code_id.id
-    #                         if uktzed_line else False
-    #                     )
-    #                 })
-    #                 move.td_uktzed_code_id = (
-    #                     uktzed_line.td_uktzed_code_id.id
-    #                     if uktzed_line else False
-    #                 )
-    #     return res
