@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="td_confirmation_bom_wizard_view" model="ir.ui.view">
+        <field name="name">td.confirmation.bom.wizard.form</field>
+        <field name="model">td.confirmation.bom.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Confirmation">
+                <group>
+                    <div class="o_form_label">
+                        Does a Completion Act need to be created before confirmation?
+                    </div>
+                </group>
+                <footer>
+                    <button name="action_yes" string="Yes" type="object" class="btn-primary"/>
+                    <button name="action_no" string="No" type="object" class="btn-secondary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

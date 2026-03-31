@@ -1,13 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="action_create_completion_act" model="ir.actions.server">
-        <field name="name">Create a completion act</field>
-        <field name="model_id" ref="sale.model_sale_order"/>
-        <field name="binding_model_id" ref="sale.model_sale_order"/>
-        <field name="binding_view_types">form</field>
-        <field name="state">code</field>
-        <field name="code">
-            action = records.open_completion_act()
+
+    <record id="td_sale_order_form_inherit_bom_button" model="ir.ui.view">
+        <field name="name">td.sale.order.form.bom.button</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_view_delivery']" position="after">
+                <button name="action_open_td_bom"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-cogs"
+                        invisible="not td_mrp_bom_id">
+
+                    <div class="o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="td_bom_count"/>
+                        </span>
+                        <span class="o_stat_text">
+                            BOM
+                        </span>
+                    </div>
+
+                </button>
+
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="td_sale_order_management_view_form" model="ir.ui.view">
+        <field name="name">td.sale.order.management.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_management.sale_order_form_quote"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='sale_order_template_id']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='sale_order_template_id']" position="after">
+                <field name="td_completion_act_check" invisible="True"/>
+                <label for="sale_order_template_id"/>
+                <div class="o_row">
+                    <field name="sale_order_template_id"
+                           options="{'no_create': True}"
+                           groups="sale_management.group_sale_order_template"
+                           readonly="state in ['cancel', 'sale']"/>
+
+                    <button name="open_completion_act"
+                            string="Completion act"
+                            type="object"
+                            class="btn-primary"
+                            invisible="not td_completion_act_check or state in ['sale', 'cancel'] or td_mrp_bom_id"/>
+                </div>
+            </xpath>
         </field>
     </record>
 
