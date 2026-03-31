@@ -16,9 +16,14 @@ class StockMove(models.Model):
     )
     td_taxes_ids = fields.Many2many(
         comodel_name='account.tax',
-        related='product_id.taxes_id'
+        compute='_compute_td_taxes_ids',
+        store=True,
+        string='Taxes',
     )
-    td_taxes = fields.Float()
+    td_taxes = fields.Float(
+        compute='_compute_td_taxes',
+        store=True,
+    )
     td_taxes_price = fields.Float(
         compute='_compute_td_taxes_price',
         store=True
@@ -45,52 +50,147 @@ class StockMove(models.Model):
                     lots.append(move_line.lot_id.id)
             rec.td_lot_ids = [(6, 0, lots)]
 
+    @api.depends(
+        'purchase_line_id.taxes_id',
+        'sale_line_id.tax_id',
+        'product_id.taxes_id',
+        'product_id.supplier_taxes_id',
+        'picking_id.picking_type_code',
+        'company_id',
+    )
+    def _compute_td_taxes_ids(self):
+        for move in self:
+            taxes = move._td_get_taxes()
+            move.td_taxes_ids = [(6, 0, taxes.ids)]
+
+    @api.depends('td_taxes_ids', 'td_taxes_ids.amount', 'td_taxes_ids.amount_type')
+    def _compute_td_taxes(self):
+        for move in self:
+            percent_taxes = move.td_taxes_ids.filtered(lambda tax: tax.amount_type == 'percent')
+            move.td_taxes = sum(percent_taxes.mapped('amount')) / 100 if percent_taxes else 0.0
+
+    def _td_get_taxes(self):
+        self.ensure_one()
+        taxes = self.env['account.tax']
+
+        if self.purchase_line_id:
+            taxes = self.purchase_line_id.taxes_id
+        elif self.sale_line_id:
+            taxes = self.sale_line_id.tax_id
+        elif self.picking_id and self.picking_id.picking_type_code == 'incoming':
+            taxes = self.product_id.supplier_taxes_id
+        else:
+            taxes = self.product_id.taxes_id
+
+        company = self.company_id
+        if company:
+            taxes = taxes.filtered(lambda tax: not tax.company_id or tax.company_id == company)
+
+        return taxes
+
     def _td_get_effective_currency_rate(self):
         self.ensure_one()
-        return self.td_currency_rate or (self.picking_id and self.picking_id.td_currency_rate) or 0.0
+        return self.td_currency_rate or (self.picking_id and self.picking_id.td_currency_rate) or 1.0
+
+    def _td_get_tax_partner(self):
+        self.ensure_one()
+        if self.purchase_line_id and self.purchase_line_id.order_id:
+            return self.purchase_line_id.order_id.partner_id
+        if self.sale_line_id and self.sale_line_id.order_id:
+            return self.sale_line_id.order_id.partner_id
+        if self.picking_id:
+            return self.picking_id.partner_id
+        return False
+
+    def _td_get_tax_computation(self):
+        self.ensure_one()
+        taxes = self._td_get_taxes()
+        quantity = self.quantity or 0.0
+        unit_price = self.td_price_unit or 0.0
+
+        if not quantity:
+            return {
+                'total_excluded': 0.0,
+                'total_included': 0.0,
+            }
+
+        if not taxes:
+            total = unit_price * quantity
+            return {
+                'total_excluded': total,
+                'total_included': total,
+            }
+
+        return taxes.compute_all(
+            unit_price,
+            quantity=quantity,
+            product=self.product_id,
+            partner=self._td_get_tax_partner(),
+        )
 
     def _td_get_origin_amount_total(self):
         self.ensure_one()
-        return (self.td_price_unit or 0.0) * (self.quantity or 0.0)
+        taxes_data = self._td_get_tax_computation()
+        return taxes_data.get('total_included', 0.0)
+
+    def _td_get_origin_amount_untaxed_total(self):
+        self.ensure_one()
+        taxes_data = self._td_get_tax_computation()
+        return taxes_data.get('total_excluded', 0.0)
+
+    def _td_get_origin_tax_amount_total(self):
+        self.ensure_one()
+        taxes_data = self._td_get_tax_computation()
+        return taxes_data.get('total_included', 0.0) - taxes_data.get('total_excluded', 0.0)
 
     def _td_get_company_amount_total(self):
         self.ensure_one()
         return self._td_get_origin_amount_total() * self._td_get_effective_currency_rate()
 
-    @api.depends('td_taxes', 'td_taxes_ids', 'quantity', 'td_price_unit', 'td_untaxed_price_unit', 'picking_id.td_is_import', 'td_currency_rate', 'picking_id.td_currency_rate')
+    def _td_get_company_amount_untaxed_total(self):
+        self.ensure_one()
+        return self._td_get_origin_amount_untaxed_total() * self._td_get_effective_currency_rate()
+
+    @api.depends(
+        'td_taxes',
+        'td_taxes_ids',
+        'td_taxes_ids.amount',
+        'td_taxes_ids.amount_type',
+        'quantity',
+        'td_price_unit',
+        'td_untaxed_price_unit',
+        'picking_id.td_is_import',
+        'td_currency_rate',
+        'picking_id.td_currency_rate',
+        'purchase_line_id.taxes_id',
+        'sale_line_id.tax_id',
+    )
     def _compute_td_taxes_price(self):
         for move in self:
-            is_import = move.picking_id.td_is_import if move.picking_id else False
-            current_line = False
-            if move.sale_line_id:
-                current_line = move.sale_line_id
-            elif move.purchase_line_id:
-                current_line = move.purchase_line_id
+            tax_amount = move._td_get_origin_tax_amount_total()
+            if move.picking_id.td_is_import:
+                move.td_taxes_price = tax_amount * move._td_get_effective_currency_rate()
+            else:
+                move.td_taxes_price = tax_amount
 
-            if not is_import:
-                move.td_taxes = move.td_taxes_ids[0].amount / 100 if move.td_taxes_ids else 0
-
-            move.td_taxes_price = 0.0
-
-            if current_line and not is_import:
-                move.td_taxes_price = abs(move.td_price_unit - move.td_untaxed_price_unit) * move.quantity
-
-            if move.td_taxes and move.td_price_unit and is_import:
-                move.td_taxes_price = move._td_get_company_amount_total() * move.td_taxes
-
-    @api.depends('td_taxes_price', 'td_book_value', 'td_customs_value_good', 'td_currency_rate', 'quantity', 'td_price_unit', 'picking_id.td_is_import')
+    @api.depends(
+        'td_taxes_price',
+        'td_book_value',
+        'td_customs_value_good',
+        'td_currency_rate',
+        'quantity',
+        'td_price_unit',
+        'td_untaxed_price_unit',
+        'picking_id.td_is_import',
+        'purchase_line_id.taxes_id',
+        'sale_line_id.tax_id',
+    )
     def _compute_td_price_total(self):
         for move in self:
-            current_line = False
-            if move.sale_line_id:
-                current_line = move.sale_line_id
-            elif move.purchase_line_id:
-                current_line = move.purchase_line_id
-
             if move.picking_id.td_is_import:
-                move.td_price_total = move._td_get_company_amount_total() + move.td_taxes_price
+                move.td_price_total = move._td_get_company_amount_untaxed_total() + move.td_taxes_price
             else:
-                move.td_price_total = move.td_price_subtotal + move.td_taxes_price
+                move.td_price_total = move._td_get_origin_amount_untaxed_total() + move.td_taxes_price
 
     @api.depends('td_currency_rate', 'td_price_unit', 'product_id', 'picking_id.td_currency_rate')
     def _compute_td_customs_value_good(self):
