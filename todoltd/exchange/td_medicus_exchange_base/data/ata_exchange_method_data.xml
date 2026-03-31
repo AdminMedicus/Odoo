@@ -55,6 +55,7 @@
             <field name="name">Product_Odoo_1C</field>
             <field name="description">Product (to 1C)</field>
             <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
             <field name="model_id" ref="product.model_product_product" />
             <field name="model_name">product.product</field>
         </record>
@@ -69,6 +70,7 @@
             <field name="name">Partner_Odoo_1C</field>
             <field name="description">Partner (to 1C)</field>
             <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
             <field name="model_id" ref="model_res_partner" />
             <field name="model_name">res.partner</field>
         </record>
@@ -83,6 +85,7 @@
             <field name="name">Agreement_Odoo_1C</field>
             <field name="description">Agreement (to 1C)</field>
             <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
             <field name="model_id" ref="td_agreement.model_td_agreement" />
             <field name="model_name">td.agreement</field>
         </record>
@@ -105,17 +108,33 @@
 
         <!-- INNER TYPES for matching data -->
         <!-- partner -->
-        <record id="inner_types_vendor_1c" model="ata.exchange.method">
-            <field name="name">Vendor1C</field>
-            <field name="description">Vendor (from 1C)</field>
+        <record id="inner_types_manufacturer_1c" model="ata.exchange.method">
+            <field name="name">Manufacturer1C</field>
+            <field name="description">Manufacturer (from 1C)</field>
             <field name="type">inner_types</field>
-            <field name="model_id" ref="td_medicus_1c_integration.model_td_manufacturer_directory" />
-            <field name="model_name">td.manufacturer.directory</field>
+            <field name="model_id" ref="model_res_partner" />
+            <field name="model_name">res.partner</field>
+        </record>
+
+        <record id="inner_types_product_supplier" model="ata.exchange.method">
+            <field name="name">Supplier</field>
+            <field name="description">Supplier (in product)</field>
+            <field name="type">inner_types</field>
+            <field name="model_id" ref="model_res_partner" />
+            <field name="model_name">res.partner</field>
         </record>
         
         <record id="inner_types_res_partner_chief" model="ata.exchange.method">
             <field name="name">PartnerChief</field>
             <field name="description">Chief of partner</field>
+            <field name="type">inner_types</field>
+            <field name="model_id" ref="model_res_partner" />
+            <field name="model_name">res.partner</field>
+        </record>
+
+        <record id="inner_types_res_partner_person" model="ata.exchange.method">
+            <field name="name">PartnerPerson</field>
+            <field name="description">Person of partner</field>
             <field name="type">inner_types</field>
             <field name="model_id" ref="model_res_partner" />
             <field name="model_name">res.partner</field>
@@ -129,6 +148,15 @@
             <field name="model_name">res.partner</field>
         </record>
 
+        <record id="inner_types_res_partner_address_delivery" model="ata.exchange.method">
+            <field name="name">AddressDelivery</field>
+            <field name="description">Address delivery</field>
+            <field name="type">inner_types</field>
+            <field name="model_id" ref="model_res_partner"/>
+            <field name="model_name">res.partner</field>
+        </record>
+
+        <!-- agreement -->
         <record id="inner_types_agreement_type" model="ata.exchange.method">
             <field name="name">AgreementType</field>
             <field name="description">Agreement type</field>

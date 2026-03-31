@@ -46,19 +46,51 @@ class StockMove(models.Model):
         ],
         compute='_compute_td_picking_code'
     )
+    td_untaxed_price_unit = fields.Float(
+        string="Untaxed Price Unit",
+        compute='_compute_td_price_unit',
+        store=True
+    )
 
     @api.depends('purchase_line_id','sale_line_id', 'product_id', 'quantity')
     def _compute_td_price_unit(self):
         for line in self:
-            if line.sale_line_id:
+            is_component = False
+            is_first_component = False
+            if line.sale_line_id and line.sale_line_id.order_id:
+                sale_order = line.sale_line_id.order_id
+                for so_line in sale_order.order_line:
+                    if so_line.product_id and so_line.product_id.bom_ids:
+                        for bom in so_line.product_id.bom_ids:
+                            component_products = bom.bom_line_ids.mapped('product_id')
+                            if line.product_id in component_products:
+                                is_component = True
+                                
+                                all_moves_with_same_product = self.search([
+                                    ('sale_line_id.order_id', '=', sale_order.id),
+                                    ('product_id', 'in', component_products.ids)
+                                ], order='id asc', limit=1)
+                                
+                                if all_moves_with_same_product and line in all_moves_with_same_product:
+                                    is_first_component = True
+                                break
+                    if is_component:
+                        break
+            
+            if is_component and not is_first_component:
+                line.td_price_unit = 0.0
+                line.td_untaxed_price_unit = 0.0
+            elif line.sale_line_id:
                 line.td_price_unit = line.sale_line_id.price_unit
-                line.td_price_subtotal = line.sale_line_id.price_unit * line.quantity
+                line.td_untaxed_price_unit = line.sale_line_id.td_untaxed_price_unit
             elif line.purchase_line_id:
                 line.td_price_unit = line.purchase_line_id.price_unit
-                line.td_price_subtotal = line.purchase_line_id.price_unit * line.quantity
+                line.td_untaxed_price_unit = line.purchase_line_id.td_untaxed_price_unit
             else:
                 line.td_price_unit = line.td_price_unit
-                line.td_price_subtotal = line.td_price_subtotal
+                line.td_untaxed_price_unit = line.td_untaxed_price_unit
+
+            line.td_price_subtotal = line.td_untaxed_price_unit * line.quantity
 
     @api.depends('td_picking_type_id')
     @api.onchange('td_picking_type_id')
@@ -147,73 +179,6 @@ class StockMove(models.Model):
 
             if move_lines_commands:
                 move.write({'move_line_ids': move_lines_commands})
-
-    # def _set_lot_ids(self):
-    #     for move in self:
-    #         # if move.product_id.tracking != 'serial':
-    #         #     continue
-    #
-    #         lots_to_process = (
-    #             move.td_lot_ids
-    #             if move.td_lot_ids else
-    #             move.lot_ids
-    #         )
-    #
-    #         move_lines_commands = []
-    #         mls = move.move_line_ids
-    #         mls_with_lots = mls.filtered(lambda ml: ml.lot_id)
-    #         mls_without_lots = (mls - mls_with_lots)
-    #
-    #         for ml in mls_with_lots:
-    #             if ml.quantity and ml.lot_id not in lots_to_process:
-    #                 move_lines_commands.append((2, ml.id))
-    #
-    #         existing_lot_ids = mls.mapped('lot_id')
-    #
-    #         for lot in lots_to_process:
-    #             if lot not in existing_lot_ids:
-    #                 if mls_without_lots:
-    #                     move_line = mls_without_lots[0]
-    #                     move_lines_commands.append(
-    #                         Command.update(move_line.id, {
-    #                             'lot_name': lot.name,
-    #                             'lot_id': lot.id,
-    #                             'product_uom_id': move.product_id.uom_id.id,
-    #                             'quantity': move.td_quantity,
-    #                         }))
-    #                     mls_without_lots = mls_without_lots[1:]
-    #                 else:
-    #                     reserved_quants = self.env[
-    #                         'stock.quant'
-    #                     ]._get_reserve_quantity(
-    #                         move.product_id, move.location_id, 1.0, lot_id=lot
-    #                     )
-    #                     if reserved_quants:
-    #                         move_line_vals = move._prepare_move_line_vals(
-    #                             quantity=0,
-    #                             reserved_quant=reserved_quants[0][0]
-    #                         )
-    #                     else:
-    #                         move_line_vals = move._prepare_move_line_vals(
-    #                             quantity=0
-    #                         )
-    #                         move_line_vals['lot_id'] = lot.id
-    #                         move_line_vals['lot_name'] = lot.name
-    #                     move_line_vals[
-    #                         'product_uom_id'
-    #                     ] = move.product_id.uom_id.id
-    #                     move_line_vals['quantity'] = move.td_quantity
-    #                     move_lines_commands.append(
-    #                         (0, 0, move_line_vals)
-    #                     )
-    #             else:
-    #                 move_line = mls.filtered(
-    #                     lambda line: line.lot_id.id == lot.id
-    #                 )
-    #                 move_line.quantity = move.td_quantity
-    #
-    #         if move_lines_commands:
-    #             move.write({'move_line_ids': move_lines_commands})
 
     @api.depends('move_line_ids.quantity', 'move_line_ids.product_uom_id')
     def _compute_quantity(self):

@@ -1,0 +1,897 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* td_medicus_warranty
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-08 16:00+0000\n"
+"PO-Revision-Date: 2026-01-08 16:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: td_medicus_warranty
+#. odoo-python
+#: code:addons/td_medicus_warranty/models/td_warranty_period.py:0
+msgid ""
+"A warranty period with this combination of manufacturers and product "
+"categories already exists!"
+msgstr ""
+"Гарантійний термін для цієї комбінації виробників та категорій продуктів вже"
+" існує!"
+
+#. module: td_medicus_warranty
+#: model:ir.model,name:td_medicus_warranty.model_account_move
+msgid "Account Move"
+msgstr "Запис у журналі"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields.selection,name:td_medicus_warranty.selection__td_warranty_record__status__active
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_td_warranty_record_search
+msgid "Active"
+msgstr "Активна"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_stock_lot__td_warranty_ids
+msgid "All warranties associated with this serial number."
+msgstr "Усі гарантії, пов'язані з цим серійним номером."
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_res_partner__td_warranty_ids
+#: model:ir.model.fields,help:td_medicus_warranty.field_res_users__td_warranty_ids
+msgid "All warranties for this customer."
+msgstr "Всі гарантії для цього клієнта."
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_stock_lot_search_warranty_selection
+msgid "At Any Customer"
+msgstr "У будь-якого клієнта"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard_line__available_serial_ids
+msgid "Available Serials"
+msgstr "Доступні серійні номери"
+
+#. module: td_medicus_warranty
+#: model:ir.model,name:td_medicus_warranty.model_td_warranty_bulk_link_wizard
+msgid "Bulk Link Warranties to Serial Numbers"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_td_warranty_bulk_link_wizard_form
+msgid "Cancel"
+msgstr "Відмінити"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_sale_order__td_date_commissioning
+msgid "Commissioning Date"
+msgstr "Дата введення в експлуатацію"
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_td_warranty_bulk_link_wizard_form
+msgid "Confirm & Validate Delivery"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model,name:td_medicus_warranty.model_res_partner
+msgid "Contact"
+msgstr "Контакт"
+
+#. module: td_medicus_warranty
+#: model_terms:ir.actions.act_window,help:td_medicus_warranty.td_warranty_period_action
+msgid "Create your first Product Warranty"
+msgstr "Створіть свою першу гарантію на продукт"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard__create_uid
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard_line__create_uid
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_period__create_uid
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard__create_date
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard_line__create_date
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_period__create_date
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__partner_id
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_td_warranty_record_search
+msgid "Customer"
+msgstr "Клієнт"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_td_warranty_record__partner_id
+msgid "Customer who owns this warranty."
+msgstr "Клієнт, якому належить ця гарантія"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_account_bank_statement_line__td_date_commissioning
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_account_move__td_date_commissioning
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_stock_picking__td_date_commissioning
+msgid "Date of Commissioning"
+msgstr "Дата введення в експлуатацію"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_sale_order__td_date_commissioning
+msgid "Date of commissioning for warranty products"
+msgstr "Дата введення в експлуатацію гарантійних виробів"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_account_bank_statement_line__td_date_commissioning
+#: model:ir.model.fields,help:td_medicus_warranty.field_account_move__td_date_commissioning
+#: model:ir.model.fields,help:td_medicus_warranty.field_stock_picking__td_date_commissioning
+msgid "Date when the product was put into operation."
+msgstr "Дата введення продукту в експлуатацію."
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard__picking_id
+msgid "Delivery"
+msgstr "Доставка"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_period__description
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.td_warranty_period_form_view
+msgid "Description"
+msgstr "Опис"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard__display_name
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard_line__display_name
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_period__display_name
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields.selection,name:td_medicus_warranty.selection__td_warranty_record__status__draft
+msgid "Draft"
+msgstr "Чернетка"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_period__duration_months
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__duration_months
+msgid "Duration (Months)"
+msgstr "Тривалість (місяців)"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__date_end
+msgid "End Date"
+msgstr "Кінцева дата"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields.selection,name:td_medicus_warranty.selection__td_warranty_record__status__expired
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_td_warranty_record_search
+msgid "Expired"
+msgstr "Протерміновано"
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_td_warranty_record_search
+msgid "Extended"
+msgstr "Розширена"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields.selection,name:td_medicus_warranty.selection__td_warranty_record__warranty_type__extended
+msgid "Extended Warranty"
+msgstr "Розширена гарантія"
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_td_warranty_record_form
+msgid "Extended Warranty Details"
+msgstr "Деталі розширеної гарантії"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_product_product__td_extended_warranty_period_id
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_product_template__td_extended_warranty_period_id
+msgid "Extended Warranty Period"
+msgstr "Термін розширеної гарантії"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_td_warranty_record__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.td_warranty_period_search_view
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_stock_lot_search_warranty_selection
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_td_warranty_record_search
+msgid "Group By"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_stock_lot__td_has_warranty
+msgid "Has Warranty"
+msgstr "Має Гарантію"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_sale_order__td_has_warranty_products
+msgid "Has Warranty Products"
+msgstr "Має гарантійні товари"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard__id
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard_line__id
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_period__id
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__id
+msgid "ID"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_td_warranty_record__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_td_warranty_record__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_td_warranty_record__message_has_error
+#: model:ir.model.fields,help:td_medicus_warranty.field_td_warranty_record__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_sale_order_line__td_warranty_from_commissioning
+#: model:ir.model.fields,help:td_medicus_warranty.field_td_warranty_bulk_link_wizard_line__warranty_from_commissioning
+msgid ""
+"If checked, warranty start date will be taken from the commissioning date. "
+"Otherwise, you can manually set the start date."
+msgstr ""
+"Якщо позначено, дата початку гарантії буде взято з дати введення в "
+"експлуатацію. В іншому випадку ви можете встановити дату початку вручну."
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_sale_order_line__td_is_extended_warranty
+msgid "Indicates if this line is an extended warranty service."
+msgstr "Вказує, чи цей рядок стосується розширеної гарантії."
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_product_product__td_is_extended_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_product_template__td_is_extended_warranty
+msgid ""
+"Indicates if this service is an extended warranty that can be sold "
+"separately."
+msgstr ""
+"Вказує, чи є ця послуга розширеною гарантією, яку можна продати окремо."
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_product_product__td_is_warranty_applicable
+#: model:ir.model.fields,help:td_medicus_warranty.field_product_template__td_is_warranty_applicable
+#: model:ir.model.fields,help:td_medicus_warranty.field_stock_lot__td_has_warranty
+msgid ""
+"Indicates whether warranties can be applied to this product. Only available "
+"for products tracked by unique serial number."
+msgstr "Вказує, чи можуть гарантії застосовуватися до цього продукту."
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_product_product__td_is_extended_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_product_template__td_is_extended_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_sale_order_line__td_is_extended_warranty
+msgid "Is Extended Warranty"
+msgstr "Розширена гарантія"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_stock_lot_list_warranty_selection
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_stock_lot_search_warranty_selection
+msgid "Last Delivered To"
+msgstr "Востаннє доставлено"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_stock_lot__td_last_delivery_partner_id
+msgid "Last Delivery Partner"
+msgstr "Востаннє доставлено партнеру"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard__write_uid
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard_line__write_uid
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_period__write_uid
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard__write_date
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard_line__write_date
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_period__write_date
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: td_medicus_warranty
+#. odoo-python
+#: code:addons/td_medicus_warranty/models/sale_order.py:0
+msgid ""
+"Line '%s': Commissioning date is required on Sale Order when 'Use "
+"Commissioning Date' is checked."
+msgstr ""
+"Рядок '%s': Дата введення в експлуатацію обов'язкова для замовлення на "
+"продаж, якщо позначено опцію 'Використати дату введення в експлуатацію'."
+
+#. module: td_medicus_warranty
+#. odoo-python
+#: code:addons/td_medicus_warranty/models/sale_order.py:0
+msgid ""
+"Line '%s': Manual warranty start date is required when 'Use Commissioning "
+"Date' is not checked."
+msgstr ""
+"Рядок '%s': Потрібна ручна дата початку гарантії, якщо не позначено опцію "
+"'Використовувати дату введення в експлуатацію'."
+
+#. module: td_medicus_warranty
+#. odoo-python
+#: code:addons/td_medicus_warranty/models/sale_order.py:0
+msgid ""
+"Line '%s': Warranty must be linked to a serial number before confirmation."
+msgstr ""
+"Рядок '%s': Гарантія має бути пов'язана із серійним номером перед "
+"підтвердженням."
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_order_form_td_warranty_extend
+msgid "Link Product"
+msgstr "Пов'язати"
+
+#. module: td_medicus_warranty
+#. odoo-python
+#: code:addons/td_medicus_warranty/models/stock_picking.py:0
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_td_warranty_bulk_link_wizard_form
+msgid "Link Warranties to Serial Numbers"
+msgstr "Прив'язка гарантій до серійних номерів"
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_stock_lot_list_warranty_selection
+msgid "Link to Warranty"
+msgstr "Прив’язати до гарантії"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_sale_order_line__td_warranty_linked_serial_ids
+msgid "Linked Serial Numbers"
+msgstr "Пов'язані серійні номери"
+
+#. module: td_medicus_warranty
+#: model:ir.model,name:td_medicus_warranty.model_stock_lot
+msgid "Lot/Serial"
+msgstr "Партія/Серійний номер"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_sale_order_line__td_warranty_manual_start_date
+#: model:ir.model.fields,help:td_medicus_warranty.field_td_warranty_bulk_link_wizard_line__warranty_start_date
+msgid ""
+"Manual warranty start date (used when not starting from commissioning date)."
+msgstr ""
+"Ручна дата початку гарантії (використовується, якщо вона не починається з "
+"дати введення в експлуатацію)."
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.td_warranty_period_search_view
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_td_warranty_record_search
+msgid "Manufacturer"
+msgstr "Виробник"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields.selection,name:td_medicus_warranty.selection__td_warranty_record__warranty_type__manufacturer
+msgid "Manufacturer Warranty"
+msgstr "Гарантія від виробника"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_period__manufacturer
+msgid "Manufacturers"
+msgstr "Виробники"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model_terms:ir.actions.act_window,help:td_medicus_warranty.action_td_warranty_record
+msgid ""
+"No warranties found. They will be created automatically when warranty "
+"products are delivered."
+msgstr ""
+"Гарантій не знайдено. Вони будуть створені автоматично після доставки "
+"гарантійних товарів."
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_td_warranty_record__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_td_warranty_record__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_stock_lot_search_warranty_selection
+msgid "On Hand"
+msgstr "В наявності"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_stock_lot__td_last_delivery_partner_id
+msgid "Partner from the last outgoing delivery"
+msgstr "Партнер з останньої вихідної поставки"
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_stock_lot_search_warranty_selection
+msgid "Partner's Serials"
+msgstr "Серійні номери клієнта"
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_td_warranty_bulk_link_wizard_form
+msgid ""
+"Please link each extended warranty to a serial number from the delivery."
+msgstr ""
+"Будь ласка, пов’яжіть кожну розширену гарантію із серійним номером, "
+"зазначеним у комплекті поставки."
+
+#. module: td_medicus_warranty
+#. odoo-python
+#: code:addons/td_medicus_warranty/wizards/td_warranty_bulk_link_wizard.py:0
+msgid "Please select a serial number for warranty: %s"
+msgstr "Будь ласка, виберіть серійний номер для гарантії: %s"
+
+#. module: td_medicus_warranty
+#. odoo-python
+#: code:addons/td_medicus_warranty/models/sale_order_line.py:0
+msgid ""
+"Please set a valid warranty start date before updating linked warranties."
+msgstr ""
+"Будь ласка, встановіть дійсну дату початку гарантії, перш ніж оновлювати пов’язані гарантії."
+
+#. module: td_medicus_warranty
+#: model:ir.model,name:td_medicus_warranty.model_product_template
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__product_id
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_stock_lot_search_warranty_selection
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_td_warranty_record_search
+msgid "Product"
+msgstr "Товар"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_period__product_category
+msgid "Product Categories"
+msgstr "Категорії продуктів"
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.td_warranty_period_search_view
+msgid "Product Category"
+msgstr "Категорія продукту"
+
+#. module: td_medicus_warranty
+#: model:ir.model,name:td_medicus_warranty.model_product_product
+msgid "Product Variant"
+msgstr "Варіант товару"
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.td_warranty_period_search_view
+msgid "Product Warranty"
+msgstr "Гарантія на товар"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_td_warranty_record__product_id
+msgid "Product associated with the warranty."
+msgstr "Товар, на який поширюється гарантія."
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard_line__quantity
+msgid "Quantity"
+msgstr "Кількість"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_order_form_td_warranty_extend
+msgid "Required for warranties using commissioning date"
+msgstr "Потрібно для гарантій з використанням дати введення в експлуатацію"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model,name:td_medicus_warranty.model_sale_order
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard__sale_order_id
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__sale_order_id
+msgid "Sale Order"
+msgstr "Замовлення на продаж"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__sale_order_line_id
+msgid "Sale Order Line"
+msgstr "Рядок замовлення"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_td_warranty_record__sale_order_id
+msgid "Sale order through which the extended warranty was purchased."
+msgstr "Замовлення на продаж, за яким було придбано розширену гарантію."
+
+#. module: td_medicus_warranty
+#: model:ir.model,name:td_medicus_warranty.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Рядок замовлення"
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_stock_lot_search_warranty_selection
+msgid "Search Serial Numbers"
+msgstr "Пошук серійних номерів"
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_td_warranty_record_search
+msgid "Search Warranties"
+msgstr "Пошук гарантій"
+
+#. module: td_medicus_warranty
+#: model:ir.actions.act_window,name:td_medicus_warranty.action_stock_lot_warranty_selection
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_stock_lot_list_warranty_selection
+msgid "Select Serial Numbers"
+msgstr "Виберіть Серійні номери"
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_td_warranty_bulk_link_wizard_form
+msgid "Select serial numbers..."
+msgstr "Виберіть Серійні номери..."
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__serial_id
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_stock_lot_search_warranty_selection
+msgid "Serial Number"
+msgstr "Серійний номер"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard_line__serial_ids
+msgid "Serial Numbers"
+msgstr "Серійні номери"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_td_warranty_record__serial_id
+msgid "Serial number associated with the warranty."
+msgstr "Серійний номер, пов'язаний з гарантією."
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_sale_order_line__td_warranty_linked_serial_ids
+msgid "Serial numbers to which this extended warranty is linked."
+msgstr "Серійні номери, до яких прив’язана ця розширена гарантія."
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_td_warranty_record_form
+msgid "Set Active"
+msgstr "Підтвердити"
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_td_warranty_record_form
+msgid "Set Draft"
+msgstr "Зробити чернеткою"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_sale_order_line__td_show_link_product_button
+msgid "Show Link Product Button"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_stock_lot_search_warranty_selection
+msgid "Show only serial numbers delivered to this partner"
+msgstr "Показувати лише серійні номери, доставлені цьому партнеру"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_td_warranty_record__sale_order_line_id
+msgid "Specific line in the sale order for this warranty."
+msgstr "Спеціальний рядок у замовленні на продаж для цієї гарантії."
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__date_start
+msgid "Start Date"
+msgstr "Дата початку"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__status
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_td_warranty_record_search
+msgid "Status"
+msgstr "Статус"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_td_warranty_record__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_td_warranty_record__date_end
+msgid "The date when the warranty ends."
+msgstr "Дата закінчення гарантійного терміну."
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_td_warranty_record__date_start
+msgid "The date when the warranty starts."
+msgstr "Дата початку нарантійного терміну"
+
+#. module: td_medicus_warranty
+#: model:ir.model,name:td_medicus_warranty.model_stock_picking
+msgid "Transfer"
+msgstr "Переміщення"
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_td_warranty_record_search
+msgid "Type"
+msgstr "Тип"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_td_warranty_record__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_order_form_td_warranty_extend
+msgid "Update Dates"
+msgstr "Оновити дати"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_sale_order_line__td_warranty_from_commissioning
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard_line__warranty_from_commissioning
+msgid "Use Commissioning Date"
+msgstr "Використовуйте дату введення в експлуатацію"
+
+#. module: td_medicus_warranty
+#: model:ir.actions.act_window,name:td_medicus_warranty.action_td_warranty_record
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_res_partner__td_warranty_ids
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_res_users__td_warranty_ids
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_stock_lot__td_warranty_ids
+#: model:ir.ui.menu,name:td_medicus_warranty.td_warranty_records_purchase_menu
+#: model:ir.ui.menu,name:td_medicus_warranty.td_warranty_records_sale_menu
+#: model:ir.ui.menu,name:td_medicus_warranty.td_warranty_records_stock_menu
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.td_product_template_form_view_inherit
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_partner_form_td_warranty_extend
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_production_lot_form_td_warranty_extend
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_td_warranty_record_list
+msgid "Warranties"
+msgstr "Гарантії"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_product_product__td_is_warranty_applicable
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_product_template__td_is_warranty_applicable
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_td_warranty_record_form
+msgid "Warranty"
+msgstr "Чи діє гарантія"
+
+#. module: td_medicus_warranty
+#: model:ir.model,name:td_medicus_warranty.model_td_warranty_bulk_link_wizard_line
+msgid "Warranty Bulk Link Wizard Line"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_product_product__td_warranty_count
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_product_template__td_warranty_count
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_res_partner__td_warranty_count
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_res_users__td_warranty_count
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_stock_lot__td_warranty_count
+msgid "Warranty Count"
+msgstr "Кількість гарантій"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard_line__warranty_line_id
+msgid "Warranty Line"
+msgstr "Рядок гарантії"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard__line_ids
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.view_td_warranty_bulk_link_wizard_form
+msgid "Warranty Lines"
+msgstr "Рядки гарантій"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_period__name
+msgid "Warranty Name"
+msgstr "Назва гарантії"
+
+#. module: td_medicus_warranty
+#: model:ir.model,name:td_medicus_warranty.model_td_warranty_period
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_product_product__td_warranty_period_id
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_product_template__td_warranty_period_id
+msgid "Warranty Period"
+msgstr "Гарантійний термін"
+
+#. module: td_medicus_warranty
+#. odoo-python
+#: code:addons/td_medicus_warranty/models/product_template.py:0
+msgid "Warranty Period is required when Warranty is enabled."
+msgstr "Гарантійний термін обов'язковий, якщо ввімкнено гарантію."
+
+#. module: td_medicus_warranty
+#: model:ir.actions.act_window,name:td_medicus_warranty.td_warranty_period_action
+#: model:ir.ui.menu,name:td_medicus_warranty.warranty_periods_purchase_menu
+#: model:ir.ui.menu,name:td_medicus_warranty.warranty_periods_sale_menu
+msgid "Warranty Periods"
+msgstr "Гарантійні терміни"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard_line__product_id
+msgid "Warranty Product"
+msgstr "Гарантійний продукт"
+
+#. module: td_medicus_warranty
+#: model:ir.model,name:td_medicus_warranty.model_td_warranty_record
+msgid "Warranty Record"
+msgstr "Гарантійний запис"
+
+#. module: td_medicus_warranty
+#: model:ir.ui.menu,name:td_medicus_warranty.td_warranty_purchase_menu_root
+#: model:ir.ui.menu,name:td_medicus_warranty.td_warranty_sale_menu_root
+#: model:ir.ui.menu,name:td_medicus_warranty.td_warranty_stock_menu_root
+msgid "Warranty Records"
+msgstr "Гарантійні записи"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__name
+msgid "Warranty Reference"
+msgstr "Назва гарантії"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_sale_order_line__td_warranty_manual_start_date
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard_line__warranty_start_date
+msgid "Warranty Start Date"
+msgstr "Початок дії гарантії"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__warranty_type
+msgid "Warranty Type"
+msgstr "Тип гарантії"
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_td_warranty_record__duration_months
+msgid "Warranty duration in months."
+msgstr "Гарантійний термін у місяцях."
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_product_product__td_extended_warranty_period_id
+#: model:ir.model.fields,help:td_medicus_warranty.field_product_template__td_extended_warranty_period_id
+msgid "Warranty period for the extended warranty service."
+msgstr "Гарантійний термін на розширене гарантійне обслуговування."
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_product_product__td_warranty_period_id
+#: model:ir.model.fields,help:td_medicus_warranty.field_product_template__td_warranty_period_id
+msgid "Warranty period for this product."
+msgstr "Гарантійний термін на цей товар."
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_record__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,help:td_medicus_warranty.field_td_warranty_record__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: td_medicus_warranty
+#: model:ir.model.fields,field_description:td_medicus_warranty.field_td_warranty_bulk_link_wizard_line__wizard_id
+msgid "Wizard"
+msgstr ""
+
+#. module: td_medicus_warranty
+#. odoo-python
+#: code:addons/td_medicus_warranty/models/td_warranty_record.py:0
+msgid "You can only delete warranties in Draft status."
+msgstr "Ви можете видалити гарантії лише у статусі \"Чернетка\"."
+
+#. module: td_medicus_warranty
+#: model_terms:ir.ui.view,arch_db:td_medicus_warranty.td_warranty_period_form_view
+msgid "e.g. 12 months"
+msgstr "Наприклад 12 місяців"

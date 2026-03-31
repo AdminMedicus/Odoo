@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="td_view_location_form_with_conditions" model="ir.ui.view">
+        <field name="name">stock.location.form</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//sheet" position="inside">
+                <notebook>
+                    <page string="Conditions">
+                        <group>
+                            <field name="td_condition_ids" nolabel="1"/>
+                        </group>
+                    </page>
+                </notebook>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

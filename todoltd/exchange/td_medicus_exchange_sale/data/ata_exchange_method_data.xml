@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- METHODS -->
+        <!-- INCOMING methods -->
+    
+        <!-- OUTGOING methods -->
+        <!-- stock picking. incoming to FarmPrihod -->
+        <record id="stock_picking_incoming_odoo_1c" model="ata.exchange.method">
+            <field name="name">StockPickingIncoming_Odoo_1C</field>
+            <field name="description">Stock Picking incoming (to 1C FarmPrihod)</field>
+            <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
+            <field name="model_id" ref="stock.model_stock_picking" />
+            <field name="model_name">stock.picking</field>
+        </record>
+
+        <record id="c77_outgoingdata_stock_picking_incoming" model="ata.exchange.domain">
+            <field name="method" ref="stock_picking_incoming_odoo_1c" />
+            <field name="ext_system" ref="td_medicus_exchange_base.medicus_1c" />
+        </record>
+
+        <!-- stock picking. return of incoming to FarmVozvratPostavschiku -->
+        <record id="stock_picking_incoming_return_odoo_1c" model="ata.exchange.method">
+            <field name="name">StockPickingIncomingReturn_Odoo_1C</field>
+            <field name="description">Stock Picking incoming return (to 1C FarmVozvratPostavschiku)</field>
+            <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
+            <field name="model_id" ref="stock.model_stock_picking" />
+            <field name="model_name">stock.picking</field>
+        </record>
+
+        <record id="c77_outgoingdata_stock_picking_incoming_return" model="ata.exchange.domain">
+            <field name="method" ref="stock_picking_incoming_return_odoo_1c" />
+            <field name="ext_system" ref="td_medicus_exchange_base.medicus_1c" />
+        </record>
+
+        <!-- account.move Bill -->
+        <record id="account_move_prepayment_odoo_1c" model="ata.exchange.method">
+            <field name="name">AccountMovePrepayment_Odoo_1C</field>
+            <field name="description">Account Move prepayment (to 1C Rahunok-Faktura)</field>
+            <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
+            <field name="model_id" ref="account.model_account_move" />
+            <field name="model_name">account.move</field>
+        </record>
+
+        <record id="c77_outgoingdata_account_move_preparing" model="ata.exchange.domain">
+            <field name="method" ref="account_move_prepayment_odoo_1c" />
+            <field name="ext_system" ref="td_medicus_exchange_base.medicus_1c" />
+        </record>
+
+        <!-- stock picking. outgoing to FarmRashod -->
+        <record id="stock_picking_outgoing_odoo_1c" model="ata.exchange.method">
+            <field name="name">StockPickingOutgoing_Odoo_1C</field>
+            <field name="description">Stock Picking outgoing (to 1C FarmRashod)</field>
+            <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
+            <field name="model_id" ref="stock.model_stock_picking" />
+            <field name="model_name">stock.picking</field>
+        </record>
+
+        <record id="c77_outgoingdata_stock_picking_outgoing" model="ata.exchange.domain">
+            <field name="method" ref="stock_picking_outgoing_odoo_1c" />
+            <field name="ext_system" ref="td_medicus_exchange_base.medicus_1c" />
+        </record>
+
+        <!-- stock picking. return of outgoing to FarmVozvratPokupatelyu -->
+        <record id="stock_picking_outgoing_return_odoo_1c" model="ata.exchange.method">
+            <field name="name">StockPickingOutgoingReturn_Odoo_1C</field>
+            <field name="description">Stock Picking outgoing return (to 1C FarmVozvratPokupatelyu)</field>
+            <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
+            <field name="model_id" ref="stock.model_stock_picking" />
+            <field name="model_name">stock.picking</field>
+        </record>
+
+        <record id="c77_outgoingdata_stock_picking_outgoing_return" model="ata.exchange.domain">
+            <field name="method" ref="stock_picking_outgoing_return_odoo_1c" />
+            <field name="ext_system" ref="td_medicus_exchange_base.medicus_1c" />
+        </record>
+
+        <!-- stock picking. outgoing act to ActTransferToSafeKeeping -->
+        <record id="act_transfer_to_safekeeping_odoo_1c" model="ata.exchange.method">
+            <field name="name">ActTransferToSafeKeeping_Odoo_1C</field>
+            <field name="description">Act Transfer to Safekeeping (to 1C ActPeredachiNaOtvHranenie)</field>
+            <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
+            <field name="model_id" ref="stock.model_stock_picking" />
+            <field name="model_name">stock.picking</field>
+        </record>
+
+        <record id="c77_outgoingdata_act_transfer_to_safekeeping" model="ata.exchange.domain">
+            <field name="method" ref="act_transfer_to_safekeeping_odoo_1c" />
+            <field name="ext_system" ref="td_medicus_exchange_base.medicus_1c" />
+        </record>
+
+        <!-- stock picking. return outgoing act to ActReturnSafeKeeping -->
+        <record id="act_return_from_safekeeping_odoo_1c" model="ata.exchange.method">
+            <field name="name">ActReturnFromSafeKeeping_Odoo_1C</field>
+            <field name="description">Act Return from Safekeeping (to 1C ActVozvrataSOtvHraneniya)</field>
+            <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
+            <field name="model_id" ref="stock.model_stock_picking" />
+            <field name="model_name">stock.picking</field>
+        </record>
+
+        <record id="c77_outgoingdata_act_return_from_safekeeping" model="ata.exchange.domain">
+            <field name="method" ref="act_return_from_safekeeping_odoo_1c" />
+            <field name="ext_system" ref="td_medicus_exchange_base.medicus_1c" />
+        </record>
+
+        <!-- stock picking. product relocation to FarmPeremeschenie -->
+        <record id="products_relocation_odoo_1c" model="ata.exchange.method">
+            <field name="name">ProductsRelocation_Odoo_1C</field>
+            <field name="description">Products Relocation (to 1C FarmPeremeschenie)</field>
+            <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
+            <field name="model_id" ref="stock.model_stock_picking" />
+            <field name="model_name">stock.picking</field>
+        </record>
+
+        <record id="c77_outgoingdata_products_relocation" model="ata.exchange.domain">
+            <field name="method" ref="products_relocation_odoo_1c" />
+            <field name="ext_system" ref="td_medicus_exchange_base.medicus_1c" />
+        </record>
+
+        <!-- stock picking. return of product relocation to FarmPeremVozvrat -->
+        <record id="return_products_relocation_odoo_1c" model="ata.exchange.method">
+            <field name="name">ReturnProductsRelocation_Odoo_1C</field>
+            <field name="description">Return of Products Relocation (to 1C FarmPeremVozvrat)</field>
+            <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
+            <field name="model_id" ref="stock.model_stock_picking" />
+            <field name="model_name">stock.picking</field>
+        </record>
+
+        <record id="c77_outgoingdata_return_products_relocation" model="ata.exchange.domain">
+            <field name="method" ref="return_products_relocation_odoo_1c" />
+            <field name="ext_system" ref="td_medicus_exchange_base.medicus_1c" />
+        </record>
+
+        <!-- tax invoice to 1C -->
+        <record id="tax_invoice_odoo_1c" model="ata.exchange.method">
+            <field name="name">TaxInvoice_Odoo_1C</field>
+            <field name="description">Tax Invoice (to 1C)</field>
+            <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
+            <field name="model_id" ref="td_medicus_1c_integration.model_td_tax_invoice" />
+            <field name="model_name">td.tax.invoice</field>
+        </record>
+
+        <record id="c77_outgoingdata_tax_invoice" model="ata.exchange.domain">
+            <field name="method" ref="tax_invoice_odoo_1c" />
+            <field name="ext_system" ref="td_medicus_exchange_base.medicus_1c" />
+        </record>
+
+        <!-- adjustment invoice to 1C -->
+        <record id="adj_tax_invoice_odoo_1c" model="ata.exchange.method">
+            <field name="name">AdjTaxInvoice_Odoo_1C</field>
+            <field name="description">Adjustment Tax Invoice (to 1C)</field>
+            <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
+            <field name="model_id" ref="td_medicus_1c_integration.model_td_tax_invoice" />
+            <field name="model_name">td.tax.invoice</field>
+        </record>
+
+        <record id="c77_outgoingdata_adj_tax_invoice" model="ata.exchange.domain">
+            <field name="method" ref="adj_tax_invoice_odoo_1c" />
+            <field name="ext_system" ref="td_medicus_exchange_base.medicus_1c" />
+        </record>
+
+        <!-- stock picking. incoming IMPORT prepared to 1C (for GTD cost allocation) TASK N14569-->
+        <record id="stock_picking_incoming_import_prepared_odoo_1c" model="ata.exchange.method">
+            <field name="name">StockPickingIncomingImportPrepared_Odoo_1C</field>
+            <field name="description">Stock Picking incoming import prepared (for GTD cost allocation)</field>
+            <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True"/>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="model_name">stock.picking</field>
+        </record>
+
+        <record id="c77_outgoingdata_stock_picking_incoming_import_prepared" model="ata.exchange.domain">
+            <field name="method" ref="stock_picking_incoming_import_prepared_odoo_1c"/>
+            <field name="ext_system" ref="td_medicus_exchange_base.medicus_1c"/>
+        </record>
+
+        <!-- INNER TYPES for matching data -->
+
+    </data>
+</odoo>

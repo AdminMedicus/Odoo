@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="hr_employee_form__inherit" model="ir.ui.view">
+        <field name="name">hr.employee.td.region.form.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='work_email']" position="before">
+                <field name="td_partner_short_name"/>
+                <field name="td_driver_license_number"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

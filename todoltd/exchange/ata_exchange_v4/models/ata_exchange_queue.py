@@ -4,7 +4,7 @@ from odoo import api, fields, models, _
 from odoo.tools import config
 import logging
 import time
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, timezone
 from typing import Union, cast, Optional
 from contextlib import contextmanager
 
@@ -23,7 +23,7 @@ class AtaExchangeQueue(models.Model):
     _inherit = ['ata.exchange.method.mixing']
 
     TIMEOUT_IN_EXCHANGE_MINUTES = 30
-    disable_add_to_queue: bool = False
+    disable_adding_to_queue: bool = False
 
     ref_object = fields.Reference(
         selection='_selection_ref_object_model',
@@ -33,7 +33,8 @@ class AtaExchangeQueue(models.Model):
         selection=[
             ('new', 'New'),
             ('idle', 'Idle'),
-            ('in_exchange', 'In exchange')],
+            ('in_exchange', 'In exchange'),
+            ('done', 'Done')],
         string='State exchange objects',
         default='new',
         index=True)
@@ -42,6 +43,12 @@ class AtaExchangeQueue(models.Model):
         default=0)
     error_last = fields.Text(string="Last error")
     date_start = fields.Datetime(string="Date start")    
+
+    def init(self):
+        self.env.cr.execute("""
+            CREATE INDEX IF NOT EXISTS ata_exchange_queue_ref_object_method_index
+            ON ata_exchange_queue (ref_object, method)
+        """)
 
     # region [ref_object] fold
     @api.model
@@ -93,12 +100,12 @@ class AtaExchangeQueue(models.Model):
             yield
             return
             
-        original_state = AtaExchangeQueue.disable_add_to_queue
+        original_state = AtaExchangeQueue.disable_adding_to_queue
         try:
-            AtaExchangeQueue.disable_add_to_queue = True
+            AtaExchangeQueue.disable_adding_to_queue = True
             yield
         finally:
-            AtaExchangeQueue.disable_add_to_queue = original_state
+            AtaExchangeQueue.disable_adding_to_queue = original_state
 
     @api.model
     def search(self, domain, offset=0, limit=None, order=None):
@@ -110,32 +117,47 @@ class AtaExchangeQueue(models.Model):
         return records
 
     @api.model
-    def add_to_queue(self, record: AtaExchangeClass):
+    def change_in_queue(self, record: AtaExchangeClass):
+        """
+        adding and deleting from queue depending of the appropriate exchange methods
+        """
+
         # Check if adding to queue is temporarily disabled
-        if AtaExchangeQueue.disable_add_to_queue:
+        if AtaExchangeQueue.disable_adding_to_queue:
             return False
             
         ExBase = self.env["ata.exchange.base.outgoingdata"]
         if isinstance(record.id, api.NewId):
             return False
 
-        for method in record.ata_exchange_compute_methods():
-            if not ExBase._re_exchanged_in(record):
+        methods = record.ata_exchange_compute_methods()
+        
+        if not ExBase._re_exchanged_in(record):
+            #adding to queue
+            for method in methods:
                 if self.env["ata.exchange.queue.usage"].use_exchange_queue(method):
                     self._add_to_queue(record, method)
                 else:
                     ExBase.exchange_outgoing_data(record, method)
+        
+            #deleting from queue
+            if record.ref_cache_queue_possible():
+                self.search([
+                    ('ref_object', '=', record.ref_cache),
+                    ('method', 'not in', [m.id for m in methods])
+                ]).unlink()
+
 
     @api.model
     def _add_to_queue(self, records: AtaExchangeClass, method: AtaExchangeMethod):
         for record in records:
-            ref_record = self._fields['ref_object'].convert_to_cache(record, self)
+            ref_record = record.ref_cache
             if ref_record is not None:
                 # check record in DB
                 record_exist = self.sudo().search([
                     ('ref_object', '=', ref_record),
-                    ('state_exchange', 'in', ('new', 'idle')),
-                    ('method', '=', method.id)
+                    ('method', '=', method.id),
+                    ('state_exchange', 'in', ('new', 'idle'))                    
                 ])
                 if not record_exist:
                     # check the need over domain
@@ -144,8 +166,8 @@ class AtaExchangeQueue(models.Model):
                         # add new record to DB                        
                         self.create({
                             'ref_object': ref_record,
-                            'state_exchange': 'new',
-                            'method': method.id
+                            'method': method.id,
+                            'state_exchange': 'new'                            
                         })
                         # start manual exchange over cron
                         if self.env["ata.exchange.queue.usage"].use_immediate_exchange(method):
@@ -161,7 +183,7 @@ class AtaExchangeQueue(models.Model):
     @api.model
     def exchange(self):
         ExBase = self.env["ata.exchange.base.outgoingdata"]
-        max_time_cpu = config['limit_time_cpu']
+        max_time_cpu = min(config.get('limit_time_cpu', 60), config.get('limit_time_real', 60))
         permitted_time = int(max_time_cpu * 0.5)
         start_time = time.time()
         
@@ -177,10 +199,10 @@ class AtaExchangeQueue(models.Model):
                 break
 
             record_to_process = self.sudo().search([
-                '&',
+                ('method.start_over_cron', '=', True),
                 '|',
                     ('date_start', '=', False),
-                    ('date_start', '<', fields.Datetime.to_string(datetime.fromtimestamp(start_time))),
+                    ('date_start', '<', fields.Datetime.to_string(datetime.fromtimestamp(start_time, timezone.utc).replace(tzinfo=None))),
                 '|',
                     ('state_exchange', 'in', ('new', 'idle')), 
                     '&',
@@ -196,10 +218,11 @@ class AtaExchangeQueue(models.Model):
                 _logger.debug("No more records to process in the queue.")
                 break
 
+            #if nothing object in DB - unlink it and delete from record of exchange
             record_to_process = record_to_process._check_ref_object()
             if not record_to_process:
                 if records:
-                    records -= record_to_process
+                    records = records[1:]
                 continue
 
             record_to_process.write({'state_exchange': 'in_exchange'})
@@ -211,6 +234,9 @@ class AtaExchangeQueue(models.Model):
 
                 if result_update.delete_queue:
                     record_to_process.unlink()
+                elif result_update.success:
+                    # undefined situation
+                    record_to_process.write({'state_exchange': 'done'})
                 
                 if result_update.error:
                     record_to_process.write({

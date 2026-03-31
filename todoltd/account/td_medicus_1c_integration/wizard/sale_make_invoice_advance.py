@@ -45,23 +45,47 @@ class SaleMakeInvoiceAdvance(models.TransientModel):
 
     @api.depends('sale_order_ids')
     def _compute_td_choose_payment_method(self):
+        """
+        Allow choosing invoice method (Regular invoice vs Down payment) only after the delivery process is completed.
+
+        delivery_steps values:
+          - ship_only       -> outgoing must be done
+          - pick_ship       -> internal must be done
+          - pick_pack_ship  -> ALL internal must be done
+        """
         for line in self:
-            if line.sale_order_ids:
-                outgoing = line.sale_order_ids.picking_ids.filtered(
-                    lambda pick: pick.picking_type_code == 'outgoing'
-                )
-                if outgoing:
-                    done = outgoing.filtered(
-                        lambda pick: pick.state == 'done'
-                    )
-                    if len(done) == len(outgoing):
-                        line.td_choose_payment_method = True
-                    else:
-                        line.td_choose_payment_method = False
-                else:
-                    line.td_choose_payment_method = False
-            else:
+            if not line.sale_order_ids:
                 line.td_choose_payment_method = False
+                continue
+
+            ok_all = True
+            for so in line.sale_order_ids:
+                steps = getattr(so.warehouse_id, "delivery_steps", False)
+
+                if steps == 'ship_only':
+                    pickings = so.picking_ids.filtered(
+                        lambda p: p.picking_type_code == 'outgoing' and p.state != 'cancel'
+                    )
+                    ok = bool(pickings) and all(p.state == 'done' for p in pickings)
+
+                elif steps in ('pick_ship', 'pick_pack_ship'):
+                    pickings = so.picking_ids.filtered(
+                        lambda p: p.picking_type_code == 'internal' and p.state != 'cancel'
+                    )
+                    ok = bool(pickings) and all(p.state == 'done' for p in pickings)
+
+                else:
+                    # Fallback to your previous behavior: internal if exists, else outgoing
+                    pickings = so.picking_ids.filtered(lambda p: p.picking_type_code == 'internal' and p.state != 'cancel')
+                    if not pickings:
+                        pickings = so.picking_ids.filtered(lambda p: p.picking_type_code == 'outgoing' and p.state != 'cancel')
+                    ok = bool(pickings) and all(p.state == 'done' for p in pickings)
+
+                if not ok:
+                    ok_all = False
+                    break
+
+            line.td_choose_payment_method = ok_all
 
     def _compute_advance_payment_method(self):
         for line in self:
@@ -102,6 +126,12 @@ class SaleMakeInvoiceAdvance(models.TransientModel):
                 final=self.deduct_down_payments,
                 grouped=not self.consolidated_billing
             )
+            delivered_lines = sale_orders.order_line.filtered(
+                lambda line: line.qty_delivered > 0
+            )
+            invoice.invoice_line_ids.filtered(
+                lambda rec: rec.td_order_line_id not in delivered_lines
+            ).unlink()
             order_lines = sale_orders.order_line.filtered(
                 lambda x: x.is_downpayment
             )
@@ -144,7 +174,6 @@ class SaleMakeInvoiceAdvance(models.TransientModel):
                         'display_type': False,
                         'product_uom_qty': line.product_uom_qty,
                         'product_uom': line.product_uom.id,
-                        # 'price_unit': line.price_unit,
                         'price_unit': price_with_percent,
                         'tax_id': [(6, 0, line.tax_id.ids)],
                         'order_id': line.order_id.id,
