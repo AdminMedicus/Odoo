@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="td_mrp_bom_view_form_inherit" model="ir.ui.view">
+        <field name="name">td.mrp.bom.view.form.inherit</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="action_create_production_order"
+                        type="object"
+                        string="Carry out picking"
+                        class="btn-primary"/>
+                </header>
+            </xpath>
+
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_td_sale_order"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-shopping-cart"
+                        invisible="not td_sale_order_id">
+                    <div class="o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="td_sale_order_count"/>
+                        </span>
+                        <span class="o_stat_text">
+                            Sale Order
+                        </span>
+                    </div>
+                </button>
+            </xpath>
+
+            <xpath expr="//notebook//page[@name='miscellaneous']//field[@name='picking_type_id']" position="before">
+                <field name="td_sale_order_id"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Commission" name="td_commission">
+
+                    <group name="td_commission_members" string="Commission members">
+                        <field name="td_head_commission"/>
+                        <field name="td_commission_members" colspan="2">
+                            <list>
+                                <field name="td_partner_short_name"/>
+                                <field name="job_title"/>
+                            </list>
+                        </field>
+                    </group>
+                    <group string="Order appointing a commission">
+                        <group>
+                            <field name="td_order_date"/>
+                        </group>
+                        <group>
+                            <field name="td_order_number"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="td_approval"/>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//field[@name='bom_line_ids']/list/field[@name='product_qty']" position="after">
+                <field name="price_unit"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
