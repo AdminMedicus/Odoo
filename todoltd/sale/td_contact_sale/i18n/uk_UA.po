@@ -55,6 +55,12 @@ msgid "City"
 msgstr "Місто"
 
 #. module: td_contact_sale
+#: model:ir.model.fields,field_description:td_contact_sale.field_stock_picking__td_stock_ready_status
+#: model_terms:ir.ui.view,arch_db:td_contact_sale.view_picking_tree_td_ready_status_inherit
+msgid "Completion Status"
+msgstr "Статус комплектування"
+
+#. module: td_contact_sale
 #: model:ir.model,name:td_contact_sale.model_res_partner
 msgid "Contact"
 msgstr "Контакт"
@@ -128,6 +134,11 @@ msgid "Name"
 msgstr ""
 
 #. module: td_contact_sale
+#: model:ir.model.fields.selection,name:td_contact_sale.selection__stock_picking__td_stock_ready_status__not_ready
+msgid "Not Ready"
+msgstr "Не готово"
+
+#. module: td_contact_sale
 #: model_terms:ir.ui.view,arch_db:td_contact_sale.view_order_form_td_status_stock_inherit
 msgid "Not Ready to be completed"
 msgstr "Не готовий до комплектування"
@@ -153,6 +164,12 @@ msgid "Product"
 msgstr "Товар"
 
 #. module: td_contact_sale
+#: model:ir.model.fields.selection,name:td_contact_sale.selection__stock_picking__td_stock_ready_status__ready
+msgid "Ready"
+msgstr "Готово"
+
+#. module: td_contact_sale
+#: model:ir.model.fields,field_description:td_contact_sale.field_stock_picking__td_stock_ready_for_completion
 #: model_terms:ir.ui.view,arch_db:td_contact_sale.view_order_form_td_status_stock_inherit
 msgid "Ready to be completed"
 msgstr "Готовий до комплектування"
@@ -302,3 +319,12 @@ msgstr "Склад"
 #: code:addons/td_contact_sale/models/stock_warehouse.py:0
 msgid "You active sum WareHouse for SaleOrder"
 msgstr ""
+
+#. module: td_contact_sale
+#. odoo-python
+#: code:addons/td_contact_sale/models/stock_picking.py:0
+msgid ""
+"You must click 'Ready to be completed' on the Sales Order before validating "
+"the delivery."
+msgstr ""
+"Перед підтвердженням доставки необхідно натиснути \"Готовий до комплектування\" у замовленні на продаж."
