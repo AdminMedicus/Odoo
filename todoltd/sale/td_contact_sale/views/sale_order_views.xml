@@ -8,7 +8,8 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='partner_shipping_id']" position="after">
                 <field name="allowed_sub_client_ids" invisible="1"/>
-                <field name="sub_client_id" domain="[('id', 'in', allowed_sub_client_ids)]" readonly="not partner_id or state in ('sale', 'cancel')"/>
+                <field name="sub_client_id" domain="[('id', 'in', allowed_sub_client_ids)]"
+                       readonly="not partner_id or state in ('sale', 'cancel')"/>
             </xpath>
             <xpath expr="//field[@name='partner_shipping_id']" position="replace">
                 <field name="allowed_partner_shipping_id" invisible="1"/>
@@ -18,7 +19,7 @@
                        readonly="state == 'cancel' or locked"
                        domain="['&amp;', ('type', '=', 'delivery'), '|', ('id', '=', partner_id), ('parent_id', '=', partner_id)]"
                        invisible="sub_client_id"
-                       />
+                />
                 <field name="partner_shipping_id"
                        groups="account.group_delivery_invoice_address"
                        context="{'default_type':'delivery', 'show_address': False, 'show_vat': False}"
@@ -42,19 +43,23 @@
                     <h1>
                         <field name="name" readonly="1"/>
                     </h1>
-                    <field name="stock_status_assigned" invisible="1"/>
+                    <field name="stock_button_active" invisible="1"/>
                     <div id="td_status_stock_button" invisible="state not in ['sale']">
-                        <button name="action_confirm_stock_status"
-                            class="btn-primary"
-                            string="Ready to be completed"
-                            invisible="stock_status_assigned"
-                            type="object" data-hotkey="g"
+                        <button
+                                name="action_confirm_stock_status"
+                                class="btn-primary"
+                                string="Ready to be completed"
+                                invisible="not stock_button_active"
+                                type="object"
+                                data-hotkey="g"
                         />
-                        <button name="action_rejected_stock_status"
-                            class="btn-secondary"
-                            string="Not Ready to be completed"
-                            invisible="not stock_status_assigned"
-                            type="object" data-hotkey="g"
+                        <button
+                                name="action_rejected_stock_status"
+                                class="btn-secondary"
+                                string="Not Ready to be completed"
+                                invisible="stock_button_active"
+                                type="object"
+                                data-hotkey="g"
                         />
                     </div>
                 </div>
