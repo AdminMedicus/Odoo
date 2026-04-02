@@ -453,10 +453,16 @@ class StockPicking(models.Model):
         medical_manager_id = company.td_medical_warehouse_manager_id
         transport_type = dict(self._fields['td_ttn_transport_type']._description_selection(self.env)).get(self.td_ttn_transport_type, '')
 
-        current_invoice = self.td_invoice_for_pick_id
-        if not current_invoice:
+        document = self.td_invoice_for_pick_id
+        if not document:
             posted_invoices = order.invoice_ids.filtered(lambda i: i.state == 'posted')
-            current_invoice = posted_invoices[-1] if posted_invoices else None
+            document = posted_invoices[-1] if posted_invoices else None
+
+        if self.implementation_document != 'exp_inv':
+            document = self
+
+        document_name = document.name if document else ''
+        document_date = document.invoice_date if document and self.implementation_document == 'exp_inv' else document.date_done
 
         data = {
             'waybill_number': self.name.split('/')[-1],
@@ -471,13 +477,13 @@ class StockPicking(models.Model):
             'place_of_issue': self.warehouse_address_id.state_id.name,
             'warehouse_manager': warehouse_manager_id.td_partner_short_name or warehouse_manager_id.name,
             'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.name,
-            'accompanying_document': current_invoice.name.split('/')[-1] if current_invoice else '',
-            'accompanying_document_date': current_invoice.invoice_date.strftime('%d.%m.%Y') if current_invoice else '',
+            'accompanying_document': document_name.split('/')[-1] if document_name else '',
+            'accompanying_document_date': document_date.strftime('%d.%m.%Y') if document_date else '',
             'accompanying_document_full_date': format_date(
                 self.env,
-                current_invoice.invoice_date,
+                document_date,
                 date_format='dd MMMM yyyy p.'
-            ) if current_invoice else '',
+            ) if document_date else '',
             'total_amount': self._amount_to_words_ua(self.td_total_amount),
             'tax_amount': self._amount_to_words_ua(self.td_total_tax),
             'total': self.td_total_amount,
