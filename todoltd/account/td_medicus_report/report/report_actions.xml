@@ -218,7 +218,7 @@
         <field name="binding_model_id" ref="sale.model_sale_order"/>
         <field name="binding_type">report</field>
         <field name="domain" eval="[
-            ('state', '=', 'sale'),
+            ('state', '!=', 'sale'),
         ]"/>
         <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
     </record>
@@ -232,7 +232,7 @@
         <field name="binding_model_id" ref="sale.model_sale_order"/>
         <field name="binding_type">report</field>
         <field name="domain" eval="[
-            ('state', '=', 'sale'),
+            ('state', '!=', 'sale'),
         ]"/>
         <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
     </record>
