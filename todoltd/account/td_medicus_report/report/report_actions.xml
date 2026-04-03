@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="td_medicus_paperformat" model="report.paperformat">
+        <field name="name">Medicus Report Landscape</field>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">10</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+        <field name="css_margins" eval="True" />
+    </record>
+
+    <record id="td_medicus_paperformat_landscape" model="report.paperformat">
+        <field name="name">Medicus Report Landscape</field>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">10</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+        <field name="css_margins" eval="True" />
+    </record>
+
+    <record id="action_report_wholesale_invoice_picking" model="ir.actions.report">
+        <field name="name">Оптова накладна</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_wholesale_picking</field>
+        <field name="report_file">td_medicus_report.report_wholesale_picking</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('picking_type_code', '=', 'outgoing'),
+            ('td_order_implementation_document', '=', 'exp_inv')
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
+    <record id="action_report_wholesale_invoice_invoice" model="ir.actions.report">
+        <field name="name">Оптова накладна</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_wholesale_invoice</field>
+        <field name="report_file">td_medicus_report.report_wholesale_invoice</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('move_type', '=', 'out_invoice'),
+            ('state', 'in', ['posted']),
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
+    <record id="action_report_ordering_eye_lenses" model="ir.actions.report">
+        <field name="name">Для складу</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_ordering_eye_lenses</field>
+        <field name="report_file">td_medicus_report.report_ordering_eye_lenses</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[('picking_type_code', 'in', ['outgoing','internal'])]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
+    <record id="action_report_warehouse_order" model="ir.actions.report">
+        <field name="name">Для складу (з серіями)</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_warehouse_order</field>
+        <field name="report_file">td_medicus_report.report_warehouse_order</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('picking_type_code', 'in', ['outgoing','internal'])
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
+    <record id="action_report_return_from_stock" model="ir.actions.report">
+        <field name="name">Повернення з переміщення</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_return_from_stock</field>
+        <field name="report_file">td_medicus_report.report_return_from_stock</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('picking_type_code', '=', 'incoming'),
+            ('return_id', '!=', False),
+            ('state', '=', 'done')
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
+    <!-- <record id="action_report_waybill" model="ir.actions.report">
+        <field name="name">ТТН</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_print_waybill</field>
+        <field name="report_file">td_medicus_report.report_print_waybill</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('td_invoice_for_pick_id', '!=', False)
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat_landscape"/>
+    </record> -->
+
+    <record id="action_report_waybill_new" model="ir.actions.report">
+        <field name="name">Товарно-транспортна</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_print_new_waybill</field>
+        <field name="report_file">td_medicus_report.report_print_new_waybill</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('state', '=', 'done'),
+            ('picking_type_code', 'in', ['outgoing', 'internal']),
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat_landscape"/>
+    </record>
+
+    <record id="action_report_custody_transfer_act" model="ir.actions.report">
+        <field name="name">Акт передачі на відповідальне зберігання</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_print_custody_transfer_act</field>
+        <field name="report_file">td_medicus_report.report_print_custody_transfer_act</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('picking_type_code', '=', 'outgoing'),
+            ('td_order_implementation_document', '=', 'act_res_st')
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
+    <record id="action_report_custody_return_act" model="ir.actions.report">
+        <field name="name">Акт повернення з відповідального зберігання</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_print_custody_return_act</field>
+        <field name="report_file">td_medicus_report.report_print_custody_return_act</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('picking_type_code', '=', 'incoming'),
+            ('implementation_document', '=', 'act_res_st')
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
+    <record id="action_report_custody_balance" model="ir.actions.report">
+        <field name="name">Акт звірки залишків на відповідальному зберіганні</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_print_custody_balance</field>
+        <field name="report_file">td_medicus_report.report_print_custody_balance</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('picking_type_code', '=', 'incoming'),
+            ('implementation_document', '=', 'act_res_st')
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
+    <record id="action_report_refund_act_td" model="ir.actions.report">
+        <field name="name">Накладна на повернення</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_print_refund_act</field>
+        <field name="report_file">td_medicus_report.report_print_refund_act</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('picking_type_code', '=', 'incoming'),
+            ('return_id', '!=', False),
+            ('td_order_implementation_document', '!=', 'act_res_st'),
+            ('state', '=', 'done')
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
+    <record id="action_report_invoice_act" model="ir.actions.report">
+        <field name="name">Рахунок-фактура</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_print_invoice_act</field>
+        <field name="report_file">td_medicus_report.report_print_invoice_act</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('move_type', '=', 'out_invoice'),
+            ('state', 'in', ['posted']),
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
+    <record id="action_report_commercial_offer" model="ir.actions.report">
+        <field name="name">Комерційна пропозиція</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_print_commercial_offer</field>
+        <field name="report_file">td_medicus_report.report_print_commercial_offer</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('state', '!=', 'sale'),
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
+    <record id="action_report_commercial_offer_components" model="ir.actions.report">
+        <field name="name">Комерційна пропозиція (компоненти)</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_print_commercial_offer_components</field>
+        <field name="report_file">td_medicus_report.report_print_commercial_offer_components</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('state', '!=', 'sale'),
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
+    <record id="action_report_commercial_offer_inv" model="ir.actions.report">
+        <field name="name">Комерційна пропозиція</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_print_commercial_offer_inv</field>
+        <field name="report_file">td_medicus_report.report_print_commercial_offer_inv</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+        <!-- <field name="domain" eval="[
+            ('state', '=', 'sale'),
+        ]"/> -->
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
+    <record id="action_report_vendor_refund_act" model="ir.actions.report">
+        <field name="name">Повернення постачальнику</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_print_vendor_refund_act</field>
+        <field name="report_file">td_medicus_report.report_print_vendor_refund_act</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('picking_type_code', 'in', ['outgoing', 'internal']),
+            ('state', '=', 'done'),
+            ('purchase_id', '!=', False)
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
+    <record id="action_report_completion_act" model="ir.actions.report">
+        <field name="name">Акт комплектації</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_print_completion_act</field>
+        <field name="report_file">td_medicus_report.report_print_completion_act</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('picking_type_code', 'in', ['outgoing', 'internal']),
+            ('state', '=', 'done')
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
+</odoo>
