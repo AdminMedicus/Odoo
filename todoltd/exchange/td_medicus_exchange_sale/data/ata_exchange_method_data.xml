@@ -3,6 +3,14 @@
     <data noupdate="0">
         <!-- METHODS -->
         <!-- INCOMING methods -->
+        <!-- farm_prihod import -->
+        <record id="stock_picking_incoming_import_1c_odoo" model="ata.exchange.method">
+            <field name="name">StockPickingIncomingImport_1C_Odoo</field>
+            <field name="description">Stock Picking incoming import (from 1C)</field>
+            <field name="type">incoming_request</field>
+            <field name="model_id" ref="model_ata_exchange_incomingrequest_stockpicking_import" />
+            <field name="model_name">ata.exchange.incomingrequest.stockpicking.import</field>
+        </record>
     
         <!-- OUTGOING methods -->
         <!-- stock picking. incoming to FarmPrihod -->
