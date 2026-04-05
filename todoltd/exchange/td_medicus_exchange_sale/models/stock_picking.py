@@ -4,13 +4,19 @@ from markupsafe import Markup
 
 from odoo.addons.ata_exchange_v4.models.ata_exchange_method import AtaExchangeMethod
 from odoo.addons.ata_exchange_v4.models.ata_exchange_class  import AtaExchangeClass
+from odoo.addons.ata_exchange_v4.models.ata_exchange_model_handler_mixin import RecordHandlerParams
 from odoo.addons.stock.models.stock_picking import Picking
 from odoo.addons.stock.models.stock_move import StockMove
+
+from typing import cast
+from .pydantic_model import (
+    StockPickingDataIncoming
+)
 
 
 class TdStockPickingExchange(models.Model):
     _name = 'stock.picking'
-    _inherit = ['stock.picking','ata.exchange.class']
+    _inherit = ['stock.picking','ata.exchange.class','ata.exchange.model.handler.mixin']
 
     #region outgoing function
     def ata_exchange_compute_methods(self) -> list[AtaExchangeMethod]:
@@ -153,6 +159,7 @@ class TdStockPickingExchange(models.Model):
             "warehouse_code":   self.location_dest_id.warehouse_id.id,
             "implementation_document": self._str_empty(self.implementation_document),
             "lines": [{
+                "id":           sm.id,
                 "product":      sm.product_id.exchange_data,
                 "quantity":     sm.quantity,
                 "uom":          sm.product_uom.exchange_data,
@@ -243,4 +250,33 @@ class TdStockPickingExchange(models.Model):
             } for sm in self.move_ids]
         }
 
+    #endregion
+
+    #region incoming function
+    def ata_exchange_prepare_vals(self,
+        record_params: RecordHandlerParams) -> dict:
+
+        if inc_params := record_params.incoming_params:
+            if inc_params.method_id   == self.env.ref('td_medicus_exchange_sale.stock_picking_incoming_import_1c_odoo'):
+                return self.ata_exchange_prepare_vals_import(record_params)
+
+        return super().ata_exchange_prepare_vals(record_params)
+
+    def ata_exchange_prepare_vals_import(self,
+        record_params: RecordHandlerParams) -> dict[str, str|int|list]:
+        
+        sp_data = cast(StockPickingDataIncoming,
+            self.ata_exchange_process_data_with_pydantic(record_params.data, StockPickingDataIncoming))
+        
+        for line in sp_data.move_lines:
+            sm_params = record_params.build(self.env, 'stock.move')
+            sm_params.data = line.model_dump(include={'td_book_value'})
+            sm_params.create_record = False
+            sm_params.write_record = True
+            sm_params.search_params.search_domain = [('id', '=', ext_id)] \
+                if (ext_id := line.ext_id) else None
+
+            self.ata_exchange_get_model_record(sm_params)
+
+        return {}
     #endregion
