@@ -104,7 +104,7 @@ class StockPicking(models.Model):
         copy=False,
     )
 
-    td_ttn_gross_weight = fields.Float(
+    td_ttn_gross_weight_ = fields.Float(
         string='Gross Weight (tons)',
         # digits=(16, 3),
         copy=False,
@@ -518,9 +518,9 @@ class StockPicking(models.Model):
                 'driver': self.td_ttn_driver_employee_id.name if self.td_ttn_driver_employee_id else '',
                 'driver_license': self.td_ttn_driver_license_number if self.td_ttn_driver_license_number else '',
                 # 'places_count': self.td_ttn_places_count if self.td_ttn_places_count else '',
-                # 'gross_weight': self.td_ttn_gross_weight if self.td_ttn_gross_weight else '',
+                # 'gross_weight': self.td_ttn_gross_weight_ if self.td_ttn_gross_weight_ else '',
                 'places_count': self._amount_to_words_ua(float(self.td_ttn_places_count), count=True) if self.td_ttn_places_count else '',
-                'gross_weight': self._amount_to_words_ua(float(self.td_ttn_gross_weight), weight=True) if self.td_ttn_gross_weight else '',
+                'gross_weight': self._amount_to_words_ua(float(self.td_ttn_gross_weight_), weight=True) if self.td_ttn_gross_weight_ else '',
                 'driver_forwarder': self.td_ttn_driver_forwarder if self.td_ttn_driver_forwarder else '',
                 'vehicle_length': self.td_ttn_vehicle_length if self.td_ttn_vehicle_length else '',
                 'vehicle_width': self.td_ttn_vehicle_width if self.td_ttn_vehicle_width else '',

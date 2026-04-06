@@ -72,7 +72,7 @@
 
                         <group string="Dimensions and Cargo">
                             <field name="td_ttn_places_count"/>
-                            <field name="td_ttn_gross_weight"/>
+                            <field name="td_ttn_gross_weight_"/>
                             <field name="td_ttn_vehicle_length"/>
                             <field name="td_ttn_vehicle_width"/>
                             <field name="td_ttn_vehicle_height"/>
