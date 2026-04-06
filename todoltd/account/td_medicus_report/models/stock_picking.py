@@ -106,7 +106,7 @@ class StockPicking(models.Model):
 
     td_ttn_gross_weight = fields.Float(
         string='Gross Weight (tons)',
-        digits=(16, 3),
+        # digits=(16, 3),
         copy=False,
     )
 
