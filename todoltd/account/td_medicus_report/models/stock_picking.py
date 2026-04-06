@@ -41,10 +41,10 @@ class StockPicking(models.Model):
     # ---------------------------------------------------------
     td_ttn_transport_type = fields.Selection(
         selection=[
-            ('own', 'Own transport'),
-            ('hired', 'Involved carrier'),
+            ('own', 'Own Vehicle'),
+            ('hired', 'Third-Party Carrier'),
         ],
-        string='Transport Type',
+        string='Transportation Type',
         default='own',
         copy=False,
     )
@@ -56,21 +56,36 @@ class StockPicking(models.Model):
         copy=False,
     )
 
+    td_ttn_hired_vehicle = fields.Char(
+        string='Vehicle',
+        copy=False,
+    )
+
     td_ttn_driver_employee_id = fields.Many2one(
         comodel_name='hr.employee',
-        string='Driver (User)',
+        string='Driver (Employee)',
         copy=False,
     )
 
     td_ttn_driver_partner_id = fields.Many2one(
         comodel_name='res.partner',
-        string='Driver (Partner)',
+        string='Driver (Contact)',
+        copy=False,
+    )
+
+    td_ttn_hired_driver = fields.Char(
+        string='Driver',
         copy=False,
     )
 
     td_ttn_carrier_partner_id = fields.Many2one(
         comodel_name='res.partner',
-        string='Carrier (Partner)',
+        string='Road Carrier',
+        copy=False,
+    )
+
+    td_ttn_hired_carrier = fields.Char(
+        string='Road Carrier',
         copy=False,
     )
 
@@ -89,34 +104,39 @@ class StockPicking(models.Model):
         copy=False,
     )
 
-    td_ttn_gross_weight = fields.Char(
+    td_ttn_gross_weight = fields.Float(
         string='Gross Weight (tons)',
+        digits=(16, 3),
         copy=False,
     )
 
     td_ttn_vehicle_length = fields.Float(
         string='Length, m',
-        related='td_ttn_vehicle_id.td_body_length',
         digits=(16, 3),
         copy=False,
     )
 
     td_ttn_vehicle_width = fields.Float(
         string='Width, m',
-        related='td_ttn_vehicle_id.td_body_width',
         digits=(16, 3),
         copy=False,
     )
 
     td_ttn_vehicle_height = fields.Float(
         string='Height, m',
-        related='td_ttn_vehicle_id.td_body_height',
         digits=(16, 3),
         copy=False,
     )
 
     td_ttn_license_number = fields.Char(
-        string='License Number',
+        string='License Plate',
+        copy=False,
+        related='td_ttn_vehicle_id.license_plate',
+        readonly=False
+    )
+
+    td_ttn_license_number_other = fields.Char(
+        string='License Plate',
         copy=False,
     )
 

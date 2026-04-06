@@ -36,26 +36,46 @@
                 <page string="Дані для ТТН" name="td_ttn_page"
                       invisible="picking_type_code != 'outgoing'">
                     <group>
-                        <group string="Водій / перевізник">
+                        <group string="Driver / Carrier">
                             <field name="td_ttn_transport_type"/>
+                            <!-- Own Vehicle -->
                             <field name="td_ttn_vehicle_id"
+                                   context="{'td_show_only_model_name': True}"
+                                   invisible="td_ttn_transport_type != 'own'"/>
+                            <field name="td_ttn_license_number"
                                    invisible="td_ttn_transport_type != 'own'"/>
                             <field name="td_ttn_driver_employee_id"
                                    invisible="td_ttn_transport_type != 'own'"/>
-                            <field name="td_ttn_driver_partner_id"
+                            <field name="td_ttn_carrier_partner_id"
+                                   invisible="td_ttn_transport_type != 'own'"/>
+                            <field name="td_ttn_driver_license_number"
+                                   invisible="td_ttn_transport_type != 'own'"/>
+                            <field name="td_ttn_driver_forwarder"
+                                   invisible="td_ttn_transport_type != 'own'"/>
+
+                            <!-- Third-Party Carrier -->
+                            <field name="td_ttn_hired_vehicle"
                                    invisible="td_ttn_transport_type != 'hired'"/>
-                            <field name="td_ttn_carrier_partner_id"/>
-                            <field name="td_ttn_driver_license_number"/>
-                            <field name="td_ttn_driver_forwarder"/>
-                            <field name="td_ttn_license_number"/>
+                            <field name="td_ttn_license_number_other"
+                                   invisible="td_ttn_transport_type != 'hired'"/>
+                            <field name="td_ttn_hired_driver"
+                                   invisible="td_ttn_transport_type != 'hired'"/>
+                            <field name="td_ttn_hired_carrier"
+                                   invisible="td_ttn_transport_type != 'hired'"/>
+                            <field name="td_ttn_driver_license_number"
+                                   invisible="td_ttn_transport_type != 'hired'"/>
+                            <field name="td_ttn_driver_forwarder"
+                                   invisible="td_ttn_transport_type != 'hired'"/>
+
+                            <field name="td_ttn_driver_partner_id" invisible="1"/>
                         </group>
 
-                        <group string="Габарити та вантаж">
+                        <group string="Dimensions and Cargo">
                             <field name="td_ttn_places_count"/>
                             <field name="td_ttn_gross_weight"/>
-                            <field name="td_ttn_vehicle_length" readonly="1"/>
-                            <field name="td_ttn_vehicle_width" readonly="1"/>
-                            <field name="td_ttn_vehicle_height" readonly="1"/>
+                            <field name="td_ttn_vehicle_length"/>
+                            <field name="td_ttn_vehicle_width"/>
+                            <field name="td_ttn_vehicle_height"/>
                         </group>
                     </group>
                 </page>
