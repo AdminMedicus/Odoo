@@ -6,12 +6,12 @@
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='license_plate']" position="after">
-                <field name="td_transport_ownership"/>
-            </xpath>
+<!--            <xpath expr="//field[@name='license_plate']" position="after">-->
+<!--                <field name="td_transport_ownership"/>-->
+<!--            </xpath>-->
 
             <xpath expr="//sheet//group" position="inside">
-                <group string="Параметри кузова">
+                <group string="Body Parameters">
                     <field name="td_body_length"/>
                     <field name="td_body_width"/>
                     <field name="td_body_height"/>
