@@ -110,21 +110,57 @@ class StockPicking(models.Model):
         copy=False,
     )
 
+    # td_ttn_vehicle_length = fields.Float(
+    #     string='Length, m',
+    #     digits=(16, 3),
+    #     copy=False,
+    # )
+    #
+    # td_ttn_vehicle_width = fields.Float(
+    #     string='Width, m',
+    #     digits=(16, 3),
+    #     copy=False,
+    # )
+    #
+    # td_ttn_vehicle_height = fields.Float(
+    #     string='Height, m',
+    #     digits=(16, 3),
+    #     copy=False,
+    # )
+
+    td_ttn_vehicle_dimensions_manual = fields.Boolean(
+        string='Vehicle dimensions entered manually',
+        default=False,
+        copy=False,
+    )
+
     td_ttn_vehicle_length = fields.Float(
         string='Length, m',
         digits=(16, 3),
+        compute='_compute_td_ttn_vehicle_dimensions',
+        inverse='_inverse_td_ttn_vehicle_dimensions',
+        store=True,
+        readonly=False,
         copy=False,
     )
 
     td_ttn_vehicle_width = fields.Float(
         string='Width, m',
         digits=(16, 3),
+        compute='_compute_td_ttn_vehicle_dimensions',
+        inverse='_inverse_td_ttn_vehicle_dimensions',
+        store=True,
+        readonly=False,
         copy=False,
     )
 
     td_ttn_vehicle_height = fields.Float(
         string='Height, m',
         digits=(16, 3),
+        compute='_compute_td_ttn_vehicle_dimensions',
+        inverse='_inverse_td_ttn_vehicle_dimensions',
+        store=True,
+        readonly=False,
         copy=False,
     )
 
@@ -139,6 +175,33 @@ class StockPicking(models.Model):
         string='License Plate',
         copy=False,
     )
+
+    @api.depends(
+        'td_ttn_vehicle_id',
+        'td_ttn_vehicle_id.td_body_length',
+        'td_ttn_vehicle_id.td_body_width',
+        'td_ttn_vehicle_id.td_body_height',
+        'td_ttn_vehicle_dimensions_manual',
+    )
+    def _compute_td_ttn_vehicle_dimensions(self):
+        for rec in self:
+            if rec.td_ttn_vehicle_id and not rec.td_ttn_vehicle_dimensions_manual:
+                rec.td_ttn_vehicle_length = rec.td_ttn_vehicle_id.td_body_length
+                rec.td_ttn_vehicle_width = rec.td_ttn_vehicle_id.td_body_width
+                rec.td_ttn_vehicle_height = rec.td_ttn_vehicle_id.td_body_height
+
+    @api.onchange('td_ttn_vehicle_id')
+    def _onchange_td_ttn_vehicle_id(self):
+        for rec in self:
+            if rec.td_ttn_vehicle_id:
+                rec.td_ttn_vehicle_dimensions_manual = False
+                rec.td_ttn_vehicle_length = rec.td_ttn_vehicle_id.td_body_length
+                rec.td_ttn_vehicle_width = rec.td_ttn_vehicle_id.td_body_width
+                rec.td_ttn_vehicle_height = rec.td_ttn_vehicle_id.td_body_height
+
+    def _inverse_td_ttn_vehicle_dimensions(self):
+        for rec in self:
+            rec.td_ttn_vehicle_dimensions_manual = True
 
     @api.onchange('td_ttn_transport_type')
     def _onchange_td_ttn_transport_type(self):
