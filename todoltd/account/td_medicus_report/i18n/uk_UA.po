@@ -1163,6 +1163,28 @@ msgid "License Number"
 msgstr "Номер ліцензії"
 
 #. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_license_number
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_license_number_other
+msgid "License Plate"
+msgstr "Номер ліцензії"
+
+#. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_hired_driver
+msgid "Driver"
+msgstr "Водій (користувач)"
+
+#. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_carrier_partner_id
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_hired_carrier
+msgid "Road Carrier"
+msgstr "Автомобільний перевізник"
+
+#. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_gross_weight_
+msgid "Gross Weight (tons)"
+msgstr "Маса брутто (тонн)"
+
+#. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_co_header
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_1
@@ -1338,6 +1360,7 @@ msgstr ""
 
 #. module: td_medicus_report
 #: model:ir.model,name:td_medicus_report.model_fleet_vehicle
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_hired_vehicle
 #: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_vehicle_id
 msgid "Vehicle"
 msgstr "Транспортний засіб"
