@@ -7,9 +7,9 @@ class ResPartner(models.Model):
     td_partner_short_name = fields.Char(
         string='Short Name'
     )
-    td_driver_license_number = fields.Char(
-        string='Driver License Number'
-    )
+    # td_driver_license_number = fields.Char(
+    #     string='Driver License Number'
+    # )
     contact_address_complete = fields.Char(compute='_td_compute_complete_address', store=False)
     use_in_vendor_refund_report = fields.Boolean(
         string='Use in Vendor Refund Report',

@@ -10,6 +10,6 @@ class HrEmployee(models.Model):
 
     td_driver_license_number = fields.Char(
         string='Driver License Number',
-        related='work_contact_id.td_driver_license_number',
+        # related='work_contact_id.td_driver_license_number',
         readonly=False,
     )
