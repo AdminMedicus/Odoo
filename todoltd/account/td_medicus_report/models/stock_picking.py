@@ -215,9 +215,9 @@ class StockPicking(models.Model):
             else:
                 rec.td_ttn_driver_employee_id = False
                 rec.td_ttn_vehicle_id = False
-    #             rec.td_ttn_vehicle_length = 0.0
-    #             rec.td_ttn_vehicle_width = 0.0
-    #             rec.td_ttn_vehicle_height = 0.0
+                rec.td_ttn_vehicle_length = 0.0
+                rec.td_ttn_vehicle_width = 0.0
+                rec.td_ttn_vehicle_height = 0.0
 
     # @api.onchange('td_ttn_vehicle_id')
     # def _onchange_td_ttn_vehicle_id(self):
