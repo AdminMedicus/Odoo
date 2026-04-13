@@ -2529,3 +2529,13 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_waybill
 msgid "№<br/>з/п"
 msgstr ""
+
+#. module: td_medicus_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_report.td_view_picking_form_inherit
+msgid "Driver / Carrier"
+msgstr "Водій / Перевізник"
+
+#. module: td_medicus_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_report.td_view_picking_form_inherit
+msgid "Dimensions and Cargo"
+msgstr "Розміри та вантажопідйомність"
