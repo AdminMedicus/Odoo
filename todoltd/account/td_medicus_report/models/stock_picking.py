@@ -1139,10 +1139,49 @@ class StockPicking(models.Model):
         doc_num = self.name.split('/')[-1] if self.name else ''
         document_number = doc_num.lstrip('0') or '0'
 
-        commission_date = '01.01.25'
-        commission_number = '02'
-        company_ceo_name = company.td_vice_president_id.td_partner_short_name if company.td_vice_president_id else ''
-        commission_head = company.td_head_medical_equipment_sales_id.td_partner_short_name if company.td_head_medical_equipment_sales_id else ''
+        order_bom = getattr(sale_order, 'td_mrp_bom_id', None) if sale_order else None
+
+        if order_bom and order_bom.td_order_date:
+            commission_date = order_bom.td_order_date.strftime('%d.%m.%Y')
+        else:
+            commission_date = '01.01.25'
+
+        if order_bom and order_bom.td_order_number:
+            commission_number = str(order_bom.td_order_number)
+        else:
+            commission_number = '02'
+
+        company_ceo_name = (
+            company.td_vice_president_id.td_partner_short_name or company.td_vice_president_id.name
+        ) if company.td_vice_president_id else ''
+
+        if order_bom and order_bom.td_head_commission:
+            head_employee = order_bom.td_head_commission
+        else:
+            head_employee = company.td_head_medical_equipment_sales_id
+
+        commission_head = head_employee.td_partner_short_name if head_employee else ''
+        commission_head_job_title = head_employee.job_title if head_employee else ''
+
+        commission_members_bom = getattr(order_bom, 'td_commission_members', None) if order_bom else None
+        if commission_members_bom:
+            commission_members = [
+                {
+                    'job_title': m.job_title or '',
+                    'name': m.td_partner_short_name or m.name or '',
+                }
+                for m in commission_members_bom
+            ]
+        else:
+            commission_members = []
+            for emp_field in ('td_warehouse_manager_id', 'td_medical_equipment_engineer_id'):
+                emp = getattr(company, emp_field, None)
+                if emp:
+                    commission_members.append({
+                        'job_title': emp.job_title or '',
+                        'name': emp.td_partner_short_name or emp.name or '',
+                    })
+
         commission_medical_manager = company.td_warehouse_manager_id.td_partner_short_name if company.td_warehouse_manager_id else ''
         commission_medical_engineer = company.td_medical_equipment_engineer_id.td_partner_short_name if company.td_medical_equipment_engineer_id else ''
         commission_pharmacy_manager = company.td_medical_warehouse_manager_id.td_partner_short_name if company.td_medical_warehouse_manager_id else ''
@@ -1157,10 +1196,12 @@ class StockPicking(models.Model):
             'agreement_date': agreement_date,
             'document_number': document_number,
             'document_date': document_date,
-            'corresponding_account': '',
+            'corresponding_account': '28.1',
             'commission_date': commission_date,
             'commission_number': commission_number,
             'commission_head': commission_head,
+            'commission_head_job_title': commission_head_job_title,
+            'commission_members': commission_members,
             'commission_medical_manager': commission_medical_manager,
             'commission_pharmacy_manager': commission_pharmacy_manager,
             'commission_medical_engineer': commission_medical_engineer,
@@ -1171,12 +1212,19 @@ class StockPicking(models.Model):
         if not sale_order:
             return data
 
+        move_lots_by_product = {}
+        for move in self.move_ids_without_package:
+            lot_ids = getattr(move, 'td_lot_ids', None)
+            lot_names = ', '.join(lot_ids.mapped('name')) if lot_ids else ''
+            if move.product_id.id not in move_lots_by_product:
+                move_lots_by_product[move.product_id.id] = lot_names
+
         product_sequence = 0
         for order_line in sale_order.order_line:
             product = order_line.product_id
             product_sequence += 1
 
-            product_price_unit = order_line.price_unit or product.list_price or 0.0
+            product_price_unit = getattr(order_line, 'td_untaxed_price_unit', None) or order_line.price_unit or 0.0
             product_quantity = order_line.product_uom_qty
             product_price_subtotal = product_price_unit * product_quantity
 
@@ -1188,19 +1236,6 @@ class StockPicking(models.Model):
             if hasattr(product, 'td_uktzed_code_id') and product.td_uktzed_code_id:
                 product_uktzed = product.td_uktzed_code_id.code or product.td_uktzed_code_id.name or ''
 
-            data['products'].append({
-                'sequence': product_sequence,
-                'catalog_number': product.default_code or '',
-                'product_name': product.name or '',
-                'series': '',
-                'ukt_zed': product_uktzed,
-                'tax_rate': '%.0f%%' % product_tax_rate,
-                'uom': order_line.product_uom.name or '',
-                'quantity': product_quantity,
-                'price_unit': product_price_unit,
-                'price_subtotal': product_price_subtotal,
-            })
-
             bom = self.env['mrp.bom'].search([
                 '|',
                 ('product_id', '=', product.id),
@@ -1208,6 +1243,30 @@ class StockPicking(models.Model):
                 ('product_id', '=', False),
                 ('product_tmpl_id', '=', product.product_tmpl_id.id)
             ], limit=1)
+
+            product_series = move_lots_by_product.get(product.id, '')
+
+            if not product_series and bom and bom.bom_line_ids:
+                all_component_series = [
+                    move_lots_by_product[comp_line.product_id.id]
+                    for comp_line in bom.bom_line_ids
+                    if comp_line.product_id.id in move_lots_by_product
+                    and move_lots_by_product[comp_line.product_id.id]
+                ]
+                product_series = ', '.join(all_component_series)
+
+            data['products'].append({
+                'sequence': product_sequence,
+                'catalog_number': product.default_code or '',
+                'product_name': product.name or '',
+                'series': product_series,
+                'ukt_zed': product_uktzed,
+                'tax_rate': '%.0f%%' % product_tax_rate,
+                'uom': order_line.product_uom.name or '',
+                'quantity': product_quantity,
+                'price_unit': product_price_unit,
+                'price_subtotal': product_price_subtotal,
+            })
 
             if bom and bom.bom_line_ids:
                 components = []
@@ -1219,7 +1278,7 @@ class StockPicking(models.Model):
                     line_num += 1
                     component = bom_line.product_id
 
-                    price_unit = component.list_price or 0.0
+                    price_unit = getattr(bom_line, 'price_unit', None) or component.list_price or 0.0
                     quantity = bom_line.product_qty
                     price_subtotal = price_unit * quantity
                     total_price_sum += price_unit
@@ -1233,11 +1292,13 @@ class StockPicking(models.Model):
                     if hasattr(component, 'td_uktzed_code_id') and component.td_uktzed_code_id:
                         uktzed = component.td_uktzed_code_id.code or component.td_uktzed_code_id.name or ''
 
+                    component_series = move_lots_by_product.get(component.id, '')
+
                     components.append({
                         'sequence': line_num,
                         'catalog_number': component.default_code or '',
                         'product_name': component.name or '',
-                        'series': '',
+                        'series': component_series,
                         'ukt_zed': uktzed,
                         'tax_rate': '%.0f%%' % tax_rate,
                         'uom': bom_line.product_uom_id.name or '',
@@ -1250,7 +1311,7 @@ class StockPicking(models.Model):
                     'sequence': product_sequence,
                     'catalog_number': product.default_code or '',
                     'product_name': product.name,
-                    'series': '',
+                    'series': product_series,
                     'ukt_zed': product_uktzed,
                     'tax_rate': '%.0f%%' % product_tax_rate,
                     'uom': order_line.product_uom.name or '',
@@ -1268,7 +1329,7 @@ class StockPicking(models.Model):
                     'sequence': product_sequence,
                     'catalog_number': product.default_code or '',
                     'product_name': product.name,
-                    'series': '',
+                    'series': product_series,
                     'ukt_zed': product_uktzed,
                     'tax_rate': '%.0f%%' % product_tax_rate,
                     'uom': order_line.product_uom.name or '',
@@ -1279,7 +1340,7 @@ class StockPicking(models.Model):
                         'sequence': line_num,
                         'catalog_number': product.default_code or '',
                         'product_name': product.name or '',
-                        'series': '',
+                        'series': product_series,
                         'ukt_zed': product_uktzed,
                         'tax_rate': '%.0f%%' % product_tax_rate,
                         'uom': order_line.product_uom.name or '',
