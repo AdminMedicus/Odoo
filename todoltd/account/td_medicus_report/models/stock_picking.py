@@ -434,8 +434,8 @@ class StockPicking(models.Model):
         shipping_partner = shipping_contacts[0] if shipping_contacts else order.partner_shipping_id
 
         data = {
-            'name': order.name.replace('S', ''),
-            'date': order.date_order.date().strftime('%d.%m.%Y'),
+            'name': self.name.split('/')[-1] if self.name else '',
+            'date': self.date_done.strftime('%d.%m.%Y') if self.date_done else '',
             'company_logo': self.company_id.logo,
             'warehouse_name': self.location_id.warehouse_id.name,
             'location_barcode': self.location_id.barcode,
@@ -443,7 +443,8 @@ class StockPicking(models.Model):
             'employee_name': current_user.full_partner_name or current_user.name,
             'employee_short_name': current_user.td_partner_short_name or current_user.name,
             'document': dict(self._fields['implementation_document']._description_selection(self.env)).get(self.implementation_document, ''),
-            'delivery_address': order.partner_shipping_id.contact_address_complete,
+            'delivery_address': self.warehouse_address_id.contact_address_complete or self.warehouse_address_id.name,
+            # 'delivery_address': order.partner_shipping_id.contact_address_complete,
             'delivery_method': partner.property_delivery_carrier_id.name,
             'recipient_name': shipping_partner.full_partner_name or shipping_partner.name,
             'return_recipient_name': self.location_dest_id.warehouse_id.name,
@@ -461,14 +462,14 @@ class StockPicking(models.Model):
             'amount_account_in_words': '',
             'amount_in_words': self.get_amount_in_words(),
             'amount_tax_in_words': self._amount_to_words_ua(self.td_total_tax),
-            'tax_guide_name': order.td_tax_guide_id.name,
+            'tax_guide_name': order.td_tax_guide_id.name if order and order.td_tax_guide_id else '',
         }
 
         line_num = 0
         for move in self.move_ids_without_package:
             product = move.product_id
             base_product_name = product.description_sale or product.name
-            manufacturer = product.td_manufacturer_directory_res_id.name
+            manufacturer = product.td_manufacturer_directory_res_id.name if product.td_manufacturer_directory_res_id else ''
             default_code = product.default_code or ''
             move_line_ids = move.move_line_ids
 
