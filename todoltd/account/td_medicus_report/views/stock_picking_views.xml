@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="td_view_picking_form_inherit" model="ir.ui.view">
+        <field name="name">td.view.picking.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//header" position="inside">
+                <button name="td_create_invoice"
+                        string="Create Invoice"
+                        type="object"
+                        class="btn btn-primary"
+                        invisible="not td_show_create_invoice_button"/>
+                <button name="td_create_custody_act"
+                        string="Transfer Act"
+                        type="object"
+                        class="btn btn-secondary"
+                        invisible="not td_show_create_custody_act_button or picking_type_code != 'outgoing'"/>
+                <button name="td_create_custody_act"
+                        string="Return Act"
+                        type="object"
+                        class="btn btn-secondary"
+                        invisible="not td_show_create_custody_act_button or picking_type_code != 'incoming'"/>
+            </xpath>
+
+            <xpath expr="//label[@for='scheduled_date']" position="before">
+                <field name="td_invoice_date"
+                    invisible="td_order_implementation_document != 'exp_inv'"/>
+                <field name="td_custody_act_date"
+                    invisible="td_order_implementation_document != 'act_res_st'"/>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Дані для ТТН" name="td_ttn_page"
+                      invisible="picking_type_code != 'outgoing'">
+                    <group>
+                        <group string="Driver / Carrier">
+                            <field name="td_ttn_transport_type"/>
+                            <!-- Own Vehicle -->
+                            <field name="td_ttn_vehicle_id"
+                                   context="{'td_show_only_model_name': True}"
+                                   invisible="td_ttn_transport_type != 'own'"/>
+                            <field name="td_ttn_license_number"
+                                   invisible="td_ttn_transport_type != 'own'"/>
+                            <field name="td_ttn_driver_employee_id"
+                                   invisible="td_ttn_transport_type != 'own'"/>
+                            <field name="td_ttn_carrier_partner_id"
+                                   invisible="td_ttn_transport_type != 'own'"/>
+                            <field name="td_ttn_driver_license_number"
+                                   invisible="td_ttn_transport_type != 'own'"/>
+
+                            <!-- Third-Party Carrier -->
+                            <field name="td_ttn_hired_vehicle"
+                                   invisible="td_ttn_transport_type != 'hired'"/>
+                            <field name="td_ttn_license_number_other"
+                                   invisible="td_ttn_transport_type != 'hired'"/>
+                            <field name="td_ttn_hired_driver"
+                                   invisible="td_ttn_transport_type != 'hired'"/>
+                            <field name="td_ttn_hired_carrier"
+                                   invisible="td_ttn_transport_type != 'hired'"/>
+                            <field name="td_ttn_driver_license_number"
+                                   invisible="td_ttn_transport_type != 'hired'"/>
+                                   
+                            <field name="td_ttn_driver_forwarder"/>
+                            <field name="td_ttn_driver_partner_id" invisible="1"/>
+                        </group>
+
+                        <group string="Dimensions and Cargo">
+                            <field name="td_ttn_places_count"/>
+                            <field name="td_ttn_gross_weight"/>
+                            <field name="td_ttn_vehicle_length" readonly="td_ttn_transport_type == 'own'"/>
+                            <field name="td_ttn_vehicle_width" readonly="td_ttn_transport_type == 'own'"/>
+                            <field name="td_ttn_vehicle_height" readonly="td_ttn_transport_type == 'own'"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>
