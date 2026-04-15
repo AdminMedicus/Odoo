@@ -670,6 +670,11 @@ msgid "Parent"
 msgstr "Батьківська категорія"
 
 #. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_move__td_taxes_ids
+msgid "Taxes"
+msgstr "ПДВ "
+
+#. module: td_medicus_1c_integration
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__parent_id
 msgid "Parent Tax Invoice"
 msgstr "Батьківська Податкова накладна"
