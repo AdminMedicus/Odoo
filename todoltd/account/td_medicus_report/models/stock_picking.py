@@ -104,29 +104,11 @@ class StockPicking(models.Model):
         copy=False,
     )
 
-    td_ttn_gross_weight_ = fields.Float(
+    td_ttn_gross_weight = fields.Float(
         string='Gross Weight (tons)',
         # digits=(16, 3),
         copy=False,
     )
-
-    # td_ttn_vehicle_length = fields.Float(
-    #     string='Length, m',
-    #     digits=(16, 3),
-    #     copy=False,
-    # )
-    #
-    # td_ttn_vehicle_width = fields.Float(
-    #     string='Width, m',
-    #     digits=(16, 3),
-    #     copy=False,
-    # )
-    #
-    # td_ttn_vehicle_height = fields.Float(
-    #     string='Height, m',
-    #     digits=(16, 3),
-    #     copy=False,
-    # )
 
     td_ttn_vehicle_dimensions_manual = fields.Boolean(
         string='Vehicle dimensions entered manually',
@@ -218,19 +200,6 @@ class StockPicking(models.Model):
                 rec.td_ttn_vehicle_length = 0.0
                 rec.td_ttn_vehicle_width = 0.0
                 rec.td_ttn_vehicle_height = 0.0
-
-    # @api.onchange('td_ttn_vehicle_id')
-    # def _onchange_td_ttn_vehicle_id(self):
-    #     for rec in self:
-    #         vehicle = rec.td_ttn_vehicle_id
-    #         if vehicle:
-    #             rec.td_ttn_vehicle_length = vehicle.td_body_length or 0.0
-    #             rec.td_ttn_vehicle_width = vehicle.td_body_width or 0.0
-    #             rec.td_ttn_vehicle_height = vehicle.td_body_height or 0.0
-    #         else:
-    #             rec.td_ttn_vehicle_length = 0.0
-    #             rec.td_ttn_vehicle_width = 0.0
-    #             rec.td_ttn_vehicle_height = 0.0
 
     @api.onchange('td_ttn_driver_employee_id')
     def _onchange_td_ttn_driver_employee_id(self):
@@ -525,6 +494,34 @@ class StockPicking(models.Model):
 
         return data
 
+    def _get_waybill_transport_info(self, transport_type):
+        """Return waybill_info dict depending on transport ownership type."""
+        self.ensure_one()
+        common = {
+            'transport_type': transport_type,
+            'places_count': self._amount_to_words_ua(float(self.td_ttn_places_count), count=True) if self.td_ttn_places_count else '',
+            'gross_weight': self._amount_to_words_ua(float(self.td_ttn_gross_weight), weight=True) if self.td_ttn_gross_weight else '',
+            'driver_forwarder': self.td_ttn_driver_forwarder or '',
+            'vehicle_length': self.td_ttn_vehicle_length or '',
+            'vehicle_width': self.td_ttn_vehicle_width or '',
+            'vehicle_height': self.td_ttn_vehicle_height or '',
+        }
+        if self.td_ttn_transport_type == 'own':
+            common.update({
+                'vehicle': self.td_ttn_vehicle_id.name.replace('/', ' ') if self.td_ttn_vehicle_id else '',
+                'driver': self.td_ttn_driver_employee_id.name if self.td_ttn_driver_employee_id else '',
+                'driver_license': self.td_ttn_driver_license_number or '',
+                'carrier_partner': self.td_ttn_carrier_partner_id.full_partner_name if self.td_ttn_carrier_partner_id else '',
+            })
+        else:
+            common.update({
+                'vehicle': self.td_ttn_hired_vehicle or '',
+                'driver': self.td_ttn_hired_driver or '',
+                'driver_license': self.td_ttn_driver_license_number or '',
+                'carrier_partner': self.td_ttn_hired_carrier or '',
+            })
+        return common
+
     def td_get_report_waybill_data(self):
         """
         Preparation of data for the waybill report
@@ -575,21 +572,7 @@ class StockPicking(models.Model):
             (повне найменування (прізвище (за наявності), власне ім'ята по-батькові (за наявності), унікальний номер запису в Єдиному державному демографічному реєстрі (за наявності), код платника податків згідно з Єдиним державним реєстром підприємств та організацій України або податковий номер (реєстраційний номер обліковойї картки платника податків або серія (за наявності) та номер паспорта громадянина України (для фізичних осіб, які через свої релігійні переконання відмовляються від прийняття реєстраційного номера облікової картки платника податків та повідомили про це відповідний контролюючий орган і мають відмітку в паспорті))))
             """,
             'lines': [],
-            'waybill_info': {
-                'vehicle': self.td_ttn_vehicle_id.name.replace('/', ' ') if self.td_ttn_vehicle_id else '',
-                'transport_type': transport_type,
-                'carrier_partner': self.td_ttn_carrier_partner_id.full_partner_name if self.td_ttn_carrier_partner_id else '',
-                'driver': self.td_ttn_driver_employee_id.name if self.td_ttn_driver_employee_id else '',
-                'driver_license': self.td_ttn_driver_license_number if self.td_ttn_driver_license_number else '',
-                # 'places_count': self.td_ttn_places_count if self.td_ttn_places_count else '',
-                # 'gross_weight': self.td_ttn_gross_weight_ if self.td_ttn_gross_weight_ else '',
-                'places_count': self._amount_to_words_ua(float(self.td_ttn_places_count), count=True) if self.td_ttn_places_count else '',
-                'gross_weight': self._amount_to_words_ua(float(self.td_ttn_gross_weight_), weight=True) if self.td_ttn_gross_weight_ else '',
-                'driver_forwarder': self.td_ttn_driver_forwarder if self.td_ttn_driver_forwarder else '',
-                'vehicle_length': self.td_ttn_vehicle_length if self.td_ttn_vehicle_length else '',
-                'vehicle_width': self.td_ttn_vehicle_width if self.td_ttn_vehicle_width else '',
-                'vehicle_height': self.td_ttn_vehicle_height if self.td_ttn_vehicle_height else '',
-            }
+            'waybill_info': self._get_waybill_transport_info(transport_type),
         }
 
         line_num = 0
