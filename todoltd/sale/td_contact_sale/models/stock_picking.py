@@ -21,6 +21,48 @@ class StockPicking(models.Model):
         column1='stock_picking_id',
         column2='allowed_sub_client_id',
     )
+    td_stock_ready_for_completion = fields.Boolean(
+        string="Ready to be completed",
+        compute="_compute_td_stock_ready_for_completion",
+        store=True,
+    )
+
+    td_stock_ready_status = fields.Selection(
+        selection=[
+            ("ready", "Ready"),
+            ("not_ready", "Not Ready"),
+        ],
+        string="Completion Status",
+        compute="_compute_td_stock_ready_status",
+        store=True,
+    )
+
+    @api.depends(
+        "picking_type_code",
+        "sale_id",
+        "sale_id.stock_button_active",
+    )
+    def _compute_td_stock_ready_for_completion(self):
+        for picking in self:
+            if picking.picking_type_code == "outgoing" and picking.sale_id:
+                picking.td_stock_ready_for_completion = not picking.sale_id.stock_button_active
+            else:
+                picking.td_stock_ready_for_completion = False
+
+    @api.depends(
+        "picking_type_code",
+        "sale_id",
+        "sale_id.stock_button_active",
+    )
+    def _compute_td_stock_ready_status(self):
+        for picking in self:
+            if picking.picking_type_code == "outgoing" and picking.sale_id:
+                if picking.sale_id.stock_button_active:
+                    picking.td_stock_ready_status = "not_ready"
+                else:
+                    picking.td_stock_ready_status = "ready"
+            else:
+                picking.td_stock_ready_status = False
 
     @api.depends('partner_id')
     def _compute_partner_id_td(self):
@@ -29,17 +71,18 @@ class StockPicking(models.Model):
                 rec.td_parent_partner_id = rec.partner_id.id
 
     def button_validate(self):
-        # Block delivery validation until user clicked "Ready to be completed" on the SO.
-        # This block must apply to outgoing only (delivery to customer).
+        """
+        Block delivery validation until user clicked "Ready to be completed" on the SO.
+        This block must apply to outgoing only (delivery to customer).
+        """
         for picking in self:
             if (
                 picking.picking_type_code == 'outgoing'
                 and picking.sale_id
-                and not picking.sale_id.stock_status_assigned
+                and picking.sale_id.stock_button_active
             ):
                 raise UserError(_(
-                    'Спочатку натисніть "Ready to be completed" ("Готовий до комплектації") у Sales Order. '
-                    'Після цього можна підтвердити доставку.'
+                    "You must click 'Ready to be completed' on the Sales Order before validating the delivery."
                 ))
 
         res = super().button_validate()
@@ -48,35 +91,6 @@ class StockPicking(models.Model):
         picking_ids = self.move_ids.move_dest_ids.picking_id
         for picking in picking_ids:
             picking.sub_client_id = self.sub_client_id.id
-
-        # Disable the stock status button:
-        # - ship_only (1-step): after outgoing validate
-        # - pick_ship (2-step): after internal validate (old behavior)
-        # - pick_pack_ship (3-step): after ALL internal pickings are done (new nuance)
-        if self.sale_id:
-            steps = getattr(self.sale_id.warehouse_id, "delivery_steps", False)
-
-            if steps == 'ship_only':
-                if self.picking_type_code == 'outgoing':
-                    self.sale_id.stock_button_active = False
-
-            elif steps == 'pick_ship':
-                if self.picking_type_code == 'internal':
-                    self.sale_id.stock_button_active = False
-
-            elif steps == 'pick_pack_ship':
-                if self.picking_type_code == 'internal':
-                    internal_left = self.sale_id.picking_ids.filtered(
-                        lambda p: p.picking_type_code == 'internal' and p.state not in ('done', 'cancel')
-                    )
-                    if not internal_left:
-                        self.sale_id.stock_button_active = False
-
-            else:
-                # Fallback: keep your previous logic
-                has_internal = bool(self.sale_id.picking_ids.filtered(lambda p: p.picking_type_code == 'internal'))
-                if self.picking_type_code == 'internal' or (self.picking_type_code == 'outgoing' and not has_internal):
-                    self.sale_id.stock_button_active = False
 
         return res
 

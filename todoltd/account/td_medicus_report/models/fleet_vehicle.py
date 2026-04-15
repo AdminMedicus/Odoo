@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import fields, models
+from odoo import fields, models, api, _
 
 
 class FleetVehicle(models.Model):
@@ -26,3 +26,8 @@ class FleetVehicle(models.Model):
         string='Body Height, m',
         digits=(16, 3),
     )
+
+    @api.depends('model_id.brand_id.name', 'model_id.name', 'license_plate')
+    def _compute_vehicle_name(self):
+        for record in self:
+            record.name = (record.model_id.brand_id.name or '') + '/' + (record.model_id.name or '')

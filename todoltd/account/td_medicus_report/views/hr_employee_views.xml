@@ -6,9 +6,11 @@
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_form"/>
         <field name="arch" type="xml">
-
             <xpath expr="//field[@name='work_email']" position="before">
                 <field name="td_partner_short_name"/>
+            </xpath>
+
+            <xpath expr="//field[@name='private_car_plate']" position="before">
                 <field name="td_driver_license_number"/>
             </xpath>
 

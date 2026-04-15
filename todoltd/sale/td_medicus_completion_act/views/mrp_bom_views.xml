@@ -12,9 +12,25 @@
                         string="Carry out picking"
                         class="btn-primary"/>
                 </header>
-
-
             </xpath>
+
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_td_sale_order"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-shopping-cart"
+                        invisible="not td_sale_order_id">
+                    <div class="o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="td_sale_order_count"/>
+                        </span>
+                        <span class="o_stat_text">
+                            Sale Order
+                        </span>
+                    </div>
+                </button>
+            </xpath>
+
             <xpath expr="//notebook//page[@name='miscellaneous']//field[@name='picking_type_id']" position="before">
                 <field name="td_sale_order_id"/>
             </xpath>
@@ -43,6 +59,10 @@
                     </group>
                 </page>
             </xpath>
+            <xpath expr="//field[@name='bom_line_ids']/list/field[@name='product_qty']" position="after">
+                <field name="price_unit"/>
+            </xpath>
+
         </field>
     </record>
 </odoo>

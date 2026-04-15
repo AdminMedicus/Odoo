@@ -706,21 +706,28 @@
                         <t t-esc="report_data['commission_head']"/>
                     </td>
                 </tr>
-                <tr>
-                    <td/>
-                    <td>
-                        Члени комісії:
-                    </td>
-                    <td>
-                        завідувач аптечного складу <t t-esc="report_data['commission_medical_manager']"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2"/>
-                    <td>
-                        інженер медичного обладнання <t t-esc="report_data['commission_medical_engineer']"/>
-                    </td>
-                </tr>
+                <t t-foreach="report_data.get('commission_members', [])" t-as="member">
+                    <tr>
+                        <td/>
+                        <td t-if="member_index == 0">Члени комісії:</td>
+                        <td t-else=""/>
+                        <td>
+                            <t t-esc="member['job_title']"/>
+                            <t t-if="member['name']"> <t t-esc="member['name']"/></t>
+                        </td>
+                    </tr>
+                </t>
+                <t t-if="not report_data.get('commission_members')">
+                    <tr>
+                        <td/>
+                        <td>Члени комісії:</td>
+                        <td>завідувач аптечного складу <t t-esc="report_data['commission_medical_manager']"/></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"/>
+                        <td>інженер медичного обладнання <t t-esc="report_data['commission_medical_engineer']"/></td>
+                    </tr>
+                </t>
             </table>
         </div>
     </template>
@@ -2104,10 +2111,11 @@
         
         <!-- Підписи -->
         <table width="100%" class="td_zero_border mt-3" style="font-size: 9px; line-height: 1.3;">
+            <!-- Голова комісії -->
             <tr>
                 <td width="2%"/>
                 <td width="40%">
-                    Начальник відділу продаж медичного обладнання
+                    <t t-esc="report_data.get('commission_head_job_title') or 'Начальник відділу продаж медичного обладнання'"/>
                 </td>
                 <td width="20%" style="border-bottom: 1px solid #000;"/>
                 <td width="38%">
@@ -2122,44 +2130,53 @@
                 </td>
                 <td/>
             </tr>
-            <tr style="height: 10px;"><td colspan="4"/></tr>
-            <tr>
-                <td/>
-                <td>
-                    завідувач аптечного складу
-                </td>
-                <td style="border-bottom: 1px solid #000;"/>
-                <td>
-                    <t t-esc="report_data['commission_medical_manager']"/>
-                </td>
-            </tr>
-            <tr>
-                <td/>
-                <td/>
-                <td class="text-center" style="font-size: 7px; vertical-align: top;">
-                    підпис
-                </td>
-                <td/>
-            </tr>
-            <tr style="height: 10px;"><td colspan="4"/></tr>
-            <tr>
-                <td/>
-                <td>
-                    інженер медичного обладнання
-                </td>
-                <td style="border-bottom: 1px solid #000;"/>
-                <td>
-                    <t t-esc="report_data['commission_medical_engineer']"/>
-                </td>
-            </tr>
-            <tr>
-                <td/>
-                <td/>
-                <td class="text-center" style="font-size: 7px; vertical-align: top;">
-                    підпис
-                </td>
-                <td/>
-            </tr>
+            <!-- Члени комісії (динамічно з BOM td_commission_members) -->
+            <t t-foreach="report_data.get('commission_members', [])" t-as="member">
+                <tr style="height: 10px;"><td colspan="4"/></tr>
+                <tr>
+                    <td/>
+                    <td><t t-esc="member['job_title']"/></td>
+                    <td style="border-bottom: 1px solid #000;"/>
+                    <td><t t-esc="member['name']"/></td>
+                </tr>
+                <tr>
+                    <td/>
+                    <td/>
+                    <td class="text-center" style="font-size: 7px; vertical-align: top;">
+                        підпис
+                    </td>
+                    <td/>
+                </tr>
+            </t>
+            <!-- Fallback: статичні члени якщо BOM не налаштований -->
+            <t t-if="not report_data.get('commission_members')">
+                <tr style="height: 10px;"><td colspan="4"/></tr>
+                <tr>
+                    <td/>
+                    <td>завідувач аптечного складу</td>
+                    <td style="border-bottom: 1px solid #000;"/>
+                    <td><t t-esc="report_data['commission_medical_manager']"/></td>
+                </tr>
+                <tr>
+                    <td/>
+                    <td/>
+                    <td class="text-center" style="font-size: 7px; vertical-align: top;">підпис</td>
+                    <td/>
+                </tr>
+                <tr style="height: 10px;"><td colspan="4"/></tr>
+                <tr>
+                    <td/>
+                    <td>інженер медичного обладнання</td>
+                    <td style="border-bottom: 1px solid #000;"/>
+                    <td><t t-esc="report_data['commission_medical_engineer']"/></td>
+                </tr>
+                <tr>
+                    <td/>
+                    <td/>
+                    <td class="text-center" style="font-size: 7px; vertical-align: top;">підпис</td>
+                    <td/>
+                </tr>
+            </t>
         </table>
         
         <!-- Відмітка бухгалтерії -->
