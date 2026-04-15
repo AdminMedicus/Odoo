@@ -18,7 +18,7 @@
     ],
     'data': [
         # data
-        'data/ir_cron_data.xml',
+        # 'data/ir_cron_data.xml',
         'data/company_settings.xml',
         # security
         'security/ir.model.access.csv',
