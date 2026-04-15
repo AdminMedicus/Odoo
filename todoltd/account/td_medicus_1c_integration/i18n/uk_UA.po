@@ -467,5 +467,8 @@ msgstr "Підготовлено"
 msgid "Confirm"
 msgstr "Підтвердити"
 
-
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_move__td_taxes_ids
+msgid "Taxes"
+msgstr "ПДВ "
 

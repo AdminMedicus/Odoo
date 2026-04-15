@@ -36,7 +36,7 @@
                 <field name="td_customs_value_good" optional="show" column_invisible="not parent.td_is_import"/>
                 <field name="td_book_value" optional="show" column_invisible="not parent.td_is_import"/>
                 <field name="td_taxes_ids" widget="many2many_tags" optional="show"/>
-                <field name="td_taxes" optional="show" widget="percentage" readonly="1"/>
+<!--                <field name="td_taxes" optional="show" widget="percentage" readonly="1"/>-->
                 <field name="td_taxes_price" optional="show" readonly="1"/>
                 <field name="td_price_total" optional="show" readonly="1"/>
             </xpath>
