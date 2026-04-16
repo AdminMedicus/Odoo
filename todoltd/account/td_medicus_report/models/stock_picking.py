@@ -104,7 +104,7 @@ class StockPicking(models.Model):
         copy=False,
     )
 
-    td_ttn_gross_weight = fields.Float(
+    td_ttn_gross_weight_ = fields.Float(
         string='Gross Weight (tons)',
         # digits=(16, 3),
         copy=False,
@@ -500,7 +500,7 @@ class StockPicking(models.Model):
         common = {
             'transport_type': transport_type,
             'places_count': self._amount_to_words_ua(float(self.td_ttn_places_count), count=True) if self.td_ttn_places_count else '',
-            'gross_weight': self._amount_to_words_ua(float(self.td_ttn_gross_weight), weight=True) if self.td_ttn_gross_weight else '',
+            'gross_weight': self._amount_to_words_ua(float(self.td_ttn_gross_weight_), weight=True) if self.td_ttn_gross_weight_ else '',
             'driver_forwarder': self.td_ttn_driver_forwarder or '',
             'vehicle_length': self.td_ttn_vehicle_length or '',
             'vehicle_width': self.td_ttn_vehicle_width or '',
