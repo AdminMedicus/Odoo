@@ -37,4 +37,15 @@
             </xpath>
         </field>
     </record>
+
+    <record id="td_view_order_form_price_inherit" model="ir.ui.view">
+        <field name="name">td.view.order.form.price.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list//field[@name='price_unit']" position="after">
+                <field name="td_untaxed_price_unit" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
 </odoo>
