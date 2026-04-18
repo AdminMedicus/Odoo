@@ -640,3 +640,27 @@ msgstr "Рaзом без ПДВ"
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_picking__td_total_tax
 msgid "Td Total Tax"
 msgstr "Сума ПДВ"
+
+#. module: td_medicus_1c_integration
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_tax_invoice_view_form
+msgid "Update Data"
+msgstr "Оновити дані"
+
+#. module: td_medicus_1c_integration
+#. odoo-python
+#: code:addons/td_medicus_1c_integration/models/res_partner.py:0
+msgid "The EDRPOU (company ID) must consist of 8 digits."
+msgstr "ЄДРПОУ (ID компанії) має складатися з 8 цифр."
+
+#. module: td_medicus_1c_integration
+#. odoo-python
+#: code:addons/td_medicus_1c_integration/models/res_partner.py:0
+msgid ""
+"The tax identification number (VAT) must consist of 10 digits without spaces"
+" or letters."
+msgstr "Податковий номер (ІПН) має складатися з 10 цифр без пробілів та букв."
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_move__td_lot_ids
+msgid "Td Lot"
+msgstr "Серійні номери"
