@@ -178,9 +178,13 @@ class StockPicking(models.Model):
         if not for_date:
             for_date = fields.Date.context_today(self)
 
-        seq = self._ensure_sequence('td.lot.daily', 'TD daily lot sequence', for_date)
+        seq = self._ensure_sequence(
+            'td.lot.daily', 'TD daily lot sequence', for_date
+        )
 
-        base = seq.with_context(ir_sequence_date=for_date).next_by_id(sequence_date=for_date)
+        base = seq.with_context(
+            ir_sequence_date=for_date
+        ).next_by_id(sequence_date=for_date)
 
         suffix_parts = []
         if getattr(self, 'td_is_import', False):
@@ -228,14 +232,24 @@ class StockPicking(models.Model):
             domain.append(('company_id', '=', False))
         return LotModel.search(domain, limit=1)
 
-    def _create_or_retry_unique_lot(self, LotModel, name_getter, product, company_id, ref_getter,
-                                    allow_use_existing=False):
+    def _create_or_retry_unique_lot(
+            self,
+            LotModel,
+            name_getter,
+            product,
+            company_id,
+            ref_getter,
+            allow_use_existing=False,
+    ):
         """
         Create a lot with a unique name for (product, company).
-        - name_getter: callable() -> candidate name
-        - ref_getter: callable(name) -> ref_value for a given name
-        - allow_use_existing: if True and an existing lot with the same name is found,
-          return it (and update ref).
+
+        Args:
+            name_getter (callable): function -> candidate name.
+            ref_getter (callable): function(name) -> ref_value
+            for a given name.
+            allow_use_existing (bool): if True and an existing lot with the
+                same name is found, return it (and update ref).
         """
         for attempt in range(MAX_ATTEMPTS):
             name = name_getter()
@@ -256,11 +270,19 @@ class StockPicking(models.Model):
                 return lot
             except Exception as e:
                 msg = str(e).lower()
-                if 'unique' in msg or 'duplicate' in msg or 'already exists' in msg:
+                if (
+                        "unique" in msg
+                        or "duplicate" in msg
+                        or "already exists" in msg
+                ):
                     continue
                 raise
-        raise UserError(_("Failed to generate a unique lot name for item %s after %s attempts.") %
-                        (product.display_name, MAX_ATTEMPTS))
+        raise UserError(
+            _(
+                "Failed to generate a unique lot name for item %s "
+                "after %s attempts."
+            ) % (product.display_name, MAX_ATTEMPTS)
+        )
 
     def _create_lot_ids_for_move(self):
         Lot = self.env['stock.lot']
@@ -271,7 +293,10 @@ class StockPicking(models.Model):
 
             # --- PARTS (tracking == 'lot') ---
             processed_ml_ids = set()
-            for ml in picking.move_line_ids.filtered(lambda l: l.product_id and l.product_id.tracking == 'lot'):
+            for ml in picking.move_line_ids.filtered(
+                    lambda lin: lin.product_id
+                    and lin.product_id.tracking == 'lot'
+            ):
                 if ml.id in processed_ml_ids:
                     continue
 
@@ -315,8 +340,9 @@ class StockPicking(models.Model):
 
         res = super().button_validate()
 
-        self._assign_serial_ref()
-        self._create_lot_ids_for_move()
+        if not self.sale_id:
+            self._assign_serial_ref()
+            self._create_lot_ids_for_move()
 
         for picking in self:
             for move in picking.move_ids:
