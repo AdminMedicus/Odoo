@@ -42,7 +42,7 @@
                         <field name="name" readonly="1"/>
                     </h1>
                     <field name="stock_status_assigned" invisible="1"/>
-                    <div id="td_status_stock_button">
+                    <div id="td_status_stock_button" invisible="state not in ['sale']">
                         <button name="action_confirm_stock_status"
                             class="btn-primary"
                             string="Ready to be completed"

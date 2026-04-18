@@ -7,7 +7,8 @@ from odoo.addons.ata_exchange_v4.models.ata_exchange_model_handler_mixin import 
 
 from typing import cast
 from .pydantic_model import (
-    VendorDataIncoming,
+    ManufacturerDataIncoming,
+    SupplierDataIncoming,
     PartnerDataBase,
     PartnerDataWithAgreements,
     ManagerDataIncoming,
@@ -50,7 +51,7 @@ class TdResPartnerExchange(models.Model):
             "company_registry": self._str_empty(record.company_registry),
             **({
                 "full_data":   True,
-                "region":   self._str_empty(record.region_id.name),
+                "region":   self._str_empty(record.region_id.full_name),
                 "manager":  record.user_id.exchange_data,
                 "address":  self.ata_exchange_get_structured_address(),
                 "phone":    self._str_empty(record.phone),
@@ -100,8 +101,10 @@ class TdResPartnerExchange(models.Model):
         record_params: RecordHandlerParams) -> dict:
 
         if inc_params := record_params.incoming_params:
-            if inc_params.method_id == self.env.ref('td_medicus_exchange_base.inner_types_vendor_1c'):
-                return self.ata_exchange_prepare_vals_vendor(record_params)
+            if inc_params.method_id == self.env.ref('td_medicus_exchange_base.inner_types_manufacturer_1c'):
+                return self.ata_exchange_prepare_vals_manufacturer(record_params)
+            elif inc_params.method_id == self.env.ref('td_medicus_exchange_base.inner_types_product_supplier'):
+                return self.ata_exchange_prepare_vals_supplier(record_params)
             elif inc_params.method_id == self.env.ref('td_medicus_exchange_base.inner_types_res_partner_subclient'):
                 return self.ata_exchange_prepare_vals_subclient(record_params)
             elif inc_params.method_id == self.env.ref('td_medicus_exchange_base.partner_1c_odoo'):
@@ -109,24 +112,42 @@ class TdResPartnerExchange(models.Model):
         
         return super().ata_exchange_prepare_vals(record_params)
 
-    def ata_exchange_prepare_vals_vendor(self,
+    def ata_exchange_get_category_id(self,
+            record_params: RecordHandlerParams,
+            category_name: str) -> int:
+        
+        category_params = record_params.build(self.env, 'res.partner.category')
+        category_params.data = {'name': category_name}
+        category_params.create_record = True
+        category_params.search_params.search_domain = [('name', '=', category_name)]
+        return self.ata_exchange_get_model_record(category_params).id
+
+    def ata_exchange_prepare_vals_manufacturer(self,
         record_params: RecordHandlerParams) -> dict[str, str|int|list]:
         
-        partner_data = cast(VendorDataIncoming,
-            self.ata_exchange_process_data_with_pydantic(record_params.data, VendorDataIncoming))
-
-        vendor_name = "Виробник"
-        category_params = record_params.build(self.env, 'res.partner.category')
-        category_params.data = {'name': vendor_name}
-        category_params.create_record = True
-        category_params.search_params.search_domain = [('name', '=', vendor_name)]
-        category_id = self.ata_exchange_get_model_record(category_params).id
+        partner_data = cast(ManufacturerDataIncoming,
+            self.ata_exchange_process_data_with_pydantic(record_params.data, ManufacturerDataIncoming))
+        partner_category_name = "Виробник"
 
         return {
             "company_type":      "company",   
             "name":              partner_data.name,
             "full_partner_name": partner_data.name_full,
-            "category_id":       [Command.set([category_id])],
+            "category_id":       [Command.set([self.ata_exchange_get_category_id(record_params, partner_category_name)])],
+        }
+
+    def ata_exchange_prepare_vals_supplier(self,
+        record_params: RecordHandlerParams) -> dict[str, str|int|list]:
+        
+        partner_data = cast(SupplierDataIncoming,
+            self.ata_exchange_process_data_with_pydantic(record_params.data, SupplierDataIncoming))
+        partner_category_name = "Постачальник"
+        
+        return {
+            "company_type":      "company",   
+            "name":              partner_data.name,
+            "full_partner_name": partner_data.name_full,
+            "category_id":       [Command.set([self.ata_exchange_get_category_id(record_params, partner_category_name)])],
         }
 
     def ata_exchange_prepare_vals_subclient(self,
@@ -147,9 +168,9 @@ class TdResPartnerExchange(models.Model):
 
         def get_region_id(region_name: str) -> int:
             region_params = record_params.build(self.env, 'td.res.country.region')
-            region_params.data = {'name': region_name}
+            region_params.data = {'full_name': region_name}
             region_params.create_record = True
-            region_params.search_params.search_domain = [('name', '=', region_name)]
+            region_params.search_params.search_domain = [('full_name', '=', region_name)]
             return self.ata_exchange_get_model_record(region_params).id
 
         def get_employee_id(manager_data: ManagerDataIncoming) -> int:

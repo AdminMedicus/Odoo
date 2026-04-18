@@ -132,9 +132,9 @@ msgid "Td Code Integration One C"
 msgstr "Код"
 
 #. module: td_medicus_1c_integration
-#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_product_product__td_manufacturer_directory_id
-#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_product_template__td_manufacturer_directory_id
-msgid "Td Manufacturer Directory"
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_product_product__td_manufacturer_directory_res_id
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_product_template__td_manufacturer_directory_res_id
+msgid "Td Manufacturer Directory Res"
 msgstr "Виробник"
 
 #. module: td_medicus_1c_integration
@@ -656,11 +656,37 @@ msgstr "ЄДРПОУ (ID компанії) має складатися з 8 ци
 #. odoo-python
 #: code:addons/td_medicus_1c_integration/models/res_partner.py:0
 msgid ""
-"The tax identification number (VAT) must consist of 10 digits without spaces"
+"The tax identification number (VAT) must consist of 12 digits without spaces"
 " or letters."
-msgstr "Податковий номер (ІПН) має складатися з 10 цифр без пробілів та букв."
+msgstr "Податковий номер (ІПН) має складатися з 12 цифр без пробілів та букв."
 
 #. module: td_medicus_1c_integration
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_move__td_lot_ids
 msgid "Td Lot"
 msgstr "Серійні номери"
+
+#. module: td_medicus_1c_integration
+#. odoo-python
+#: code:addons/td_medicus_1c_integration/models/res_partner.py:0
+msgid ""
+"The EDRPOU / Company ID must contain exactly 8 or 10 digits. Examples: "
+"12345678 or 1234567890."
+msgstr "Поле ЄДРПОУ / Company ID має містити рівно 8 або 10 цифр. "
+"Приклади: 12345678 або 1234567890."
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_res_partner__ref
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_res_users__ref
+msgid "Certificate number"
+msgstr "Номер свідоцтіва"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_res_partner__company_registry
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_res_users__company_registry
+msgid "Code EDRPOU"
+msgstr "Код ЄДРПОУ"
+
+#. module: sale
+#: model:ir.actions.act_window,name:sale.action_view_sale_advance_payment_inv
+msgid "Create invoice(s)"
+msgstr "Створити інвойси"

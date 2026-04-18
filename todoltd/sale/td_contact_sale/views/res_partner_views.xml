@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='category_id']" position="after">
-                <field name="region_id"/>
+                <field name="region_id" context="{'search_default_td_leaf': 1, 'region_leaf_only': 1}"/>
             </xpath>
             <xpath expr="//span[@name='address_name']" position="before">
                 <field name="full_partner_name"/>

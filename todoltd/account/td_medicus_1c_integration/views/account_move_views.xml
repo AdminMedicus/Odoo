@@ -67,6 +67,12 @@
                     colspan="2" nolabel="1" widget="payment"
                     invisible="state != 'posted' or not invoice_has_outstanding"/>
             </xpath>
+            <xpath expr="//button[@id='account_invoice_payment_btn']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@id='account_invoice_payment_secondary_btn']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
         </field>
     </record>
 </odoo>

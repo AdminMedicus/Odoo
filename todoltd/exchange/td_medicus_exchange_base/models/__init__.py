@@ -1,8 +1,11 @@
 from . import pydantic_model
 
+from . import account_tax
 from . import product_product
 from . import uom_uom
+from . import stock_lot
 from . import td_one_c_category
+from . import td_res_region
 from . import res_partner
 from . import td_agreement
 from . import td_agreement_types
