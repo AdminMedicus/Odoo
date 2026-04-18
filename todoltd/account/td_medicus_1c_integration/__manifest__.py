@@ -22,7 +22,6 @@
         'security/ir.model.access.csv',
         'security/tax_invoices_groups.xml',
         # views
-        'views/td_manufacturer_directory_views.xml',
         'views/td_one_c_category_views.xml',
         'views/product_template_views.xml',
         'views/stock_warehouse_views.xml',
@@ -33,10 +32,16 @@
         'views/stock_picking_views.xml',
         'views/stock_picking_type_views.xml',
         'views/res_partner_views.xml',
+        'views/product_product_views.xml',
         # wizard
         'wizard/sale_make_invoice_advance.xml',
         'wizard/td_sale_order_low_margin_warning.xml'
     ],
+    "assets": {
+        "web.assets_backend": [
+            "td_medicus_1c_integration/static/src/js/sale_product_field.js",
+        ]
+    },
     "installable": True,
     "application": True,
 }
