@@ -2,7 +2,7 @@
 {
     'name': "ToDo Medicus Reports",
     'summary': 'Reports for Medicus',
-    'version': '18.0.1.0.35',
+    'version': '18.0.1.0.40',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
@@ -23,6 +23,7 @@
         'report/report_actions.xml',
         'report/report_template.xml',
         'views/res_company_views.xml',
+        'views/res_partner_views.xml',
         'views/stock_location_views.xml',
         'views/td_stock_condition_views.xml',
         'views/stock_picking_views.xml',
