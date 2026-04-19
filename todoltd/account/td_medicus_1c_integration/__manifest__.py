@@ -1,6 +1,6 @@
 {
     'name': 'TD Medicus 1C Integration',
-    "version": '18.0.0.0.37',
+    "version": '18.0.0.0.42',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
@@ -8,6 +8,7 @@
     'depends': [
         'stock',
         'sale',
+        'stock_account',
         'account',
         'hr',
         'purchase_stock',

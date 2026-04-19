@@ -206,12 +206,6 @@ class StockPicking(models.Model):
         )
 
         shipping_partner = shipping_contacts[0] if shipping_contacts else order.partner_shipping_id
-        # barcode_params = url_encode({
-        #     'barcode_type': 'Code128',
-        #     'value': self.location_id.barcode,
-        #     'width': 400,
-        #     'height': 200,
-        # })
 
         data = {
             'name': order.name.replace('S', ''),
@@ -219,7 +213,6 @@ class StockPicking(models.Model):
             'company_logo': self.company_id.logo,
             'warehouse_name': self.location_id.warehouse_id.name,
             'location_barcode': self.location_id.barcode,
-            # 'warehouse_barcode': f'/report/barcode/?{barcode_params}',
             'partner_name': partner.full_partner_name or partner.name,
             'employee_name': current_user.full_partner_name or current_user.name,
             'employee_short_name': current_user.td_partner_short_name or current_user.name,
@@ -368,9 +361,6 @@ class StockPicking(models.Model):
                 'bank_account': company_partner.bank_ids[0].acc_number,
                 'bank_name': company_partner.bank_ids[0].bank_name,
                 'bank_bic': company_partner.bank_ids[0].bank_bic,
-                # 'license_issued_by': company_partner.td_license_issued_by,
-                # 'license_number': company_partner.td_license_number,
-                # 'license_date': company_partner.td_license_date,
                 'tax_position': company_partner.property_account_position_id.name,
                 'warehouse_manager': warehouse_manager_id.td_partner_short_name or warehouse_manager_id.name,
                 'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.name,
@@ -406,7 +396,7 @@ class StockPicking(models.Model):
             if not line.product_id:
                 continue
             line_num += 1
-            location = line.move_orig_ids.mapped('location_id') or line.location_id
+            location = line.move_orig_ids.mapped('location_dest_id') or line.location_dest_id
             move_line_ids = line.mapped('move_line_ids')
             
             line_data = {
@@ -695,6 +685,8 @@ class StockPicking(models.Model):
         invoice_partner = sale_order.partner_invoice_id if sale_order and sale_order.partner_invoice_id else vendor_partner
         
         shipping_partner = sale_order.partner_shipping_id if sale_order and sale_order.partner_shipping_id else vendor_partner
+        vendor_recipient = vendor_partner.child_ids.filtered(lambda p: p.type == 'contact' and p.use_in_vendor_refund_report)[0]
+        vendor_recipient_name = vendor_recipient.full_partner_name or vendor_recipient.name if vendor_recipient else ''
         
         payment_partner = None
         if sale_order and sale_order.partner_invoice_id and sale_order.partner_invoice_id != vendor_partner:
@@ -730,6 +722,7 @@ class StockPicking(models.Model):
             'vendor_bank_bic': company_bank.bank_bic if company_bank else '',
             'vendor_ref': company_partner.ref or '',
             'vendor_tax_position': company_tax_position,
+            'vendor_recipient': vendor_recipient_name,
             
             'recipient_name': invoice_partner.full_partner_name or invoice_partner.name,
             'recipient_registry': invoice_partner.company_registry or company.company_registry or '',

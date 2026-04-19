@@ -1,24 +1,21 @@
-from datetime import date
-from odoo import models, fields, api, _
-from odoo.fields import Command
-from itertools import groupby
-from odoo.exceptions import (
-    AccessError,
-    UserError,
-    ValidationError,
-)
 from collections import Counter
+from datetime import date
+from itertools import groupby
+
+from odoo import _, api, fields, models
+from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.fields import Command
+from odoo.tools import float_round
 
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    td_tax_invoice_ids = fields.Many2many(
-        comodel_name='td.tax.invoice',
-        compute='_compute_td_tax_invoices'
+    budget_funds = fields.Boolean(
+        related='td_agreement_id.budget_funds'
     )
-    td_tax_invoice_count = fields.Integer(
-        compute='_compute_td_tax_invoices'
+    td_budget_funds = fields.Boolean(
+        related='td_agreement_id.budget_funds'
     )
     td_show_create_invoice = fields.Boolean(
         compute='_compute_td_show_create_invoice'
@@ -28,24 +25,24 @@ class SaleOrder(models.Model):
         compute='_compute_td_tax_guide_id',
         readonly=False
     )
-    budget_funds = fields.Boolean(
-        default=False,
-        related='td_agreement_id.budget_funds'
+    td_tax_invoice_count = fields.Integer(
+        compute='_compute_td_tax_invoices'
     )
-    td_budget_funds = fields.Boolean(
-        default=False,
-        related='td_agreement_id.budget_funds'
+    td_tax_invoice_ids = fields.Many2many(
+        comodel_name='td.tax.invoice',
+        compute='_compute_td_tax_invoices'
     )
     td_tax_invoice_state = fields.Selection(
-        [
+        compute='_compute_td_tax_invoice_state',
+        default='draft',
+        selection=[
             ('budget', 'Budget funds'),
-            ('not_created', 'Not created'),
-            ('draft', 'Draft'),
+            ('cancel', 'Cancel'),
             ('confirm', 'Confirm'),
             ('confirm_finish', 'Confirmed (no adjustments are possible)'),
-            ('cancel', 'Cancel'),
-        ], default='draft',
-        compute='_compute_td_tax_invoice_state',
+            ('draft', 'Draft'),
+            ('not_created', 'Not created'),
+        ],
         store=True
     )
     td_tax_invoice_state_percentage = fields.Float(
@@ -53,39 +50,71 @@ class SaleOrder(models.Model):
         store=True
     )
 
-    @api.depends_context('lang')
     @api.depends('order_line.price_subtotal', 'currency_id', 'company_id', 'payment_term_id')
+    def _compute_amounts(self):
+
+        AccountTax = self.env['account.tax']
+        for order in self:
+            order_lines = order.order_line.filtered(lambda x: not x.display_type and not x.is_downpayment)
+            base_lines = [line._prepare_base_line_for_taxes_computation() for line in order_lines]
+            base_lines += order._add_base_lines_for_early_payment_discount()
+            
+            AccountTax._add_tax_details_in_base_lines(base_lines, order.company_id)
+            AccountTax._round_base_lines_tax_details(base_lines, order.company_id)
+            
+            tax_totals = AccountTax._get_tax_totals_summary(
+                base_lines=base_lines,
+                company=order.company_id,
+                currency=order.currency_id or order.company_id.currency_id,
+            )
+            
+
+            order.amount_untaxed = tax_totals['base_amount_currency']
+            order.amount_tax = tax_totals['tax_amount_currency']
+            order.amount_total = tax_totals['total_amount_currency']
+
+            expected_total = sum(
+                float_round(
+                    line.price_unit * line.product_uom_qty,
+                    precision_rounding=order.currency_id.rounding
+                )
+                for line in order_lines
+            )
+
+            if not order.currency_id.is_zero(order.amount_total - expected_total):
+                diff = expected_total - order.amount_total
+                order.amount_tax += diff
+                order.amount_total = expected_total
+
+    @api.depends_context('lang')
+    @api.depends('amount_total', 'order_line.price_subtotal', 'currency_id', 'company_id')
     def _compute_tax_totals(self):
         AccountTax = self.env['account.tax']
         for order in self:
             order_lines = order.order_line.filtered(lambda x: not x.display_type and not x.is_downpayment)
             base_lines = [line._prepare_base_line_for_taxes_computation() for line in order_lines]
             base_lines += order._add_base_lines_for_early_payment_discount()
+            
             AccountTax._add_tax_details_in_base_lines(base_lines, order.company_id)
             AccountTax._round_base_lines_tax_details(base_lines, order.company_id)
+            
             order.tax_totals = AccountTax._get_tax_totals_summary(
                 base_lines=base_lines,
-                currency=order.currency_id or order.company_id.currency_id,
                 company=order.company_id,
+                currency=order.currency_id or order.company_id.currency_id,
             )
+            
+            if order.tax_totals and 'total_amount_currency' in order.tax_totals:
+                if order.tax_totals['total_amount_currency'] != order.amount_total:
+                    diff = order.amount_total - order.tax_totals['total_amount_currency']
+                    order.tax_totals['total_amount_currency'] = order.amount_total
+                    if order.tax_totals.get('groups_by_subtotal'):
+                        for subtotal_name in order.tax_totals['groups_by_subtotal']:
+                            groups = order.tax_totals['groups_by_subtotal'][subtotal_name]
+                            if groups:
+                                groups[-1]['tax_group_amount_currency'] += diff
+                                break
 
-    @api.depends('order_line.price_subtotal', 'currency_id', 'company_id', 'payment_term_id')
-    def _compute_amounts(self):
-        AccountTax = self.env['account.tax']
-        for order in self:
-            order_lines = order.order_line.filtered(lambda x: not x.display_type and not x.is_downpayment)
-            base_lines = [line._prepare_base_line_for_taxes_computation() for line in order_lines]
-            base_lines += order._add_base_lines_for_early_payment_discount()
-            AccountTax._add_tax_details_in_base_lines(base_lines, order.company_id)
-            AccountTax._round_base_lines_tax_details(base_lines, order.company_id)
-            tax_totals = AccountTax._get_tax_totals_summary(
-                base_lines=base_lines,
-                currency=order.currency_id or order.company_id.currency_id,
-                company=order.company_id,
-            )
-            order.amount_untaxed = tax_totals['base_amount_currency']
-            order.amount_tax = tax_totals['tax_amount_currency']
-            order.amount_total = tax_totals['total_amount_currency']
 
     def _create_invoices(self, grouped=False, final=False, date=None):
         """ Create invoice(s) for the given Sales Order(s).

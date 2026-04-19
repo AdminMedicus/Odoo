@@ -35,7 +35,8 @@ class StockPicking(models.Model):
     )
 
     state = fields.Selection(
-        selection_add=[('import', 'Import data to 1C')],
+        # selection_add=[('import', 'Import data to 1C')],
+        selection_add=[('import', 'Expects to spread costs over GTD')],
     )
 
     picking_code = fields.Boolean(
@@ -77,7 +78,34 @@ class StockPicking(models.Model):
     )
 
     def td_button_send_data_to_one_c(self):
-        pass
+        """
+        The "Prepared" button for imported receipts:
+        - changes the status to state='import' (Awaiting allocation of expenses from the customs declaration)
+        - adds to the exchange queue (ata.exchange.queue) so that 1C can retrieve the data
+        """
+        Queue = self.env["ata.exchange.queue"].sudo()
+
+        for picking in self:
+            if picking.picking_type_code != "incoming":
+                raise UserError(_("This action is only available for receipts."))
+            if not picking.td_is_import:
+                raise UserError(_("This action is only available for import receipts."))
+            if picking.state in ("done", "cancel"):
+                raise UserError(_("Unable to perform action for completed/canceled document."))
+            if not picking.move_ids_without_package:
+                raise UserError(_("Add at least one item to the shipment."))
+
+            if picking.state != "import":
+                picking.write({"state": "import"})
+
+            Queue.change_in_queue(picking.sudo())
+
+            picking.message_post(
+                body=_("Prepared. The document has been queued for exchange "
+                       "with 1C for posting expenses from the customs declaration.")
+            )
+
+        return True
 
     @api.depends('move_ids_without_package')
     def _compute_total_amounts(self):
@@ -476,6 +504,160 @@ class StockPicking(models.Model):
         self._td_create_vendor_bill_from_receipt()
 
         return res
+
+    def _td_get_public_user(self):
+        return self.env.ref("base.public_user", raise_if_not_found=False) or self.env["res.users"].browse(4)
+
+    def _td_collect_created_lots(self):
+        self.ensure_one()
+        lots = self.move_line_ids.mapped("lot_id")
+        return lots.filtered(lambda l: l and l.product_id)
+
+    def _td_apply_lot_prices_and_create_svl(self, onec_doc_number, lot_prices, changed=False, chatter_message=None):
+        self.ensure_one()
+
+        if not self.td_is_import:
+            raise UserError(_("This action is only available for import receipts (td_is_import)."))
+
+        # 0) ensure done first -> lots + quants + moves стабільно існують
+        if self.state != "done":
+            try:
+                ctx = dict(self.env.context, skip_backorder=True, skip_immediate=True)
+                self.with_context(ctx).sudo().button_validate()
+            except Exception as e:
+                raise UserError(_("Unable to validate receipt to Done automatically. Error: %s") % (e,))
+
+        # 1) parse incoming lot prices
+        by_id = {}
+        by_name = {}
+        for item in (lot_prices or []):
+            if not isinstance(item, dict):
+                continue
+            price = item.get("price", item.get("standart_price", item.get("standard_price")))
+            if price is None:
+                continue
+
+            lot_id = item.get("lot_id")
+            if lot_id:
+                by_id[int(lot_id)] = float(price)
+                continue
+
+            lot_name = item.get("lot_name") or item.get("name")
+            if lot_name:
+                prod_id = item.get("product_id")
+                default_code = item.get("product_default_code") or item.get("default_code")
+                key = (str(lot_name).strip(), int(prod_id) if prod_id else None,
+                       str(default_code).strip() if default_code else None)
+                by_name[key] = float(price)
+
+        lots = self._td_collect_created_lots()
+        if not lots:
+            raise UserError(_("No lots/serials found on this receipt."))
+
+        # 2) Build reference tag required by TZ
+        tag = f"{onec_doc_number}/1C" + ("/changed" if changed else "")
+
+        # 3) chatter message from Public user
+        if chatter_message:
+            public_user = self._td_get_public_user()
+            author_partner = public_user.partner_id
+            self.message_post(
+                body=chatter_message,
+                author_id=author_partner.id,
+                message_type="comment",
+                subtype_xmlid="mail.mt_note",
+            )
+
+        SVL = self.env["stock.valuation.layer"].sudo()
+
+        # 4) For each lot -> find move, update lot cost, create SVL linked to move+lot
+        for lot in lots:
+            # find new_price
+            new_price = None
+            if lot.id in by_id:
+                new_price = by_id[lot.id]
+            else:
+                lot_name = (lot.name or "").strip()
+                key1 = (lot_name, lot.product_id.id, None)
+                key2 = (lot_name, None, (lot.product_id.default_code or "").strip() or None)
+                key3 = (lot_name, None, None)
+                for k in (key1, key2, key3):
+                    if k in by_name:
+                        new_price = by_name[k]
+                        break
+
+            if new_price is None:
+                continue
+
+            old_price = getattr(lot, "standart_price", 0.0) or 0.0
+            if float(new_price) == float(old_price):
+                continue
+
+            # update lot cost
+            lot.sudo().write({"standart_price": new_price})
+
+            # qty in internal (company-aware)
+            qty = lot._td_get_internal_qty(company=self.company_id)
+            if not qty:
+                continue
+
+            value_diff = (float(new_price) - float(old_price)) * float(qty)
+            if abs(value_diff) < 1e-9:
+                continue
+
+            # find related move via move lines
+            ml = self.move_line_ids.filtered(lambda l: l.lot_id.id == lot.id and l.product_id.id == lot.product_id.id)[
+                :1]
+            move = ml.move_id if ml else False
+
+            # IMPORTANT: SVL.reference is related to stock_move_id.reference in your system.
+            # So we must write reference tag into move.reference and link SVL to that move.
+            if move:
+                old_ref = move.reference or ""
+                # avoid duplication if method called twice
+                if tag not in old_ref:
+                    new_ref = tag if not old_ref else f"{old_ref} | {tag}"
+                    move.sudo().write({"reference": new_ref})
+
+            svl_vals = {
+                "product_id": lot.product_id.id,
+                "company_id": (self.company_id.id or lot.company_id.id),
+                "quantity": 0.0,
+                "value": value_diff,
+                "unit_cost": float(new_price),
+                "remaining_qty": 0.0,
+                "remaining_value": 0.0,
+                "description": _("1C GTD cost adjustment for lot %(lot)s") % {"lot": lot.name},
+                "lot_id": lot.id,
+            }
+            if move:
+                svl_vals["stock_move_id"] = move.id
+
+            SVL.create(svl_vals)
+
+        return tag
+
+    # ---------------- Public methods called by 1C integration ----------------
+
+    def td_1c_apply_gtd_first_exchange(self, onec_doc_number, lot_prices):
+        self.ensure_one()
+        self._td_apply_lot_prices_and_create_svl(
+            onec_doc_number=onec_doc_number,
+            lot_prices=lot_prices,
+            changed=False,
+            chatter_message=_("Отримані дані по ГТД з 1С"),
+        )
+        return True
+
+    def td_1c_apply_gtd_correction(self, onec_doc_number, lot_prices):
+        self.ensure_one()
+        self._td_apply_lot_prices_and_create_svl(
+            onec_doc_number=onec_doc_number,
+            lot_prices=lot_prices,
+            changed=True,
+            chatter_message=_("Перенесено коригування даних з 1С"),
+        )
+        return True
 
     # def button_validate(self):
     #     # if not self.td_is_import:

@@ -12,3 +12,4 @@ from . import purchase_order
 from . import stock_move
 from . import stock_picking_type
 from . import res_partner
+from . import stock_lot
