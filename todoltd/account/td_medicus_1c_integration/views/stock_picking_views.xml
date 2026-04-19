@@ -11,62 +11,77 @@
                 <field name="td_currency_id" invisible="not td_is_import"/>
                 <field name="td_currency_rate" invisible="not td_is_import"/>
             </xpath>
+
             <xpath expr="//field[@name='owner_id']" position="after">
                 <field name="picking_code" invisible="1"/>
                 <field name="td_type_of_trade" invisible="picking_code"/>
             </xpath>
+
             <xpath expr="//field[@name='picking_type_id']" position="before">
                 <field name="td_supplier_document" invisible="picking_code"/>
                 <field name="td_date_supplier_document" invisible="picking_code"/>
             </xpath>
+
             <xpath expr="//field[@name='move_ids_without_package']//field[@name='td_uktzed_code_id']" position="after">
                 <field name="td_currency_rate" optional="show" column_invisible="not parent.td_is_import"/>
-                <field name="td_customs_rate" optional="show" widget="percentage" column_invisible="not parent.td_is_import"/>
+                <field
+                        name="td_customs_rate"
+                        optional="show"
+                        widget="percentage"
+                        column_invisible="not parent.td_is_import"
+                />
             </xpath>
+
             <xpath expr="//field[@name='move_ids_without_package']//field[@name='td_price_subtotal']" position="after">
                 <field name="td_customs_value_good" optional="show" column_invisible="not parent.td_is_import"/>
                 <field name="td_book_value" optional="show" column_invisible="not parent.td_is_import"/>
-<!--                <field name="td_taxes" optional="show" widget="percentage" column_invisible="not parent.td_is_import"/>-->
-                <field name="td_taxes" optional="show" widget="percentage" />
+                <field name="td_taxes" optional="show" widget="percentage"/>
                 <field name="td_taxes_price" optional="show"/>
-<!--                <field name="td_taxes_price" optional="show" column_invisible="not parent.td_is_import"/>-->
-<!--                <field name="td_price_total" optional="show" column_invisible="not parent.td_is_import"/>-->
                 <field name="td_price_total" optional="show"/>
             </xpath>
-            <xpath expr="//button[@name='button_validate']" position="before">
-<!--                <button name="td_button_send_data_to_one_c" invisible="not td_is_import" string="Send data to 1C" type="object" class="btn btn-primary" data-hotkey="v"/>-->
+
+            <!-- Prepared button for import pickings -->
+            <xpath expr="//button[@name='button_validate' and contains(@class, 'oe_highlight')]" position="before">
                 <button
-                    name="td_button_send_data_to_one_c"
-                    type="object"
-                    class="btn btn-primary"
-                    data-hotkey="v"
-                    string="Prepared"
-                    invisible="not td_is_import or state in ('import','done','cancel')"
+                        name="td_button_send_data_to_one_c"
+                        type="object"
+                        class="btn btn-primary"
+                        data-hotkey="v"
+                        string="Prepared"
+                        invisible="not td_is_import or state not in ('assigned', 'confirmed')"
                 />
             </xpath>
 
-            <xpath expr="//button[@name='button_validate']" position="replace">
-                <button
-                    name="button_validate"
-                    type="object"
-                    class="btn btn-primary"
-                    string="Confirm"
-                    invisible="td_is_import or state not in ('assigned','confirmed')"
-                />
+            <!-- Standard highlighted Validate button -->
+            <xpath expr="//button[@name='button_validate' and contains(@class, 'oe_highlight')]" position="attributes">
+                <attribute name="invisible">
+                    td_is_import or state in ('draft', 'confirmed', 'done', 'cancel')
+                </attribute>
+            </xpath>
 
-                <button
-                    name="button_validate"
-                    type="object"
-                    class="btn btn-primary"
-                    string="Confirm"
-                    invisible="not td_is_import or state in ('import','done','cancel') or state not in ('assigned','confirmed')"
-                />
+            <!-- Secondary Validate button -->
+            <xpath expr="//button[@name='button_validate' and contains(@class, 'o_btn_validate')]"
+                   position="attributes">
+                <attribute name="invisible">
+                    td_is_import or state in ('waiting', 'assigned', 'done', 'cancel') or picking_type_code=='internal'
+                </attribute>
             </xpath>
 
             <xpath expr="//field[@name='state']" position="replace">
-                <field name="state" widget="statusbar" invisible="picking_type_code != 'incoming' or td_is_import" statusbar_visible="draft,assigned,done"/>
-                <field name="state" widget="statusbar" invisible="picking_type_code != 'incoming' or not td_is_import" statusbar_visible="draft,assigned,done,import"/>
+                <field
+                        name="state"
+                        widget="statusbar"
+                        invisible="picking_type_code != 'incoming' or td_is_import"
+                        statusbar_visible="draft,assigned,done"
+                />
+                <field
+                        name="state"
+                        widget="statusbar"
+                        invisible="picking_type_code != 'incoming' or not td_is_import"
+                        statusbar_visible="draft,assigned,done,import"
+                />
             </xpath>
+
             <xpath expr="//field[@name='td_total_amount']" position="before">
                 <field name="td_company_currency_id" invisible="1"/>
                 <field name="td_amount_origin_currency"/>

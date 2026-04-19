@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    
     <record id="td_view_picking_form_inherit" model="ir.ui.view">
         <field name="name">td.view.picking.form.inherit</field>
         <field name="model">stock.picking</field>
@@ -31,6 +30,35 @@
                     invisible="td_order_implementation_document != 'exp_inv'"/>
                 <field name="td_custody_act_date"
                     invisible="td_order_implementation_document != 'act_res_st'"/>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Дані для ТТН" name="td_ttn_page"
+                      invisible="picking_type_code != 'outgoing'">
+                    <group>
+                        <group string="Водій / перевізник">
+                            <field name="td_ttn_transport_type"/>
+                            <field name="td_ttn_vehicle_id"
+                                   invisible="td_ttn_transport_type != 'own'"/>
+                            <field name="td_ttn_driver_employee_id"
+                                   invisible="td_ttn_transport_type != 'own'"/>
+                            <field name="td_ttn_driver_partner_id"
+                                   invisible="td_ttn_transport_type != 'hired'"/>
+                            <field name="td_ttn_carrier_partner_id"/>
+                            <field name="td_ttn_driver_license_number"/>
+                            <field name="td_ttn_driver_forwarder"/>
+                            <field name="td_ttn_license_number"/>
+                        </group>
+
+                        <group string="Габарити та вантаж">
+                            <field name="td_ttn_places_count"/>
+                            <field name="td_ttn_gross_weight"/>
+                            <field name="td_ttn_vehicle_length" readonly="1"/>
+                            <field name="td_ttn_vehicle_width" readonly="1"/>
+                            <field name="td_ttn_vehicle_height" readonly="1"/>
+                        </group>
+                    </group>
+                </page>
             </xpath>
 
         </field>
