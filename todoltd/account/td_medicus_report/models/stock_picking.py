@@ -41,10 +41,10 @@ class StockPicking(models.Model):
     # ---------------------------------------------------------
     td_ttn_transport_type = fields.Selection(
         selection=[
-            ('own', 'Own transport'),
-            ('hired', 'Involved carrier'),
+            ('own', 'Own Vehicle'),
+            ('hired', 'Third-Party Carrier'),
         ],
-        string='Transport Type',
+        string='Transportation Type',
         default='own',
         copy=False,
     )
@@ -56,21 +56,36 @@ class StockPicking(models.Model):
         copy=False,
     )
 
+    td_ttn_hired_vehicle = fields.Char(
+        string='Vehicle',
+        copy=False,
+    )
+
     td_ttn_driver_employee_id = fields.Many2one(
         comodel_name='hr.employee',
-        string='Driver (User)',
+        string='Driver (Employee)',
         copy=False,
     )
 
     td_ttn_driver_partner_id = fields.Many2one(
         comodel_name='res.partner',
-        string='Driver (Partner)',
+        string='Driver (Contact)',
+        copy=False,
+    )
+
+    td_ttn_hired_driver = fields.Char(
+        string='Driver',
         copy=False,
     )
 
     td_ttn_carrier_partner_id = fields.Many2one(
         comodel_name='res.partner',
-        string='Carrier (Partner)',
+        string='Road Carrier',
+        copy=False,
+    )
+
+    td_ttn_hired_carrier = fields.Char(
+        string='Road Carrier',
         copy=False,
     )
 
@@ -89,36 +104,104 @@ class StockPicking(models.Model):
         copy=False,
     )
 
-    td_ttn_gross_weight = fields.Char(
+    td_ttn_gross_weight_ = fields.Float(
         string='Gross Weight (tons)',
+        # digits=(16, 3),
+        copy=False,
+    )
+
+    # td_ttn_vehicle_length = fields.Float(
+    #     string='Length, m',
+    #     digits=(16, 3),
+    #     copy=False,
+    # )
+    #
+    # td_ttn_vehicle_width = fields.Float(
+    #     string='Width, m',
+    #     digits=(16, 3),
+    #     copy=False,
+    # )
+    #
+    # td_ttn_vehicle_height = fields.Float(
+    #     string='Height, m',
+    #     digits=(16, 3),
+    #     copy=False,
+    # )
+
+    td_ttn_vehicle_dimensions_manual = fields.Boolean(
+        string='Vehicle dimensions entered manually',
+        default=False,
         copy=False,
     )
 
     td_ttn_vehicle_length = fields.Float(
         string='Length, m',
-        related='td_ttn_vehicle_id.td_body_length',
         digits=(16, 3),
+        compute='_compute_td_ttn_vehicle_dimensions',
+        inverse='_inverse_td_ttn_vehicle_dimensions',
+        store=True,
+        readonly=False,
         copy=False,
     )
 
     td_ttn_vehicle_width = fields.Float(
         string='Width, m',
-        related='td_ttn_vehicle_id.td_body_width',
         digits=(16, 3),
+        compute='_compute_td_ttn_vehicle_dimensions',
+        inverse='_inverse_td_ttn_vehicle_dimensions',
+        store=True,
+        readonly=False,
         copy=False,
     )
 
     td_ttn_vehicle_height = fields.Float(
         string='Height, m',
-        related='td_ttn_vehicle_id.td_body_height',
         digits=(16, 3),
+        compute='_compute_td_ttn_vehicle_dimensions',
+        inverse='_inverse_td_ttn_vehicle_dimensions',
+        store=True,
+        readonly=False,
         copy=False,
     )
 
     td_ttn_license_number = fields.Char(
-        string='License Number',
+        string='License Plate',
+        copy=False,
+        related='td_ttn_vehicle_id.license_plate',
+        readonly=False
+    )
+
+    td_ttn_license_number_other = fields.Char(
+        string='License Plate',
         copy=False,
     )
+
+    @api.depends(
+        'td_ttn_vehicle_id',
+        'td_ttn_vehicle_id.td_body_length',
+        'td_ttn_vehicle_id.td_body_width',
+        'td_ttn_vehicle_id.td_body_height',
+        'td_ttn_vehicle_dimensions_manual',
+    )
+    def _compute_td_ttn_vehicle_dimensions(self):
+        for rec in self:
+            if rec.td_ttn_vehicle_id and not rec.td_ttn_vehicle_dimensions_manual:
+                rec.td_ttn_vehicle_length = rec.td_ttn_vehicle_id.td_body_length
+                rec.td_ttn_vehicle_width = rec.td_ttn_vehicle_id.td_body_width
+                rec.td_ttn_vehicle_height = rec.td_ttn_vehicle_id.td_body_height
+
+    @api.onchange('td_ttn_vehicle_id')
+    def _onchange_td_ttn_vehicle_id(self):
+        for rec in self:
+            if rec.td_ttn_vehicle_id:
+                rec.td_ttn_vehicle_dimensions_manual = False
+                rec.td_ttn_vehicle_length = rec.td_ttn_vehicle_id.td_body_length
+                rec.td_ttn_vehicle_width = rec.td_ttn_vehicle_id.td_body_width
+                rec.td_ttn_vehicle_height = rec.td_ttn_vehicle_id.td_body_height
+
+    def _inverse_td_ttn_vehicle_dimensions(self):
+        for rec in self:
+            rec.td_ttn_vehicle_dimensions_manual = True
 
     @api.onchange('td_ttn_transport_type')
     def _onchange_td_ttn_transport_type(self):
@@ -132,9 +215,9 @@ class StockPicking(models.Model):
             else:
                 rec.td_ttn_driver_employee_id = False
                 rec.td_ttn_vehicle_id = False
-    #             rec.td_ttn_vehicle_length = 0.0
-    #             rec.td_ttn_vehicle_width = 0.0
-    #             rec.td_ttn_vehicle_height = 0.0
+                rec.td_ttn_vehicle_length = 0.0
+                rec.td_ttn_vehicle_width = 0.0
+                rec.td_ttn_vehicle_height = 0.0
 
     # @api.onchange('td_ttn_vehicle_id')
     # def _onchange_td_ttn_vehicle_id(self):
@@ -163,7 +246,7 @@ class StockPicking(models.Model):
 
             partner = user.work_contact_id or user.user_id.partner_id
             rec.td_ttn_carrier_partner_id = rec.company_id.partner_id if rec.company_id.partner_id else False
-            rec.td_ttn_driver_license_number = partner.td_driver_license_number if partner else False
+            rec.td_ttn_driver_license_number = user.td_driver_license_number if user else False
             rec.td_ttn_driver_forwarder = (
                 partner.full_partner_name if partner and partner.full_partner_name else user.name
             )
@@ -182,7 +265,7 @@ class StockPicking(models.Model):
                 return
 
             rec.td_ttn_carrier_partner_id = partner.commercial_partner_id
-            rec.td_ttn_driver_license_number = partner.td_driver_license_number or False
+            # rec.td_ttn_driver_license_number = partner.td_driver_license_number or False
             rec.td_ttn_driver_forwarder = partner.full_partner_name or partner.name or False
 
     def _compute_td_show_create_invoice_button(self):
@@ -351,8 +434,8 @@ class StockPicking(models.Model):
         shipping_partner = shipping_contacts[0] if shipping_contacts else order.partner_shipping_id
 
         data = {
-            'name': order.name.replace('S', ''),
-            'date': order.date_order.date().strftime('%d.%m.%Y'),
+            'name': self.name.split('/')[-1] if self.name else '',
+            'date': self.date_done.strftime('%d.%m.%Y') if self.date_done else '',
             'company_logo': self.company_id.logo,
             'warehouse_name': self.location_id.warehouse_id.name,
             'location_barcode': self.location_id.barcode,
@@ -360,7 +443,8 @@ class StockPicking(models.Model):
             'employee_name': current_user.full_partner_name or current_user.name,
             'employee_short_name': current_user.td_partner_short_name or current_user.name,
             'document': dict(self._fields['implementation_document']._description_selection(self.env)).get(self.implementation_document, ''),
-            'delivery_address': order.partner_shipping_id.contact_address_complete,
+            'delivery_address': self.warehouse_address_id.contact_address_complete or self.warehouse_address_id.name,
+            # 'delivery_address': order.partner_shipping_id.contact_address_complete,
             'delivery_method': partner.property_delivery_carrier_id.name,
             'recipient_name': shipping_partner.full_partner_name or shipping_partner.name,
             'return_recipient_name': self.location_dest_id.warehouse_id.name,
@@ -378,14 +462,14 @@ class StockPicking(models.Model):
             'amount_account_in_words': '',
             'amount_in_words': self.get_amount_in_words(),
             'amount_tax_in_words': self._amount_to_words_ua(self.td_total_tax),
-            'tax_guide_name': order.td_tax_guide_id.name,
+            'tax_guide_name': order.td_tax_guide_id.name if order and order.td_tax_guide_id else '',
         }
 
         line_num = 0
         for move in self.move_ids_without_package:
             product = move.product_id
             base_product_name = product.description_sale or product.name
-            manufacturer = product.td_manufacturer_directory_res_id.name
+            manufacturer = product.td_manufacturer_directory_res_id.name if product.td_manufacturer_directory_res_id else ''
             default_code = product.default_code or ''
             move_line_ids = move.move_line_ids
 
@@ -453,6 +537,17 @@ class StockPicking(models.Model):
         medical_manager_id = company.td_medical_warehouse_manager_id
         transport_type = dict(self._fields['td_ttn_transport_type']._description_selection(self.env)).get(self.td_ttn_transport_type, '')
 
+        document = self.td_invoice_for_pick_id
+        if not document:
+            posted_invoices = order.invoice_ids.filtered(lambda i: i.state == 'posted')
+            document = posted_invoices[-1] if posted_invoices else None
+
+        if self.implementation_document != 'exp_inv':
+            document = self
+
+        document_name = document.name if document else ''
+        document_date = document.invoice_date if document and self.implementation_document == 'exp_inv' else document.date_done
+
         data = {
             'waybill_number': self.name.split('/')[-1],
             'waybill_date': format_date(self.env, self.date_done, date_format='dd MMMM yyyy p.'),
@@ -466,13 +561,13 @@ class StockPicking(models.Model):
             'place_of_issue': self.warehouse_address_id.state_id.name,
             'warehouse_manager': warehouse_manager_id.td_partner_short_name or warehouse_manager_id.name,
             'medical_warehouse_manager': medical_manager_id.td_partner_short_name or medical_manager_id.name,
-            'accompanying_document': self.td_invoice_for_pick_id.name.split('/')[-1],
-            'accompanying_document_date': self.td_invoice_for_pick_id.invoice_date.strftime('%d.%m.%Y'),
+            'accompanying_document': document_name.split('/')[-1] if document_name else '',
+            'accompanying_document_date': document_date.strftime('%d.%m.%Y') if document_date else '',
             'accompanying_document_full_date': format_date(
                 self.env,
-                self.td_invoice_for_pick_id.invoice_date,
+                document_date,
                 date_format='dd MMMM yyyy p.'
-            ),
+            ) if document_date else '',
             'total_amount': self._amount_to_words_ua(self.td_total_amount),
             'tax_amount': self._amount_to_words_ua(self.td_total_tax),
             'total': self.td_total_amount,
@@ -487,9 +582,9 @@ class StockPicking(models.Model):
                 'driver': self.td_ttn_driver_employee_id.name if self.td_ttn_driver_employee_id else '',
                 'driver_license': self.td_ttn_driver_license_number if self.td_ttn_driver_license_number else '',
                 # 'places_count': self.td_ttn_places_count if self.td_ttn_places_count else '',
-                # 'gross_weight': self.td_ttn_gross_weight if self.td_ttn_gross_weight else '',
+                # 'gross_weight': self.td_ttn_gross_weight_ if self.td_ttn_gross_weight_ else '',
                 'places_count': self._amount_to_words_ua(float(self.td_ttn_places_count), count=True) if self.td_ttn_places_count else '',
-                'gross_weight': self._amount_to_words_ua(float(self.td_ttn_gross_weight), weight=True) if self.td_ttn_gross_weight else '',
+                'gross_weight': self._amount_to_words_ua(float(self.td_ttn_gross_weight_), weight=True) if self.td_ttn_gross_weight_ else '',
                 'driver_forwarder': self.td_ttn_driver_forwarder if self.td_ttn_driver_forwarder else '',
                 'vehicle_length': self.td_ttn_vehicle_length if self.td_ttn_vehicle_length else '',
                 'vehicle_width': self.td_ttn_vehicle_width if self.td_ttn_vehicle_width else '',
@@ -1045,10 +1140,49 @@ class StockPicking(models.Model):
         doc_num = self.name.split('/')[-1] if self.name else ''
         document_number = doc_num.lstrip('0') or '0'
 
-        commission_date = '01.01.25'
-        commission_number = '02'
-        company_ceo_name = company.td_vice_president_id.td_partner_short_name if company.td_vice_president_id else ''
-        commission_head = company.td_head_medical_equipment_sales_id.td_partner_short_name if company.td_head_medical_equipment_sales_id else ''
+        order_bom = getattr(sale_order, 'td_mrp_bom_id', None) if sale_order else None
+
+        if order_bom and order_bom.td_order_date:
+            commission_date = order_bom.td_order_date.strftime('%d.%m.%Y')
+        else:
+            commission_date = '01.01.25'
+
+        if order_bom and order_bom.td_order_number:
+            commission_number = str(order_bom.td_order_number)
+        else:
+            commission_number = '02'
+
+        company_ceo_name = (
+            company.td_vice_president_id.td_partner_short_name or company.td_vice_president_id.name
+        ) if company.td_vice_president_id else ''
+
+        if order_bom and order_bom.td_head_commission:
+            head_employee = order_bom.td_head_commission
+        else:
+            head_employee = company.td_head_medical_equipment_sales_id
+
+        commission_head = head_employee.td_partner_short_name if head_employee else ''
+        commission_head_job_title = head_employee.job_title if head_employee else ''
+
+        commission_members_bom = getattr(order_bom, 'td_commission_members', None) if order_bom else None
+        if commission_members_bom:
+            commission_members = [
+                {
+                    'job_title': m.job_title or '',
+                    'name': m.td_partner_short_name or m.name or '',
+                }
+                for m in commission_members_bom
+            ]
+        else:
+            commission_members = []
+            for emp_field in ('td_warehouse_manager_id', 'td_medical_equipment_engineer_id'):
+                emp = getattr(company, emp_field, None)
+                if emp:
+                    commission_members.append({
+                        'job_title': emp.job_title or '',
+                        'name': emp.td_partner_short_name or emp.name or '',
+                    })
+
         commission_medical_manager = company.td_warehouse_manager_id.td_partner_short_name if company.td_warehouse_manager_id else ''
         commission_medical_engineer = company.td_medical_equipment_engineer_id.td_partner_short_name if company.td_medical_equipment_engineer_id else ''
         commission_pharmacy_manager = company.td_medical_warehouse_manager_id.td_partner_short_name if company.td_medical_warehouse_manager_id else ''
@@ -1063,10 +1197,12 @@ class StockPicking(models.Model):
             'agreement_date': agreement_date,
             'document_number': document_number,
             'document_date': document_date,
-            'corresponding_account': '',
+            'corresponding_account': '28.1',
             'commission_date': commission_date,
             'commission_number': commission_number,
             'commission_head': commission_head,
+            'commission_head_job_title': commission_head_job_title,
+            'commission_members': commission_members,
             'commission_medical_manager': commission_medical_manager,
             'commission_pharmacy_manager': commission_pharmacy_manager,
             'commission_medical_engineer': commission_medical_engineer,
@@ -1077,12 +1213,19 @@ class StockPicking(models.Model):
         if not sale_order:
             return data
 
+        move_lots_by_product = {}
+        for move in self.move_ids_without_package:
+            lot_ids = getattr(move, 'td_lot_ids', None)
+            lot_names = ', '.join(lot_ids.mapped('name')) if lot_ids else ''
+            if move.product_id.id not in move_lots_by_product:
+                move_lots_by_product[move.product_id.id] = lot_names
+
         product_sequence = 0
         for order_line in sale_order.order_line:
             product = order_line.product_id
             product_sequence += 1
 
-            product_price_unit = order_line.price_unit or product.list_price or 0.0
+            product_price_unit = getattr(order_line, 'td_untaxed_price_unit', None) or order_line.price_unit or 0.0
             product_quantity = order_line.product_uom_qty
             product_price_subtotal = product_price_unit * product_quantity
 
@@ -1094,19 +1237,6 @@ class StockPicking(models.Model):
             if hasattr(product, 'td_uktzed_code_id') and product.td_uktzed_code_id:
                 product_uktzed = product.td_uktzed_code_id.code or product.td_uktzed_code_id.name or ''
 
-            data['products'].append({
-                'sequence': product_sequence,
-                'catalog_number': product.default_code or '',
-                'product_name': product.name or '',
-                'series': '',
-                'ukt_zed': product_uktzed,
-                'tax_rate': '%.0f%%' % product_tax_rate,
-                'uom': order_line.product_uom.name or '',
-                'quantity': product_quantity,
-                'price_unit': product_price_unit,
-                'price_subtotal': product_price_subtotal,
-            })
-
             bom = self.env['mrp.bom'].search([
                 '|',
                 ('product_id', '=', product.id),
@@ -1114,6 +1244,30 @@ class StockPicking(models.Model):
                 ('product_id', '=', False),
                 ('product_tmpl_id', '=', product.product_tmpl_id.id)
             ], limit=1)
+
+            product_series = move_lots_by_product.get(product.id, '')
+
+            if not product_series and bom and bom.bom_line_ids:
+                all_component_series = [
+                    move_lots_by_product[comp_line.product_id.id]
+                    for comp_line in bom.bom_line_ids
+                    if comp_line.product_id.id in move_lots_by_product
+                    and move_lots_by_product[comp_line.product_id.id]
+                ]
+                product_series = ', '.join(all_component_series)
+
+            data['products'].append({
+                'sequence': product_sequence,
+                'catalog_number': product.default_code or '',
+                'product_name': product.name or '',
+                'series': product_series,
+                'ukt_zed': product_uktzed,
+                'tax_rate': '%.0f%%' % product_tax_rate,
+                'uom': order_line.product_uom.name or '',
+                'quantity': product_quantity,
+                'price_unit': product_price_unit,
+                'price_subtotal': product_price_subtotal,
+            })
 
             if bom and bom.bom_line_ids:
                 components = []
@@ -1125,7 +1279,7 @@ class StockPicking(models.Model):
                     line_num += 1
                     component = bom_line.product_id
 
-                    price_unit = component.list_price or 0.0
+                    price_unit = getattr(bom_line, 'price_unit', None) or component.list_price or 0.0
                     quantity = bom_line.product_qty
                     price_subtotal = price_unit * quantity
                     total_price_sum += price_unit
@@ -1139,11 +1293,13 @@ class StockPicking(models.Model):
                     if hasattr(component, 'td_uktzed_code_id') and component.td_uktzed_code_id:
                         uktzed = component.td_uktzed_code_id.code or component.td_uktzed_code_id.name or ''
 
+                    component_series = move_lots_by_product.get(component.id, '')
+
                     components.append({
                         'sequence': line_num,
                         'catalog_number': component.default_code or '',
                         'product_name': component.name or '',
-                        'series': '',
+                        'series': component_series,
                         'ukt_zed': uktzed,
                         'tax_rate': '%.0f%%' % tax_rate,
                         'uom': bom_line.product_uom_id.name or '',
@@ -1156,7 +1312,7 @@ class StockPicking(models.Model):
                     'sequence': product_sequence,
                     'catalog_number': product.default_code or '',
                     'product_name': product.name,
-                    'series': '',
+                    'series': product_series,
                     'ukt_zed': product_uktzed,
                     'tax_rate': '%.0f%%' % product_tax_rate,
                     'uom': order_line.product_uom.name or '',
@@ -1174,7 +1330,7 @@ class StockPicking(models.Model):
                     'sequence': product_sequence,
                     'catalog_number': product.default_code or '',
                     'product_name': product.name,
-                    'series': '',
+                    'series': product_series,
                     'ukt_zed': product_uktzed,
                     'tax_rate': '%.0f%%' % product_tax_rate,
                     'uom': order_line.product_uom.name or '',
@@ -1185,7 +1341,7 @@ class StockPicking(models.Model):
                         'sequence': line_num,
                         'catalog_number': product.default_code or '',
                         'product_name': product.name or '',
-                        'series': '',
+                        'series': product_series,
                         'ukt_zed': product_uktzed,
                         'tax_rate': '%.0f%%' % product_tax_rate,
                         'uom': order_line.product_uom.name or '',
