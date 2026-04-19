@@ -73,3 +73,12 @@ class SaleOrderLine(models.Model):
                 # Trigger the Scheduler for Pickings
                 pickings_to_confirm.action_confirm()
         return True
+
+    # def _prepare_invoice_line(self, **optional_values):
+    #     res = super()._prepare_invoice_line(**optional_values)
+    #
+    #     if self.product_uom_qty and self.price_subtotal:
+    #         exact_price = self.price_subtotal / self.product_uom_qty
+    #         res['price_unit'] = exact_price
+    #
+    #     return res

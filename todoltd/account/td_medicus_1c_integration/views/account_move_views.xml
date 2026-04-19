@@ -5,27 +5,31 @@
         <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field invisible="not td_order_id" name="td_order_id" readonly="1"/>
+            </xpath>
+
             <xpath expr="//button[@name='button_draft']" position="after">
                 <field name="td_tax_invoice_id" invisible="1"/>
                 <field name="td_tax_invoice_ids" invisible="1"/>
-                <button name="action_create_td_tax_invoice" type="object" string="Create Td Tax Invoice" invisible="td_tax_invoice_id or state != 'posted' or td_budget_funds"/>
+                <button invisible="td_tax_invoice_id or state != 'posted' or td_budget_funds" name="action_create_td_tax_invoice" string="Create Td Tax Invoice" type="object"/>
             </xpath>
             <xpath expr="//div[@name='button_box']" position="inside">
-                <button name="action_open_td_tax_invoice"
-                        class="oe_stat_button"
+                <button class="oe_stat_button"
                         icon="fa-pencil-square-o"
-                        type="object"
                         invisible="not td_tax_invoice_id or td_advance_payment_method != 'delivered'"
+                        name="action_open_td_tax_invoice"
+                        type="object"
                 >
                     <div class="o_stat_info">
-                        <span class="o_stat_text"><field name="td_tax_invoice_name" readonly="1" nolabel="1"/></span>
+                        <span class="o_stat_text"><field name="td_tax_invoice_name" nolabel="1" readonly="1"/></span>
                     </div>
                 </button>
-                <button name="action_open_td_tax_invoice"
-                        class="oe_stat_button"
+                <button class="oe_stat_button"
                         icon="fa-pencil-square-o"
+                        invisible="not td_tax_invoice_ids or td_advance_payment_method not in ('percentage', 'fixed')"
+                        name="action_open_td_tax_invoice"
                         type="object"
-                        invisible="not td_tax_invoice_ids or td_advance_payment_method not in  ('percentage', 'fixed')"
                 >
                     <div class="o_stat_info">
                         <span class="o_stat_text">Tax Invoices</span>
@@ -42,30 +46,28 @@
                 <field name="td_margin_percent" optional="show"/>
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']//list//field[@name='price_subtotal']" position="before">
-                <field name="td_paid_price" optional="show" column_invisible="parent.td_advance_payment_method != 'delivered'"/>
+                <field column_invisible="parent.td_advance_payment_method != 'delivered'" name="td_paid_price" optional="show"/>
             </xpath>
             <xpath expr="//group[@class='oe_subtotal_footer']" position="replace">
                 <group class="oe_subtotal_footer"
                     invisible="move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt') or payment_state == 'invoicing_legacy'">
 
-                    <field name="td_paid_invoice" invisible="1"/>
+                    <field invisible="1" name="td_paid_invoice"/>
 
-                    <field name="tax_totals" widget="account-tax-totals-field" nolabel="1" colspan="2"
+                    <field colspan="2" invisible="td_paid_invoice" name="tax_totals" nolabel="1"
                            readonly="state != 'draft' or (move_type not in ('in_invoice', 'in_refund', 'in_receipt') and not quick_edit_mode)"
-                           invisible="td_paid_invoice"
+                           widget="account-tax-totals-field"
                     />
-                    <field name="td_tax_totals" widget="account-tax-totals-field" nolabel="1" colspan="2"
+                    <field colspan="2" invisible="not td_paid_invoice" name="td_tax_totals" nolabel="1"
                            readonly="state != 'draft' or (move_type not in ('in_invoice', 'in_refund', 'in_receipt') and not quick_edit_mode)"
-                           invisible="not td_paid_invoice"
+                           widget="account-tax-totals-field"
                     />
 
-                    <field name="invoice_payments_widget" colspan="2" nolabel="1" widget="payment"/>
-                    <field name="amount_residual" class="oe_subtotal_footer_separator" invisible="state == 'draft'"/>
+                    <field colspan="2" name="invoice_payments_widget" nolabel="1" widget="payment"/>
+                    <field class="oe_subtotal_footer_separator" invisible="state == 'draft'" name="amount_residual"/>
                 </group>
-                <field name="invoice_outstanding_credits_debits_widget"
-                    class="oe_invoice_outstanding_credits_debits py-3"
-                    colspan="2" nolabel="1" widget="payment"
-                    invisible="state != 'posted' or not invoice_has_outstanding"/>
+                <field class="oe_invoice_outstanding_credits_debits py-3"
+                    colspan="2" invisible="state != 'posted' or not invoice_has_outstanding" name="invoice_outstanding_credits_debits_widget" nolabel="1" widget="payment"/>
             </xpath>
             <xpath expr="//button[@id='account_invoice_payment_btn']" position="attributes">
                 <attribute name="invisible">1</attribute>

@@ -30,7 +30,8 @@ class SaleOrder(models.Model):
     )
     td_tax_invoice_ids = fields.Many2many(
         comodel_name='td.tax.invoice',
-        compute='_compute_td_tax_invoices'
+        compute='_compute_td_tax_invoices',
+        store=True
     )
     td_tax_invoice_state = fields.Selection(
         compute='_compute_td_tax_invoice_state',
@@ -396,3 +397,105 @@ class SaleOrder(models.Model):
             'domain': [('id', 'in', self.td_tax_invoice_ids.ids)],
             'target': 'current',
         }
+
+    def td_get_co_data(self, template_xml=None):
+        """Генерує report_data без KeyError для шаблонів."""
+        self.ensure_one()
+        company = self.company_id
+        bank = company.bank_ids[:1] or None
+
+        def safe_get(obj, attr):
+            try:
+                return getattr(obj, attr, '') if obj else ''
+            except Exception:
+                return ''
+
+        company_info = {
+            'name': safe_get(company, 'name'),
+            'email': safe_get(company, 'email'),
+            'phone': safe_get(company, 'phone'),
+            'vat': safe_get(company, 'vat'),
+            'registry': safe_get(company, 'company_registry'),
+            'address': safe_get(getattr(company, 'partner_id', None), 'contact_address'),
+            'account_position': safe_get(safe_get(company, 'partner_id').property_account_position_id, 'name'),
+            'bank_account': safe_get(bank, 'acc_number'),
+            'bank_bic': safe_get(safe_get(bank, 'bank_id'), 'bic'),
+            'bank_name': safe_get(safe_get(bank, 'bank_id'), 'name'),
+            'sertificate_number': safe_get(company, 'td_sertificate_number'),
+        }
+
+        for key in company._fields:
+            if key.startswith('td_') and key not in company_info:
+                company_info[key] = safe_get(company, key)
+
+        company_info['logo'] = safe_get(company, 'logo')
+        company_info['logo_web'] = safe_get(company, 'logo_web')
+
+        report_data = {'company_info': company_info}
+
+        for key in self._fields:
+            report_data[key] = safe_get(self, key)
+
+        for key in ['co_date', 'create_date', 'write_date']:
+            report_data[key] = safe_get(self, key)
+
+        
+        missing_fields = {}
+        
+        required_fields = [
+            'co_number', 
+            'co_validity_period', 
+            'co_delivery_period', 
+            'co_delivery_terms',
+            'co_manager', 
+            'co_manager_number', 
+            'consignee', 
+            'consignee_code',
+            'partner_name', 
+            'vendor_name', 
+            'recipient_name', 
+            'buyer', 
+            'shipper',
+            'amount_in_words', 
+            'tax_guide_name'
+        ]
+        
+        for field in required_fields:
+            if field not in report_data:
+                if field == 'co_number':
+                    missing_fields[field] = safe_get(self, 'name')
+                elif field == 'co_validity_period':
+                    if self.validity_date:
+                        from datetime import date
+                        today = date.today()
+                        if self.validity_date > today:
+                            missing_fields[field] = (self.validity_date - today).days
+                        else:
+                            missing_fields[field] = 0
+                    else:
+                        missing_fields[field] = safe_get(self.company_id, 'quotation_validity_days') or 30
+                elif field == 'co_delivery_period':
+                    missing_fields[field] = 7
+                elif field == 'co_delivery_terms':
+                    missing_fields[field] = 'EXW'
+                elif field == 'co_manager':
+                    missing_fields[field] = safe_get(self, 'user_id.name') or 'Менеджер'
+                elif field == 'co_manager_number':
+                    missing_fields[field] = ''
+                elif field == 'consignee':
+                    missing_fields[field] = safe_get(self.partner_id, 'name')
+                elif field == 'consignee_code':
+                    missing_fields[field] = safe_get(self.partner_id, 'company_registry') or safe_get(self.partner_id, 'vat')
+                elif field in ['partner_name', 'vendor_name', 'recipient_name', 'buyer', 'shipper']:
+                    missing_fields[field] = safe_get(self.partner_id, 'name')
+                elif field == 'amount_in_words':
+                    amount_total = safe_get(self, 'amount_total')
+                    missing_fields[field] = self._get_amount_in_words(float(amount_total) if amount_total else 0)
+                elif field == 'tax_guide_name':
+                    missing_fields[field] = safe_get(self.td_tax_guide_id, 'name')
+        
+        report_data.update(missing_fields)
+
+        report_data['groups'] = self.order_line.filtered(lambda l: not l.display_type)
+
+        return report_data

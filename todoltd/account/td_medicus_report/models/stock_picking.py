@@ -196,11 +196,7 @@ class StockPicking(models.Model):
         
         partner = self.partner_id
         current_user = self.env.user.partner_id
-        # shipping_contacts = order.partner_shipping_id.child_ids.filtered(
-        #     lambda p: p.type == 'contact'
-        # )
-
-        # Task N14224
+        
         shipping_contacts = order.partner_shipping_id.child_ids.filtered(
             lambda p: p.type == 'contact' and p.td_is_counterparty_physical_person
         )
@@ -238,35 +234,82 @@ class StockPicking(models.Model):
             'tax_guide_name': order.td_tax_guide_id.name,
         }
 
+        lenses_category_keywords = ('лінз',)
+
         line_num = 0
         for move in self.move_ids_without_package:
-            line_num += 1
-            
-            line_data = {
-                'sequence': line_num,
-                'product_name': move.product_id.description_sale or move.product_id.name,
-                'product_manufacturer': move.product_id.td_manufacturer_directory_res_id.name,
-                'quantity': move.product_uom_qty,
-                'customs_value': 0,
-                'price_untaxed': move.td_untaxed_price_unit,
-                'price_unit': move.td_price_unit,
-                'account_price': 0,
-                'price_subtotal': move.td_price_subtotal,
-                'price_total': move.td_price_total,
-                'account_total': 0,
-                'markup_coefficient': 0,
-                'default_code': move.product_id.default_code or '',
-                'product_serial_numbers': [
-                    l.name for l in move.mapped('move_line_ids').mapped('lot_id')
-                ],
-                'registration_certificate': '',
-                'quality_certificate': '',
-                'expiration_dates': [
-                    d.strftime('%d.%m.%Y') if d else None for d in move.mapped('move_line_ids').mapped('expiration_date')
-                ],
-                'stock_inventory': move.move_line_ids.mapped('location_id.complete_name'),
-            }
-            data['lines'].append(line_data)
+            product = move.product_id
+            base_product_name = product.description_sale or product.name
+            manufacturer = product.td_manufacturer_directory_res_id.name
+            default_code = product.default_code or ''
+            move_line_ids = move.move_line_ids
+
+            categ_name = (product.categ_id.complete_name or '').lower()
+            is_lenses = any(kw in categ_name for kw in lenses_category_keywords)
+
+            if is_lenses:
+                line_num += 1
+                line_data = {
+                    'sequence': line_num,
+                    'product_name': base_product_name,
+                    'product_manufacturer': manufacturer,
+                    'quantity': move.product_uom_qty,
+                    'customs_value': 0,
+                    'price_untaxed': move.td_untaxed_price_unit,
+                    'price_unit': move.td_price_unit,
+                    'account_price': 0,
+                    'price_subtotal': move.td_price_subtotal,
+                    'price_total': move.td_price_total,
+                    'account_total': 0,
+                    'markup_coefficient': 0,
+                    'default_code': default_code,
+                    'product_serial_numbers': [
+                        lot.name for lot in move_line_ids.mapped('lot_id') if lot.name
+                    ],
+                    'registration_certificate': '',
+                    'quality_certificate': '',
+                    'expiration_dates': [
+                        d.strftime('%d.%m.%Y') if d else None
+                        for d in move_line_ids.mapped('expiration_date')
+                    ],
+                    'stock_inventory': move_line_ids.mapped('location_id.complete_name'),
+                }
+                data['lines'].append(line_data)
+            else:
+                for ml in move_line_ids:
+                    line_num += 1
+                    serial_name = ml.lot_id.name if ml.lot_id else ''
+                    product_name = base_product_name
+                    if serial_name:
+                        product_name = '%s (%s)' % (base_product_name, serial_name)
+
+                    exp_date = (
+                        ml.expiration_date.strftime('%d.%m.%Y')
+                        if ml.expiration_date else None
+                    )
+                    qty = ml.quantity
+
+                    line_data = {
+                        'sequence': line_num,
+                        'product_name': product_name,
+                        'product_manufacturer': manufacturer,
+                        'quantity': qty,
+                        'customs_value': 0,
+                        'price_untaxed': move.td_untaxed_price_unit,
+                        'price_unit': move.td_price_unit,
+                        'account_price': 0,
+                        'price_subtotal': move.td_untaxed_price_unit * qty,
+                        'price_total': move.td_price_unit * qty,
+                        'account_total': 0,
+                        'markup_coefficient': 0,
+                        'default_code': default_code,
+                        'product_serial_numbers': [serial_name] if serial_name else [],
+                        'registration_certificate': '',
+                        'quality_certificate': '',
+                        'expiration_dates': [exp_date] if exp_date else [],
+                        'stock_inventory': ml.location_id.complete_name if ml.location_id else '',
+                    }
+                    data['lines'].append(line_data)
         
         return data
 
@@ -395,29 +438,53 @@ class StockPicking(models.Model):
         for line in self.move_ids_without_package:
             if not line.product_id:
                 continue
-            line_num += 1
-            location = line.move_orig_ids.mapped('location_dest_id') or line.location_dest_id
+            location = line.location_id
+            location_dest = line.location_dest_id
             move_line_ids = line.mapped('move_line_ids')
-            
-            line_data = {
-                'sequence': line_num,
-                'product_name': line.product_id.description_sale,
-                'product_code': line.product_id.default_code or '',
-                'product_serial_numbers': [
-                    l.name for l in move_line_ids.mapped('lot_id')]
-                    if move_line_ids else [],
-                'product_catalog_number': line.product_id.default_code or '',
-                'product_manufacturer': line.product_id.td_manufacturer_directory_res_id.name or '',
-                'storage_conditions': location.mapped('td_condition_ids.name'),
-                'quantity': line.quantity,
-                'uom': line.product_uom.name,
-                'expiration_dates': [
-                    d.strftime('%d.%m.%Y') if d else None for d in move_line_ids.mapped('expiration_date') 
-                ] if move_line_ids else [],
-                'price_unit': line.td_untaxed_price_unit,
-                'price_subtotal': line.td_price_subtotal,
-            }
-            data['lines'].append(line_data)
+
+            if move_line_ids:
+                for ml in move_line_ids:
+                    line_num += 1
+                    qty = ml.quantity
+                    serial_name = ml.lot_id.name if ml.lot_id else ''
+                    exp_date = (
+                        ml.expiration_date.strftime('%d.%m.%Y')
+                        if ml.expiration_date else None
+                    )
+
+                    line_data = {
+                        'sequence': line_num,
+                        'product_name': line.product_id.description_sale,
+                        'product_code': line.product_id.default_code or '',
+                        'product_serial_numbers': [serial_name] if serial_name else [],
+                        'product_catalog_number': line.product_id.default_code or '',
+                        'product_manufacturer': line.product_id.td_manufacturer_directory_res_id.name or '',
+                        'storage_conditions': location.mapped('td_condition_ids.name'),
+                        'storage_conditions_dest': location_dest.mapped('td_condition_ids.name'),
+                        'quantity': qty,
+                        'uom': line.product_uom.name,
+                        'expiration_dates': [exp_date] if exp_date else [],
+                        'price_unit': line.td_untaxed_price_unit,
+                        'price_subtotal': line.td_untaxed_price_unit * qty,
+                    }
+                    data['lines'].append(line_data)
+            else:
+                line_num += 1
+                line_data = {
+                    'sequence': line_num,
+                    'product_name': line.product_id.description_sale,
+                    'product_code': line.product_id.default_code or '',
+                    'product_serial_numbers': [],
+                    'product_catalog_number': line.product_id.default_code or '',
+                    'product_manufacturer': line.product_id.td_manufacturer_directory_res_id.name or '',
+                    'storage_conditions': location.mapped('td_condition_ids.name'),
+                    'quantity': line.quantity,
+                    'uom': line.product_uom.name,
+                    'expiration_dates': [],
+                    'price_unit': line.td_untaxed_price_unit,
+                    'price_subtotal': line.td_price_subtotal,
+                }
+                data['lines'].append(line_data)
         
         return data
 
