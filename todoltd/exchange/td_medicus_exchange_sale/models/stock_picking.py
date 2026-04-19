@@ -17,17 +17,20 @@ class TdStockPickingExchange(models.Model):
         self.ensure_one()
         methods = []
 
-        if self.picking_type_code == 'incoming' and self.td_is_import and self.state == 'import' and self.purchase_id:
-            methods.append(self.env.ref('td_medicus_exchange_sale.stock_picking_incoming_import_prepared_odoo_1c'))
-        elif (self.picking_type_code == 'incoming' and self.state == 'done'):
-            if self.purchase_id:
-                methods.append(self.env.ref('td_medicus_exchange_sale.stock_picking_incoming_odoo_1c'))
-            elif self.sale_id and self.implementation_document == 'act_res_st':
-                methods.append(self.env.ref('td_medicus_exchange_sale.act_return_from_safekeeping_odoo_1c'))
-            elif self.sale_id and self.return_id and self.implementation_document == 'exp_inv':
-                methods.append(self.env.ref('td_medicus_exchange_sale.stock_picking_outgoing_return_odoo_1c'))
-            elif self.implementation_document == 'move':
-                methods.append(self.env.ref('td_medicus_exchange_sale.return_products_relocation_odoo_1c'))
+        if self.picking_type_code == 'incoming':
+            if self.td_is_import:
+                if (self.state == 'import' and self.purchase_id) or self.state == 'done':
+                    methods.append(self.env.ref('td_medicus_exchange_sale.stock_picking_incoming_import_prepared_odoo_1c'))
+            else:
+                if self.state == 'done':
+                    if self.purchase_id:
+                        methods.append(self.env.ref('td_medicus_exchange_sale.stock_picking_incoming_odoo_1c'))
+                    elif self.implementation_document == 'act_res_st' and self.return_ids:
+                        methods.append(self.env.ref('td_medicus_exchange_sale.act_return_from_safekeeping_odoo_1c'))
+                    elif self.implementation_document == 'exp_inv' and self.sale_id and self.return_id:
+                        methods.append(self.env.ref('td_medicus_exchange_sale.stock_picking_outgoing_return_odoo_1c'))
+                    elif self.implementation_document == 'move':
+                        methods.append(self.env.ref('td_medicus_exchange_sale.return_products_relocation_odoo_1c'))
         elif (self.picking_type_code == 'outgoing' and self.state == 'done'):
             if self.sale_id:
                 if self.implementation_document == 'act_res_st':
@@ -52,7 +55,7 @@ class TdStockPickingExchange(models.Model):
             'td_medicus_exchange_sale.act_return_from_safekeeping_odoo_1c':   self.ata_exchange_get_data_incoming_safekeeping,
             'td_medicus_exchange_sale.products_relocation_odoo_1c':           self.ata_exchange_get_data_outgoing_relocation,
             'td_medicus_exchange_sale.return_products_relocation_odoo_1c':    self.ata_exchange_get_data_incoming,
-            'td_medicus_exchange_sale.stock_picking_incoming_import_prepared_odoo_1c': self.ata_exchange_get_data_incoming_main,
+            'td_medicus_exchange_sale.stock_picking_incoming_import_prepared_odoo_1c': self.ata_exchange_get_data_incoming_import_prepared,
         }
 
         method_xml_id = method.get_xml_id() if method else None
@@ -67,6 +70,7 @@ class TdStockPickingExchange(models.Model):
     def ata_exchange_get_data_incoming_main(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
         return [{
             **record.ata_exchange_get_data_incoming(method, as_node, **kwargs),
+            "import_prepared":    kwargs.get("import_prepared", False),
             "agreement":          record.purchase_id.td_agreement_id.exchange_data,
             "purchase_id":        record.purchase_id.id,
             "purchase_date":      self._str_empty(record.purchase_id.date_order),
@@ -74,6 +78,11 @@ class TdStockPickingExchange(models.Model):
             "partner_doc_date":   self._str_empty(record.td_date_supplier_document),
             "type_of_trade":      record.purchase_id.td_type_of_trade if record.purchase_id else record.td_type_of_trade,
         } for record in self]
+
+    def ata_exchange_get_data_incoming_import_prepared(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
+        kwargs["import_prepared"] = True
+
+        return self.ata_exchange_get_data_incoming_main(method, as_node, **kwargs)
 
     def ata_exchange_get_data_incoming_safekeeping(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
         kwargs["compute_doc_id"] = True
@@ -136,6 +145,9 @@ class TdStockPickingExchange(models.Model):
             "name":             self._str_empty(self.name),
             "date":             self._str_empty(self.date),
             "date_done":        self._str_empty(self.date_done),
+            "date_plan":        self._str_empty(self.scheduled_date),
+            "currency":         self.td_currency_id.exchange_data,
+            "currency_rate":    self.td_currency_rate,
             "comment":          Markup(self.note or '').striptags(),
             "partner":          self.partner_id.exchange_data,            
             "warehouse_code":   self.location_dest_id.warehouse_id.id,
