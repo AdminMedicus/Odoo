@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="td_sale_order_template_view_form" model="ir.ui.view">
+        <field name="name">td.sale.order.template.form</field>
+        <field name="model">sale.order.template</field>
+        <field name="inherit_id" ref="sale_management.sale_order_template_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='so_confirmation']" position="inside">
+                <field name="td_completion_act_check"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

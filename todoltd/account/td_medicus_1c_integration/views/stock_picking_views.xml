@@ -35,9 +35,10 @@
             <xpath expr="//field[@name='move_ids_without_package']//field[@name='td_price_subtotal']" position="after">
                 <field name="td_customs_value_good" optional="show" column_invisible="not parent.td_is_import"/>
                 <field name="td_book_value" optional="show" column_invisible="not parent.td_is_import"/>
-                <field name="td_taxes" optional="show" widget="percentage"/>
-                <field name="td_taxes_price" optional="show"/>
-                <field name="td_price_total" optional="show"/>
+                <field name="td_taxes_ids" widget="many2many_tags" optional="show"/>
+<!--                <field name="td_taxes" optional="show" widget="percentage" readonly="1"/>-->
+                <field name="td_taxes_price" optional="show" readonly="1"/>
+                <field name="td_price_total" optional="show" readonly="1"/>
             </xpath>
 
             <!-- Prepared button for import pickings -->

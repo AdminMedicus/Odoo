@@ -50,7 +50,7 @@
                 <field name="td_show_create_invoice" invisible="1"/>
                 <button name="action_confirm" data-hotkey="q"
                         string="Confirm" class="btn-primary" type="object" context="{'validate_analytic': True}"
-                        invisible="state != 'draft'"/>
+                        invisible="state not in ['draft','sent']"/>
                 <button id="create_invoice" name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice"
                         type="action" class="btn-primary" data-hotkey="q"
                         invisible="invoice_status != 'to invoice' or td_show_create_invoice"/>
