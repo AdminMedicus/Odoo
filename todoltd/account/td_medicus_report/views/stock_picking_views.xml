@@ -50,8 +50,6 @@
                                    invisible="td_ttn_transport_type != 'own'"/>
                             <field name="td_ttn_driver_license_number"
                                    invisible="td_ttn_transport_type != 'own'"/>
-                            <field name="td_ttn_driver_forwarder"
-                                   invisible="td_ttn_transport_type != 'own'"/>
 
                             <!-- Third-Party Carrier -->
                             <field name="td_ttn_hired_vehicle"
@@ -64,15 +62,14 @@
                                    invisible="td_ttn_transport_type != 'hired'"/>
                             <field name="td_ttn_driver_license_number"
                                    invisible="td_ttn_transport_type != 'hired'"/>
-                            <field name="td_ttn_driver_forwarder"
-                                   invisible="td_ttn_transport_type != 'hired'"/>
 
+                            <field name="td_ttn_driver_forwarder"/>
                             <field name="td_ttn_driver_partner_id" invisible="1"/>
                         </group>
 
                         <group string="Dimensions and Cargo">
                             <field name="td_ttn_places_count"/>
-                            <field name="td_ttn_gross_weight_"/>
+                            <field name="td_ttn_gross_weight"/>
                             <field name="td_ttn_vehicle_length" readonly="td_ttn_transport_type == 'own'"/>
                             <field name="td_ttn_vehicle_width" readonly="td_ttn_transport_type == 'own'"/>
                             <field name="td_ttn_vehicle_height" readonly="td_ttn_transport_type == 'own'"/>
