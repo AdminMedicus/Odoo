@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="td_view_company_form_responsible" model="ir.ui.view">
+        <field name="name">td.view.company.form.responsible</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+
+            <group name="social_media" position="after">
+                <group name="responsible_persons" string="Responsible Persons">
+                    <field name="td_warehouse_manager_id"/>
+                    <field name="td_medical_warehouse_manager_id"/>
+                    <field name="td_responsible_manager_id"/>
+                    <field name="td_president_id"/>
+                </group>
+            </group>
+
+        </field>
+    </record>
+</odoo>
