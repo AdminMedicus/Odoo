@@ -73,6 +73,20 @@
         <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
     </record>
 
+    <record id="action_report_warehouse_order" model="ir.actions.report">
+        <field name="name">Для складу (з серіями)</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_warehouse_order</field>
+        <field name="report_file">td_medicus_report.report_warehouse_order</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('picking_type_code', 'in', ['outgoing','internal'])
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
     <!-- <record id="action_report_waybill" model="ir.actions.report">
         <field name="name">ТТН</field>
         <field name="model">stock.picking</field>
@@ -96,7 +110,8 @@
         <field name="binding_model_id" ref="stock.model_stock_picking"/>
         <field name="binding_type">report</field>
         <field name="domain" eval="[
-            ('td_invoice_for_pick_id', '!=', False)
+            ('td_invoice_for_pick_id', '!=', False),
+            ('picking_type_code', 'in', ['outgoing', 'internal']),
         ]"/>
         <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat_landscape"/>
     </record>
@@ -122,6 +137,21 @@
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">td_medicus_report.report_print_custody_return_act</field>
         <field name="report_file">td_medicus_report.report_print_custody_return_act</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('picking_type_code', '=', 'incoming'),
+            ('implementation_document', '=', 'act_res_st')
+        ]"/>
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
+    <record id="action_report_custody_balance" model="ir.actions.report">
+        <field name="name">Акт звірки залишків на відповідальному зберіганні</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_print_custody_balance</field>
+        <field name="report_file">td_medicus_report.report_print_custody_balance</field>
         <field name="binding_model_id" ref="stock.model_stock_picking"/>
         <field name="binding_type">report</field>
         <field name="domain" eval="[
@@ -188,6 +218,21 @@
         <!-- <field name="domain" eval="[
             ('state', '=', 'sale'),
         ]"/> -->
+        <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
+    </record>
+
+    <record id="action_report_vendor_refund_act" model="ir.actions.report">
+        <field name="name">Накладна на повернення</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">td_medicus_report.report_print_vendor_refund_act</field>
+        <field name="report_file">td_medicus_report.report_print_vendor_refund_act</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="domain" eval="[
+            ('picking_type_code', 'in', ['outgoing', 'internal']),
+            ('state', '=', 'done')
+        ]"/>
         <field name="paperformat_id" ref="td_medicus_report.td_medicus_paperformat"/>
     </record>
 

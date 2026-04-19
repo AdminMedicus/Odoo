@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Stock Lot Form View Extension -->
+    <record id="view_production_lot_form_td_warranty_extend" model="ir.ui.view">
+        <field name="name">stock.lot.form.td.warranty</field>
+        <field name="model">stock.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_warranties" 
+                        type="object" 
+                        class="oe_stat_button" 
+                        icon="fa-shield"
+                        >
+                    <field name="td_warranty_count" widget="statinfo" string="Warranties"/>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Warranties" name="warranties">
+                    <field name="td_warranty_ids">
+                        <list>
+                            <field name="name"/>
+                            <field name="warranty_type"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="status"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+            <field name="company_id" position="after">
+                <field name="td_has_warranty" invisible="1"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Stock Lot List View for Warranty Selection -->
+    <record id="view_stock_lot_list_warranty_selection" model="ir.ui.view">
+        <field name="name">stock.lot.list.warranty.selection</field>
+        <field name="model">stock.lot</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <list string="Select Serial Numbers" create="false" edit="false" delete="false" multi_edit="1">
+                <header>
+                    <button name="action_confirm_serial_selection" 
+                            type="object" 
+                            string="Link to Warranty" 
+                            class="btn-primary"
+                            context="{'warranty_line_id': context.get('warranty_line_id')}"/>
+                </header>
+                <field name="name" decoration-bf="1"/>
+                <field name="product_id" readonly="1"/>
+                <field name="product_qty" optional="show"/>
+                <field name="location_id" optional="show"/>
+                <field name="td_last_delivery_partner_id" optional="show" string="Last Delivered To"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View for Warranty Serial Selection -->
+    <record id="view_stock_lot_search_warranty_selection" model="ir.ui.view">
+        <field name="name">stock.lot.search.warranty.selection</field>
+        <field name="model">stock.lot</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <search string="Search Serial Numbers">
+                <field name="name" string="Serial Number" 
+                       filter_domain="['|', ('name', 'ilike', self), ('ref', 'ilike', self)]"/>
+                <field name="product_id"/>
+                <field name="td_last_delivery_partner_id"/>
+                
+                <filter string="On Hand" 
+                        name="on_hand" 
+                        domain="[('product_qty', '>', 0)]"/>
+                <filter string="Partner's Serials" 
+                        name="partner_filter" 
+                        domain="[('td_last_delivery_partner_id', '=', context.get('warranty_partner_id'))]"
+                        help="Show only serial numbers delivered to this partner"/>
+                <filter string="At Any Customer" 
+                        name="at_customer" 
+                        domain="[('quant_ids.location_id.usage','=','customer'), ('quant_ids.quantity', '>', 0)]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter name="group_by_product" 
+                            string="Product" 
+                            domain="[]" 
+                            context="{'group_by': 'product_id'}"/>
+                    <filter name="group_by_partner" 
+                            string="Last Delivered To" 
+                            domain="[]" 
+                            context="{'group_by': 'td_last_delivery_partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_stock_lot_warranty_selection" model="ir.actions.act_window">
+        <field name="name">Select Serial Numbers</field>
+        <field name="res_model">stock.lot</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="td_medicus_warranty.view_stock_lot_search_warranty_selection"/>
+        <field name="target">new</field>
+    </record>
+
+    <record id="open_view_stock_lot_list_warranty_selection" model="ir.actions.act_window.view">
+        <field name="view_mode">list</field>
+        <field name="act_window_id" ref="td_medicus_warranty.action_stock_lot_warranty_selection"/>
+        <field name="view_id" ref="td_medicus_warranty.view_stock_lot_list_warranty_selection"/>
+    </record>
+    
+</odoo>
