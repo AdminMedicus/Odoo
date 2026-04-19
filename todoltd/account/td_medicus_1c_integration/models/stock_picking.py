@@ -1,4 +1,4 @@
-from odoo import models, fields, api, _
+from odoo import models, fields, api, _, Command
 from odoo.exceptions import UserError
 
 MAX_ATTEMPTS = 10
@@ -67,6 +67,13 @@ class StockPicking(models.Model):
     td_total_amount = fields.Monetary(
         compute='_compute_td_total_amount',
         currency_field="td_company_currency_id",
+    )
+
+    td_vendor_bill_ids = fields.One2many(
+        comodel_name="account.move",
+        inverse_name="td_picking_id",
+        string="Vendor Bills",
+        readonly=True,
     )
 
     def td_button_send_data_to_one_c(self):
@@ -335,9 +342,122 @@ class StockPicking(models.Model):
                     except Exception:
                         pass
 
-    def button_validate(self):
-        # if not self.td_is_import:
+    def _td_get_purchase_journal(self, company):
+        journal = self.env["account.journal"].search(
+            [("type", "=", "purchase"), ("company_id", "=", company.id)],
+            limit=1,
+        )
+        if not journal:
+            raise UserError(
+                _(
+                    "No Purchase journal found for company %s"
+                ) % company.display_name)
+        return journal
 
+    def _td_get_expense_account(self, product, company):
+        account = (
+                product.property_account_expense_id
+                or product.categ_id.property_account_expense_categ_id
+        )
+        if not account:
+            raise UserError(
+                _("No expense account for product %s (company %s)")
+                % (product.display_name, company.display_name)
+            )
+        return account
+
+    def _td_create_vendor_bill_from_receipt(self):
+        AccountMove = self.env["account.move"]
+
+        for picking in self:
+            if picking.picking_type_id.code != "incoming":
+                continue
+            if picking.state != "done":
+                continue
+
+            existing = AccountMove.search([
+                ("td_picking_id", "=", picking.id),
+                ("move_type", "=", "in_invoice"),
+                ("state", "!=", "cancel"),
+            ], limit=1)
+            if existing:
+                continue
+
+            moves = picking.move_ids_without_package.filtered(
+                lambda m: m.product_id and m.purchase_line_id
+                          and sum(m.move_line_ids.mapped("qty_done")) > 0
+            )
+            if not moves:
+                continue
+
+            purchase_orders = moves.mapped("purchase_line_id.order_id").filtered(lambda po: po)
+            if not purchase_orders:
+                continue
+
+            if len(purchase_orders) > 1:
+                raise UserError(
+                    _("This receipt contains lines from multiple "
+                      "Purchase Orders. Please split receipts "
+                      "or adjust logic."))
+
+            po = purchase_orders[0]
+            company = picking.company_id
+            journal = self._td_get_purchase_journal(company)
+
+            invoice_vals = po._prepare_invoice()
+
+            invoice_vals.update({
+                "move_type": "in_invoice",
+                "journal_id": journal.id,
+                "td_picking_id": picking.id,
+                "invoice_origin": picking.name,
+            })
+
+            if picking.td_supplier_document:
+                invoice_vals["ref"] = picking.td_supplier_document
+            if picking.td_date_supplier_document:
+                invoice_vals["invoice_date"] = picking.td_date_supplier_document
+                invoice_vals["date"] = picking.td_date_supplier_document
+
+            line_cmds = []
+            for move in moves:
+                pol = move.purchase_line_id
+                product = move.product_id
+
+                taxes = getattr(pol, "taxes_id", self.env["account.tax"])
+                account = self._td_get_expense_account(product, company)
+
+                qty_done = sum(move.move_line_ids.mapped("qty_done"))
+
+                line_vals = {
+                    "product_id": product.id,
+                    "name": pol.name or product.display_name,
+                    "quantity": qty_done,
+                    "price_unit": pol.price_unit,
+                    "account_id": account.id,
+                }
+
+                if "product_uom_id" in self.env["account.move.line"]._fields:
+                    line_vals["product_uom_id"] = move.product_uom.id
+                elif "product_uom" in self.env["account.move.line"]._fields:
+                    line_vals["product_uom"] = move.product_uom.id
+
+                if taxes:
+                    line_vals["tax_ids"] = [Command.set(taxes.ids)]
+
+                if "purchase_line_id" in self.env["account.move.line"]._fields:
+                    line_vals["purchase_line_id"] = pol.id
+
+                line_cmds.append(Command.create(line_vals))
+
+            invoice_vals["invoice_line_ids"] = line_cmds
+
+            bill = AccountMove.create(invoice_vals)
+
+            if bill.state != "posted":
+                bill.action_post()
+
+    def button_validate(self):
         res = super().button_validate()
 
         if not self.sale_id:
@@ -346,19 +466,41 @@ class StockPicking(models.Model):
 
         for picking in self:
             for move in picking.move_ids:
-
                 for lot in move.lot_ids:
-                    uktzed_line = move.move_line_ids.filtered(
-                        lambda lin: lin.lot_id.id == lot.id
-                    )
+                    uktzed_line = move.move_line_ids.filtered(lambda lin: lin.lot_id.id == lot.id)
                     move.lot_ids.write({
-                        "td_uktzed_code_id": (
-                            uktzed_line.td_uktzed_code_id.id
-                            if uktzed_line else False
-                        )
+                        "td_uktzed_code_id": (uktzed_line.td_uktzed_code_id.id if uktzed_line else False)
                     })
-                    move.td_uktzed_code_id = (
-                        uktzed_line.td_uktzed_code_id.id
-                        if uktzed_line else False
-                    )
+                    move.td_uktzed_code_id = (uktzed_line.td_uktzed_code_id.id if uktzed_line else False)
+
+        self._td_create_vendor_bill_from_receipt()
+
         return res
+
+    # def button_validate(self):
+    #     # if not self.td_is_import:
+    #
+    #     res = super().button_validate()
+    #
+    #     if not self.sale_id:
+    #         self._assign_serial_ref()
+    #         self._create_lot_ids_for_move()
+    #
+    #     for picking in self:
+    #         for move in picking.move_ids:
+    #
+    #             for lot in move.lot_ids:
+    #                 uktzed_line = move.move_line_ids.filtered(
+    #                     lambda lin: lin.lot_id.id == lot.id
+    #                 )
+    #                 move.lot_ids.write({
+    #                     "td_uktzed_code_id": (
+    #                         uktzed_line.td_uktzed_code_id.id
+    #                         if uktzed_line else False
+    #                     )
+    #                 })
+    #                 move.td_uktzed_code_id = (
+    #                     uktzed_line.td_uktzed_code_id.id
+    #                     if uktzed_line else False
+    #                 )
+    #     return res

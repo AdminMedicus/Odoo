@@ -55,6 +55,7 @@
             <field name="name">Product_Odoo_1C</field>
             <field name="description">Product (to 1C)</field>
             <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
             <field name="model_id" ref="product.model_product_product" />
             <field name="model_name">product.product</field>
         </record>
@@ -69,6 +70,7 @@
             <field name="name">Partner_Odoo_1C</field>
             <field name="description">Partner (to 1C)</field>
             <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
             <field name="model_id" ref="model_res_partner" />
             <field name="model_name">res.partner</field>
         </record>
@@ -83,6 +85,7 @@
             <field name="name">Agreement_Odoo_1C</field>
             <field name="description">Agreement (to 1C)</field>
             <field name="type">outgoing_data</field>
+            <field name="start_over_cron" eval="True" />
             <field name="model_id" ref="td_agreement.model_td_agreement" />
             <field name="model_name">td.agreement</field>
         </record>
@@ -137,6 +140,15 @@
             <field name="model_name">res.partner</field>
         </record>
 
+        <record id="inner_types_res_partner_address_delivery" model="ata.exchange.method">
+            <field name="name">AddressDelivery</field>
+            <field name="description">Address delivery</field>
+            <field name="type">inner_types</field>
+            <field name="model_id" ref="model_res_partner"/>
+            <field name="model_name">res.partner</field>
+        </record>
+
+        <!-- agreement -->
         <record id="inner_types_agreement_type" model="ata.exchange.method">
             <field name="name">AgreementType</field>
             <field name="description">Agreement type</field>

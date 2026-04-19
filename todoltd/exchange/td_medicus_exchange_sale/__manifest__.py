@@ -1,6 +1,6 @@
 {
     'name': 'Medicus Exchange (Sale)',
-    'version': '18.0.1.4.8',
+    'version': '18.0.1.4.11',
     'summary': 'Sale/stock module for exchange integration',
     'description': """
         Sale/stock module for exchange integration with Medicus system.
@@ -13,6 +13,7 @@
         'ata_exchange_v4',
         'td_medicus_exchange_base',
         'td_medicus_1c_integration',
+        'td_medicus_agreement',
         'stock',
         'account',
         'td_contact_sale',
