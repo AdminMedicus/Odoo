@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
+from werkzeug.urls import url_encode
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
@@ -189,35 +190,58 @@ class StockPicking(models.Model):
         """
         self.ensure_one()
         order = self.sale_id
-        delivery_datetime_utc = self.date_done
+        delivery_datetime_utc = self.date_deadline or self.date_done
         user_tz = self.env.user.tz or 'UTC'
         delivery_datetime = fields.Datetime.context_timestamp(self.with_context(tz=user_tz), delivery_datetime_utc)
         
         partner = self.partner_id
         current_user = self.env.user.partner_id
+        # shipping_contacts = order.partner_shipping_id.child_ids.filtered(
+        #     lambda p: p.type == 'contact'
+        # )
+
+        # Task N14224
         shipping_contacts = order.partner_shipping_id.child_ids.filtered(
-            lambda p: p.type == 'contact'
+            lambda p: p.type == 'contact' and p.td_is_counterparty_physical_person
         )
+
         shipping_partner = shipping_contacts[0] if shipping_contacts else order.partner_shipping_id
-        
+        # barcode_params = url_encode({
+        #     'barcode_type': 'Code128',
+        #     'value': self.location_id.barcode,
+        #     'width': 400,
+        #     'height': 200,
+        # })
+
         data = {
             'name': order.name.replace('S', ''),
             'date': order.date_order.date().strftime('%d.%m.%Y'),
+            'company_logo': self.company_id.logo,
             'warehouse_name': self.location_id.warehouse_id.name,
+            'location_barcode': self.location_id.barcode,
+            # 'warehouse_barcode': f'/report/barcode/?{barcode_params}',
             'partner_name': partner.full_partner_name or partner.name,
             'employee_name': current_user.full_partner_name or current_user.name,
+            'employee_short_name': current_user.td_partner_short_name or current_user.name,
             'document': dict(self._fields['implementation_document']._description_selection(self.env)).get(self.implementation_document, ''),
-            'delivery_address': order.partner_shipping_id.street,
+            'delivery_address': order.partner_shipping_id.contact_address_complete,
             'delivery_method': partner.property_delivery_carrier_id.name,
             'recipient_name': shipping_partner.full_partner_name or shipping_partner.name,
+            'return_recipient_name': self.location_dest_id.warehouse_id.name,
+            'return_manager': self.env.user.full_partner_name or self.env.user.name or '',
             'recipient_phone': shipping_partner.phone,
             'delivery_time': delivery_datetime.strftime('%H:%M'),
             'delivery_date': delivery_datetime.strftime('%d.%m.%Y'),
             'lines': [],
+            'amount_account_untaxed': 0,
             'amount_untaxed': self.td_total_without_tax,
+            'amount_account_tax': 0,
             'amount_tax': self.td_total_tax,
+            'amount_account_total': 0,
             'amount_total': self.td_total_amount,
+            'amount_account_in_words': '',
             'amount_in_words': self.get_amount_in_words(),
+            'amount_tax_in_words': self._amount_to_words_ua(self.td_total_tax),
             'tax_guide_name': order.td_tax_guide_id.name,
         }
 
@@ -230,14 +254,20 @@ class StockPicking(models.Model):
                 'product_name': move.product_id.description_sale or move.product_id.name,
                 'product_manufacturer': move.product_id.td_manufacturer_directory_res_id.name,
                 'quantity': move.product_uom_qty,
+                'customs_value': 0,
                 'price_untaxed': move.td_untaxed_price_unit,
                 'price_unit': move.td_price_unit,
+                'account_price': 0,
                 'price_subtotal': move.td_price_subtotal,
                 'price_total': move.td_price_total,
+                'account_total': 0,
+                'markup_coefficient': 0,
                 'default_code': move.product_id.default_code or '',
                 'product_serial_numbers': [
                     l.name for l in move.mapped('move_line_ids').mapped('lot_id')
                 ],
+                'registration_certificate': '',
+                'quality_certificate': '',
                 'expiration_dates': [
                     d.strftime('%d.%m.%Y') if d else None for d in move.mapped('move_line_ids').mapped('expiration_date')
                 ],
@@ -320,6 +350,12 @@ class StockPicking(models.Model):
         medical_manager_id = company.td_medical_warehouse_manager_id
         client_partner = self.td_parent_partner_id
         shipper_partner = self.partner_id
+        partner_name = (
+            client_partner.parent_id.full_partner_name or
+            client_partner.parent_id.name or
+            client_partner.full_partner_name or
+            client_partner.name 
+        )
         
         data = {
             'company': {
@@ -341,7 +377,7 @@ class StockPicking(models.Model):
                 'warehouse_address': self.warehouse_address_id.contact_address_complete or self.warehouse_address_id.name
             },
             'partner': {
-                'name': client_partner.parent_id.full_partner_name or client_partner.full_partner_name,
+                'name': partner_name,
                 'registry': client_partner.company_registry,
                 'street': client_partner.parent_id.contact_address_complete,
                 'fisical_address': shipper_partner.contact_address_complete,
@@ -349,7 +385,7 @@ class StockPicking(models.Model):
             },
             'lines': [],
             'act_number': self.name.split('/')[-1],
-            'act_date': self.td_custody_act_date.strftime('%d.%m.%Y'),
+            'act_date': self.td_custody_act_date.strftime('%d.%m.%Y') if self.td_custody_act_date else self.date_done.strftime('%d.%m.%Y'),
             'agreement_number': '',
             'agreement_date': '',
             'transfer_title': 'Акт передачі майна на відповідальне зберігання № ',
@@ -370,7 +406,7 @@ class StockPicking(models.Model):
             if not line.product_id:
                 continue
             line_num += 1
-            location = self.location_id
+            location = line.move_orig_ids.mapped('location_id') or line.location_id
             move_line_ids = line.mapped('move_line_ids')
             
             line_data = {
@@ -382,8 +418,7 @@ class StockPicking(models.Model):
                     if move_line_ids else [],
                 'product_catalog_number': line.product_id.default_code or '',
                 'product_manufacturer': line.product_id.td_manufacturer_directory_res_id.name or '',
-                # 'storage_conditions': location.mapped('td_condition_ids.name'),
-                'storage_conditions': line.move_orig_ids.mapped('location_id.td_condition_ids.name'),
+                'storage_conditions': location.mapped('td_condition_ids.name'),
                 'quantity': line.quantity,
                 'uom': line.product_uom.name,
                 'expiration_dates': [
@@ -410,6 +445,12 @@ class StockPicking(models.Model):
         client_partner = self.td_parent_partner_id
         shipper_partner = self.partner_id
         warehouse_manager_id = company.td_warehouse_manager_id
+        partner_name = (
+            client_partner.parent_id.full_partner_name or
+            client_partner.parent_id.name or
+            client_partner.full_partner_name or
+            client_partner.name 
+        )
         
         data = {
             'company': {
@@ -424,10 +465,11 @@ class StockPicking(models.Model):
                 'warehouse_manager': warehouse_manager_id.td_partner_short_name or warehouse_manager_id.name if warehouse_manager_id else '',
             },
             'partner': {
-                'name': client_partner.parent_id.full_partner_name or client_partner.full_partner_name,
+                'name': partner_name,
                 'street': client_partner.parent_id.contact_address_complete or client_partner.contact_address_complete,
                 'registry': client_partner.company_registry,
-                'fisical_address': shipper_partner.contact_address_complete,
+                'fisical_address': self.warehouse_address_id.contact_address_complete,
+                # 'fisical_address': shipper_partner.contact_address_complete,
                 'executant_name': shipper_partner.full_partner_name or shipper_partner.display_name,
             },
             'lines': [],
@@ -537,6 +579,7 @@ class StockPicking(models.Model):
                 if doc_name not in documents_dict:
                     documents_dict[doc_name] = {
                         'document_name': doc_name,
+                        'document_date': sale_order.date_order.strftime('%d.%m.%Y'),
                         'agreement_number': sale_order.td_agreement_id.agreement_number if sale_order.td_agreement_id else '',
                         'agreement_date': sale_order.td_agreement_id.start_date.strftime('%d.%m.%Y') if sale_order.td_agreement_id and sale_order.td_agreement_id.start_date else '',
                         'lines': [],
@@ -611,6 +654,7 @@ class StockPicking(models.Model):
         for move in self.move_ids_without_package:
             line_num += 1
             move_line_ids = move.mapped('move_line_ids')
+            location = move.move_orig_ids.mapped('location_id') or move.location_id
             
             line_data = {
                 'sequence': line_num,
@@ -622,7 +666,7 @@ class StockPicking(models.Model):
                     for d in move_line_ids.mapped('expiration_date')
                 ] if move_line_ids else [],
                 # 'storage_conditions': move.location_id.mapped('td_condition_ids.name'),
-                'storage_conditions': move.move_orig_ids.mapped('location_id.td_condition_ids.name'),
+                'storage_conditions': location.mapped('td_condition_ids.name'),
                 'product_name': move.product_id.description_sale or move.product_id.name,
                 'product_manufacturer': move.product_id.td_manufacturer_directory_res_id.name or '',
                 'uom': move.product_uom.name,
@@ -654,7 +698,7 @@ class StockPicking(models.Model):
         
         payment_partner = None
         if sale_order and sale_order.partner_invoice_id and sale_order.partner_invoice_id != vendor_partner:
-            agreement = sale_order.partner_invoice_id.td_agreement_id
+            agreement = sale_order.td_agreement_id
             payment_partner = {
                 'name': sale_order.partner_invoice_id.full_partner_name or sale_order.partner_invoice_id.name,
                 'street': sale_order.partner_invoice_id.contact_address_complete or '',
@@ -736,14 +780,11 @@ class StockPicking(models.Model):
                 elif ml.expiration_date:
                     expiration_dates.append(ml.expiration_date.strftime('%d.%m.%Y'))
             
-            storage_conditions = move.move_orig_ids.mapped('location_id.td_condition_ids.name') if move.move_orig_ids else []
+            location = move.location_id
+            storage_conditions = location.mapped('td_condition_ids.name')
             
-            supplier_doc_number = ''
-            supplier_doc_date = ''
-            if hasattr(move, 'td_supplier_document'):
-                supplier_doc_number = move.td_supplier_document or ''
-            if hasattr(move, 'td_date_supplier_document') and move.td_date_supplier_document:
-                supplier_doc_date = move.td_date_supplier_document.strftime('%d.%m.%Y')
+            supplier_doc_number = self.td_supplier_document or ''
+            supplier_doc_date = self.td_date_supplier_document.strftime('%d.%m.%Y') if self.td_date_supplier_document else ''
             
             line_data = {
                 'sequence': line_num,
@@ -765,3 +806,176 @@ class StockPicking(models.Model):
             data['lines'].append(line_data)
         
         return data
+
+    def td_get_completion_act_data(self):
+        """
+        Preparation of data for the completion act report
+        """
+        self.ensure_one()
+        
+        company = self.company_id
+        partner = self.partner_id
+        sale_order = self.sale_id
+        
+        agreement = sale_order.td_agreement_id if sale_order else None
+        agreement_name = agreement.name if agreement else ''
+        agreement_number = agreement.agreement_number if agreement else ''
+        agreement_date = agreement.start_date.strftime('%d.%m.%Y') if agreement and agreement.start_date else ''
+        
+        document_date = self.date_done.strftime('%d.%m.%Y') if self.date_done else ''
+        doc_num = self.name.split('/')[-1] if self.name else ''
+        document_number = doc_num.lstrip('0') or '0'
+        
+        commission_date = '01.01.25'
+        commission_number = '02'
+        company_ceo_name = company.td_vice_president_id.td_partner_short_name if company.td_vice_president_id else ''
+        commission_head = company.td_head_medical_equipment_sales_id.td_partner_short_name if company.td_head_medical_equipment_sales_id else ''
+        commission_medical_manager = company.td_warehouse_manager_id.td_partner_short_name if company.td_warehouse_manager_id else ''
+        commission_medical_engineer = company.td_medical_equipment_engineer_id.td_partner_short_name if company.td_medical_equipment_engineer_id else ''
+        commission_pharmacy_manager = company.td_medical_warehouse_manager_id.td_partner_short_name if company.td_medical_warehouse_manager_id else ''
+        
+        data = {
+            'company_name': company.partner_id.full_partner_name or company.name,
+            'company_registry': company.company_registry or '',
+            'company_ceo_name': company_ceo_name,
+            'partner_name': partner.full_partner_name or partner.name,
+            'agreement_name': agreement_name,
+            'agreement_number': agreement_number,
+            'agreement_date': agreement_date,
+            'document_number': document_number,
+            'document_date': document_date,
+            'corresponding_account': '', # Додати номер!!!
+            'commission_date': commission_date,
+            'commission_number': commission_number,
+            'commission_head': commission_head,
+            'commission_medical_manager': commission_medical_manager,
+            'commission_pharmacy_manager': commission_pharmacy_manager,
+            'commission_medical_engineer': commission_medical_engineer,
+            'products': [],
+            'documents': [],
+        }
+        
+        if not sale_order:
+            return data
+        
+        product_sequence = 0
+        for order_line in sale_order.order_line:
+            product = order_line.product_id
+            product_sequence += 1
+            
+            product_price_unit = order_line.price_unit or product.list_price or 0.0
+            product_quantity = order_line.product_uom_qty
+            product_price_subtotal = product_price_unit * product_quantity
+            
+            product_tax_rate = 0.0
+            if product.taxes_id:
+                product_tax_rate = product.taxes_id[0].amount if product.taxes_id else 0.0
+            
+            product_uktzed = ''
+            if hasattr(product, 'td_uktzed_code_id') and product.td_uktzed_code_id:
+                product_uktzed = product.td_uktzed_code_id.code or product.td_uktzed_code_id.name or ''
+            
+            data['products'].append({
+                'sequence': product_sequence,
+                'catalog_number': product.default_code or '',
+                'product_name': product.name or '',
+                'series': '',
+                'ukt_zed': product_uktzed,
+                'tax_rate': '%.0f%%' % product_tax_rate,
+                'uom': order_line.product_uom.name or '',
+                'quantity': product_quantity,
+                'price_unit': product_price_unit,
+                'price_subtotal': product_price_subtotal,
+            })
+            
+            bom = self.env['mrp.bom'].search([
+                '|',
+                ('product_id', '=', product.id),
+                '&',
+                ('product_id', '=', False),
+                ('product_tmpl_id', '=', product.product_tmpl_id.id)
+            ], limit=1)
+            
+            if bom and bom.bom_line_ids:
+                components = []
+                line_num = 0
+                total_price_sum = 0.0
+                total_sum = 0.0
+                
+                for bom_line in bom.bom_line_ids:
+                    line_num += 1
+                    component = bom_line.product_id
+                    
+                    price_unit = component.list_price or 0.0
+                    quantity = bom_line.product_qty
+                    price_subtotal = price_unit * quantity
+                    total_price_sum += price_unit
+                    total_sum += price_subtotal
+                    
+                    tax_rate = 0.0
+                    if component.taxes_id:
+                        tax_rate = component.taxes_id[0].amount if component.taxes_id else 0.0
+                    
+                    uktzed = ''
+                    if hasattr(component, 'td_uktzed_code_id') and component.td_uktzed_code_id:
+                        uktzed = component.td_uktzed_code_id.code or component.td_uktzed_code_id.name or ''
+                    
+                    components.append({
+                        'sequence': line_num,
+                        'catalog_number': component.default_code or '',
+                        'product_name': component.name or '',
+                        'series': '',
+                        'ukt_zed': uktzed,
+                        'tax_rate': '%.0f%%' % tax_rate,
+                        'uom': bom_line.product_uom_id.name or '',
+                        'quantity': quantity,
+                        'price_unit': price_unit,
+                        'price_subtotal': price_subtotal,
+                    })
+                
+                data['documents'].append({
+                    'sequence': product_sequence,
+                    'catalog_number': product.default_code or '',
+                    'product_name': product.name,
+                    'series': '',
+                    'ukt_zed': product_uktzed,
+                    'tax_rate': '%.0f%%' % product_tax_rate,
+                    'uom': order_line.product_uom.name or '',
+                    'quantity': product_quantity,
+                    'price_unit': product_price_unit,
+                    'price_subtotal': product_price_subtotal,
+                    'lines': components,
+                    'total_price': total_price_sum,
+                    'total': total_sum,
+                })
+            else:
+                line_num = 1
+                
+                data['documents'].append({
+                    'sequence': product_sequence,
+                    'catalog_number': product.default_code or '',
+                    'product_name': product.name,
+                    'series': '',
+                    'ukt_zed': product_uktzed,
+                    'tax_rate': '%.0f%%' % product_tax_rate,
+                    'uom': order_line.product_uom.name or '',
+                    'quantity': product_quantity,
+                    'price_unit': product_price_unit,
+                    'price_subtotal': product_price_subtotal,
+                    'lines': [{
+                        'sequence': line_num,
+                        'catalog_number': product.default_code or '',
+                        'product_name': product.name or '',
+                        'series': '',
+                        'ukt_zed': product_uktzed,
+                        'tax_rate': '%.0f%%' % product_tax_rate,
+                        'uom': order_line.product_uom.name or '',
+                        'quantity': product_quantity,
+                        'price_unit': product_price_unit,
+                        'price_subtotal': product_price_subtotal,
+                    }],
+                    'total': product_price_subtotal,
+                })
+        
+        return data
+

@@ -188,7 +188,7 @@
                 <tr>
                     <td>Фіз. адреса: <span t-esc="report_data['recipient_physical_address']"/></td>
                 </tr>
-                <tr t-if="is_show_warehouse_address">
+                <tr>
                     <td>
                         <strong>Місце складання:</strong>
                     </td>
@@ -346,30 +346,114 @@
                 </t>
             </table>
         </div>
+        <div class="row mb-1">
+            <table class="td_zero_border" width="100%">
+                <tr>
+                    <td rowspan="4" style="width: 2%"/>
+                    <td rowspan="4" style="vertical-align: top; width: 12%">
+                        <strong>Місце складання:</strong><br/>
+                    </td>
+                    <td>
+                        <span t-esc="report_data['vendor_physical_address']"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </template>
 
     <template id="td_report_header_2">
         <div class="row mb-2">
-            <div>
+            <div t-att-class="'col-' + ('7' if not is_return else '8')">
                 <div style="font-size: 9px; line-height: 1.3;">
                     <strong>
-                        Замовлення № 
+                        <t t-if="is_return">Повернення з переміщення № </t>
+                        <t t-else="">Замовлення № </t>
                         <span t-esc="report_data['name']"/> від 
                         <span t-esc="report_data['date']"/>
                     </strong><br/>
-                    <strong t-if="not is_warehouse_order">Склад: <span t-esc="report_data['warehouse_name']"/></strong><br/>
+                    <strong t-if="not is_warehouse_order and not is_return">Склад: <span t-esc="report_data['warehouse_name']"/></strong><br/>
+                    <strong t-if="is_return">Прийняв: <span t-esc="report_data['return_recipient_name']"/></strong><br/>
+                    <strong t-if="is_return">Повернув: <span t-esc="report_data['return_manager']"/></strong><br/>
                     <strong>Клієнт: <span t-esc="report_data['partner_name']"/></strong><br/>
-                    <strong t-if="not is_warehouse_order">Співробітник: <span t-esc="report_data['employee_name']"/></strong><br/>
-                    <strong t-if="not is_warehouse_order">Замовлення для док.: <span t-esc="report_data['document']"/></strong><br/>
-                    <strong t-if="not is_warehouse_order">Адреса доставки: 
+                    <strong t-if="not is_warehouse_order and not is_return">Співробітник: <span t-esc="report_data['employee_name']"/></strong><br/>
+                    <strong t-if="not is_warehouse_order and not is_return">Замовлення для док.: <span t-esc="report_data['document']"/></strong><br/>
+                    <strong t-if="not is_warehouse_order and not is_return">Адреса доставки: 
                         <span t-esc="report_data['delivery_address']"/>. Доставка: 
                         <span t-esc="report_data['delivery_method']"/>, контакти: 
                         <span t-esc="report_data['recipient_name']"/> <span t-esc="report_data['recipient_phone']"/>, 
                         час: <span t-esc="report_data['delivery_time']"/> дата відвантаження: 
                         <span t-esc="report_data['delivery_date']"/>
                     </strong><br/>
-                    <strong t-if="not is_warehouse_order">Підстава: </strong>
+                    <strong t-if="not is_warehouse_order and not is_return">Підстава: </strong>
                 </div>
+            </div>
+            <t t-if="not is_return">
+                <div class="col-3">
+                    <t t-set="barcode_value" t-value="report_data.get('location_barcode', '')"/>
+                    <div class="text-center">
+                        <t t-if="barcode_value">
+                            <div t-out="barcode_value" t-options="{'widget': 'barcode', 'symbology': 'Code128', 'width': 200, 'height': 60, 'humanreadable': 1}"/>
+                        </t>
+                    </div>
+                </div>
+            </t>
+            <div class="text-end" t-att-class="'col-' + ('2' if not is_return else '4')">
+                <!-- <t t-if="not is_return">
+                    <t t-set="barcode_value" t-value="str(report_data.get('warehouse_id', '') or '')"/>
+                    <div class="text-center" t-if="barcode_value">
+                        <img t-att-src="'/report/barcode/Code128/' + barcode_value + '?width=400&amp;height=80&amp;humanreadable=1'" style="max-height: 90px; max-width: 100%;" alt="Barcode"/>
+                    </div>
+                </t> -->
+                <img t-att-src="image_data_uri(report_data['company_logo'])" style="max-height: 90px; max-width: 100%;" alt="Logo"/>
+            </div>
+        </div>
+    </template>
+
+    <template id="td_report_header_3">
+        <div class="row mb-2">
+            <div>
+                <table width="100%" class="td_zero_border" style="font-size: 9px; line-height: 1.3;">
+                    <tr>
+                        <td style="width:2%"/>
+                        <td style="width:70%">
+                            <span t-esc="report_data['company_name']"/>
+                        </td>
+                        <td>
+                            ЗАТВЕРДЖУЮ
+                        </td>
+                    </tr>
+                    <tr>
+                        <td/>
+                        <td>
+                            Ідентифікаційний код ЄДРПОУ: <span t-esc="report_data['company_registry']"/>
+                        </td>
+                        <td style="border_bottom: 1px solid black;">
+                            Віце-президент
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"/>
+                        <td style="font-size: 7px; vertical-align: top;">
+                            посада
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"/>
+                        <td style="border_bottom: 1px solid black;" t-esc="report_data['company_ceo_name']"/>
+                    </tr>
+                    <tr>
+                        <td colspan="2"/>
+                        <td style="font-size: 7px; vertical-align: top;">
+                            підпис, ім'я, по-батькові, прізвище
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"/>
+                        <td style="border_bottom: 1px solid black;">
+                            "____" ___________ 20__ р.
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
     </template>
@@ -557,7 +641,7 @@
                     <strong>Місце зберігання майна:</strong>
                 </td>
                 <td>
-                    <span t-esc="partner['fisical_address']"/>
+                    <span t-esc="partner['street']"/>
                 </td>
             </tr>
         </table>
@@ -589,6 +673,62 @@
             </p>
         </div>
         <p style="font-size: 9px; line-height: 1.3;">Термін сплати: <t t-esc="report_data['payment_term']"/></p>
+    </template>
+
+    <template id="td_report_title_4">
+        <div class="my-1" style="font-size: 11px; padding: 2px;">
+            <table class="table table-sm table-bordered o_ignore_layout_styling ml-auto" style="width: 27%; margin-left: auto; font-size: 9px; line-height: 1.3;">
+                <tr>
+                    <td class="text-center">Номер документу</td>
+                    <td class="text-center">Дата складання</td>
+                    <td class="text-center">Кореспондуючий рахунок</td>
+                </tr>
+                <tr>
+                    <td class="text-center" t-esc="report_data['document_number']"/>
+                    <td class="text-center" t-esc="report_data['document_date']"/>
+                    <td class="text-center" t-esc="report_data['corresponding_account']"/>
+                </tr>
+            </table>
+            <table width="100%" class="td_zero_border mt-1" style="font-size: 9px; line-height: 1.3;">
+                <tr>
+                    <td width="2%"/>
+                    <td width="10%"/>
+                    <td/>
+                </tr>
+                <tr>
+                    <td/>
+                    <td colspan="2">
+                        Комісія, яка створена на підставі наказу 
+                        від <t t-esc="report_data['commission_date']"/> 
+                        № <t t-esc="report_data['commission_number']"/>, складі:
+                    </td>
+                </tr>
+                <tr>
+                    <td/>
+                    <td>
+                        Голова комісії:
+                    </td>
+                    <td>
+                        <t t-esc="report_data['commission_head']"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td/>
+                    <td>
+                        Члени комісії:
+                    </td>
+                    <td>
+                        завідувач аптечного складу <t t-esc="report_data['commission_medical_manager']"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"/>
+                    <td>
+                        інженер медичного обладнання <t t-esc="report_data['commission_medical_engineer']"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </template>
 
     <template id="td_report_title_waybill">
@@ -1622,21 +1762,42 @@
     <template id="td_report_products_table_4">
         <t t-set="lines" t-value="report_data['lines']"/>
         <table class="table table-sm table-bordered o_ignore_layout_styling" style="font-size: 8px; margin-bottom: 20px;">
+            <colgroup>
+                <col style="width: 3%;"/>
+                <col style="width: 25%;"/>
+                <col style="width: 6%;"/>
+                <col style="width: 6%;"/>
+                <col style="width: 8%;"/>
+                <col style="width: 5%;"/>
+                <col style="width: 5%;"/>
+                <col style="width: 6%;"/>
+                <col style="width: 6%;"/>
+                <col style="width: 6%;"/>
+                <!-- <col style="width: 6%;"/> -->
+                <col style="width: 6%;"/>
+                <!-- <col style="width: 6%;"/> -->
+                <col style="width: 6%;"/>
+                <col style="width: 6%;"/>
+            </colgroup>
             <thead style="background-color: #f0f0f0;">
                 <tr>
-                    <th rowspan="2" class="text-center" style="width: 3%; padding: 1px; vertical-align: middle;">№<br/>з/п</th>
-                    <th rowspan="2" class="text-center" style="width: 25%; padding: 1px; vertical-align: middle;">Найменування</th>
-                    <th rowspan="2" class="text-center" style="width: 6%; padding: 1px; vertical-align: middle;">Серія</th>
-                    <th rowspan="2" class="text-center" style="width: 6%; padding: 1px; vertical-align: middle;">Термін придатності</th>
-                    <th rowspan="2" class="text-center" style="width: 8%; padding: 1px; vertical-align: middle;">Умови зберігання / транспортування</th>
-                    <th colspan="2" class="text-center" style="width: 10%; padding: 1px; vertical-align: middle;">Док. постачальника</th>
-                    <th rowspan="2" class="text-center" style="width: 6%; padding: 1px; vertical-align: middle;">Кількість</th>
-                    <th rowspan="2" class="text-center" style="width: 6%; padding: 1px; vertical-align: middle;">Од. виміру</th>
-                    <th rowspan="2" class="text-center" style="width: 6%; padding: 1px; vertical-align: middle;">Ціна за контрактом</th>
-                    <th rowspan="2" class="text-center" style="width: 6%; padding: 1px; vertical-align: middle;">Митна вартість</th>
-                    <th rowspan="2" class="text-center" style="width: 6%; padding: 1px; vertical-align: middle;">Націнка пост.</th>
-                    <th rowspan="2" class="text-center" style="width: 6%; padding: 1px; vertical-align: middle;">Ціна без ПДВ</th>
-                    <th rowspan="2" class="text-center" style="width: 6%; padding: 1px; vertical-align: middle;">Сума без ПДВ</th>
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">№<br/>з/п</th>
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Найменування</th>
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Серія</th>
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Термін придатності</th>
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Умови зберігання / транспортування</th>
+                    <th colspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Док. постачальника</th>
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Кількість</th>
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Од. виміру</th>
+                    <!-- <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Ціна за контрактом</th> -->
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Митна вартість</th>
+                    <!-- <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Націнка пост.</th> -->
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Ціна без ПДВ</th>
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Сума без ПДВ</th>
+                </tr>
+                <tr>
+                    <th class="text-center" style="padding: 1px; vertical-align: middle;">Номер</th>
+                    <th class="text-center" style="padding: 1px; vertical-align: middle;">Дата</th>
                 </tr>
             </thead>
             <tbody>
@@ -1658,7 +1819,7 @@
                                 <span t-esc="exp_date"/><br/>
                             </t>
                         </td>
-                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                        <td class="text-center" style="padding: 2px; vertical-align: middle;">
                             <t t-foreach="line['storage_conditions']" t-as="condition">
                                 <span t-esc="condition"/><br/>
                             </t>
@@ -1675,15 +1836,15 @@
                         <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="line['uom']"/>
                         </td>
-                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                        <!-- <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="'%.2f' % line['contract_price']"/>
-                        </td>
+                        </td> -->
                         <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="'%.2f' % line['customs_value']"/>
                         </td>
-                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                        <!-- <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="'%.2f' % line['supplier_markup']"/>
-                        </td>
+                        </td> -->
                         <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
                             <span t-esc="'%.2f' % line['price_untaxed']"/>
                         </td>
@@ -1695,11 +1856,14 @@
                         <td class="text-end" style="padding: 2px; vertical-align: middle;">
                             <span style="font-size: 7px;" t-esc="line['product_manufacturer']"/>
                         </td>
+                        <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span>Автоперевезення</span>
+                        </td>
                     </tr>
                 </t>
                 <tr>
                     <td style="border-left: 1px solid transparent; border-bottom: 1px solid transparent; border-right: 1px solid transparent;"></td>
-                    <td colspan="10" style="padding: 2px; vertical-align: bottom; border-left: 1px solid transparent; border-bottom: 1px solid transparent">
+                    <td colspan="8" style="padding: 2px; vertical-align: bottom; border-left: 1px solid transparent; border-bottom: 1px solid transparent">
                         <strong>Всього на суму: </strong> 
                         <strong t-esc="report_data['amount_in_words']"/>
                     </td>
@@ -1712,7 +1876,7 @@
                 </tr>
                 <tr>
                     <td style="border-left: 1px solid transparent; border-bottom: 1px solid transparent; border-right: 1px solid transparent;"></td>
-                    <td colspan="10" style="padding: 2px; vertical-align: bottom; border-left: 1px solid transparent; border-bottom: 1px solid transparent">
+                    <td colspan="8" style="padding: 2px; vertical-align: bottom; border-left: 1px solid transparent; border-bottom: 1px solid transparent">
                         <strong>В тому числі ПДВ: </strong> 
                         <strong t-esc="'%.2f' % report_data['amount_tax']"/> грн.
                     </td>
@@ -1724,11 +1888,435 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="11" style="padding: 2px; vertical-align: bottom; border-left: 1px solid transparent; border-bottom: 1px solid transparent"/>
+                    <td colspan="9" style="padding: 2px; vertical-align: bottom; border-left: 1px solid transparent; border-bottom: 1px solid transparent"/>
                     <td colspan="2" class="text-end" style="padding: 2px; vertical-align: middle;">
                         <strong>Всього з ПДВ:</strong>
                     </td>
                     <td class="text-end" style="padding: 2px; vertical-align: middle;">
+                        <strong t-esc="'%.2f' % report_data['amount_total']"/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </template>
+
+    <template id="td_report_products_table_5">
+        <t t-foreach="report_data.get('documents', [])" t-as="doc">
+            <table width="100%" class="td_zero_border mt-1" style="font-size: 9px; line-height: 1.3;">
+                <td width="2%"/>
+                <td>
+                    Склали цей акт про те, що відповідно до умов Договору 
+                    <t t-esc="report_data['agreement_name']"/> № <t t-esc="report_data['agreement_number']"/> 
+                    від <t t-esc="report_data['agreement_date']"/>, Покупець/Замовник 
+                    <t t-esc="report_data['partner_name']"/>, для проведення комплектації 
+                    <t t-esc="doc['product_name']"/> були використані наступні товарно-матеріальні цінності (комплектуючі):
+                </td>
+            </table>
+            <table class="table table-sm table-bordered o_ignore_layout_styling" style="font-size: 8px; margin-bottom: 20px;">
+                <colgroup>
+                    <col style="width: 5%;"/>
+                    <col style="width: 8%;"/>
+                    <col style="width: 32%;"/>
+                    <col style="width: 8%;"/>
+                    <col style="width: 10%;"/>
+                    <col style="width: 5%;"/>
+                    <col style="width: 8%;"/>
+                    <col style="width: 8%;"/>
+                    <col style="width: 8%;"/>
+                    <col style="width: 8%;"/>
+                </colgroup>
+                <thead>
+                    <tr>
+                        <td rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">№<br/>з/п</td>
+                        <td colspan="5" class="text-center" style="padding: 1px; vertical-align: middle;">Товарно-матеріальні цінності</td>
+                        <td rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Одиниця виміру</td>
+                        <td rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Кількість</td>
+                        <td rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Ціна, грн (облікова)</td>
+                        <td rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Сума, грн (облікова)</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center" style="padding: 1px; vertical-align: middle;">Каталожний номер</td>
+                        <td class="text-center" style="padding: 1px; vertical-align: middle;">Найменування</td>
+                        <td class="text-center" style="padding: 1px; vertical-align: middle;">Серія</td>
+                        <td class="text-center" style="padding: 1px; vertical-align: middle;">Код УКТ ЗЕД</td>
+                        <td class="text-center" style="padding: 1px; vertical-align: middle;">Ставка ПДВ, %</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="doc['lines']" t-as="line">
+                        <tr>
+                            <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                                <t t-esc="line['sequence']"/>
+                            </td>
+                            <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                                <t t-esc="line['catalog_number']"/>
+                            </td>
+                            <td style="padding: 2px; vertical-align: middle;">
+                                <t t-esc="line['product_name']"/>
+                            </td>
+                            <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                                <t t-esc="line['series']"/>
+                            </td>
+                            <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                                <t t-esc="line['ukt_zed']"/>
+                            </td>
+                            <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                                <t t-esc="line['tax_rate']"/>
+                            </td>
+                            <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                                <t t-esc="line['uom']"/>
+                            </td>
+                            <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                                <t t-esc="line['quantity']"/>
+                            </td>
+                            <td class="text-end" style="padding: 2px; vertical-align: middle;">
+                                <t t-esc="'%.2f' % line['price_unit']"/>
+                            </td>
+                            <td class="text-end" style="padding: 2px; vertical-align: middle;">
+                                <t t-esc="'%.2f' % line['price_subtotal']"/>
+                            </td>
+                        </tr>
+                    </t>
+                    <tr>
+                        <td colspan="9" class="text-end" style="padding: 2px; border-left: 1px solid transparent; border-bottom: 1px solid transparent;">
+                            <strong>ВСЬОГО:</strong>
+                        </td>
+                        <td class="text-end" style="padding: 2px;">
+                            <strong t-esc="'%.2f' % doc['total']"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </t>
+        <table width="100%" class="td_zero_border mt-1" style="font-size: 9px; line-height: 1.3;">
+            <tr>
+                <td rowspan="3" width="2%"/>
+                <td width="10%">Відпуск дозволив:</td>
+                <td>завідувач аптечного складу <t t-esc="report_data['commission_medical_manager']"/></td>
+            </tr>
+            <tr>
+                <td>Відпустив:</td>
+                <td>уповноважена особа аптечного складу <t t-esc="report_data['commission_pharmacy_manager']"/></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="pt-3">Отримані комплектуючі оприбутковано як номенклатурна позиція товару:</td>
+            </tr>
+        </table>
+        <table class="table table-sm table-bordered o_ignore_layout_styling" style="font-size: 8px; margin-bottom: 20px;">
+            <colgroup>
+                <col style="width: 5%;"/>
+                <col style="width: 40%;"/>
+                <col style="width: 8%;"/>
+                <col style="width: 10%;"/>
+                <col style="width: 5%;"/>
+                <col style="width: 8%;"/>
+                <col style="width: 8%;"/>
+                <col style="width: 8%;"/>
+                <col style="width: 8%;"/>
+            </colgroup>
+            <thead>
+                <tr>
+                    <td rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">№<br/>з/п</td>
+                    <td colspan="4" class="text-center" style="padding: 1px; vertical-align: middle;">Товарно-матеріальні цінності</td>
+                    <td rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Одиниця виміру</td>
+                    <td rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Кількість</td>
+                    <td rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Ціна, грн (облікова)</td>
+                    <td rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Сума, грн (облікова)</td>
+                </tr>
+                <tr>
+                    <!-- <td class="text-center" style="padding: 1px; vertical-align: middle;">Каталожний номер</td> -->
+                    <td class="text-center" style="padding: 1px; vertical-align: middle;">Найменування</td>
+                    <td class="text-center" style="padding: 1px; vertical-align: middle;">Серія</td>
+                    <td class="text-center" style="padding: 1px; vertical-align: middle;">Код УКТ ЗЕД</td>
+                    <td class="text-center" style="padding: 1px; vertical-align: middle;">Ставка ПДВ, %</td>
+                </tr>
+            </thead>
+            <tbody>
+                <t t-foreach="report_data.get('products', [])" t-as="product">
+                    <tr>
+                        <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <t t-esc="product['sequence']"/>
+                        </td>
+                        <!-- <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <t t-esc="product['catalog_number']"/>
+                        </td> -->
+                        <td style="padding: 2px; vertical-align: middle;">
+                            <t t-esc="product['product_name']"/>
+                        </td>
+                        <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <t t-esc="product['series']"/>
+                        </td>
+                        <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <t t-esc="product['ukt_zed']"/>
+                        </td>
+                        <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <t t-esc="product['tax_rate']"/>
+                        </td>
+                        <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <t t-esc="product['uom']"/>
+                        </td>
+                        <td class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <t t-esc="product['quantity']"/>
+                        </td>
+                        <td class="text-end" style="padding: 2px; vertical-align: middle;">
+                            <t t-esc="'%.2f' % product['price_unit']"/>
+                        </td>
+                        <td class="text-end" style="padding: 2px; vertical-align: middle;">
+                            <t t-esc="'%.2f' % product['price_subtotal']"/>
+                        </td>
+                    </tr>
+                </t>
+                <!-- <tr>
+                    <td colspan="9" class="text-end" style="padding: 2px; border-left: 1px solid transparent; border-bottom: 1px solid transparent;">
+                        <strong>ВСЬОГО:</strong>
+                    </td>
+                    <td class="text-end" style="padding: 2px;">
+                        <strong t-esc="'%.2f' % doc['total']"/>
+                    </td>
+                </tr> -->
+            </tbody>
+        </table>
+        
+        <table width="100%" class="td_zero_border mt-2 mb-3" style="font-size: 9px; line-height: 1.3;">
+            <tr>
+                <td width="2%"/>
+                <td>
+                    Вищевказана номенклатурна позиція товару укомплектована (непотрібне закреслити):
+                </td>
+            </tr>
+            <tr>
+                <td/>
+                <td>
+                    власними силами;
+                </td>
+            </tr>
+            <tr>
+                <td/>
+                <td>
+                    з залученням сторонньої організації.
+                </td>
+            </tr>
+        </table>
+        
+        <table width="100%" class="td_zero_border mt-1 mb-3" style="font-size: 9px; line-height: 1.3;">
+            <tr>
+                <td width="2%"/>
+                <td>
+                    Після закінчення комплектації та діагностики, конфліктів обладнання не встановлено, номенклатурна позиція товару готова до продажу.
+                </td>
+            </tr>
+        </table>
+        
+        <!-- Підписи -->
+        <table width="100%" class="td_zero_border mt-3" style="font-size: 9px; line-height: 1.3;">
+            <tr>
+                <td width="2%"/>
+                <td width="40%">
+                    Начальник відділу продаж медичного обладнання
+                </td>
+                <td width="20%" style="border-bottom: 1px solid #000;"/>
+                <td width="38%">
+                    <t t-esc="report_data['commission_head']"/>
+                </td>
+            </tr>
+            <tr>
+                <td/>
+                <td/>
+                <td class="text-center" style="font-size: 7px; vertical-align: top;">
+                    підпис
+                </td>
+                <td/>
+            </tr>
+            <tr style="height: 10px;"><td colspan="4"/></tr>
+            <tr>
+                <td/>
+                <td>
+                    завідувач аптечного складу
+                </td>
+                <td style="border-bottom: 1px solid #000;"/>
+                <td>
+                    <t t-esc="report_data['commission_medical_manager']"/>
+                </td>
+            </tr>
+            <tr>
+                <td/>
+                <td/>
+                <td class="text-center" style="font-size: 7px; vertical-align: top;">
+                    підпис
+                </td>
+                <td/>
+            </tr>
+            <tr style="height: 10px;"><td colspan="4"/></tr>
+            <tr>
+                <td/>
+                <td>
+                    інженер медичного обладнання
+                </td>
+                <td style="border-bottom: 1px solid #000;"/>
+                <td>
+                    <t t-esc="report_data['commission_medical_engineer']"/>
+                </td>
+            </tr>
+            <tr>
+                <td/>
+                <td/>
+                <td class="text-center" style="font-size: 7px; vertical-align: top;">
+                    підпис
+                </td>
+                <td/>
+            </tr>
+        </table>
+        
+        <!-- Відмітка бухгалтерії -->
+        <table width="100%" class="td_zero_border mt-4" style="font-size: 9px; line-height: 1.3;">
+            <tr>
+                <td width="2%"/>
+                <td>
+                    Відмітка бухгалтерії ФармРН 389 (27.01.25)
+                </td>
+            </tr>
+            <tr>
+                <td/>
+                <td>
+                    "_____" _________________ 20___ р.
+                </td>
+            </tr>
+            <tr>
+                <td/>
+                <td>
+                    Бухгалтер ____________________
+                </td>
+            </tr>
+        </table>
+    </template>
+
+    <template id="td_report_products_table_6">
+        <t t-set="lines" t-value="report_data['lines']"/>
+        <table class="table table-sm table-bordered o_ignore_layout_styling" style="font-size: 8px; margin-bottom: 0;">
+            <thead style="background-color: #f0f0f0;">
+                <colgroup>
+                    <col style="width: 3%;"/>
+                    <col style="width: 23%;"/>
+                    <col style="width: 8%;"/>
+                    <col style="width: 6%;"/>
+                    <col style="width: 8%;"/>
+                    <col style="width: 8%;"/>
+                    <col style="width: 6%;"/>
+                    <col style="width: 6%;"/>
+                    <col style="width: 6%;"/>
+                    <col style="width: 6%;"/>
+                    <col style="width: 8%;"/>
+                    <col style="width: 6%;"/>
+                    <col style="width: 6%;"/>
+                </colgroup>
+                <tr>
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">№<br/>з/п</th>
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Найменування</th>
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Серія</th>
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Реєстрація</th>
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Сертифікат якості</th>
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Термін придатності</th>
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Кількість</th>
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Митна вартість (грн.)</th>
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Ціна облікова (грн.)</th>
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Сума облікова (грн.)</th>
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Коефіцієнт торгової надбавки</th>
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Роздрібна ціна (грн.)</th>
+                    <th rowspan="2" class="text-center" style="padding: 1px; vertical-align: middle;">Роздрібна сума (грн.)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <t t-foreach="lines" t-as="line">
+                    <tr>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['sequence']"/>
+                        </td>
+                        <td style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['product_name']"/><br/>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <t t-foreach="line['product_serial_numbers']" t-as="series">
+                                <span t-esc="series"/><br/>
+                            </t>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['registration_certificate']"/>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['quality_certificate']"/>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <t t-foreach="line['expiration_dates']" t-as="date">
+                                <span t-esc="date"/><br/>
+                            </t>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['quantity']"/>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="'%.2f' % line['customs_value']"/>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="'%.2f' % line['account_price']"/>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="'%.2f' % line['account_total']"/>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="'%.2f' % line['markup_coefficient']"/>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="'%.2f' % line['price_unit']"/>
+                        </td>
+                        <td rowspan="2" class="text-center" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="'%.2f' % line['price_total']"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-end" style="padding: 2px; vertical-align: middle;">
+                            <span t-esc="line['product_manufacturer']"/>
+                        </td>
+                    </tr>
+                </t>
+                <tr>
+                    <td colspan="9" style="text-align: right; vertical-align: middle; border-left: 1px solid transparent; border-bottom: 1px solid transparent">
+                        <strong>Сума без ПДВ:</strong> 
+                    </td>
+                    <td>
+                        <strong t-esc="'%.2f' % report_data['amount_account_untaxed']"/>
+                    </td>
+                    <td colspan="2" style="text-align: right; border-bottom: 1px solid transparent;">
+                        <strong>Сума без ПДВ:</strong> 
+                    </td>
+                    <td>
+                        <strong t-esc="'%.2f' % report_data['amount_untaxed']"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="9" style="text-align: right; vertical-align: middle; border-left: 1px solid transparent; border-bottom: 1px solid transparent">
+                        <strong>ПДВ:</strong> 
+                    </td>
+                    <td>
+                        <strong t-esc="'%.2f' % report_data['amount_account_tax']"/>
+                    </td>
+                    <td colspan="2" style="text-align: right; border-bottom: 1px solid transparent;">
+                        <strong>ПДВ:</strong> 
+                    </td>
+                    <td>
+                        <strong t-esc="'%.2f' % report_data['amount_tax']"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="9" style="text-align: right; vertical-align: middle; border-left: 1px solid transparent; border-bottom: 1px solid transparent">
+                        <strong>Сума з ПДВ:</strong> 
+                    </td>
+                    <td>
+                        <strong t-esc="'%.2f' % report_data['amount_account_total']"/>
+                    </td>
+                    <td colspan="2" style="text-align: right; border-bottom: 1px solid transparent;">
+                        <strong>Сума з ПДВ:</strong> 
+                    </td>
+                    <td>
                         <strong t-esc="'%.2f' % report_data['amount_total']"/>
                     </td>
                 </tr>
@@ -2077,12 +2665,12 @@
             <thead style="background-color: #f0f0f0;">
                 <tr>
                     <th class="text-center" style="width: 5%; padding: 4px; vertical-align: middle;">№</th>
-                    <th class="text-center" style="width: 8%; padding: 4px; vertical-align: middle;">Код НК</th>
-                    <th class="text-center" style="width: 52%; padding: 4px; vertical-align: middle;">Найменування товару</th>
-                    <th class="text-center" style="width: 10%; padding: 4px; vertical-align: middle;">Од. вим.</th>
-                    <th class="text-center" style="width: 5%; padding: 4px; vertical-align: middle;">К-ть</th>
-                    <th class="text-center" style="width: 10%; padding: 4px; vertical-align: middle;">Ціна, грн.</th>
-                    <th class="text-center" style="width: 10%; padding: 4px; vertical-align: middle;">Сума, грн.</th>
+                    <th class="text-center" style="width: 10%; padding: 4px; vertical-align: middle;">Код НК</th>
+                    <th class="text-center" style="width: 55%; padding: 4px; vertical-align: middle;">Найменування товару</th>
+                    <th class="text-center" style="width: 15%; padding: 4px; vertical-align: middle;">Од. вим.</th>
+                    <th class="text-center" style="width: 15%; padding: 4px; vertical-align: middle;">К-ть</th>
+                    <!-- <th class="text-center" style="width: 10%; padding: 4px; vertical-align: middle;">Ціна, грн.</th>
+                    <th class="text-center" style="width: 10%; padding: 4px; vertical-align: middle;">Сума, грн.</th> -->
                 </tr>
             </thead>
             <tbody>
@@ -2107,12 +2695,12 @@
                         <td class="text-center" style="padding: 4px; vertical-align: middle;">
                             <span t-esc="line['product_qty']"/>
                         </td>
-                        <td class="text-center" style="padding: 4px; vertical-align: middle;">
+                        <!-- <td class="text-center" style="padding: 4px; vertical-align: middle;">
                             <span t-esc="line['product_price_unit']"/>
                         </td>
                         <td class="text-center" style="padding: 4px; vertical-align: middle;">
                             <span t-esc="line['product_price_subtotal']"/>
-                        </td>
+                        </td> -->
                     </tr>
                     <t t-if="bom_lines">
                         <tr>
@@ -2134,8 +2722,8 @@
                                 <td class="text-center" style="padding: 4px; vertical-align: middle;">
                                     <span t-esc="bom_line['bom_product_qty']"/>
                                 </td>
-                                <td t-att-rowspan="rowspan_value" t-if="bom_line_index == 0"/>
-                                <td t-att-rowspan="rowspan_value" t-if="bom_line_index == 0"/>
+                                <!-- <td t-att-rowspan="rowspan_value" t-if="bom_line_index == 0"/>
+                                <td t-att-rowspan="rowspan_value" t-if="bom_line_index == 0"/> -->
                             </tr>
                         </t>
                     </t>
@@ -2144,9 +2732,9 @@
         </table>
         <table class="td_zero_border" style="width: 100%; font-size: 8px; margin-bottom: 30px;">
             <tr>
-                <td style="width: 20%; vertical-align: middle; padding: 1px;"/>
-                <td style="width: 35%; border-bottom: 1px solid #000;"/>
                 <td style="width: 25%; vertical-align: middle; padding: 1px;"/>
+                <td style="width: 35%; border-bottom: 1px solid #000;"/>
+                <td style="width: 20%; vertical-align: middle; padding: 1px;"/>
                 <td style="width: 10%;"/>
                 <td style="width: 10%; text-align: center;" t-esc="report_data['total']"/>
             </tr>
@@ -2180,7 +2768,7 @@
         <t t-foreach="report_data.get('documents', [])" t-as="doc">
             <!-- Document header -->
             <div style="font-size: 9px; font-weight: 600; margin-top: 10px; margin-bottom: 5px;">
-                Документ: <span t-esc="doc['document_name']"/>
+                Документ: <span t-esc="doc['document_name']"/> від <span t-esc="doc['document_date']"/>
             </div>
             
             <!-- Table for this document -->
@@ -2237,28 +2825,18 @@
                             <span t-esc="'%.2f' % doc['subtotal']"/>
                         </td>
                     </tr>
+                    <tr t-if="doc_last">
+                        <td style="border-top: 1px solid transparent;border-left: 1px solid transparent;border-bottom: 1px solid transparent;" colspan="5"></td>
+                        <td style="border-left: 1px solid transparent;border-bottom: 1px solid transparent;"></td>
+                        <td style="vertical-align: middle;text-align: end;padding: 4px;">
+                            <strong t-esc="'%.2f' % report_data['amount_total']"/>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </t>
-        <table width="100%" class="table table-sm table-bordered o_ignore_layout_styling" style="font-size: 8px;">
-            <tbody>
-                <tr>
-                    <td style="width: 88%;border-top: 1px solid transparent;border-left: 1px solid transparent;border-bottom: 1px solid transparent;"></td>
-                    <td style="vertical-align: middle;border-top: 1px solid transparent;text-align: end;padding: 2px;">
-                        <strong t-esc="'%.2f' % report_data['amount_total']"/>
-                    </td>
-                </tr>
-            </tbody>    
-        </table>
         
-        <!-- Total summary -->
         <table class="td_zero_border" width="100%" style="margin-top: 10px; font-size: 9px;">
-            <!-- <tr>
-                <td style="border: 1px solid #fff"/>
-                <td style="padding: 8px 2px 2px 2px; vertical-align: bottom; border: 0px solid transparent">
-                    <strong>Загальна сума: <span t-esc="'%.2f' % report_data['amount_total']"/> грн.</strong>
-                </td>
-            </tr> -->
             <tr>
                 <td style="border: 1px solid #fff"/>
                 <td style="padding: 2px 2px 2px 2px; vertical-align: bottom; border: 0px solid transparent">
@@ -2272,42 +2850,42 @@
         <table t-att-class="'table table-sm table-bordered o_ignore_layout_styling' + (' td_zero_border' if not is_warehouse_order else '')" style="font-size: 8px; margin-bottom: 5px;">
             <tbody>
                 <tr t-if="not is_warehouse_order">
-                    <td style="width: 2%; padding: 1px; vertical-align: middle;"/>
-                    <td style="width: 30%; padding: 1px; vertical-align: middle;"/>
-                    <td style="width: 5%; padding: 1px; vertical-align: middle;"/>
-                    <td style="width: 15%; padding: 1px; vertical-align: middle;" class="text-end">
+                    <td style="width: 2%; padding: 4px; vertical-align: middle;"/>
+                    <td style="width: 30%; padding: 4px; vertical-align: middle;"/>
+                    <td style="width: 5%; padding: 4px; vertical-align: middle;"/>
+                    <td style="width: 15%; padding: 4px; vertical-align: middle;" class="text-end">
                         <span>Разом:</span>
                     </td>
-                    <td style="width: 15%; padding: 1px; vertical-align: middle;" class="text-end">
+                    <td style="width: 15%; padding: 4px; vertical-align: middle;" class="text-end">
                         <span t-esc="'%.2f' % report_data['amount_untaxed']"/>
                     </td>
-                    <td style="width: 33%; padding: 1px; vertical-align: middle;"/>
+                    <td style="width: 33%; padding: 4px; vertical-align: middle;"/>
                 </tr>
                 <tr t-if="not is_warehouse_order">
-                    <td style="padding: 1px; vertical-align: middle;"/>
-                    <td style="padding: 1px; vertical-align: middle;" class="text-start">
+                    <td colspan="2" style="padding: 4px; vertical-align: middle;"/>
+                    <!-- <td style="padding: 1px; vertical-align: middle;" class="text-start">
                         <span>Сума в роздрібних цінах:</span>
-                    </td>
-                    <td style="padding: 1px; vertical-align: middle;"/>
-                    <td style="padding: 1px; vertical-align: middle;" class="text-end">
+                    </td> -->
+                    <td style="padding: 4px; vertical-align: middle;"/>
+                    <td style="padding: 4px; vertical-align: middle;" class="text-end">
                         <span t-esc="report_data['tax_guide_name']"/>:
                     </td>
-                    <td style="padding: 1px; vertical-align: middle;" class="text-end">
+                    <td style="padding: 4px; vertical-align: middle;" class="text-end">
                         <span t-esc="'%.2f' % report_data['amount_tax']"/>
                     </td>
-                    <td style="padding: 1px; vertical-align: middle;"/>
+                    <td style="padding: 4px; vertical-align: middle;"/>
                 </tr>
                 <tr t-if="not is_warehouse_order">
-                    <td style="padding: 1px; vertical-align: middle;"/>
-                    <td style="padding: 1px; vertical-align: middle;"/>
-                    <td style="padding: 1px; vertical-align: middle;"/>
-                    <td style="padding: 1px; vertical-align: middle;" class="text-end">
+                    <td style="padding: 4px; vertical-align: middle;"/>
+                    <td style="padding: 4px; vertical-align: middle;"/>
+                    <td style="padding: 4px; vertical-align: middle;"/>
+                    <td style="padding: 4px; vertical-align: middle;" class="text-end">
                         Всього:
                     </td>
-                    <td style="padding: 1px; vertical-align: middle;" class="text-end">
+                    <td style="padding: 4px; vertical-align: middle;" class="text-end">
                         <span t-esc="'%.2f' % report_data['amount_total']"/>
                     </td>
-                    <td style="padding: 1px; vertical-align: middle;"/>
+                    <td style="padding: 4px; vertical-align: middle;"/>
                 </tr>
                 <tr t-if="not is_warehouse_order">
                     <td style="padding: 1px; vertical-align: middle;"/>
@@ -2352,6 +2930,74 @@
                 </td>
                 <td/>
             </tr>
+        </table>
+    </template>
+
+    <template id="td_report_totals_3">
+        <table class="td_zero_border" style="width: 100%; font-size: 8px; margin-bottom: 10px;">
+            <colgroup>
+                <col style="width: 3%"/>
+                <col style="width: 30%"/>
+                <col/>
+            </colgroup>
+            <tr>
+                <td rowspan="4"/>
+                <td class="text-start">
+                    <strong>Сума в облікових цінах:</strong>
+                </td>
+                <td>
+                    <strong t-esc="report_data['amount_account_in_words']"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-start">
+                    <strong>Сума в роздрібних цінах:</strong>
+                </td>
+                <td>
+                    <strong t-esc="report_data['amount_in_words']"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-start">
+                    <strong>В т.ч. ПДВ:</strong>
+                </td>
+                <td>
+                    <strong t-esc="report_data['amount_tax_in_words']"/>
+                </td>
+            </tr>
+        </table>
+        <table class="td_zero_border" style="width: 100%; font-size: 8px; margin: 10px 0;">
+            <colgroup>
+                <col style="width: 2%;"/>
+                <col style="width: 5%;"/>
+                <col style="width: 15%; border-bottom: 1px solid #000;"/>
+                <col style="width: 10%;"/>
+                <col style="width: 2%"/>
+                <col style="width: 5%"/>
+                <col style="width: 15%; border-bottom: 1px solid #000;"/>
+                <col style="width: 10%"/>
+                <col/>
+            </colgroup>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td>Отримав</td>
+                    <td></td>
+                    <td class="text-center">
+                        <span>/</span>
+                        <span style="display: inline-block; min-width: 100px;"></span>
+                        <span>/</span>
+                    </td>
+                    <td></td>
+                    <td class="text-end px-2">Повернув</td>
+                    <td></td>
+                    <td>
+                        <span t-esc="'/'"/>
+                        <span t-esc="report_data['employee_short_name']"/>
+                        <span t-esc="'/'"/>
+                    </td>
+                </tr>
+            </tbody>
         </table>
     </template>
 
@@ -2848,6 +3494,13 @@
                                         /<span t-esc="report_data['company'].get('warehouse_manager', '')"/>/
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td/>
+                                    <td class="text-center" vertical-align="top" style="font-size: 7px;">
+                                        <span>завідувач складу</span>
+                                    </td>
+                                    <td/>
+                                </tr>
                             </tbody>
                         </table>
                     </td>
@@ -2885,7 +3538,6 @@
         </div>
     </template>
     
-
     <!-- Documents -->
     <template id="report_wholesale_invoice_document">
         <t t-call="web.basic_layout">
@@ -2922,6 +3574,28 @@
                 <t t-call="td_medicus_report.td_report_header_2"/>
                 <t t-call="td_medicus_report.td_report_products_table_2"/>
                 <t t-call="td_medicus_report.td_report_totals_2"/>
+            </div>
+        </t>
+    </template>
+    
+    <template id="report_return_from_stock_document">
+        <t t-call="web.basic_layout">
+            <t t-set="o" t-value="o.with_context(lang=lang)"/>
+            <t t-set="report_data" t-value="o.td_get_report_lenses_data()"/>
+            
+            <div class="page m-auto" style="font-family: Arial, sans-serif; font-size: 11px;max-width: 800px;">
+                <style>
+                    .td_zero_border,
+                    .td_zero_border td,
+                    .td_zero_border th {
+                        border: 0px solid transparent;
+                    }
+                </style>
+                <t t-call="td_medicus_report.td_report_header_2"/>
+                <t t-call="td_medicus_report.td_report_products_table_2"/>
+                <t t-call="td_medicus_report.td_report_totals_2"/>
+                <!-- <t t-call="td_medicus_report.td_report_products_table_6"/>
+                <t t-call="td_medicus_report.td_report_totals_3"/> -->
             </div>
         </t>
     </template>
@@ -3114,6 +3788,26 @@
             </div>
         </t>
     </template>
+    
+    <template id="report_completion_act_document">
+        <t t-call="web.basic_layout">
+            <t t-set="o" t-value="o.with_context(lang=lang)"/>
+            <t t-set="report_data" t-value="o.td_get_completion_act_data()"/>
+            
+            <div class="page mx-auto" style="font-family: Arial, sans-serif; font-size: 11px; max-width: 900px;">
+                <style>
+                    .td_zero_border,
+                    .td_zero_border td,
+                    .td_zero_border th {
+                        border: 0px solid transparent;
+                    }
+                </style>
+                <t t-call="td_medicus_report.td_report_header_3"/>
+                <t t-call="td_medicus_report.td_report_title_4"/>
+                <t t-call="td_medicus_report.td_report_products_table_5"/>
+            </div>
+        </t>
+    </template>
 
     <!-- Reports -->
     <template id="report_wholesale_invoice">
@@ -3145,6 +3839,16 @@
             <t t-foreach="docs" t-as="o">
                 <t t-set="is_warehouse_order" t-value="True"/>
                 <t t-call="td_medicus_report.report_ordering_eye_lenses_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_return_from_stock">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="is_warehouse_order" t-value="True"/>
+                <t t-set="is_return" t-value="True"/>
+                <t t-call="td_medicus_report.report_return_from_stock_document" t-lang="o.partner_id.lang"/>
             </t>
         </t>
     </template>
@@ -3227,8 +3931,15 @@
     <template id="report_print_vendor_refund_act">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
-                <t t-set="is_show_warehouse_address" t-value="False"/>
                 <t t-call="td_medicus_report.report_vendor_refund_act_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_print_completion_act">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="td_medicus_report.report_completion_act_document" t-lang="o.partner_id.lang"/>
             </t>
         </t>
     </template>

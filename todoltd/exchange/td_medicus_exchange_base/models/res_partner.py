@@ -112,8 +112,18 @@ class TdResPartnerExchange(models.Model):
                 return self.ata_exchange_prepare_vals_address_delivery(record_params)            
             elif inc_params.method_id == self.env.ref('td_medicus_exchange_base.partner_1c_odoo'):
                 return self.ata_exchange_prepare_vals_partner(record_params)
-        
+            # Task N14224
+            elif inc_params.method_id == self.env.ref('td_medicus_exchange_base.inner_types_res_partner_chief'):
+                return self.ata_exchange_prepare_vals_counterparty_person(record_params)
+
         return super().ata_exchange_prepare_vals(record_params)
+
+    def ata_exchange_prepare_vals_counterparty_person(self, record_params: RecordHandlerParams) -> dict:
+        # Task N14224
+        vals = dict(record_params.data or {})
+        vals["td_is_counterparty_physical_person"] = True
+        vals["function"] = "фахівець по роботі з клієнтами"
+        return vals
 
     def ata_exchange_get_category_id(self,
             record_params: RecordHandlerParams,
