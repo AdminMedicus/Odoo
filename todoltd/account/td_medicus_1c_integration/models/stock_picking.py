@@ -87,12 +87,16 @@ class StockPicking(models.Model):
             if not picking.move_ids_without_package:
                 raise UserError(_("Add at least one item to the shipment."))
 
+            picking._td_prepare_import_lots_for_onec_exchange()
+
             if picking.state != "import":
                 picking.write({"state": "import"})
 
             picking.message_post(
-                body=_("Prepared. The document has been queued for exchange "
-                       "with 1C for posting expenses from the customs declaration.")
+                body=_(
+                    "Prepared. The document has been queued for exchange "
+                    "with 1C for posting expenses from the customs declaration."
+                )
             )
 
         return True
@@ -188,13 +192,17 @@ class StockPicking(models.Model):
 
         dt = for_date or self._context.get('ir_sequence_date', fields.Date.today())
         seq_date = self.env['ir.sequence.date_range'].search(
-            [('sequence_id', '=', seq.id), ('date_from', '<=', dt), ('date_to', '>=', dt)], limit=1)
+            [('sequence_id', '=', seq.id), ('date_from', '<=', dt), ('date_to', '>=', dt)],
+            limit=1,
+        )
 
         if seq_date and seq_date.date_from != seq_date.date_to:
             seq_date.unlink()
 
         seq_date = self.env['ir.sequence.date_range'].search(
-            [('sequence_id', '=', seq.id), ('date_from', '=', dt), ('date_to', '=', dt)], limit=1)
+            [('sequence_id', '=', seq.id), ('date_from', '=', dt), ('date_to', '=', dt)],
+            limit=1,
+        )
         if not seq_date:
             self.env['ir.sequence.date_range'].create({
                 'sequence_id': seq.id,
@@ -229,12 +237,12 @@ class StockPicking(models.Model):
             for_date = fields.Date.context_today(self)
 
         seq = self._ensure_sequence(
-            'td.lot.daily', 'TD daily lot sequence', for_date
+            'td.lot.daily',
+            'TD daily lot sequence',
+            for_date,
         )
 
-        base = seq.with_context(
-            ir_sequence_date=for_date
-        ).next_by_id(sequence_date=for_date)
+        base = seq.with_context(ir_sequence_date=for_date).next_by_id(sequence_date=for_date)
 
         suffix_parts = []
         if getattr(self, 'td_is_import', False):
@@ -254,7 +262,7 @@ class StockPicking(models.Model):
         seq = self._ensure_sequence(
             'td.serial.daily',
             'TD daily serial ref sequence',
-            for_date
+            for_date,
         )
 
         base = seq.with_context(ir_sequence_date=for_date).next_by_id()
@@ -273,9 +281,221 @@ class StockPicking(models.Model):
         seq = self._ensure_serial_auto_seq()
         return seq.next_by_id()
 
+    def _td_prepare_import_lots_for_onec_exchange(self):
+        """
+        Create lots/serials for import receipts before the picking is moved
+        to custom `import` state, but without validating the receipt.
+
+        Important:
+        - do NOT duplicate existing move lines created by standard Odoo flow
+        - reuse existing blank move lines when possible
+        - remove extra blank move lines
+        - set qty_done, because validate checks processed quantity
+        """
+        LotModel = self.env['stock.lot']
+        MoveLineModel = self.env['stock.move.line']
+        today = fields.Date.context_today(self)
+
+        for picking in self:
+            company_id = picking.company_id.id if picking.company_id else False
+
+            for move in picking.move_ids_without_package.filtered(
+                    lambda m: m.product_id and m.product_id.tracking != 'none'
+            ):
+                tracking = move.product_id.tracking
+                move_qty = move.quantity or getattr(move, 'product_uom_qty', 0.0) or 0.0
+
+                all_move_lines = move.move_line_ids.sorted('id')
+                existing_lotted_lines = all_move_lines.filtered(lambda ml: ml.lot_id)
+                empty_move_lines = all_move_lines.filtered(lambda ml: not ml.lot_id)
+
+                existing_lots = existing_lotted_lines.mapped('lot_id') | move.td_lot_ids | move.lot_ids
+
+                common_write_vals = {
+                    'picking_id': picking.id,
+                    'move_id': move.id,
+                    'company_id': company_id,
+                    'product_id': move.product_id.id,
+                    'product_uom_id': move.product_uom.id,
+                    'location_id': move.location_id.id,
+                    'location_dest_id': move.location_dest_id.id,
+                }
+
+                if tracking == 'lot':
+                    lot = existing_lots[:1]
+                    if not lot:
+                        lot = picking._create_or_retry_unique_lot(
+                            LotModel=LotModel,
+                            name_getter=lambda: picking._next_daily_lot_name(today),
+                            product=move.product_id,
+                            company_id=company_id,
+                            ref_getter=lambda name: name,
+                            allow_use_existing=False,
+                        )
+
+                    if not lot.ref:
+                        lot.ref = lot.name
+
+                    target_ml = (
+                            existing_lotted_lines.filtered(lambda ml: ml.lot_id == lot)[:1]
+                            or empty_move_lines[:1]
+                    )
+
+                    vals = dict(
+                        common_write_vals,
+                        lot_id=lot.id,
+                        quantity=move_qty,
+                        qty_done=move_qty,
+                    )
+
+                    if target_ml:
+                        target_ml.write(vals)
+                        target_ml = target_ml[:1]
+                    else:
+                        target_ml = MoveLineModel.create(vals)
+
+                    extra_lines = (all_move_lines - target_ml)
+                    if extra_lines:
+                        extra_lines.unlink()
+
+                    move.write({
+                        'quantity': move_qty,
+                        'lot_ids': [Command.set([lot.id])],
+                        'td_lot_ids': [Command.set([lot.id])],
+                    })
+                    if move.move_line_ids[0]:
+                        move.move_line_ids[0].quantity = move_qty
+
+                elif tracking == 'serial':
+                    qty_total = int(round(move_qty or 0.0))
+                    if qty_total <= 0:
+                        continue
+
+                    missing_count = max(qty_total - len(existing_lots), 0)
+                    new_lots = LotModel.browse()
+
+                    for _index in range(missing_count):
+                        new_lot = picking._create_or_retry_unique_lot(
+                            LotModel=LotModel,
+                            name_getter=picking._next_serial_auto_name,
+                            product=move.product_id,
+                            company_id=company_id,
+                            ref_getter=lambda _name: picking._next_daily_serial_ref(today),
+                            allow_use_existing=False,
+                        )
+                        new_lots |= new_lot
+
+                    all_lots = (existing_lots | new_lots)[:qty_total]
+
+                    for lot in all_lots:
+                        if not lot.ref:
+                            lot.ref = picking._next_daily_serial_ref(today)
+
+                    lines_pool = all_move_lines.sorted('id')
+                    kept_lines = MoveLineModel.browse()
+
+                    for index, lot in enumerate(all_lots):
+                        vals = dict(
+                            common_write_vals,
+                            lot_id=lot.id,
+                            quantity=1.0,
+                            qty_done=1.0,
+                        )
+
+                        if index < len(lines_pool):
+                            ml = lines_pool[index]
+                            ml.write(vals)
+                        else:
+                            ml = MoveLineModel.create(vals)
+
+                        kept_lines |= ml
+
+                    extra_lines = (move.move_line_ids - kept_lines)
+                    if extra_lines:
+                        extra_lines.unlink()
+
+                    move.write({
+                        'quantity': float(qty_total),
+                        'lot_ids': [Command.set(all_lots.ids)],
+                        'td_lot_ids': [Command.set(all_lots.ids)],
+                    })
+
+    def _td_get_import_lock_move_lines(self, lot):
+        self.ensure_one()
+        return self.env['stock.move.line'].sudo().search([
+            ('lot_id', '=', lot.id),
+            ('product_id', '=', lot.product_id.id),
+            ('picking_id.state', '=', 'import'),
+            ('picking_id.picking_type_code', '=', 'incoming'),
+            ('picking_id.company_id', '=', self.company_id.id),
+        ])
+
+    def _td_raise_serial_import_lock_error(self, lot, import_picking):
+        raise UserError(_(
+            'Неможливо підтвердити документ. Товар "%(product)s" із серійним номером "%(serial)s" наразі заблокований для реалізації. '
+            'Серійний номер входить до складу надходження "%(picking)s", яке очікує рознесення витрат з ГТД '
+            '(статус: Очікує рознесення витрат з ГТД). Реалізація можлива лише після завершення рознесення витрат '
+            'по даному надходженню.'
+        ) % {
+            'product': lot.product_id.display_name,
+            'serial': lot.name,
+            'picking': import_picking.name,
+        })
+
+    def _td_check_import_realization_restrictions(self):
+        for picking in self.filtered(lambda p: p.picking_type_code == 'outgoing' and p.state not in ('done', 'cancel')):
+            qty_by_lot = {}
+            move_lines = picking.move_line_ids.filtered(lambda ml: ml.lot_id and ml.product_id)
+
+            for move_line in move_lines:
+                lot = move_line.lot_id
+                import_lines = picking._td_get_import_lock_move_lines(lot)
+                if import_lines:
+                    picking._td_raise_serial_import_lock_error(lot, import_lines[0].picking_id)
+
+                qty_by_lot.setdefault(lot.id, {'lot': lot, 'qty': 0.0})
+                qty_by_lot[lot.id]['qty'] += abs(move_line.quantity or 0.0)
+
+            for move in picking.move_ids_without_package.filtered(
+                    lambda m: m.product_id and m.product_id.tracking == 'lot' and m.lot_ids
+            ):
+                existing_qty = sum(
+                    value['qty'] for value in qty_by_lot.values()
+                    if value['lot'] in move.lot_ids
+                )
+                remaining_qty = max((move.quantity or 0.0) - existing_qty, 0.0)
+                if remaining_qty and len(move.lot_ids) == 1:
+                    lot = move.lot_ids[0]
+                    qty_by_lot.setdefault(lot.id, {'lot': lot, 'qty': 0.0})
+                    qty_by_lot[lot.id]['qty'] += remaining_qty
+
+            for data in qty_by_lot.values():
+                lot = data['lot']
+                requested_qty = data['qty']
+                available_qty = lot.td_available_qty
+
+                if requested_qty > available_qty:
+                    import_lines = picking._td_get_import_lock_move_lines(lot)
+                    if import_lines:
+                        picking._td_raise_serial_import_lock_error(lot, import_lines[0].picking_id)
+
+                    raise UserError(_(
+                        'Неможливо підтвердити документ. Товар "%(product)s" за партією/серією "%(lot)s" '
+                        'недоступний для реалізації у потрібній кількості. Доступна кількість: %(available)s, '
+                        'кількість у документі: %(requested)s.'
+                    ) % {
+                        'product': lot.product_id.display_name,
+                        'lot': lot.name,
+                        'available': available_qty,
+                        'requested': requested_qty,
+                    })
+
     # ---------------- helpers ----------------
     def _find_lot(self, LotModel, name, product, company_id):
-        domain = [('name', '=', name), ('product_id', '=', product.id)]
+        domain = [
+            ('name', '=', name),
+            ('product_id', '=', product.id),
+        ]
         if company_id:
             domain.append(('company_id', '=', company_id))
         else:
@@ -304,12 +524,14 @@ class StockPicking(models.Model):
         for attempt in range(MAX_ATTEMPTS):
             name = name_getter()
             ref_value = ref_getter(name)
+
             existing = self._find_lot(LotModel, name, product, company_id)
             if existing:
                 if allow_use_existing:
                     existing.write({'ref': ref_value})
                     return existing
                 continue
+
             try:
                 lot = LotModel.create({
                     'name': name,
@@ -320,19 +542,13 @@ class StockPicking(models.Model):
                 return lot
             except Exception as e:
                 msg = str(e).lower()
-                if (
-                        "unique" in msg
-                        or "duplicate" in msg
-                        or "already exists" in msg
-                ):
+                if "unique" in msg or "duplicate" in msg or "already exists" in msg:
                     continue
                 raise
-        raise UserError(
-            _(
-                "Failed to generate a unique lot name for item %s "
-                "after %s attempts."
-            ) % (product.display_name, MAX_ATTEMPTS)
-        )
+
+        raise UserError(_(
+            "Failed to generate a unique lot name for item %s after %s attempts."
+        ) % (product.display_name, MAX_ATTEMPTS))
 
     def _create_lot_ids_for_move(self):
         Lot = self.env['stock.lot']
@@ -501,6 +717,7 @@ class StockPicking(models.Model):
                 bill.action_post()
 
     def button_validate(self):
+        self._td_check_import_realization_restrictions()
         res = super().button_validate()
 
         if not self.sale_id:
@@ -517,7 +734,6 @@ class StockPicking(models.Model):
                     move.td_uktzed_code_id = (uktzed_line.td_uktzed_code_id.id if uktzed_line else False)
 
         self._td_create_vendor_bill_from_receipt()
-
         return res
 
     def _td_get_public_user(self):
