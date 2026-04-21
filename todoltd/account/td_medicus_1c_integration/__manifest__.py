@@ -1,6 +1,6 @@
 {
     'name': 'TD Medicus 1C Integration',
-    "version": '18.0.0.0.56',
+    "version": '18.0.0.0.58',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
@@ -18,7 +18,7 @@
     ],
     'data': [
         # data
-        'data/ir_cron_data.xml',
+        # 'data/ir_cron_data.xml',
         'data/company_settings.xml',
         # security
         'security/ir.model.access.csv',
@@ -32,6 +32,7 @@
         'views/sale_order_views.xml',
         'views/purchase_order_views.xml',
         'views/stock_picking_views.xml',
+        'views/stock_lot_views.xml',
         'views/stock_picking_type_views.xml',
         'views/res_partner_views.xml',
         'views/product_product_views.xml',
