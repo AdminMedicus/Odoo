@@ -201,3 +201,9 @@ class StockMove(models.Model):
                 move.td_customs_value_good = move.td_price_unit * rate
             else:
                 move.td_customs_value_good = 0.0
+
+    def _get_new_picking_values(self):
+        vals = super()._get_new_picking_values()
+        user_id = self.sale_order_id.user_id if self.sale_order_id.user_id else self.env.user
+        vals['user_id'] = user_id.id
+        return vals
