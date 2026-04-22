@@ -63,6 +63,7 @@
                             <field name="td_ttn_driver_license_number"
                                    invisible="td_ttn_transport_type != 'hired'"/>
                                    
+
                             <field name="td_ttn_driver_forwarder"/>
                             <field name="td_ttn_driver_partner_id" invisible="1"/>
                         </group>
