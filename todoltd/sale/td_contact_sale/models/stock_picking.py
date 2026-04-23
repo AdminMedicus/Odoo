@@ -76,6 +76,8 @@ class StockPicking(models.Model):
         This block must apply to outgoing only (delivery to customer).
         """
         for picking in self:
+            if not picking.user_id:
+                picking.user_id = self.env.user.id
             if (
                 picking.picking_type_code == 'outgoing'
                 and picking.sale_id
