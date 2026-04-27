@@ -53,45 +53,72 @@ class StockMove(models.Model):
         store=True
     )
 
-    @api.depends('purchase_line_id','sale_line_id', 'product_id', 'quantity')
+    @api.depends(
+        'product_id',
+        'product_uom_qty',
+        'purchase_line_id.price_unit',
+        'purchase_line_id.td_untaxed_price_unit',
+        'quantity',
+        'sale_line_id.price_unit',
+        'sale_line_id.td_untaxed_price_unit',
+        'sale_line_id.product_uom_qty',
+        'sale_line_id.move_ids'
+    )
     def _compute_td_price_unit(self):
         for line in self:
-            is_component = False
-            is_first_component = False
-            if line.sale_line_id and line.sale_line_id.order_id:
-                sale_order = line.sale_line_id.order_id
-                for so_line in sale_order.order_line:
-                    if so_line.product_id and so_line.product_id.bom_ids:
-                        for bom in so_line.product_id.bom_ids:
-                            component_products = bom.bom_line_ids.mapped('product_id')
-                            if line.product_id in component_products:
-                                is_component = True
-                                
-                                all_moves_with_same_product = self.search([
-                                    ('sale_line_id.order_id', '=', sale_order.id),
-                                    ('product_id', 'in', component_products.ids)
-                                ], order='id asc', limit=1)
-                                
-                                if all_moves_with_same_product and line in all_moves_with_same_product:
-                                    is_first_component = True
-                                break
-                    if is_component:
-                        break
-            
-            if is_component and not is_first_component:
-                line.td_price_unit = 0.0
-                line.td_untaxed_price_unit = 0.0
-            elif line.sale_line_id:
-                line.td_price_unit = line.sale_line_id.price_unit
-                line.td_untaxed_price_unit = line.sale_line_id.td_untaxed_price_unit
+            if line.sale_line_id:
+                so_line = line.sale_line_id
+                
+                if so_line.product_id != line.product_id:
+                    all_moves = so_line.move_ids.filtered(lambda m: m.state != 'cancel')
+                    
+                    def get_weight(product):
+                        return product.standard_price or product.list_price or 1.0
+
+                    total_weight = sum(
+                        get_weight(m.product_id) * m.product_uom_qty 
+                        for m in all_moves
+                    )
+                    
+                    comp_weight = get_weight(line.product_id) * line.product_uom_qty
+                    
+                    ratio = comp_weight / total_weight if total_weight else 0.0
+                    
+                    so_total_untaxed = so_line.td_untaxed_price_unit * so_line.product_uom_qty
+                    so_total_taxed = so_line.price_unit * so_line.product_uom_qty
+                    
+                    qty = line.product_uom_qty or 1.0
+                    line.td_untaxed_price_unit = (so_total_untaxed * ratio) / qty
+                    line.td_price_unit = (so_total_taxed * ratio) / qty
+                    
+                else:
+                    line.td_price_unit = so_line.price_unit
+                    line.td_untaxed_price_unit = so_line.td_untaxed_price_unit
+
             elif line.purchase_line_id:
                 line.td_price_unit = line.purchase_line_id.price_unit
                 line.td_untaxed_price_unit = line.purchase_line_id.td_untaxed_price_unit
+            
             else:
-                line.td_price_unit = line.td_price_unit
-                line.td_untaxed_price_unit = line.td_untaxed_price_unit
+                line.td_price_unit = 0.0
+                line.td_untaxed_price_unit = 0.0
 
-            line.td_price_subtotal = line.td_untaxed_price_unit * line.quantity
+            line.td_price_subtotal = line.td_untaxed_price_unit * (line.product_uom_qty or 0.0)
+
+    @api.onchange('td_price_unit')
+    def _onchange_td_price_unit(self):
+        for line in self:
+            if line.td_price_unit and line.sale_line_id:
+                taxes = line.sale_line_id.tax_id
+                if taxes:
+                    res = taxes.compute_all(
+                        line.td_price_unit,
+                        product=line.product_id,
+                        partner=line.picking_id.partner_id
+                    )
+                    line.td_untaxed_price_unit = res['total_excluded']
+                else:
+                    line.td_untaxed_price_unit = line.td_price_unit
 
     @api.depends('td_picking_type_id')
     @api.onchange('td_picking_type_id')
