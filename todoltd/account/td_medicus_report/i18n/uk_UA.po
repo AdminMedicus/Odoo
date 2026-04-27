@@ -6,63 +6,64 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-15 12:55+0000\n"
-"PO-Revision-Date: 2026-04-15 12:55+0000\n"
+"POT-Creation-Date: 2026-04-27 01:46+0000\n"
+"PO-Revision-Date: 2026-04-27 01:46+0000\n"
 "Last-Translator: \n"
-"Language-Team: \n"
+"Language-Team: Ukrainian\n"
+"Language: uk_UA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_1
 msgid "\" в м.Києві, МФО"
-msgstr ""
+msgstr "\" в м.Києві, МФО"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_3
 msgid "\"____\" ___________ 20__ р."
-msgstr ""
+msgstr "\"____\" ___________ 20__ р."
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid "\"_____\" _________________ 20___ р."
-msgstr ""
+msgstr "\"_____\" _________________ 20___ р."
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 msgid "(висота, м)"
-msgstr ""
+msgstr "(висота, м)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 msgid "(довжина, м)"
-msgstr ""
+msgstr "(довжина, м)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 msgid "(загальна вага/маса з вантажем та маса брутто, т)"
-msgstr ""
+msgstr "(загальна вага/маса з вантажем та маса брутто, т)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 msgid "(ширина, м)"
-msgstr ""
+msgstr "(ширина, м)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_2
 msgid ""
 "**Відомості заповнюються у разі перевезення харчових продуктів, які "
 "потребують дотримання температурного режиму."
-msgstr ""
+msgstr "**Відомості заповнюються у разі перевезення харчових продуктів, які потребують дотримання температурного режиму."
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_2
 msgid ""
 "*Відомості заповнюються у разі перевезення туш, напівтуш, четвертин, "
 "відрубів, шматків м'яса."
-msgstr ""
+msgstr "*Відомості заповнюються у разі перевезення туш, напівтуш, четвертин, відрубів, шматків м'яса."
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_co_header
@@ -70,6 +71,8 @@ msgid ""
 ", \n"
 "                        ІПН"
 msgstr ""
+", \n"
+"                        ІПН"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_co_header
@@ -79,6 +82,8 @@ msgid ""
 ", \n"
 "                        номер свідоцтва"
 msgstr ""
+", \n"
+"                        номер свідоцтва"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_co_header
@@ -86,6 +91,8 @@ msgid ""
 ", \n"
 "                        р/р"
 msgstr ""
+", \n"
+"                        р/р"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_co_header
@@ -93,6 +100,8 @@ msgid ""
 ", \n"
 "                        тел./факс:"
 msgstr ""
+", \n"
+"                        тел./факс:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_2
@@ -100,69 +109,71 @@ msgid ""
 ", \n"
 "                        час:"
 msgstr ""
+", \n"
+"                        час:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid ", Покупець/Замовник"
-msgstr ""
+msgstr ", Покупець/Замовник"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_act_header
 msgid ", Р/Р"
-msgstr ""
+msgstr ", Р/Р"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid ", для проведення комплектації"
-msgstr ""
+msgstr ", для проведення комплектації"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 msgid ", код ЄДРПОУ"
-msgstr ""
+msgstr ", код ЄДРПОУ"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_2
 msgid ", контакти:"
-msgstr ""
+msgstr ", контакти:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_1
 msgid ", номер свідоцтва"
-msgstr ""
+msgstr ", номер свідоцтва"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_4
 msgid ", номер свідоцтва платника ПДВ"
-msgstr ""
+msgstr ", номер свідоцтва платника ПДВ"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_header
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_1
 msgid ", р/р"
-msgstr ""
+msgstr ", р/р"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_title_4
 msgid ", складі:"
-msgstr ""
+msgstr ", складі:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_recipient_header_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_recipient_header_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_4
 msgid ", тел."
-msgstr ""
+msgstr ", тел."
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_co_header
 msgid ",<br/>"
-msgstr ""
+msgstr ",<br/>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_2
 msgid ". Доставка:"
-msgstr ""
+msgstr ". Доставка:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_2
@@ -170,6 +181,8 @@ msgid ""
 "<br/>\n"
 "                        <span style=\"font-style: italic; font-size: 7px;\">Завідувач аптечного складу </span>"
 msgstr ""
+"<br/>\n"
+"                        <span style=\"font-style: italic; font-size: 7px;\">Завідувач аптечного складу </span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_co_header
@@ -177,6 +190,8 @@ msgid ""
 "<br/>\n"
 "                        ЄДРПОУ"
 msgstr ""
+"<br/>\n"
+"                        ЄДРПОУ"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_1
@@ -184,6 +199,8 @@ msgid ""
 "<br/>\n"
 "                    ЄДРПОУ"
 msgstr ""
+"<br/>\n"
+"                    ЄДРПОУ"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_1
@@ -191,6 +208,8 @@ msgid ""
 "<br/>\n"
 "                    ІПН"
 msgstr ""
+"<br/>\n"
+"                    ІПН"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_1
@@ -198,6 +217,8 @@ msgid ""
 "<br/>\n"
 "                    Фіз. адреса:"
 msgstr ""
+"<br/>\n"
+"                    Фіз. адреса:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_1
@@ -205,6 +226,8 @@ msgid ""
 "<br/>\n"
 "                    Юр. адреса:"
 msgstr ""
+"<br/>\n"
+"                    Юр. адреса:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_1
@@ -212,6 +235,8 @@ msgid ""
 "<br/>\n"
 "                    в АТ \""
 msgstr ""
+"<br/>\n"
+"                    в АТ \""
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_payment_info_1
@@ -219,6 +244,8 @@ msgid ""
 "<br/>\n"
 "                ЄДРПОУ"
 msgstr ""
+"<br/>\n"
+"                ЄДРПОУ"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_payment_info_1
@@ -226,6 +253,8 @@ msgid ""
 "<br/>\n"
 "                Фіз. адреса:"
 msgstr ""
+"<br/>\n"
+"                Фіз. адреса:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_payment_info_1
@@ -233,6 +262,8 @@ msgid ""
 "<br/>\n"
 "                Юр. адреса:"
 msgstr ""
+"<br/>\n"
+"                Юр. адреса:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_title_2
@@ -240,6 +271,8 @@ msgid ""
 "<br/>\n"
 "                від"
 msgstr ""
+"<br/>\n"
+"                від"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_recipient_header_1
@@ -247,6 +280,8 @@ msgid ""
 "<br/>\n"
 "            ЄДРПОУ"
 msgstr ""
+"<br/>\n"
+"            ЄДРПОУ"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_recipient_header_1
@@ -254,6 +289,8 @@ msgid ""
 "<br/>\n"
 "            Фіз. адреса:"
 msgstr ""
+"<br/>\n"
+"            Фіз. адреса:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_recipient_header_1
@@ -261,32 +298,34 @@ msgid ""
 "<br/>\n"
 "            Юр. адреса:"
 msgstr ""
+"<br/>\n"
+"            Юр. адреса:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_1
 msgid ""
 "<span style=\"font-size: 7px; vertical-align: top;\">уповноважена особа "
 "аптечного складу, дата, підпис</span>"
-msgstr ""
+msgstr "<span style=\"font-size: 7px; vertical-align: top;\">уповноважена особа аптечного складу, дата, підпис</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_1
 msgid "<span style=\"font-size: 7px;\">завідувач аптечного складу</span>"
-msgstr ""
+msgstr "<span style=\"font-size: 7px;\">завідувач аптечного складу</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_1
 msgid ""
 "<span style=\"font-size: 7px;\">уповноважена особа аптечного складу, дата, "
 "підпис</span>"
-msgstr ""
+msgstr "<span style=\"font-size: 7px;\">уповноважена особа аптечного складу, дата, підпис</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_signatures
 msgid ""
 "<span style=\"font-style: italic; font-size: 7px;\">Завідувач аптечного "
 "складу </span>"
-msgstr ""
+msgstr "<span style=\"font-style: italic; font-size: 7px;\">Завідувач аптечного складу </span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
@@ -295,6 +334,9 @@ msgid ""
 "                            Бухгалтер (відповідальна особа вантажовідправника)\n"
 "                        </span>"
 msgstr ""
+"<span>\n"
+"                            Бухгалтер (відповідальна особа вантажовідправника)\n"
+"                        </span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
@@ -303,6 +345,9 @@ msgid ""
 "                            Вантаж наданий для перевезень у стані що\n"
 "                        </span>"
 msgstr ""
+"<span>\n"
+"                            Вантаж наданий для перевезень у стані що\n"
+"                        </span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
@@ -311,6 +356,9 @@ msgid ""
 "                            Відпуск за довіреністю вантажоодержувача: серія\n"
 "                        </span>"
 msgstr ""
+"<span>\n"
+"                            Відпуск за довіреністю вантажоодержувача: серія\n"
+"                        </span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
@@ -320,6 +368,9 @@ msgid ""
 "                            Супровідні документи на вантаж\n"
 "                        </span>"
 msgstr ""
+"<span>\n"
+"                            Супровідні документи на вантаж\n"
+"                        </span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
@@ -328,6 +379,9 @@ msgid ""
 "                            Транспортні послуги, які надаються перевізником\n"
 "                        </span>"
 msgstr ""
+"<span>\n"
+"                            Транспортні послуги, які надаються перевізником\n"
+"                        </span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
@@ -337,6 +391,9 @@ msgid ""
 "                            Усього відпущено на загальну суму\n"
 "                        </span>"
 msgstr ""
+"<span>\n"
+"                            Усього відпущено на загальну суму\n"
+"                        </span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
@@ -346,6 +403,9 @@ msgid ""
 "                            кількість місць\n"
 "                        </span>"
 msgstr ""
+"<span>\n"
+"                            кількість місць\n"
+"                        </span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_4
@@ -354,76 +414,79 @@ msgid ""
 "                Продавець (Отримувач) зараховує переплату Покупця (Відправника), що виникає в результаті повернення товару в рахунок оплати Покупця за наступні поставки товару\n"
 "            </span>"
 msgstr ""
+"<span>\n"
+"                Продавець (Отримувач) зараховує переплату Покупця (Відправника), що виникає в результаті повернення товару в рахунок оплати Покупця за наступні поставки товару\n"
+"            </span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>(П.І.Б., номер посвідчення водія)</span>"
-msgstr ""
+msgstr "<span>(П.І.Б., номер посвідчення водія)</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>(П.І.Б., посада, підпис)</span>"
-msgstr ""
+msgstr "<span>(П.І.Б., посада, підпис)</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_2
 msgid "<span>(П.І.Б., посада, підпис, печатка)</span>"
-msgstr ""
+msgstr "<span>(П.І.Б., посада, підпис, печатка)</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 msgid "<span>(автомобіль/автопоїзд/комбінований транспортний засіб)</span>"
-msgstr ""
+msgstr "<span>(автомобіль/автопоїзд/комбінований транспортний засіб)</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>(відповідає/не відповідає)</span>"
-msgstr ""
+msgstr "<span>(відповідає/не відповідає)</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>(марка, модель, тип, реєстраційний номер)</span>"
-msgstr ""
+msgstr "<span>(марка, модель, тип, реєстраційний номер)</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>(місцезнаходження)</span>"
-msgstr ""
+msgstr "<span>(місцезнаходження)</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 msgid ""
 "<span>(найменування, місцезнаходження / П.І.Б., місце проживання нового "
 "одержувача; П.І.Б., посада та підпис відповідальної особи)</span>"
-msgstr ""
+msgstr "<span>(найменування, місцезнаходження / П.І.Б., місце проживання нового одержувача; П.І.Б., посада та підпис відповідальної особи)</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid ""
 "<span>(найменування, місцезнаходження/П.І.Б., місце проживання нового "
 "одержувача; П.І.Б., посада та підпис відповідальної особи)</span>"
-msgstr ""
+msgstr "<span>(найменування, місцезнаходження/П.І.Б., місце проживання нового одержувача; П.І.Б., посада та підпис відповідальної особи)</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>(найменування/П.І.Б.)</span>"
-msgstr ""
+msgstr "<span>(найменування/П.І.Б.)</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid ""
 "<span>(повне найменування, місцезнаходження/П.І.Б., місце проживання)</span>"
-msgstr ""
+msgstr "<span>(повне найменування, місцезнаходження/П.І.Б., місце проживання)</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_signatures
 msgid ""
 "<span>(прізвище (за наявності), власне ім'я та по-батькові (за наявності), "
 "посада, підпис)</span>"
-msgstr ""
+msgstr "<span>(прізвище (за наявності), власне ім'я та по-батькові (за наявності), посада, підпис)</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
@@ -432,6 +495,7 @@ msgid ""
 "унікальний номер запису в Єдиному державному демографічному реєстрі (за "
 "наявності), номер посвідчення водія)</span>"
 msgstr ""
+"<span>(прізвище (за наявності), власне ім'я та по-батькові (за наявності), унікальний номер запису в Єдиному державному демографічному реєстрі (за наявності), номер посвідчення водія)</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
@@ -440,34 +504,35 @@ msgid ""
 "унікальний номер запису в Єдиному державному демографічному реєстрі (за "
 "наявності), посада, підпис)</span>"
 msgstr ""
+"<span>(прізвище (за наявності), власне ім'я та по-батькові (за наявності), унікальний номер запису в Єдиному державному демографічному реєстрі (за наявності), посада, підпис)</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>(словами)</span>"
-msgstr ""
+msgstr "<span>(словами)</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>(словами, з урахуванням ПДВ)</span>"
-msgstr ""
+msgstr "<span>(словами, з урахуванням ПДВ)</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>, виданою</span>"
-msgstr ""
+msgstr "<span>, виданою</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>, масою брутто, т.</span>"
-msgstr ""
+msgstr "<span>, масою брутто, т.</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>, отримав водій/експедитор</span>"
-msgstr ""
+msgstr "<span>, отримав водій/експедитор</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_totals_3
@@ -476,70 +541,73 @@ msgid ""
 "                        <span style=\"display: inline-block; min-width: 100px;\"/>\n"
 "                        <span>/</span>"
 msgstr ""
+"<span>/</span>\n"
+"                        <span style=\"display: inline-block; min-width: 100px;\"/>\n"
+"                        <span>/</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_1
 msgid ""
 "<span><strong>Довіреність</strong> серія _______ / номер __________</span>"
-msgstr ""
+msgstr "<span><strong>Довіреність</strong> серія _______ / номер __________</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>Автомобіль</span>"
-msgstr ""
+msgstr "<span>Автомобіль</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>Автомобільий перевізник</span>"
-msgstr ""
+msgstr "<span>Автомобільий перевізник</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_4
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_refund_act
 msgid "<span>Автоперевезення</span>"
-msgstr ""
+msgstr "<span>Автоперевезення</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>Вантажовідправник</span>"
-msgstr ""
+msgstr "<span>Вантажовідправник</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>Вантажоодержувач</span>"
-msgstr ""
+msgstr "<span>Вантажоодержувач</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>Вид перевезень</span>"
-msgstr ""
+msgstr "<span>Вид перевезень</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_totals_2
 msgid "<span>Виписав:</span>"
-msgstr ""
+msgstr "<span>Виписав:</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>Водій</span>"
-msgstr ""
+msgstr "<span>Водій</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 msgid "<span>Відомості про транспортний засіб</span>"
-msgstr ""
+msgstr "<span>Відомості про транспортний засіб</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>Відпуск дозволив</span>"
-msgstr ""
+msgstr "<span>Відпуск дозволив</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_new_waybill
@@ -549,6 +617,10 @@ msgid ""
 "                            <span>(пункт 11.1 глави 11)</span><br/>\n"
 "                            <span>Форма № 1-ТН</span><br/>"
 msgstr ""
+"<span>Додаток 7</span><br/>\n"
+"                            <span>до Правил перевезення вантажів автомобільним транспортом в Україні</span><br/>\n"
+"                            <span>(пункт 11.1 глави 11)</span><br/>\n"
+"                            <span>Форма № 1-ТН</span><br/>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_waybill
@@ -557,393 +629,396 @@ msgid ""
 "                            <span>до Правил перевезення вантажів автомобільним транспортом в Україні</span><br/>\n"
 "                            <span>Форма № 1-ТН</span><br/>"
 msgstr ""
+"<span>Додаток 7</span><br/>\n"
+"                            <span>до Правил перевезення вантажів автомобільним транспортом в Україні</span><br/>\n"
+"                            <span>Форма № 1-ТН</span><br/>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_signatures
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_2
 msgid "<span>Здав (відповідальна особа вантажовідправника)</span>"
-msgstr ""
+msgstr "<span>Здав (відповідальна особа вантажовідправника)</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_2
 msgid "<span>Здав водій/експедитор</span>"
-msgstr ""
+msgstr "<span>Здав водій/експедитор</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 msgid "<span>Місце складання</span>"
-msgstr ""
+msgstr "<span>Місце складання</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>Переадресування вантажу</span>"
-msgstr ""
+msgstr "<span>Переадресування вантажу</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>Покупець</span>"
-msgstr ""
+msgstr "<span>Покупець</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_1
 msgid "<span>Посада</span>"
-msgstr ""
+msgstr "<span>Посада</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid ""
 "<span>Правилам перевезень відповідних вантажів, номер пломби (за "
 "наявності)</span>"
-msgstr ""
+msgstr "<span>Правилам перевезень відповідних вантажів, номер пломби (за наявності)</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_signatures
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_2
 msgid "<span>Прийняв (відповідальна особа вантажоодержувача)</span>"
-msgstr ""
+msgstr "<span>Прийняв (відповідальна особа вантажоодержувача)</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_2
 msgid "<span>Прийняв водій/експедитор</span>"
-msgstr ""
+msgstr "<span>Прийняв водій/експедитор</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>Причіп/напівпричіп</span>"
-msgstr ""
+msgstr "<span>Причіп/напівпричіп</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>Пункт навантаження</span>"
-msgstr ""
+msgstr "<span>Пункт навантаження</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>Пункт розвантаження</span>"
-msgstr ""
+msgstr "<span>Пункт розвантаження</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_totals_2
 msgid "<span>Разом:</span>"
-msgstr ""
+msgstr "<span>Разом:</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_new_waybill
 msgid "<span>Товари медичного призначення</span>"
-msgstr ""
+msgstr "<span>Товари медичного призначення</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>від</span>"
-msgstr ""
+msgstr "<span>від</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>завідувач аптечного складу </span>"
-msgstr ""
+msgstr "<span>завідувач аптечного складу </span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_4
 msgid "<span>завідувач аптечного складу</span>"
-msgstr ""
+msgstr "<span>завідувач аптечного складу</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_signatures
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_3
 msgid "<span>завідувач складу</span>"
-msgstr ""
+msgstr "<span>завідувач складу</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>у т.ч. ПДВ</span>"
-msgstr ""
+msgstr "<span>у т.ч. ПДВ</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "<span>№</span>"
-msgstr ""
+msgstr "<span>№</span>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_2
 msgid "<strong>10</strong>"
-msgstr ""
+msgstr "<strong>10</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_2
 msgid "<strong>11</strong>"
-msgstr ""
+msgstr "<strong>11</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_2
 msgid "<strong>12</strong>"
-msgstr ""
+msgstr "<strong>12</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_2
 msgid "<strong>13</strong>"
-msgstr ""
+msgstr "<strong>13</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_2
 msgid "<strong>14</strong>"
-msgstr ""
+msgstr "<strong>14</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_2
 msgid "<strong>15</strong>"
-msgstr ""
+msgstr "<strong>15</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_act_header
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_header
 msgid "<strong>ЄДРПОУ:</strong>"
-msgstr ""
+msgstr "<strong>ЄДРПОУ:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_act_header
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_header
 msgid "<strong>Адреса:</strong>"
-msgstr ""
+msgstr "<strong>Адреса:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_act_header
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_header
 msgid "<strong>Банк:</strong>"
-msgstr ""
+msgstr "<strong>Банк:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_totals_3
 msgid "<strong>В т.ч. ПДВ:</strong>"
-msgstr ""
+msgstr "<strong>В т.ч. ПДВ:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_4
 msgid "<strong>В тому числі ПДВ: </strong>"
-msgstr ""
+msgstr "<strong>В тому числі ПДВ: </strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid "<strong>ВСЬОГО:</strong>"
-msgstr ""
+msgstr "<strong>ВСЬОГО:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_act_header
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_header
 msgid "<strong>Виконавець (Зберігач):</strong>"
-msgstr ""
+msgstr "<strong>Виконавець (Зберігач):</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_totals_2
 msgid "<strong>Виписав:</strong>"
-msgstr ""
+msgstr "<strong>Виписав:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_4
 msgid "<strong>Всього без ПДВ:</strong>"
-msgstr ""
+msgstr "<strong>Всього без ПДВ:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_4
 msgid "<strong>Всього з ПДВ:</strong>"
-msgstr ""
+msgstr "<strong>Всього з ПДВ:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_4
 msgid "<strong>Всього на суму: </strong>"
-msgstr ""
+msgstr "<strong>Всього на суму: </strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_table
 msgid "<strong>Всього по документу:</strong>"
-msgstr ""
+msgstr "<strong>Всього по документу:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_3
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_custody_act
 msgid "<strong>Всього:</strong>"
-msgstr ""
+msgstr "<strong>Всього:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_6
 msgid "<strong>Відвантажив:</strong>"
-msgstr ""
+msgstr "<strong>Відвантажив:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_1
 msgid "<strong>Відвантажив</strong>"
-msgstr ""
+msgstr "<strong>Відвантажив</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_4
 msgid "<strong>Відвантажувач:</strong><br/>"
-msgstr ""
+msgstr "<strong>Відвантажувач:</strong><br/>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_5
 msgid "<strong>Відповідальний менеджер:</strong>"
-msgstr ""
+msgstr "<strong>Відповідальний менеджер:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_act_header
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_header
 msgid "<strong>Депонент (Поклажодавець):</strong>"
-msgstr ""
+msgstr "<strong>Депонент (Поклажодавець):</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_1
 msgid "<strong>До сплати:</strong>"
-msgstr ""
+msgstr "<strong>До сплати:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_6
 msgid "<strong>Довіреність:</strong>"
-msgstr ""
+msgstr "<strong>Довіреність:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_1
 msgid "<strong>Дозволено / не дозволено <br/>до реалізації</strong>"
-msgstr ""
+msgstr "<strong>Дозволено / не дозволено <br/>до реалізації</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_1
 msgid "<strong>Дозволено / не дозволено <br/>до транспортування</strong>"
-msgstr ""
+msgstr "<strong>Дозволено / не дозволено <br/>до транспортування</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_6
 msgid "<strong>Дозволено/не дозволено до транспортування:</strong>"
-msgstr ""
+msgstr "<strong>Дозволено/не дозволено до транспортування:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_act_header
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_header
 msgid "<strong>Місце зберігання майна:</strong>"
-msgstr ""
+msgstr "<strong>Місце зберігання майна:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_recipient_header_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_6
 msgid "<strong>Місце складання:</strong>"
-msgstr ""
+msgstr "<strong>Місце складання:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_payment_info_3
 msgid "<strong>Місце складання:</strong><br/>"
-msgstr ""
+msgstr "<strong>Місце складання:</strong><br/>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_recipient_header_2
 msgid "<strong>Одержувач:</strong><br/>"
-msgstr ""
+msgstr "<strong>Одержувач:</strong><br/>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_6
 msgid "<strong>Отримав:</strong>"
-msgstr ""
+msgstr "<strong>Отримав:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_1
 msgid "<strong>Отримав</strong>"
-msgstr ""
+msgstr "<strong>Отримав</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_recipient_header_3
 msgid "<strong>Отримувач:</strong><br/>"
-msgstr ""
+msgstr "<strong>Отримувач:</strong><br/>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_6
 msgid "<strong>П.І.Б.</strong>"
-msgstr ""
+msgstr "<strong>П.І.Б.</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_6
 msgid "<strong>ПДВ:</strong>"
-msgstr ""
+msgstr "<strong>ПДВ:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_payment_info_1
 msgid "<strong>Платник: </strong> той самий<br/>"
-msgstr ""
+msgstr "<strong>Платник: </strong> той самий<br/>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_payment_info_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_payment_info_3
 msgid "<strong>Платник:</strong><br/>"
-msgstr ""
+msgstr "<strong>Платник:</strong><br/>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_6
 msgid "<strong>Посада:</strong>"
-msgstr ""
+msgstr "<strong>Посада:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_3
 msgid "<strong>Постачальник:</strong><br/>"
-msgstr ""
+msgstr "<strong>Постачальник:</strong><br/>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_5
 msgid "<strong>Президент:</strong>"
-msgstr ""
+msgstr "<strong>Президент:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_3
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_refund_act
 msgid "<strong>Разом:</strong>"
-msgstr ""
+msgstr "<strong>Разом:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_6
 msgid "<strong>Сума без ПДВ:</strong>"
-msgstr ""
+msgstr "<strong>Сума без ПДВ:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_totals_3
 msgid "<strong>Сума в облікових цінах:</strong>"
-msgstr ""
+msgstr "<strong>Сума в облікових цінах:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_totals_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_totals_3
 msgid "<strong>Сума в роздрібних цінах:</strong>"
-msgstr ""
+msgstr "<strong>Сума в роздрібних цінах:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_6
 msgid "<strong>Сума з ПДВ:</strong>"
-msgstr ""
+msgstr "<strong>Сума з ПДВ:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_payment_info_1
 msgid "<strong>Термін сплати:</strong>"
-msgstr ""
+msgstr "<strong>Термін сплати:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_co
 msgid "<strong>У  вартості обладнання враховано:</strong>"
-msgstr ""
+msgstr "<strong>У  вартості обладнання враховано:</strong>"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_6
 msgid "<strong>Уповноважена особа аптечного складу:</strong>"
-msgstr ""
+msgstr "<strong>Уповноважена особа аптечного складу:</strong>"
 
 #. module: td_medicus_report
 #: model:ir.model,name:td_medicus_report.model_account_move
@@ -969,7 +1044,7 @@ msgstr "Довжина кузова, м"
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.fleet_vehicle_view_form_ttn_inherit
 msgid "Body Parameters"
-msgstr ""
+msgstr "Параметри тіла"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_fleet_vehicle__td_body_width
@@ -1015,12 +1090,12 @@ msgstr "Створити видаткову"
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_td_stock_condition__create_uid
 msgid "Created by"
-msgstr ""
+msgstr "Створено користувачем"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_td_stock_condition__create_date
 msgid "Created on"
-msgstr ""
+msgstr "Створено"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_custody_act_date
@@ -1030,12 +1105,12 @@ msgstr "Дата акту"
 #. module: td_medicus_report
 #: model:ir.model.fields,help:td_medicus_report.field_stock_picking__td_custody_act_date
 msgid "Date of the custody act related to this delivery order"
-msgstr ""
+msgstr "Дата акта відповідального зберігання, пов’язаного з цим замовленням на доставку"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,help:td_medicus_report.field_stock_picking__td_invoice_date
 msgid "Date of the invoice related to this delivery order"
-msgstr ""
+msgstr "Дата рахунку, пов’язаного з цим замовленням на доставку"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_td_stock_condition__description
@@ -1050,7 +1125,7 @@ msgstr "Розміри та вантажопідйомність"
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_td_stock_condition__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Назва для відображення"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_hired_driver
@@ -1089,14 +1164,14 @@ msgid "Employee"
 msgstr "Співробітник"
 
 #. module: td_medicus_report
-#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_gross_weight_
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_gross_weight
 msgid "Gross Weight (tons)"
 msgstr "Маса брутто (тонн)"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_res_company__td_head_medical_equipment_sales_id
 msgid "Head of Medical Equipment Sales Department"
-msgstr ""
+msgstr "Керівник відділу продажу медичного обладнання"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_vehicle_height
@@ -1111,13 +1186,13 @@ msgstr "Найм"
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_td_stock_condition__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,help:td_medicus_report.field_res_partner__use_in_vendor_refund_report
 #: model:ir.model.fields,help:td_medicus_report.field_res_users__use_in_vendor_refund_report
 msgid "If checked, this contact will be used in the \"Vendor Refund Report\"."
-msgstr ""
+msgstr "Якщо позначено, цей контакт буде використовуватися у звіті повернення постачальнику."
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_order_implementation_document
@@ -1128,7 +1203,7 @@ msgstr "Документ реалізації"
 #: model:ir.model.fields,help:td_medicus_report.field_sale_order__td_invoice_from_delivery
 msgid ""
 "Indicates whether the invoice should be created from the delivery order."
-msgstr ""
+msgstr "Вказує, чи потрібно створювати рахунок із замовлення на доставку."
 
 #. module: td_medicus_report
 #: model:ir.model,name:td_medicus_report.model_stock_location
@@ -1143,22 +1218,22 @@ msgstr "Дата видаткової"
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_invoice_for_pick_id
 msgid "Invoice for Picking"
-msgstr ""
+msgstr "Рахунок для переміщення"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_sale_order__td_invoice_from_delivery
 msgid "Invoice from Delivery"
-msgstr ""
+msgstr "Рахунок із доставки"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_td_stock_condition__write_uid
 msgid "Last Updated by"
-msgstr ""
+msgstr "Востаннє оновив"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_td_stock_condition__write_date
 msgid "Last Updated on"
-msgstr ""
+msgstr "Востаннє оновлено"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_vehicle_length
@@ -1174,7 +1249,7 @@ msgstr "Номер ліцензії"
 #. module: td_medicus_report
 #: model:ir.model.fields,help:td_medicus_report.field_stock_picking__td_ttn_license_number
 msgid "License plate number of the vehicle (i = plate number for a car)"
-msgstr ""
+msgstr "Реєстраційний номер транспортного засобу"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_co_header
@@ -1186,7 +1261,7 @@ msgstr "Лого"
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_res_company__td_medical_equipment_engineer_id
 msgid "Medical Equipment Engineer"
-msgstr ""
+msgstr "Інженер з медичного обладнання"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_res_company__td_medical_warehouse_manager_id
@@ -1196,7 +1271,7 @@ msgstr "Уповноважена особа з аптечного складу"
 #. module: td_medicus_report
 #: model:ir.model,name:td_medicus_report.model_td_amount_to_words_mixin
 msgid "Mixin to convert amount to words in Ukrainian"
-msgstr ""
+msgstr "Міксин для перетворення суми прописом українською мовою"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_places_count
@@ -1221,12 +1296,12 @@ msgstr "Власність"
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_co_header
 msgid "Partners"
-msgstr ""
+msgstr "Партнери"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_res_company__td_president_id
 msgid "President"
-msgstr ""
+msgstr "Президент"
 
 #. module: td_medicus_report
 #: model:ir.model,name:td_medicus_report.model_ir_actions_report
@@ -1236,7 +1311,7 @@ msgstr "Дія звіту"
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_res_company__td_responsible_manager_id
 msgid "Responsible Manager"
-msgstr ""
+msgstr "Відповідальний менеджер"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_view_company_form_responsible
@@ -1269,12 +1344,12 @@ msgstr "ПІБ"
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_show_create_custody_act_button
 msgid "Show Create Custody Act Button"
-msgstr ""
+msgstr "Показати кнопку створення акта відповідального зберігання"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_show_create_invoice_button
 msgid "Show Create Invoice Button"
-msgstr ""
+msgstr "Показати кнопку створення рахунку"
 
 #. module: td_medicus_report
 #: model:ir.model,name:td_medicus_report.model_td_stock_condition
@@ -1301,7 +1376,7 @@ msgstr "Умови зберігання, пов'язані з цим місце�
 #. module: td_medicus_report
 #: model:ir.model.fields,help:td_medicus_report.field_stock_picking__td_invoice_for_pick_id
 msgid "The invoice created from this picking"
-msgstr ""
+msgstr "Рахунок, створений із цього переміщення"
 
 #. module: td_medicus_report
 #: model:ir.model.fields.selection,name:td_medicus_report.selection__stock_picking__td_ttn_transport_type__hired
@@ -1333,37 +1408,37 @@ msgstr "Використовувати в 'Повернення постачал
 #. module: td_medicus_report
 #: model:ir.model.fields,help:td_medicus_report.field_res_company__td_president_id
 msgid "User holding the position of president."
-msgstr ""
+msgstr "Користувач, який обіймає посаду президента."
 
 #. module: td_medicus_report
 #: model:ir.model.fields,help:td_medicus_report.field_res_company__td_vice_president_id
 msgid "User holding the position of vice president."
-msgstr ""
+msgstr "Користувач, який обіймає посаду віцепрезидента."
 
 #. module: td_medicus_report
 #: model:ir.model.fields,help:td_medicus_report.field_res_company__td_head_medical_equipment_sales_id
 msgid "User responsible for heading the medical equipment sales department."
-msgstr ""
+msgstr "Користувач, відповідальний за керівництво відділом продажу медичного обладнання."
 
 #. module: td_medicus_report
 #: model:ir.model.fields,help:td_medicus_report.field_res_company__td_medical_equipment_engineer_id
 msgid "User responsible for medical equipment engineering tasks."
-msgstr ""
+msgstr "Користувач, відповідальний за інженерні завдання щодо медичного обладнання."
 
 #. module: td_medicus_report
 #: model:ir.model.fields,help:td_medicus_report.field_res_company__td_medical_warehouse_manager_id
 msgid "User responsible for medical warehouse management tasks."
-msgstr ""
+msgstr "Користувач, відповідальний за управління аптечним складом."
 
 #. module: td_medicus_report
 #: model:ir.model.fields,help:td_medicus_report.field_res_company__td_responsible_manager_id
 msgid "User responsible for overseeing operations."
-msgstr ""
+msgstr "Користувач, відповідальний за контроль операцій."
 
 #. module: td_medicus_report
 #: model:ir.model.fields,help:td_medicus_report.field_res_company__td_warehouse_manager_id
 msgid "User responsible for warehouse management tasks."
-msgstr ""
+msgstr "Користувач, відповідальний за управління складом."
 
 #. module: td_medicus_report
 #: model:ir.model,name:td_medicus_report.model_fleet_vehicle
@@ -1375,12 +1450,12 @@ msgstr "Транспортний засіб"
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_vehicle_dimensions_manual
 msgid "Vehicle dimensions entered manually"
-msgstr ""
+msgstr "Габарити транспортного засобу введено вручну"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_res_company__td_vice_president_id
 msgid "Vice President"
-msgstr ""
+msgstr "Віцепрезидент"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_res_company__td_warehouse_manager_id
@@ -1397,308 +1472,308 @@ msgstr "Ширина, м"
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_recipient_header_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_3
 msgid "ЄДРПОУ:"
-msgstr ""
+msgstr "ЄДРПОУ:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_recipient_header_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_3
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_4
 msgid "ІПН"
-msgstr ""
+msgstr "ІПН"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_3
 msgid "Ідентифікаційний код ЄДРПОУ:"
-msgstr ""
+msgstr "Ідентифікаційний код ЄДРПОУ:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_new_waybill
 msgid "Ідентифікаційний номер тварини від якої отримано сировину*"
-msgstr ""
+msgstr "Ідентифікаційний номер тварини від якої отримано сировину*"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_2
 msgid "Адреса доставки:"
-msgstr ""
+msgstr "Адреса доставки:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_payment_info_3
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_3
 msgid "Адреса:"
-msgstr ""
+msgstr "Адреса:"
 
 #. module: td_medicus_report
 #: model:ir.actions.report,name:td_medicus_report.action_report_custody_balance
 msgid "Акт звірки залишків на відповідальному зберіганні"
-msgstr ""
+msgstr "Акт звірки залишків на відповідальному зберіганні"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_title
 msgid "Акт звірки на"
-msgstr ""
+msgstr "Акт звірки на"
 
 #. module: td_medicus_report
 #: model:ir.actions.report,name:td_medicus_report.action_report_completion_act
 msgid "Акт комплектації"
-msgstr ""
+msgstr "Акт комплектації"
 
 #. module: td_medicus_report
 #: model:ir.actions.report,name:td_medicus_report.action_report_custody_transfer_act
 msgid "Акт передачі на відповідальне зберігання"
-msgstr ""
+msgstr "Акт передачі на відповідальне зберігання"
 
 #. module: td_medicus_report
 #: model:ir.actions.report,name:td_medicus_report.action_report_custody_return_act
 msgid "Акт повернення з відповідального зберігання"
-msgstr ""
+msgstr "Акт повернення з відповідального зберігання"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid "Бухгалтер ____________________"
-msgstr ""
+msgstr "Бухгалтер ____________________"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_refund_act
 msgid "В т.ч. ПДВ:"
-msgstr ""
+msgstr "В т.ч. ПДВ:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_new_waybill
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_waybill
 msgid "ВІДОМОСТІ ПРО ВАНТАЖ"
-msgstr ""
+msgstr "ВІДОМОСТІ ПРО ВАНТАЖ"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_2
 msgid "ВАНТАЖНО-РОЗВАНТАЖУВАЛЬНІ ОПЕРАЦІЇ"
-msgstr ""
+msgstr "ВАНТАЖНО-РОЗВАНТАЖУВАЛЬНІ ОПЕРАЦІЇ"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_new_waybill
 msgid "ВН №"
-msgstr ""
+msgstr "ВН №"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_new_waybill
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_waybill
 msgid "Вид пакування"
-msgstr ""
+msgstr "Вид пакування"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_new_waybill
 msgid "Вид тварини*"
-msgstr ""
+msgstr "Вид тварини*"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_title_1
 msgid "Видаткова накладна №"
-msgstr ""
+msgstr "Видаткова накладна №"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_signatures
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_3
 msgid "Виконавець"
-msgstr ""
+msgstr "Виконавець"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid ""
 "Вищевказана номенклатурна позиція товару укомплектована (непотрібне "
 "закреслити):"
-msgstr ""
+msgstr "Вищевказана номенклатурна позиція товару укомплектована (непотрібне закреслити):"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_refund_act
 msgid "Всього на суму:"
-msgstr ""
+msgstr "Всього на суму:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_table
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_custody_act
 msgid "Всього передано на суму:"
-msgstr ""
+msgstr "Всього передано на суму:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_new_waybill
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_waybill
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_totals_2
 msgid "Всього:"
-msgstr ""
+msgstr "Всього:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid "Відмітка бухгалтерії ФармРН 389 (27.01.25)"
-msgstr ""
+msgstr "Відмітка бухгалтерії ФармРН 389 (27.01.25)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid "Відпуск дозволив:"
-msgstr ""
+msgstr "Відпуск дозволив:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_3
 msgid "Відпускна <br/>ціна <br/>(грн.)"
-msgstr ""
+msgstr "Відпускна <br/>ціна <br/>(грн.)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_1
 msgid "Відпускна<br/>ціна (грн.)"
-msgstr ""
+msgstr "Відпускна<br/>ціна (грн.)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_4
 msgid "Відпустив"
-msgstr ""
+msgstr "Відпустив"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid "Відпустив:"
-msgstr ""
+msgstr "Відпустив:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_3
 msgid "Віце-президент"
-msgstr ""
+msgstr "Віце-президент"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_title_4
 msgid "Голова комісії:"
-msgstr ""
+msgstr "Голова комісії:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_view_picking_form_inherit
 msgid "Дані для ТТН"
-msgstr ""
+msgstr "Дані для ТТН"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_4
 msgid "Дата"
-msgstr ""
+msgstr "Дата"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_title_4
 msgid "Дата складання"
-msgstr ""
+msgstr "Дата складання"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_signatures
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_3
 msgid "Депонент"
-msgstr ""
+msgstr "Депонент"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_title
 msgid ""
 "Депонент прийняв, а виконавець повернув з відповідального зберігання "
 "наступне майно:"
-msgstr ""
+msgstr "Депонент прийняв, а виконавець повернув з відповідального зберігання наступне майно:"
 
 #. module: td_medicus_report
 #: model:ir.actions.report,name:td_medicus_report.action_report_ordering_eye_lenses
 msgid "Для складу"
-msgstr ""
+msgstr "Для складу"
 
 #. module: td_medicus_report
 #: model:ir.actions.report,name:td_medicus_report.action_report_warehouse_order
 msgid "Для складу (з серіями)"
-msgstr ""
+msgstr "Для складу (з серіями)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_3
 msgid "До сплати:"
-msgstr ""
+msgstr "До сплати:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_4
 msgid "Док. постачальника"
-msgstr ""
+msgstr "Док. постачальника"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_table
 msgid "Документ:"
-msgstr ""
+msgstr "Документ:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_new_waybill
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_waybill
 msgid "Документи з вантажем"
-msgstr ""
+msgstr "Документи з вантажем"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_3
 msgid "ЗАТВЕРДЖУЮ"
-msgstr ""
+msgstr "ЗАТВЕРДЖУЮ"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_new_waybill
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_waybill
 msgid "Загальна сума з ПДВ, грн"
-msgstr ""
+msgstr "Загальна сума з ПДВ, грн"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_2
 msgid "Замовлення для док.:"
-msgstr ""
+msgstr "Замовлення для док.:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_2
 msgid "Замовлення №"
-msgstr ""
+msgstr "Замовлення №"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_co
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_refund_act
 msgid "К-ть"
-msgstr ""
+msgstr "К-ть"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_co_info
 msgid "КОМЕРЦІЙНА ПРОПОЗИЦІЯ №"
-msgstr ""
+msgstr "КОМЕРЦІЙНА ПРОПОЗИЦІЯ №"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid "Каталожний номер"
-msgstr ""
+msgstr "Каталожний номер"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_2
 msgid "Клієнт:"
-msgstr ""
+msgstr "Клієнт:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_4
 msgid "Код ЄДРПОУ:"
-msgstr ""
+msgstr "Код ЄДРПОУ:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_co
 msgid "Код НК"
-msgstr ""
+msgstr "Код НК"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid "Код УКТ ЗЕД"
-msgstr ""
+msgstr "Код УКТ ЗЕД"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_6
 msgid "Коефіцієнт торгової надбавки"
-msgstr ""
+msgstr "Коефіцієнт торгової надбавки"
 
 #. module: td_medicus_report
 #: model:ir.actions.report,name:td_medicus_report.action_report_commercial_offer
 #: model:ir.actions.report,name:td_medicus_report.action_report_commercial_offer_inv
 msgid "Комерційна пропозиція"
-msgstr ""
+msgstr "Комерційна пропозиція"
 
 #. module: td_medicus_report
 #: model:ir.actions.report,name:td_medicus_report.action_report_commercial_offer_components
 msgid "Комерційна пропозиція (компоненти)"
-msgstr ""
+msgstr "Комерційна пропозиція (компоненти)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_title_4
@@ -1706,16 +1781,18 @@ msgid ""
 "Комісія, яка створена на підставі наказу \n"
 "                        від"
 msgstr ""
+"Комісія, яка створена на підставі наказу \n"
+"                        від"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_recipient_header_3
 msgid "Контактна особа:"
-msgstr ""
+msgstr "Контактна особа:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_title_4
 msgid "Кореспондуючий рахунок"
-msgstr ""
+msgstr "Кореспондуючий рахунок"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_table
@@ -1727,20 +1804,20 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_6
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_custody_act
 msgid "Кількість"
-msgstr ""
+msgstr "Кількість"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_new_waybill
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_waybill
 msgid "Кількість місць"
-msgstr ""
+msgstr "Кількість місць"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_recipient_header_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_3
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_4
 msgid "МФО"
-msgstr ""
+msgstr "МФО"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_2
@@ -1748,35 +1825,35 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_waybill
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_2
 msgid "Маса брутто, т"
-msgstr ""
+msgstr "Маса брутто, т"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_4
 msgid "Митна вартість"
-msgstr ""
+msgstr "Митна вартість"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_6
 msgid "Митна вартість (грн.)"
-msgstr ""
+msgstr "Митна вартість (грн.)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_signatures
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_3
 msgid "Місце складання:"
-msgstr ""
+msgstr "Місце складання:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_act_title
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_title
 msgid "На підставі Договору відповідального зберігання №"
-msgstr ""
+msgstr "На підставі Договору відповідального зберігання №"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_2
 msgid "Навантаження"
-msgstr ""
+msgstr "Навантаження"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_1
@@ -1786,21 +1863,21 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_6
 msgid "Найменування"
-msgstr ""
+msgstr "Найменування"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_table
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_custody_act
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_refund_act
 msgid "Найменування / Виробник"
-msgstr ""
+msgstr "Найменування / Виробник"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_waybill
 msgid ""
 "Найменування вантажу (номер контейнера), у разі перевезення небезпечних  "
 "вантажів: клас небезпечних речовин, до якого віднесено вантаж"
-msgstr ""
+msgstr "Найменування вантажу (номер контейнера), у разі перевезення небезпечних  вантажів: клас небезпечних речовин, до якого віднесено вантаж"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_new_waybill
@@ -1809,253 +1886,254 @@ msgid ""
 "номер контейнера; клас небезпечних речовин, до якого віднесено вантаж, у "
 "разі перевезення небезпечних  вантажів"
 msgstr ""
+"Найменування вантажу(туші, напівтуші, четвертини, відруби, шматки м'яса)* / номер контейнера; клас небезпечних речовин, до якого віднесено вантаж, у разі перевезення небезпечних  вантажів"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_co
 msgid "Найменування товару"
-msgstr ""
+msgstr "Найменування товару"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_waybill
 msgid "Накл. №"
-msgstr ""
+msgstr "Накл. №"
 
 #. module: td_medicus_report
 #: model:ir.actions.report,name:td_medicus_report.action_report_refund_act_td
 msgid "Накладна на повернення"
-msgstr ""
+msgstr "Накладна на повернення"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_title_2
 msgid "Накладна на повернення №"
-msgstr ""
+msgstr "Накладна на повернення №"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_4
 msgid "Номер"
-msgstr ""
+msgstr "Номер"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_title_4
 msgid "Номер документу"
-msgstr ""
+msgstr "Номер документу"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_3
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_refund_act
 msgid "Од."
-msgstr ""
+msgstr "Од."
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_co
 msgid "Од. вим."
-msgstr ""
+msgstr "Од. вим."
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_4
 msgid "Од. виміру"
-msgstr ""
+msgstr "Од. виміру"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_1
 msgid "Од.<br/>вим."
-msgstr ""
+msgstr "Од.<br/>вим."
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_recipient_header_1
 msgid "Одержувач:"
-msgstr ""
+msgstr "Одержувач:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_custody_act
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_waybill
 msgid "Одиниця виміру"
-msgstr ""
+msgstr "Одиниця виміру"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_new_waybill
 msgid "Одиниця вимірювання"
-msgstr ""
+msgstr "Одиниця вимірювання"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_2
 msgid "Операція"
-msgstr ""
+msgstr "Операція"
 
 #. module: td_medicus_report
 #: model:ir.actions.report,name:td_medicus_report.action_report_wholesale_invoice_invoice
 #: model:ir.actions.report,name:td_medicus_report.action_report_wholesale_invoice_picking
 msgid "Оптова накладна"
-msgstr ""
+msgstr "Оптова накладна"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_4
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_totals_3
 msgid "Отримав"
-msgstr ""
+msgstr "Отримав"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid "Отримані комплектуючі оприбутковано як номенклатурна позиція товару:"
-msgstr ""
+msgstr "Отримані комплектуючі оприбутковано як номенклатурна позиція товару:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_co_info
 msgid "Отримувач:"
-msgstr ""
+msgstr "Отримувач:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_3
 msgid "ПДВ:"
-msgstr ""
+msgstr "ПДВ:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_payment_info_1
 msgid "Платник:"
-msgstr ""
+msgstr "Платник:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_payment_info_3
 msgid "По договору:"
-msgstr ""
+msgstr "По договору:"
 
 #. module: td_medicus_report
 #: model:ir.actions.report,name:td_medicus_report.action_report_return_from_stock
 msgid "Повернення з переміщення"
-msgstr ""
+msgstr "Повернення з переміщення"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_2
 msgid "Повернення з переміщення №"
-msgstr ""
+msgstr "Повернення з переміщення №"
 
 #. module: td_medicus_report
 #: model:ir.actions.report,name:td_medicus_report.action_report_vendor_refund_act
 msgid "Повернення постачальнику"
-msgstr ""
+msgstr "Повернення постачальнику"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_signatures
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_totals_3
 msgid "Повернув"
-msgstr ""
+msgstr "Повернув"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_2
 msgid "Повернув:"
-msgstr ""
+msgstr "Повернув:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_4
 msgid "Посада"
-msgstr ""
+msgstr "Посада"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_1
 msgid "Постачальник:"
-msgstr ""
+msgstr "Постачальник:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_signatures
 msgid "Прийняв"
-msgstr ""
+msgstr "Прийняв"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_2
 msgid "Прийняв:"
-msgstr ""
+msgstr "Прийняв:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_co_info
 msgid "Підготував:"
-msgstr ""
+msgstr "Підготував:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_2
 msgid "Підпис відповідальної особи"
-msgstr ""
+msgstr "Підпис відповідальної особи"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_2
 msgid "Підстава:"
-msgstr ""
+msgstr "Підстава:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid ""
 "Після закінчення комплектації та діагностики, конфліктів обладнання не "
 "встановлено, номенклатурна позиція товару готова до продажу."
-msgstr ""
+msgstr "Після закінчення комплектації та діагностики, конфліктів обладнання не встановлено, номенклатурна позиція товару готова до продажу."
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_recipient_header_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_4
 msgid "Р/р"
-msgstr ""
+msgstr "Р/р"
 
 #. module: td_medicus_report
 #: model:ir.actions.report,name:td_medicus_report.action_report_invoice_act
 msgid "Рахунок-фактура"
-msgstr ""
+msgstr "Рахунок-фактура"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_title_3
 msgid "Рахунок-фактура №"
-msgstr ""
+msgstr "Рахунок-фактура №"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_6
 msgid "Реєстрація"
-msgstr ""
+msgstr "Реєстрація"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_2
 msgid "Розвантаження"
-msgstr ""
+msgstr "Розвантаження"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_2
 msgid "Роздрібна <br/>сума без ПДВ <br/>(грн.)"
-msgstr ""
+msgstr "Роздрібна <br/>сума без ПДВ <br/>(грн.)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_2
 msgid "Роздрібна <br/>сума з ПДВ <br/>(грн.)"
-msgstr ""
+msgstr "Роздрібна <br/>сума з ПДВ <br/>(грн.)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_2
 msgid "Роздрібна <br/>ціна без ПДВ <br/>(грн.)"
-msgstr ""
+msgstr "Роздрібна <br/>ціна без ПДВ <br/>(грн.)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_2
 msgid "Роздрібна <br/>ціна з ПДВ <br/>(грн.)"
-msgstr ""
+msgstr "Роздрібна <br/>ціна з ПДВ <br/>(грн.)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_6
 msgid "Роздрібна сума (грн.)"
-msgstr ""
+msgstr "Роздрібна сума (грн.)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_6
 msgid "Роздрібна ціна (грн.)"
-msgstr ""
+msgstr "Роздрібна ціна (грн.)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_2
 msgid "Розташування"
-msgstr ""
+msgstr "Розташування"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_6
 msgid "Сертифікат якості"
-msgstr ""
+msgstr "Сертифікат якості"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_table
@@ -2064,95 +2142,95 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_6
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_refund_act
 msgid "Серія"
-msgstr ""
+msgstr "Серія"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_2
 msgid "Серія / Каталожний номер"
-msgstr ""
+msgstr "Серія / Каталожний номер"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_custody_act
 msgid "Серія /<br/>Каталожний номер"
-msgstr ""
+msgstr "Серія /<br/>Каталожний номер"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_2
 msgid "Склад:"
-msgstr ""
+msgstr "Склад:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid "Склали цей акт про те, що відповідно до умов Договору"
-msgstr ""
+msgstr "Склали цей акт про те, що відповідно до умов Договору"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_2
 msgid "Співробітник:"
-msgstr ""
+msgstr "Співробітник:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid "Ставка ПДВ, %"
-msgstr ""
+msgstr "Ставка ПДВ, %"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_co_info
 msgid "Строк дії:"
-msgstr ""
+msgstr "Строк дії:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_co_info
 msgid "Строк поставки:"
-msgstr ""
+msgstr "Строк поставки:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_refund_act
 msgid "Сума"
-msgstr ""
+msgstr "Сума"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_table
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_custody_act
 msgid "Сума (грн.)"
-msgstr ""
+msgstr "Сума (грн.)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_3
 msgid "Сума <br/>(грн.)"
-msgstr ""
+msgstr "Сума <br/>(грн.)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_4
 msgid "Сума без ПДВ"
-msgstr ""
+msgstr "Сума без ПДВ"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_refund_act
 msgid "Сума з ПДВ"
-msgstr ""
+msgstr "Сума з ПДВ"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_6
 msgid "Сума облікова (грн.)"
-msgstr ""
+msgstr "Сума облікова (грн.)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid "Сума, грн (облікова)"
-msgstr ""
+msgstr "Сума, грн (облікова)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_co
 msgid "Сума, грн."
-msgstr ""
+msgstr "Сума, грн."
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_title_waybill
 msgid "ТОВАРНО-ТРАНСПОРТНА НАКЛАДНА"
-msgstr ""
+msgstr "ТОВАРНО-ТРАНСПОРТНА НАКЛАДНА"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_co
@@ -2161,21 +2239,22 @@ msgid ""
 "обладнання здійснюється післягарантійне обслуговування сертифікованими "
 "інженерами за окремим договором."
 msgstr ""
+"Також інформуємо, що після закінчення періоду гарантійного обслуговування обладнання здійснюється післягарантійне обслуговування сертифікованими інженерами за окремим договором."
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_recipient_header_3
 msgid "Тел."
-msgstr ""
+msgstr "Тел."
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_3
 msgid "Тел:"
-msgstr ""
+msgstr "Тел:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_new_waybill
 msgid "Температурний режим транспортування**"
-msgstr ""
+msgstr "Температурний режим транспортування**"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_table
@@ -2183,80 +2262,80 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_4
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_6
 msgid "Термін придатності"
-msgstr ""
+msgstr "Термін придатності"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_payment_info_3
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_title_3
 msgid "Термін сплати:"
-msgstr ""
+msgstr "Термін сплати:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_1
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_custody_act
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_refund_act
 msgid "Термін<br/>придатності"
-msgstr ""
+msgstr "Термін<br/>придатності"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid "Товарно-матеріальні цінності"
-msgstr ""
+msgstr "Товарно-матеріальні цінності"
 
 #. module: td_medicus_report
 #: model:ir.actions.report,name:td_medicus_report.action_report_waybill_new
 msgid "Товарно-транспортна"
-msgstr ""
+msgstr "Товарно-транспортна"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_custody_act
 msgid "Умови зберігання"
-msgstr ""
+msgstr "Умови зберігання"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_4
 msgid "Умови зберігання / транспортування"
-msgstr ""
+msgstr "Умови зберігання / транспортування"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_1
 msgid "Умови зберігання /<br/>транспортування"
-msgstr ""
+msgstr "Умови зберігання /<br/>транспортування"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_refund_act
 msgid "Умови зберігання/<br/>транспортування"
-msgstr ""
+msgstr "Умови зберігання/<br/>транспортування"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_co_info
 msgid "Умови поставки:"
-msgstr ""
+msgstr "Умови поставки:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_co_info
 msgid "Умови сплати:"
-msgstr ""
+msgstr "Умови сплати:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_4
 msgid "Уповноважена особа апт. складу"
-msgstr ""
+msgstr "Уповноважена особа апт. складу"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_3
 msgid "Уповноважена особа аптечного складу"
-msgstr ""
+msgstr "Уповноважена особа аптечного складу"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "Фарм РН. №"
-msgstr ""
+msgstr "Фарм РН. №"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_6
 msgid "Фах. по роботі з кліентами"
-msgstr ""
+msgstr "Фах. по роботі з кліентами"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_payment_info_2
@@ -2264,55 +2343,55 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_4
 msgid "Фіз. адреса:"
-msgstr ""
+msgstr "Фіз. адреса:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_refund_act
 msgid "Ціна"
-msgstr ""
+msgstr "Ціна"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_4
 msgid "Ціна без ПДВ"
-msgstr ""
+msgstr "Ціна без ПДВ"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_new_waybill
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_waybill
 msgid "Ціна без ПДВ за одиницю, грн"
-msgstr ""
+msgstr "Ціна без ПДВ за одиницю, грн"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_6
 msgid "Ціна облікова (грн.)"
-msgstr ""
+msgstr "Ціна облікова (грн.)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid "Ціна, грн (облікова)"
-msgstr ""
+msgstr "Ціна, грн (облікова)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_co
 msgid "Ціна, грн."
-msgstr ""
+msgstr "Ціна, грн."
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_table
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_custody_act
 msgid "Ціна/оціночна вартість"
-msgstr ""
+msgstr "Ціна/оціночна вартість"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_2
 msgid "Час (год., хв.)"
-msgstr ""
+msgstr "Час (год., хв.)"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_title_4
 msgid "Члени комісії:"
-msgstr ""
+msgstr "Члени комісії:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_payment_info_2
@@ -2320,44 +2399,44 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_4
 msgid "Юр. адреса:"
-msgstr ""
+msgstr "Юр. адреса:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid "були використані наступні товарно-матеріальні цінності (комплектуючі):"
-msgstr ""
+msgstr "були використані наступні товарно-матеріальні цінності (комплектуючі):"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_3
 msgid "в м.Києві"
-msgstr ""
+msgstr "в м.Києві"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_act_header
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_balance_header
 msgid "в м.Києві, МФО"
-msgstr ""
+msgstr "в м.Києві, МФО"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_2
 msgid "вибуття"
-msgstr ""
+msgstr "вибуття"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid "власними силами;"
-msgstr ""
+msgstr "власними силами;"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_co
 msgid "встановлення та наладка обладнання;"
-msgstr ""
+msgstr "встановлення та наладка обладнання;"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_co
 msgid "всі митні збори та платежі;"
-msgstr ""
+msgstr "всі митні збори та платежі;"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_custody_act_title
@@ -2375,14 +2454,14 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_title_waybill
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_1
 msgid "від"
-msgstr ""
+msgstr "від"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_co
 msgid ""
 "гарантійне обслуговування сертифікованими інженерами протягом 1 календарного"
 " року з моменту встановлення;"
-msgstr ""
+msgstr "гарантійне обслуговування сертифікованими інженерами протягом 1 календарного року з моменту встановлення;"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_1
@@ -2390,102 +2469,102 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_4
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_refund_act
 msgid "грн."
-msgstr ""
+msgstr "грн."
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_2
 msgid "дата відвантаження:"
-msgstr ""
+msgstr "дата відвантаження:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_co_info
 msgid "днів"
-msgstr ""
+msgstr "днів"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid "з залученням сторонньої організації."
-msgstr ""
+msgstr "з залученням сторонньої організації."
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_co_info
 msgid "за домовленістю сторін"
-msgstr ""
+msgstr "за домовленістю сторін"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_6
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_title_4
 msgid "завідувач аптечного складу"
-msgstr ""
+msgstr "завідувач аптечного складу"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_co
 msgid "навчання догляду за приладом молодшого медичного персоналу;"
-msgstr ""
+msgstr "навчання догляду за приладом молодшого медичного персоналу;"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_co
 msgid "навчання спеціалістів роботі з приладом;"
-msgstr ""
+msgstr "навчання спеціалістів роботі з приладом;"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_recipient_header_1
 msgid "по договору: №"
-msgstr ""
+msgstr "по договору: №"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_3
 msgid "посада"
-msgstr ""
+msgstr "посада"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_2
 msgid "прибуття"
-msgstr ""
+msgstr "прибуття"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_new_waybill_info_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_waybill_info_2
 msgid "простою"
-msgstr ""
+msgstr "простою"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid "підпис"
-msgstr ""
+msgstr "підпис"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_header_3
 msgid "підпис, ім'я, по-батькові, прізвище"
-msgstr ""
+msgstr "підпис, ім'я, по-батькові, прізвище"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_3
 msgid "р/р"
-msgstr ""
+msgstr "р/р"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_6
 msgid "серія ______ номер ______"
-msgstr ""
+msgstr "серія ______ номер ______"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_co
 msgid "страховка та доставка вантажу до покупця;"
-msgstr ""
+msgstr "страховка та доставка вантажу до покупця;"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_vendor_header_2
 msgid "тел:"
-msgstr ""
+msgstr "тел:"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_payment_info_2
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_payment_info_3
 msgid "той самий"
-msgstr ""
+msgstr "той самий"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_co_header
@@ -2493,22 +2572,24 @@ msgid ""
 "у м.Києві,<br/>\n"
 "                        МФО"
 msgstr ""
+"у м.Києві,<br/>\n"
+"                        МФО"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 msgid "уповноважена особа аптечного складу"
-msgstr ""
+msgstr "уповноважена особа аптечного складу"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_signatures_6
 msgid "уповноважена особа аптечного складу, дата, підпис"
-msgstr ""
+msgstr "уповноважена особа аптечного складу, дата, підпис"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_5
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_title_4
 msgid "інженер медичного обладнання"
-msgstr ""
+msgstr "інженер медичного обладнання"
 
 #. module: td_medicus_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_1
@@ -2520,4 +2601,4 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_new_waybill
 #: model_terms:ir.ui.view,arch_db:td_medicus_report.td_report_products_table_waybill
 msgid "№<br/>з/п"
-msgstr ""
+msgstr "№<br/>з/п"
