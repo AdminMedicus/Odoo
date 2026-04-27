@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="td_project_task_view_form_inherit" model="ir.ui.view">
+        <field name="name">td.project.task.form.inherit</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet//group//field[@name='partner_id']" position="after">
+                <field name="has_service_contact" invisible="True"/>
+                <field name="td_agreement_id" invisible="not has_service_contact"/>
+                <field name="td_service_contact_id" invisible="not has_service_contact" domain="[('type', '=', 'service')]"/>
+                <field name="td_service_contact_phone" invisible="not has_service_contact"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
