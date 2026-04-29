@@ -65,7 +65,7 @@ class StockPicking(models.Model):
         currency_field="td_company_currency_id",
     )
     td_total_amount = fields.Monetary(
-        compute='_compute_td_total_amount',
+        compute='_compute_total_amounts',
         currency_field="td_company_currency_id",
     )
 
@@ -101,45 +101,26 @@ class StockPicking(models.Model):
 
         return True
 
-    @api.depends(
-        'move_ids_without_package',
-        'move_ids_without_package.quantity',
-        'move_ids_without_package.td_price_unit',
-        'move_ids_without_package.td_price_subtotal',
-        'move_ids_without_package.td_taxes_price',
-        'sale_id',
-        'sale_id.amount_untaxed',
-        'sale_id.amount_tax',
-        'sale_id.amount_total',
-        'td_currency_rate',
-        'td_is_import',
-    )
+    @api.depends('move_ids_without_package')
     def _compute_total_amounts(self):
         for rec in self:
-            if rec.sale_id:
-                rec.td_total_without_tax = rec.sale_id.amount_untaxed
-                rec.td_total_tax = rec.sale_id.amount_tax
-                rec.td_amount_origin_currency = rec.sale_id.amount_total
+            lines = rec.move_ids_without_package
+            order = rec.sale_id or rec.purchase_id
+            total_amount = order.amount_total if order else sum(lines.mapped('td_price_subtotal'))
+
+            if rec.td_is_import:
+                rec.td_total_without_tax = sum([
+                    move.td_customs_value_good
+                    for move in rec.move_ids_without_package
+                ])
             else:
-                lines = rec.move_ids_without_package
-                rec.td_total_tax = sum(lines.mapped('td_taxes_price')) or 0.0
+                rec.td_total_without_tax = sum([
+                    move.td_price_subtotal
+                    for move in rec.move_ids_without_package
+                ])
 
-                if rec.td_is_import:
-                    amount_origin_currency = sum(
-                        line._td_get_origin_amount_total()
-                        for line in lines
-                    )
-                    total_without_tax = sum(
-                        line._td_get_company_amount_untaxed_total()
-                        for line in lines
-                    )
-
-                    rec.td_amount_origin_currency = amount_origin_currency
-                    rec.td_total_without_tax = total_without_tax
-                else:
-                    rec.td_total_without_tax = sum(lines.mapped('td_price_subtotal')) or 0.0
-                    rec.td_amount_origin_currency = rec.td_total_without_tax + rec.td_total_tax
-
+            rec.td_total_tax = sum(lines.mapped('td_taxes_price')) or 0
+            rec.td_amount_origin_currency = total_amount
             rec.td_total_amount = rec.td_total_without_tax + rec.td_total_tax
 
     @api.depends('picking_type_id')
@@ -227,9 +208,9 @@ class StockPicking(models.Model):
             })
         return seq
 
-    def _compute_td_total_amount(self):
-        for rec in self:
-            rec.td_total_amount = rec.td_total_without_tax + rec.td_total_tax
+    # def _compute_td_total_amount(self):
+    #     for rec in self:
+    #         rec.td_total_amount = rec.td_total_without_tax + rec.td_total_tax
 
     def _next_daily_lot_name(self, for_date=None):
         self.ensure_one()
