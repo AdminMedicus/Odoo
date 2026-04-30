@@ -1,0 +1,100 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* td_medicus_working_with_service
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-27 12:37+0000\n"
+"PO-Revision-Date: 2026-04-27 12:37+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: td_medicus_working_with_service
+#: model:ir.model.fields,field_description:td_medicus_working_with_service.field_res_partner__type
+#: model:ir.model.fields,field_description:td_medicus_working_with_service.field_res_users__type
+msgid "Address Type"
+msgstr "Тип адреси"
+
+#. module: td_medicus_working_with_service
+#: model:ir.model.fields,field_description:td_medicus_working_with_service.field_project_task__td_agreement_id
+msgid "Agreement"
+msgstr "Договір"
+
+#. module: td_medicus_working_with_service
+#: model:ir.model,name:td_medicus_working_with_service.model_res_partner
+msgid "Contact"
+msgstr "Контакт"
+
+#. module: td_medicus_working_with_service
+#: model_terms:ir.ui.view,arch_db:td_medicus_working_with_service.td_res_partner_view_form_inherit
+msgid "Contact Name"
+msgstr "Назва контакту"
+
+#. module: td_medicus_working_with_service
+#: model:ir.model.fields,field_description:td_medicus_working_with_service.field_helpdesk_ticket__td_equipment_id
+msgid "Equipment"
+msgstr "Обладнання"
+
+#. module: td_medicus_working_with_service
+#: model:ir.model.fields,field_description:td_medicus_working_with_service.field_project_task__has_service_contact
+#: model:ir.model.fields,field_description:td_medicus_working_with_service.field_res_partner__has_service_contact
+#: model:ir.model.fields,field_description:td_medicus_working_with_service.field_res_users__has_service_contact
+msgid "Has Service Contact"
+msgstr "Має сервісний контакт"
+
+#. module: td_medicus_working_with_service
+#: model:ir.model,name:td_medicus_working_with_service.model_helpdesk_ticket
+msgid "Helpdesk Ticket"
+msgstr "Заявка служби підтримки"
+
+#. module: td_medicus_working_with_service
+#: model:ir.model.fields,field_description:td_medicus_working_with_service.field_project_task__td_service_contact_phone
+msgid "Phone"
+msgstr "Телефон"
+
+#. module: td_medicus_working_with_service
+#: model:ir.model,name:td_medicus_working_with_service.model_sale_order
+msgid "Sale Order"
+msgstr "Замовлення на продаж"
+
+#. module: td_medicus_working_with_service
+#: model_terms:ir.ui.view,arch_db:td_medicus_working_with_service.td_helpdesk_fsm_ticket_view_form_inherit
+msgid "Schedule a departure"
+msgstr "Запланувати виїзд"
+
+#. module: td_medicus_working_with_service
+#: model:ir.model.fields,field_description:td_medicus_working_with_service.field_helpdesk_ticket__td_serial_number_id
+msgid "Serial Number"
+msgstr "Серійний номер"
+
+#. module: td_medicus_working_with_service
+#: model:ir.model.fields.selection,name:td_medicus_working_with_service.selection__res_partner__type__service
+msgid "Service"
+msgstr "Сервіс"
+
+#. module: td_medicus_working_with_service
+#: model:ir.model.fields,field_description:td_medicus_working_with_service.field_res_partner__service_contact_id
+#: model:ir.model.fields,field_description:td_medicus_working_with_service.field_res_users__service_contact_id
+msgid "Service Contact"
+msgstr ""
+
+#. module: td_medicus_working_with_service
+#: model:ir.model.fields,field_description:td_medicus_working_with_service.field_project_task__td_service_contact_id
+msgid "Service contact"
+msgstr "Сервісний контакт"
+
+#. module: td_medicus_working_with_service
+#: model:ir.model,name:td_medicus_working_with_service.model_project_task
+msgid "Task"
+msgstr "Завдання"
+
+#. module: td_medicus_working_with_service
+#: model:ir.model.fields,field_description:td_medicus_working_with_service.field_helpdesk_ticket__td_serial_domain
+msgid "Td Serial Domain"
+msgstr ""

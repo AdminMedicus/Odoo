@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="td_res_partner_view_form_inherit" model="ir.ui.view">
+        <field name="name">td.res.partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet//notebook//page[@name='contact_addresses']//form//sheet/group" position="attributes">
+                <attribute name="invisible">type == 'service'</attribute>
+            </xpath>
+            <xpath expr="//form/sheet//notebook//page[@name='contact_addresses']//form//sheet//field[@name='comment']" position="before">
+                <group invisible="type != 'service'" col="2">
+                    <group colspan="2">
+                        <field name="name" string="Contact Name" required="type == 'service'"/>
+                    </group>
+                    <group colspan="2">
+                        <field name="email"/>
+                        <field name="phone"/>
+                    </group>
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>
