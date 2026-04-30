@@ -199,7 +199,7 @@ msgstr "Основний товар не зазначений у специфі�
 #. module: td_medicus_completion_act
 #: model:ir.model.fields,field_description:td_medicus_completion_act.field_mrp_bom_line__td_price_subtotal
 msgid "Total Price"
-msgstr "Загалом"
+msgstr "Сума"
 
 #. module: td_medicus_completion_act
 #: model:ir.model.fields,field_description:td_medicus_completion_act.field_mrp_bom_line__td_taxes_total
@@ -214,7 +214,7 @@ msgstr "За одиницю (без ПДВ)"
 #. module: td_medicus_completion_act
 #: model:ir.model.fields,field_description:td_medicus_completion_act.field_mrp_bom_line__td_untaxed_total
 msgid "Untaxed Total"
-msgstr "Загалом (без ПДВ)"
+msgstr "Сума (без ПДВ)"
 
 #. module: td_medicus_completion_act
 #: model_terms:ir.ui.view,arch_db:td_medicus_completion_act.td_confirmation_bom_wizard_view
