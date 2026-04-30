@@ -60,8 +60,8 @@
                 </page>
             </xpath>
             <xpath expr="//field[@name='bom_line_ids']/list/field[@name='product_qty']" position="after">
-                <field name="price_unit" readonly="True"/>
-                <field name="td_untaxed_price_unit" optional="hide" readonly="True"/>
+                <field name="price_unit" readonly="1" force_save="1"/>
+                <field name="td_untaxed_price_unit" optional="hide" readonly="1" force_save="1"/>
                 <field name="td_price_subtotal"/>
             </xpath>
 
