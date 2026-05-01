@@ -6,7 +6,8 @@ class HelpdeskTicket(models.Model):
 
     td_equipment_id = fields.Many2one(
         comodel_name='stock.lot.report',
-        string='Equipment'
+        string='Equipment',
+        domain="[('partner_id', '=', partner_id)]"
     )
     td_serial_number_id = fields.Many2one(
         comodel_name='stock.lot.report',
