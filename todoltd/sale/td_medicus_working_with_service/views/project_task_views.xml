@@ -12,13 +12,6 @@
                 <field name="td_service_contact_id" invisible="not has_service_contact" domain="[('type', '=', 'service')]"/>
                 <field name="td_service_contact_phone" invisible="not has_service_contact"/>
             </xpath>
-            <xpath expr="//form//page[@name='extra_info']" position="attributes">
-                <attribute name="groups"></attribute>
-            </xpath>
-            <xpath expr="//form//page[@name='extra_info']//field[@name='email_cc']" position="attributes">
-                <attribute name="groups"></attribute>
-            </xpath>
-
 
         </field>
     </record>

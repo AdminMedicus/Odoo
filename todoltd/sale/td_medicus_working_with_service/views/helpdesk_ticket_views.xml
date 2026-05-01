@@ -37,6 +37,9 @@
             <xpath expr="//button[@name='action_generate_fsm_task']" position="attributes">
                 <attribute name="string">Schedule a departure</attribute>
             </xpath>
+            <xpath expr="//field[@name='email_cc']" position="attributes">
+                <attribute name="groups"></attribute>
+            </xpath>
         </field>
     </record>
 
