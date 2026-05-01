@@ -39,3 +39,13 @@ class HelpdeskTicket(models.Model):
     def _onchange_equipment(self):
         for rec in self:
             rec.td_serial_number_id = False
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if 'partner_id' in vals and vals['partner_id']:
+                partner = self.env['res.partner'].sudo().browse(vals['partner_id'])
+                if partner:
+                    vals['email_cc'] = partner.email
+
+        return super().create(vals_list)
