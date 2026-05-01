@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//form/sheet//group//field[@name='email_cc']" position="after">
-                <field name="td_equipment_id" domain="[('partner_id', '=', partner_id)]"/>
+                <field name="td_equipment_id" context="{'td_equipment_display': True}"/>
                 <field name="td_serial_domain" invisible="True"/>
                 <field name="td_serial_number_id" domain="td_serial_domain"/>
             </xpath>
