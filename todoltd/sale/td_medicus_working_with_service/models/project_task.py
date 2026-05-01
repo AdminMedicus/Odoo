@@ -30,6 +30,4 @@ class ProjectTask(models.Model):
                 if partner.service_contact_id:
                     vals['td_service_contact_id'] = partner.service_contact_id.id
                     vals['td_service_contact_phone'] = partner.service_contact_id.phone
-                if partner:
-                    vals['email_cc'] = partner.email
         return super().create(vals_list)

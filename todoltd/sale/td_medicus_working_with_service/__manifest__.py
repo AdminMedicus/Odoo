@@ -2,7 +2,7 @@
 {
     'name': "TD Medicus Working with Service",
     'summary': 'Medicus Working with Service, Custom Help desk',
-    'version': '18.0.1.0.2',
+    'version': '18.0.1.0.3',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
