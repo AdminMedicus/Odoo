@@ -1,6 +1,6 @@
 {
     'name': 'Medicus Completion act (Sale)',
-    'version': '18.0.1.0.6',
+    'version': '18.0.1.0.7',
     'summary': 'Sale',
     'description': 'Medicus Sale: Act of Completion',
     'category': 'Sale',
