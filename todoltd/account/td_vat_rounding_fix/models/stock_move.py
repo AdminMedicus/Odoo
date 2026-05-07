@@ -57,14 +57,18 @@ class StockMove(models.Model):
             move.td_taxes_price = 0.0
 
             if taxes and quantity and not is_import:
-                taxes_res = taxes.compute_all(
-                    price_unit,
-                    currency=currency,
-                    quantity=quantity,
-                    product=move.product_id,
-                    partner=partner,
-                )
-                move.td_taxes_price = taxes_res["total_included"] - taxes_res["total_excluded"]
+                if move.bom_line_id:
+                    tax_amount = abs(move.bom_line_id.price_unit - move.bom_line_id.td_untaxed_price_unit)
+                    move.td_taxes_price = tax_amount * move.quantity
+                else:
+                    taxes_res = taxes.compute_all(
+                        price_unit,
+                        currency=currency,
+                        quantity=quantity,
+                        product=move.product_id,
+                        partner=partner,
+                    )
+                    move.td_taxes_price = taxes_res["total_included"] - taxes_res["total_excluded"]
 
             elif move.td_taxes and move.td_price_unit and is_import:
                 move.td_taxes_price = move.td_customs_value_good * move.td_taxes

@@ -47,7 +47,8 @@ class SaleOrder(models.Model):
                 'product_id': line.product_template_id.product_variant_id.id,
                 'product_qty': line.product_uom_qty,
                 'product_uom_id': line.product_uom.id,
-                'price_unit': line.price_unit
+                'price_unit': line.price_unit,
+                'td_untaxed_price_unit': line.td_untaxed_price_unit,
             }))
 
         return {

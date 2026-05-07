@@ -190,7 +190,10 @@ class StockMove(models.Model):
             if move.picking_id.td_is_import:
                 move.td_price_total = move._td_get_company_amount_untaxed_total() + move.td_taxes_price
             else:
-                move.td_price_total = move._td_get_origin_amount_untaxed_total() + move.td_taxes_price
+                if move.bom_line_id:
+                    move.td_price_total = move.td_price_subtotal + move.td_taxes_price
+                else:
+                    move.td_price_total = move._td_get_origin_amount_untaxed_total() + move.td_taxes_price
 
     @api.depends('td_currency_rate', 'td_price_unit', 'product_id', 'picking_id.td_currency_rate')
     def _compute_td_customs_value_good(self):

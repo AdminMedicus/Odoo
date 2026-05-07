@@ -1,6 +1,6 @@
 {
     'name': 'Medicus Completion act (Sale)',
-    'version': '18.0.1.0.3',
+    'version': '18.0.1.0.7',
     'summary': 'Sale',
     'description': 'Medicus Sale: Act of Completion',
     'category': 'Sale',
@@ -11,6 +11,7 @@
         'sale',
         'mrp',
         'td_medicus_report',
+        'td_medicus_agreement',
         'sale_management',
     ],
     'data': [
