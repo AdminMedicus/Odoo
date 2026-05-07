@@ -7,7 +7,7 @@ class HelpdeskTicket(models.Model):
     td_equipment_id = fields.Many2one(
         comodel_name='stock.lot.report',
         string='Equipment',
-        domain="[('partner_id', '=', partner_id)]"
+        domain="[('partner_id', 'child_of', partner_id)]"
     )
     td_serial_number_id = fields.Many2one(
         comodel_name='stock.lot.report',
@@ -23,7 +23,7 @@ class HelpdeskTicket(models.Model):
         for rec in self:
             if rec.partner_id and rec.td_equipment_id:
                 rec.td_serial_domain = [
-                    ('partner_id', '=', rec.partner_id.id),
+                    ('partner_id', 'child_of', rec.partner_id.id),
                     ('product_id', '=', rec.td_equipment_id.product_id.id),
                 ]
             else:
