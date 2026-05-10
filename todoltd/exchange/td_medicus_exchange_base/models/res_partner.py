@@ -69,7 +69,8 @@ class TdResPartnerExchange(models.Model):
             "id":           record.id,
             "name":         self._str_empty(record.name),
             "name_full":    self._str_empty(record.full_partner_name),
-            "currency":     self._str_empty(record.property_purchase_currency_id.name),
+            "currency":     record.property_purchase_currency_id.exchange_data
+                or record.currency_id.exchange_data,
             "vat":          self._str_empty(record.vat),
             "ref":          self._str_empty(record.ref),
             "company_registry": self._str_empty(record.company_registry),
