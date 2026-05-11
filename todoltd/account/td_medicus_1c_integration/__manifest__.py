@@ -1,6 +1,6 @@
 {
     'name': 'TD Medicus 1C Integration',
-    "version": '18.0.0.0.60',
+    "version": '18.0.0.0.61',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',

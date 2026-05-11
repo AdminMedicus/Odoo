@@ -9,7 +9,9 @@ class StockPicking(models.Model):
 
     td_currency_id = fields.Many2one(
         comodel_name='res.currency',
-        related='purchase_id.currency_id'
+        compute='_compute_td_currency_id',
+        readonly=False,
+        store=True,
     )
 
     td_currency_rate = fields.Float(
