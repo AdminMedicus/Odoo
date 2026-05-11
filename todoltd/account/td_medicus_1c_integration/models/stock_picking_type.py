@@ -12,6 +12,16 @@ class StockPickingType(models.Model):
         ], default=False,
     )
 
+    td_auto_create_purchase_on_validate = fields.Boolean(
+        string="Create PO on Validation",
+        default=False,
+        help=(
+            "When enabled for an incoming operation type, Odoo checks receipts "
+            "without a linked purchase order or return on validation and "
+            "automatically creates a confirmed purchase order and vendor bill."
+        ),
+    )
+
     @api.onchange('td_type_of_trade')
     def _onchange_td_type_of_trade(self):
         for pick_type in self:
