@@ -477,7 +477,7 @@
                     <strong>ЄДРПОУ:</strong>
                 </td>
                 <td>
-                    <span t-esc="company['ref']"/>
+                    <span t-esc="company['registry']"/>
                 </td>
             </tr>
             <tr>
