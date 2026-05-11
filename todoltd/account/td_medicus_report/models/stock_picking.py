@@ -730,9 +730,9 @@ class StockPicking(models.Model):
 
         data = {
             'company': {
-                'name': company_partner.full_partner_name,
-                'registry': company.company_registry,
-                'vat': company.vat,
+                'name': company_partner.full_partner_name or company_partner.name,
+                'registry': company_partner.company_registry,
+                'vat': company_partner.vat,
                 'street': company_partner.contact_address_complete,
                 'ref': company_partner.ref or '',
                 'bank_account': company_partner.bank_ids[0].acc_number if company_partner.bank_ids else '',
