@@ -8,7 +8,9 @@ class StockPicking(models.Model):
 
     td_currency_id = fields.Many2one(
         comodel_name='res.currency',
-        related='purchase_id.currency_id'
+        compute='_compute_td_currency_id',
+        readonly=False,
+        store=True,
     )
 
     td_currency_rate = fields.Float(
@@ -24,8 +26,11 @@ class StockPicking(models.Model):
             ('prepayment', 'Prepayment'),
             ('credit', 'Credit'),
             ('res_storage', 'Responsible Storage'),
-        ], default='prepayment',
-        related='purchase_id.td_type_of_trade'
+        ],
+        string="Type of Trade",
+        default='prepayment',
+        readonly=False,
+        store=True,
     )
 
     td_is_import = fields.Boolean(
@@ -76,6 +81,33 @@ class StockPicking(models.Model):
         readonly=True,
     )
 
+    td_agreement_id = fields.Many2one(
+        comodel_name="td.agreement",
+        string="Agreement",
+        ondelete="restrict",
+        tracking=True,
+        domain='[("partner_id", "=?", partner_id)]',
+    )
+
+    td_auto_create_purchase_on_validate = fields.Boolean(
+        related="picking_type_id.td_auto_create_purchase_on_validate",
+        readonly=True,
+    )
+
+    td_is_goods_balance_of_act_res_st = fields.Boolean(
+        related="picking_type_id.td_is_goods_balance_of_act_res_st",
+        readonly=True,
+    )
+
+    @api.depends('purchase_id.currency_id', 'company_id.currency_id')
+    def _compute_td_currency_id(self):
+        for picking in self:
+            picking.td_currency_id = (
+                picking.purchase_id.currency_id
+                or picking.company_id.currency_id
+                or self.env.company.currency_id
+            )
+
     def td_button_send_data_to_one_c(self):
         for picking in self:
             if picking.picking_type_code != "incoming":
@@ -101,25 +133,50 @@ class StockPicking(models.Model):
 
         return True
 
-    @api.depends('move_ids_without_package')
+    @api.depends(
+        'move_ids_without_package',
+        'move_ids_without_package.quantity',
+        'move_ids_without_package.td_price_unit',
+        'move_ids_without_package.td_untaxed_price_unit',
+        'move_ids_without_package.td_price_subtotal',
+        'move_ids_without_package.td_price_total',
+        'move_ids_without_package.td_taxes_price',
+        'move_ids_without_package.td_customs_value_good',
+        'move_ids_without_package.td_currency_rate',
+        'td_currency_rate',
+        'td_is_import',
+        'sale_id.amount_total',
+        'purchase_id.amount_total',
+    )
     def _compute_total_amounts(self):
         for rec in self:
             lines = rec.move_ids_without_package
             order = rec.sale_id or rec.purchase_id
-            total_amount = order.amount_total if order else sum(lines.mapped('td_price_subtotal'))
+
+            if order:
+                total_amount = order.amount_total
+            else:
+                total_amount = sum(
+                    move._td_get_origin_amount_total()
+                    if hasattr(move, '_td_get_origin_amount_total')
+                    else (move.td_price_total or move.td_price_subtotal or 0.0)
+                    for move in lines
+                )
 
             if rec.td_is_import:
-                rec.td_total_without_tax = sum([
+                rec.td_total_without_tax = sum(
                     move.td_customs_value_good
-                    for move in rec.move_ids_without_package
-                ])
+                    for move in lines
+                )
             else:
-                rec.td_total_without_tax = sum([
-                    move.td_price_subtotal
-                    for move in rec.move_ids_without_package
-                ])
+                rec.td_total_without_tax = sum(
+                    move._td_get_company_amount_untaxed_total()
+                    if hasattr(move, '_td_get_company_amount_untaxed_total')
+                    else (move.td_price_subtotal or 0.0)
+                    for move in lines
+                )
 
-            rec.td_total_tax = sum(lines.mapped('td_taxes_price')) or 0
+            rec.td_total_tax = sum(lines.mapped('td_taxes_price')) or 0.0
             rec.td_amount_origin_currency = total_amount
             rec.td_total_amount = rec.td_total_without_tax + rec.td_total_tax
 
@@ -262,6 +319,15 @@ class StockPicking(models.Model):
         seq = self._ensure_serial_auto_seq()
         return seq.next_by_id()
 
+    def _td_set_done_qty_vals(self, vals, qty):
+        """Set done quantity in move line vals for both old/new Odoo stock fields."""
+        MoveLine = self.env['stock.move.line']
+        if 'quantity' in MoveLine._fields:
+            vals['quantity'] = qty
+        if 'qty_done' in MoveLine._fields:
+            vals['qty_done'] = qty
+        return vals
+
     def _td_prepare_import_lots_for_onec_exchange(self):
         """
         Create lots/serials for import receipts before the picking is moved
@@ -322,12 +388,17 @@ class StockPicking(models.Model):
                             or empty_move_lines[:1]
                     )
 
-                    vals = dict(
+                    # vals = dict(
+                    #     common_write_vals,
+                    #     lot_id=lot.id,
+                    #     quantity=move_qty,
+                    #     qty_done=move_qty,
+                    # )
+
+                    vals = picking._td_set_done_qty_vals(dict(
                         common_write_vals,
                         lot_id=lot.id,
-                        quantity=move_qty,
-                        qty_done=move_qty,
-                    )
+                    ), move_qty)
 
                     if target_ml:
                         target_ml.write(vals)
@@ -376,12 +447,17 @@ class StockPicking(models.Model):
                     kept_lines = MoveLineModel.browse()
 
                     for index, lot in enumerate(all_lots):
-                        vals = dict(
+                        # vals = dict(
+                        #     common_write_vals,
+                        #     lot_id=lot.id,
+                        #     quantity=1.0,
+                        #     qty_done=1.0,
+                        # )
+
+                        vals = picking._td_set_done_qty_vals(dict(
                             common_write_vals,
                             lot_id=lot.id,
-                            quantity=1.0,
-                            qty_done=1.0,
-                        )
+                        ), 1.0)
 
                         if index < len(lines_pool):
                             ml = lines_pool[index]
@@ -606,6 +682,215 @@ class StockPicking(models.Model):
             )
         return account
 
+    def _td_get_move_done_qty(self, move):
+        move_lines = move.move_line_ids
+        if move_lines:
+            if 'qty_done' in move_lines._fields:
+                qty = sum(move_lines.mapped('qty_done'))
+                if qty:
+                    return qty
+            if 'quantity' in move_lines._fields:
+                qty = sum(move_lines.mapped('quantity'))
+                if qty:
+                    return qty
+        return getattr(move, 'quantity', 0.0) or getattr(move, 'product_uom_qty', 0.0) or 0.0
+
+    def _td_get_move_purchase_qty(self, move):
+        return getattr(move, 'quantity', 0.0) or getattr(move, 'product_uom_qty', 0.0) or 0.0
+
+    def _td_is_return_receipt(self):
+        self.ensure_one()
+        if getattr(self, 'return_id', False) or getattr(self, 'return_ids', False):
+            return True
+        return any(
+            getattr(move, 'origin_returned_move_id', False)
+            for move in self.move_ids_without_package
+        )
+
+    def _td_has_linked_purchase(self):
+        self.ensure_one()
+        if self.purchase_id:
+            return True
+        return bool(self.move_ids_without_package.mapped('purchase_line_id.order_id'))
+
+    def _td_should_auto_create_purchase_on_validate(self):
+        self.ensure_one()
+        return all([
+            self.picking_type_code == 'incoming',
+            self.td_auto_create_purchase_on_validate,
+            not self.origin,
+            not self._td_has_linked_purchase(),
+            not self._td_is_return_receipt(),
+        ])
+
+    def _td_get_purchase_currency(self):
+        self.ensure_one()
+        partner = self.partner_id
+        partner_currency = (
+            partner.property_purchase_currency_id
+            if partner and 'property_purchase_currency_id' in partner._fields
+            else False
+        )
+        return (
+            partner_currency
+            or self.company_id.currency_id
+            or self.env.company.currency_id
+        )
+
+    def _td_prepare_auto_purchase_order_vals(self):
+        self.ensure_one()
+        if not self.partner_id:
+            raise UserError(_("Vendor is required to create a Purchase Order automatically."))
+
+        planned_date = fields.Datetime.now()
+        PurchaseOrder = self.env['purchase.order']
+
+        vals = {
+            'partner_id': self.partner_id.id,
+            'company_id': self.company_id.id,
+            'currency_id': self._td_get_purchase_currency().id,
+            'picking_type_id': self.picking_type_id.id,
+            'partner_ref': self.td_supplier_document or False,
+            'origin': self.name,
+        }
+
+        if 'date_approve' in PurchaseOrder._fields:
+            vals['date_approve'] = planned_date
+        if 'date_planned' in PurchaseOrder._fields:
+            vals['date_planned'] = planned_date
+        if 'td_agreement_id' in PurchaseOrder._fields:
+            vals['td_agreement_id'] = self.td_agreement_id.id if self.td_agreement_id else False
+        if 'td_type_of_trade' in PurchaseOrder._fields:
+            vals['td_type_of_trade'] = self.td_type_of_trade or 'prepayment'
+
+        return vals
+
+    def _td_prepare_auto_purchase_order_line_vals(self, purchase_order, move):
+        self.ensure_one()
+        qty = self._td_get_move_purchase_qty(move)
+        if not qty:
+            raise UserError(_(
+                'Quantity is required to create a Purchase Order line for product "%s".'
+            ) % move.product_id.display_name)
+
+        company = self.company_id
+        taxes = move.product_id.supplier_taxes_id.filtered(
+            lambda tax: not tax.company_id or tax.company_id == company
+        )
+
+        vals = {
+            'order_id': purchase_order.id,
+            'product_id': move.product_id.id,
+            'name': move.name or move.product_id.display_name,
+            'product_qty': qty,
+            'product_uom': move.product_uom.id,
+            'price_unit': move.td_price_unit or 0.0,
+            'date_planned': fields.Datetime.now(),
+        }
+
+        if taxes:
+            vals['taxes_id'] = [Command.set(taxes.ids)]
+        else:
+            vals['taxes_id'] = [Command.clear()]
+
+        return vals
+
+    # def _td_cancel_auto_generated_purchase_pickings(self, purchase_order):
+    #     self.ensure_one()
+    #     generated_pickings = purchase_order.picking_ids.filtered(lambda picking: picking.id != self.id)
+    #     generated_pickings = generated_pickings.filtered(lambda picking: picking.state not in ('done', 'cancel'))
+    #     if generated_pickings:
+    #         generated_pickings.action_cancel()
+
+    def _td_cancel_auto_generated_purchase_pickings(self, purchase_order):
+        self.ensure_one()
+
+        generated_pickings = purchase_order.picking_ids.filtered(
+            lambda picking: picking.id != self.id
+        )
+        if not generated_pickings:
+            return
+
+        pickings_to_cancel = generated_pickings.filtered(
+            lambda picking: picking.state not in ('done', 'cancel')
+        )
+        if pickings_to_cancel:
+            pickings_to_cancel.action_cancel()
+
+        # Current receipt is linked to generated PO manually.
+        # purchase.order.button_confirm() creates its own technical receipt.
+        # If we only cancel it, other integrations can still find 2 pickings
+        # by purchase_id and fail with Expected singleton.
+        pickings_to_unlink = generated_pickings.filtered(
+            lambda picking: picking.state == 'cancel'
+        )
+        if pickings_to_unlink:
+            pickings_to_unlink.unlink()
+
+    def _td_link_receipt_to_purchase_order(self, purchase_order, move_line_pairs):
+        self.ensure_one()
+        write_vals = {'origin': purchase_order.name}
+        if purchase_order.group_id:
+            write_vals['group_id'] = purchase_order.group_id.id
+
+        self.write(write_vals)
+
+        for move, purchase_line in move_line_pairs:
+            move_vals = {'purchase_line_id': purchase_line.id}
+            if purchase_order.group_id:
+                move_vals['group_id'] = purchase_order.group_id.id
+            move.write(move_vals)
+
+    def _td_create_purchase_order_from_receipt(self):
+        PurchaseOrder = self.env['purchase.order']
+        PurchaseOrderLine = self.env['purchase.order.line']
+
+        for picking in self:
+            if not picking._td_should_auto_create_purchase_on_validate():
+                continue
+
+            moves = picking.move_ids_without_package.filtered(lambda move: move.product_id)
+            if not moves:
+                raise UserError(_("Add at least one product line before validating the receipt."))
+
+            purchase_order = PurchaseOrder.create(picking._td_prepare_auto_purchase_order_vals())
+            move_line_pairs = []
+            for move in moves:
+                purchase_line = PurchaseOrderLine.create(
+                    picking._td_prepare_auto_purchase_order_line_vals(purchase_order, move)
+                )
+                move_line_pairs.append((move, purchase_line))
+
+            try:
+                purchase_order.button_confirm()
+            except Exception as error:
+                raise UserError(_(
+                    "Unable to confirm the automatically created Purchase Order. "
+                    "Receipt validation was stopped. Error: %s"
+                ) % error)
+
+            picking._td_link_receipt_to_purchase_order(purchase_order, move_line_pairs)
+            picking._td_cancel_auto_generated_purchase_pickings(purchase_order)
+
+            picking.message_post(body=_(
+                "Purchase Order %(purchase_order)s was created automatically from this receipt."
+            ) % {'purchase_order': purchase_order.display_name})
+
+    def _td_prepare_auto_lots_before_validate(self):
+        """Create missing lots/serials before standard validation checks.
+
+        Odoo validates mandatory lots/serials inside super().button_validate().
+        So creating lots after super() is too late.
+        """
+        pickings = self.filtered(
+            lambda picking: picking.picking_type_code == 'incoming'
+                            and picking.td_auto_create_purchase_on_validate
+                            and not picking.sale_id
+                            and picking.state not in ('done', 'cancel')
+        )
+        if pickings:
+            pickings._td_prepare_import_lots_for_onec_exchange()
+
     def _td_create_vendor_bill_from_receipt(self):
         AccountMove = self.env["account.move"]
 
@@ -625,7 +910,7 @@ class StockPicking(models.Model):
 
             moves = picking.move_ids_without_package.filtered(
                 lambda m: m.product_id and m.purchase_line_id
-                          and sum(m.move_line_ids.mapped("qty_done")) > 0
+                          and picking._td_get_move_done_qty(m) > 0
             )
             if not moves:
                 continue
@@ -667,7 +952,7 @@ class StockPicking(models.Model):
                 taxes = getattr(pol, "taxes_id", self.env["account.tax"])
                 account = self._td_get_expense_account(product, company)
 
-                qty_done = sum(move.move_line_ids.mapped("qty_done"))
+                qty_done = picking._td_get_move_done_qty(move)
 
                 line_vals = {
                     "product_id": product.id,
@@ -697,8 +982,38 @@ class StockPicking(models.Model):
             if bill.state != "posted":
                 bill.action_post()
 
+    # def button_validate(self):
+    #     self._td_check_import_realization_restrictions()
+    #     self._td_create_purchase_order_from_receipt()
+    #     res = super().button_validate()
+    #
+    #     if not self.sale_id:
+    #         self._assign_serial_ref()
+    #         self._create_lot_ids_for_move()
+    #
+    #     for picking in self:
+    #         for move in picking.move_ids:
+    #             for lot in move.lot_ids:
+    #                 uktzed_line = move.move_line_ids.filtered(lambda lin: lin.lot_id.id == lot.id)
+    #                 move.lot_ids.write({
+    #                     "td_uktzed_code_id": (uktzed_line.td_uktzed_code_id.id if uktzed_line else False)
+    #                 })
+    #                 move.td_uktzed_code_id = (uktzed_line.td_uktzed_code_id.id if uktzed_line else False)
+    #
+    #     self._td_create_vendor_bill_from_receipt()
+    #     return res
+
     def button_validate(self):
         self._td_check_import_realization_restrictions()
+
+        # 1. First create PO from manual receipt if needed.
+        self._td_create_purchase_order_from_receipt()
+
+        # 2. Then create/fill Lot/Serial before standard Odoo validation.
+        # This is important, because Odoo checks mandatory lots inside super().
+        self._td_prepare_auto_lots_before_validate()
+
+        # 3. Now standard Odoo validation can pass without manual Lot input.
         res = super().button_validate()
 
         if not self.sale_id:
@@ -708,11 +1023,17 @@ class StockPicking(models.Model):
         for picking in self:
             for move in picking.move_ids:
                 for lot in move.lot_ids:
-                    uktzed_line = move.move_line_ids.filtered(lambda lin: lin.lot_id.id == lot.id)
+                    uktzed_line = move.move_line_ids.filtered(
+                        lambda lin: lin.lot_id.id == lot.id
+                    )
                     move.lot_ids.write({
-                        "td_uktzed_code_id": (uktzed_line.td_uktzed_code_id.id if uktzed_line else False)
+                        "td_uktzed_code_id": (
+                            uktzed_line.td_uktzed_code_id.id if uktzed_line else False
+                        )
                     })
-                    move.td_uktzed_code_id = (uktzed_line.td_uktzed_code_id.id if uktzed_line else False)
+                    move.td_uktzed_code_id = (
+                        uktzed_line.td_uktzed_code_id.id if uktzed_line else False
+                    )
 
         self._td_create_vendor_bill_from_receipt()
         return res
