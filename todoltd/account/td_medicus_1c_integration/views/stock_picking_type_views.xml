@@ -7,6 +7,10 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='code']" position="after">
                 <field name="td_type_of_trade"/>
+                <field
+                        name="td_auto_create_purchase_on_validate"
+                        invisible="code != 'incoming'"
+                />
             </xpath>
         </field>
     </record>
