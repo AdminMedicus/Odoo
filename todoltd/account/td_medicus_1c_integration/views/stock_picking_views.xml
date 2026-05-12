@@ -99,9 +99,9 @@
             </xpath>
 
 
-            <xpath expr="//field[@name='implementation_document']" position="attributes">
-                <attribute name="invisible">picking_type_code == 'incoming'</attribute>
-            </xpath>
+<!--            <xpath expr="//field[@name='implementation_document']" position="attributes">-->
+<!--                <attribute name="invisible">picking_type_code == 'incoming'</attribute>-->
+<!--            </xpath>-->
 
             <xpath expr="//button[@name='action_show_product_list']" position="attributes">
                 <attribute name="invisible">state not in ('draft') or not td_is_goods_balance_of_act_res_st</attribute>
