@@ -130,9 +130,12 @@ class WebsiteFormAutofill(WebsiteForm):
             )
             return
 
+        # child_of: the serial may have been delivered to a CHILD contact of
+        # the EDRPOU partner (a delivery address / branch), not the partner
+        # record itself. child_of matches the partner and every descendant.
         lot = env['stock.lot'].sudo().search([
             ('name', '=', serial),
-            ('last_delivery_partner_id', '=', partner.id),
+            ('last_delivery_partner_id', 'child_of', partner.id),
         ], limit=1)
 
         if not lot:
@@ -188,27 +191,15 @@ class WebsiteFormAutofill(WebsiteForm):
                 lot.product_id.display_name,
                 lot.last_delivery_partner_id.id,
                 lot.last_delivery_partner_id.display_name or '<empty>',
-                lot.last_delivery_partner_id.parent_id.id or None,
             )
             for lot in candidates
         ]
         _logger.warning(
-            "%s stage2 lot MISS for (name=%r, last_delivery_partner_id=%s). "
-            "Lots with that serial exist but with a different / empty "
-            "delivery partner: %s",
+            "%s stage2 lot MISS for (name=%r, last_delivery_partner_id "
+            "child_of %s). Lots with that serial exist but their delivery "
+            "partner is outside that partner hierarchy (or empty): %s",
             _LOG_PREFIX, serial, partner.id, rows,
         )
-
-        children_of_partner = [r for r in rows if r[4] == partner.id]
-        if children_of_partner:
-            _logger.warning(
-                "%s HINT: those lots were delivered to a CHILD contact of "
-                "partner id=%s (name=%r). The strict match on the parent "
-                "partner intentionally rejects this. Either move the EDRPOU "
-                "delivery to the parent contact, or relax the stage2 domain "
-                "to include children.",
-                _LOG_PREFIX, partner.id, partner.display_name,
-            )
 
     @staticmethod
     def _td_diagnose_report_miss(lot, partner):
@@ -227,11 +218,10 @@ class WebsiteFormAutofill(WebsiteForm):
 
         _logger.warning(
             "%s stage2 report MISS: report rows for lot id=%s exist, but "
-            "none has partner_id=%s. Existing rows: %s",
+            "none has partner_id child_of %s. Existing rows: %s",
             _LOG_PREFIX, lot.id, partner.id,
             [
                 (r.id, r.partner_id.id, r.partner_id.display_name,
-                 r.partner_id.parent_id.id or None,
                  str(r.delivery_date))
                 for r in all_rows
             ],
@@ -239,7 +229,9 @@ class WebsiteFormAutofill(WebsiteForm):
 
     @staticmethod
     def _td_find_lot_report(lot, partner):
+        # child_of so a delivery booked against a child contact of the
+        # EDRPOU partner still resolves to its report row.
         return request.env['stock.lot.report'].sudo().search([
             ('lot_id', '=', lot.id),
-            ('partner_id', '=', partner.id),
+            ('partner_id', 'child_of', partner.id),
         ], order='delivery_date desc', limit=1)
