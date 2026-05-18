@@ -1,5 +1,7 @@
 import logging
 import pprint
+import re
+import unicodedata
 
 from odoo.http import request
 from odoo.addons.website.controllers.form import WebsiteForm
@@ -31,6 +33,19 @@ _SERIAL_KEYS = (
 
 _PROTECTED_KEYS = ('partner_id', 'td_equipment_id', 'td_serial_number_id')
 
+_INVISIBLES = (
+    '\u00a0\u202f\u200b\u200c\u200d\ufeff\u00ad\u2060'
+)
+
+
+def _clean(value):
+    if not isinstance(value, str):
+        return ''
+    value = unicodedata.normalize('NFKC', value)
+    value = value.translate({ord(c): None for c in _INVISIBLES})
+    value = re.sub(r'\s+', ' ', value).strip()
+    return value
+
 
 class WebsiteFormAutofill(WebsiteForm):
 
@@ -58,9 +73,9 @@ class WebsiteFormAutofill(WebsiteForm):
     @staticmethod
     def _td_first(src, keys):
         for k in keys:
-            v = src.get(k)
-            if isinstance(v, str) and v.strip():
-                return v.strip()
+            v = _clean(src.get(k))
+            if v:
+                return v
         return ''
 
     def _td_autofill_helpdesk(self, values, data):
@@ -75,6 +90,15 @@ class WebsiteFormAutofill(WebsiteForm):
 
         edrpou = self._td_first(values, _EDRPOU_KEYS)
         serial = self._td_first(values, _SERIAL_KEYS)
+
+        raw_serial = next(
+            (values.get(k) for k in _SERIAL_KEYS if values.get(k)), None
+        )
+        if raw_serial is not None and raw_serial != serial:
+            _logger.info(
+                "%s serial normalized: raw=%r -> clean=%r",
+                _LOG_PREFIX, raw_serial, serial,
+            )
         _logger.info(
             "%s extracted edrpou=%r serial=%r", _LOG_PREFIX, edrpou, serial,
         )
@@ -130,14 +154,7 @@ class WebsiteFormAutofill(WebsiteForm):
             )
             return
 
-        # child_of: the serial may have been delivered to a CHILD contact of
-        # the EDRPOU partner (a delivery address / branch), not the partner
-        # record itself. child_of matches the partner and every descendant.
-        lot = env['stock.lot'].sudo().search([
-            ('name', '=', serial),
-            ('last_delivery_partner_id', 'child_of', partner.id),
-        ], limit=1)
-
+        lot = self._td_find_lot(env, serial, partner)
         if not lot:
             self._td_diagnose_lot_miss(serial, partner)
             return
@@ -175,30 +192,56 @@ class WebsiteFormAutofill(WebsiteForm):
         )
 
     @staticmethod
+    def _td_find_lot(env, serial, partner):
+        Lot = env['stock.lot'].sudo()
+
+        lot = Lot.search([
+            ('name', '=', serial),
+            ('last_delivery_partner_id', 'child_of', partner.id),
+        ], limit=1)
+        if lot:
+            return lot
+
+        lot = Lot.search([
+            ('name', '=ilike', serial),
+            ('last_delivery_partner_id', 'child_of', partner.id),
+        ], limit=1)
+        if lot:
+            _logger.info(
+                "%s stage2 lot matched via =ilike fallback (stored name "
+                "differs only by case): %r", _LOG_PREFIX, lot.name,
+            )
+        return lot
+
+    @staticmethod
+    def _td_find_lot_report(lot, partner):
+        return request.env['stock.lot.report'].sudo().search([
+            ('lot_id', '=', lot.id),
+            ('partner_id', 'child_of', partner.id),
+        ], order='delivery_date desc', limit=1)
+
+    @staticmethod
     def _td_diagnose_lot_miss(serial, partner):
         Lot = request.env['stock.lot'].sudo()
-        candidates = Lot.search([('name', '=', serial)], limit=10)
-        if not candidates:
+        nearby = Lot.search([('name', 'ilike', serial)], limit=10)
+        if not nearby:
             _logger.warning(
-                "%s stage2 lot MISS: no stock.lot with name=%r exists at all",
+                "%s stage2 lot MISS: no stock.lot name even contains %r — "
+                "the value is probably not a stock.lot serial at all",
                 _LOG_PREFIX, serial,
             )
             return
 
-        rows = [
-            (
-                lot.id,
-                lot.product_id.display_name,
-                lot.last_delivery_partner_id.id,
-                lot.last_delivery_partner_id.display_name or '<empty>',
-            )
-            for lot in candidates
-        ]
         _logger.warning(
-            "%s stage2 lot MISS for (name=%r, last_delivery_partner_id "
-            "child_of %s). Lots with that serial exist but their delivery "
-            "partner is outside that partner hierarchy (or empty): %s",
-            _LOG_PREFIX, serial, partner.id, rows,
+            "%s stage2 lot MISS for cleaned serial=%r. Lots whose name "
+            "CONTAINS it (note exact vs stored difference, and the delivery "
+            "partner vs requested partner id=%s): %s",
+            _LOG_PREFIX, serial, partner.id,
+            [
+                (l.id, repr(l.name), l.last_delivery_partner_id.id,
+                 l.last_delivery_partner_id.display_name or '<empty>')
+                for l in nearby
+            ],
         )
 
     @staticmethod
@@ -226,12 +269,3 @@ class WebsiteFormAutofill(WebsiteForm):
                 for r in all_rows
             ],
         )
-
-    @staticmethod
-    def _td_find_lot_report(lot, partner):
-        # child_of so a delivery booked against a child contact of the
-        # EDRPOU partner still resolves to its report row.
-        return request.env['stock.lot.report'].sudo().search([
-            ('lot_id', '=', lot.id),
-            ('partner_id', 'child_of', partner.id),
-        ], order='delivery_date desc', limit=1)
