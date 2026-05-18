@@ -1,5 +1,6 @@
 from odoo import models, fields, api, _, Command
 from odoo.exceptions import UserError
+from odoo.tools.float_utils import float_compare
 
 MAX_ATTEMPTS = 10
 
@@ -827,6 +828,57 @@ class StockPicking(models.Model):
         if pickings_to_unlink:
             pickings_to_unlink.unlink()
 
+    def _td_sync_book_value_to_lots_from_moves(self):
+        """
+        Sync stock.move.td_book_value to related stock.lot.standart_price.
+
+        Used after 1C GTD exchange, because 1C sends td_book_value on stock.move,
+        but lot cost is stored on stock.lot.standart_price.
+        """
+        StockLot = self.env['stock.lot'].sudo()
+        precision = self.env['decimal.precision'].precision_get('Product Price')
+
+        for picking in self:
+            for move in picking.move_ids:
+                if not move.product_id:
+                    continue
+
+                if not move.td_book_value:
+                    continue
+
+                lots = StockLot
+
+                # main source: done/created move lines
+                lots |= move.move_line_ids.mapped('lot_id')
+
+                # existing computed helper from stock.move
+                lots |= move.td_lot_ids
+
+                # native Odoo lot_ids, if used in this project
+                lots |= move.lot_ids
+
+                lots = lots.filtered(
+                    lambda lot: lot.product_id.id == move.product_id.id
+                )
+
+                if not lots:
+                    continue
+
+                new_price = move.td_book_value
+
+                lots_to_update = lots.filtered(
+                    lambda lot: float_compare(
+                        lot.standart_price or 0.0,
+                        new_price,
+                        precision_digits=precision,
+                    ) != 0
+                )
+
+                if lots_to_update:
+                    lots_to_update.write({
+                        'standart_price': new_price,
+                    })
+
     def _td_link_receipt_to_purchase_order(self, purchase_order, move_line_pairs):
         self.ensure_one()
         write_vals = {'origin': purchase_order.name}
@@ -1180,6 +1232,9 @@ class StockPicking(models.Model):
             changed=False,
             chatter_message=_("Отримані дані по ГТД з 1С"),
         )
+
+        self._td_sync_book_value_to_lots_from_moves()
+
         return True
 
     def td_1c_apply_gtd_correction(self, onec_doc_number, lot_prices):
@@ -1190,4 +1245,7 @@ class StockPicking(models.Model):
             changed=True,
             chatter_message=_("Перенесено коригування даних з 1С"),
         )
+
+        self._td_sync_book_value_to_lots_from_moves()
+
         return True
