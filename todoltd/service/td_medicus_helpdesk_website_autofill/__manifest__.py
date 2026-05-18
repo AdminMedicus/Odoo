@@ -1,6 +1,6 @@
 {
     'name': 'TD Helpdesk Website Form: Client & S/N Auto-fill',
-    'version': '18.0.1.0.1',
+    'version': '18.0.1.0.2',
     'category': 'Services/Helpdesk',
     'summary': 'Auto-fill partner_id, td_equipment_id and td_serial_number_id '
                'on helpdesk tickets created via the website form, based on '
