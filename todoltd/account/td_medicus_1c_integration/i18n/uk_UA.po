@@ -1398,3 +1398,15 @@ msgstr "Договір"
 msgid "Create PO on Validation"
 msgstr "Створити замовлення на покупку при підтвердженні"
 
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,help:td_medicus_1c_integration.field_stock_picking__td_auto_create_purchase_on_validate
+#: model:ir.model.fields,help:td_medicus_1c_integration.field_stock_picking_type__td_auto_create_purchase_on_validate
+msgid ""
+"When enabled for an incoming operation type, Odoo checks receipts without a "
+"linked purchase order or return on validation and automatically creates a "
+"confirmed purchase order and vendor bill."
+msgstr ""
+"Якщо увімкнено для типу операції надходження, Odoo під час підтвердження "
+"перевіряє надходження без пов’язаного замовлення на купівлю або повернення "
+"та автоматично створює підтверджене замовлення на купівлю і рахунок "
+"постачальника."
