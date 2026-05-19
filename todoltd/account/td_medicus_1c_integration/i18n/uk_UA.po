@@ -279,6 +279,7 @@ msgstr "Створено"
 
 #. module: td_medicus_1c_integration
 #: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__purchase_order__td_type_of_trade__credit
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__stock_picking__td_type_of_trade__credit
 msgid "Credit"
 msgstr "Кредит"
 
@@ -699,6 +700,7 @@ msgstr ""
 
 #. module: td_medicus_1c_integration
 #: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__purchase_order__td_type_of_trade__prepayment
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__stock_picking__td_type_of_trade__prepayment
 msgid "Prepayment"
 msgstr "Передоплата"
 
@@ -785,6 +787,7 @@ msgstr "Повернути в чернетку"
 
 #. module: td_medicus_1c_integration
 #: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__purchase_order__td_type_of_trade__res_storage
+#: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__stock_picking__td_type_of_trade__res_storage
 #: model:ir.model.fields.selection,name:td_medicus_1c_integration.selection__stock_picking_type__td_type_of_trade__res_storage
 msgid "Responsible Storage"
 msgstr "Відп. зберігання"
@@ -1383,3 +1386,15 @@ msgstr "Повернутись до редагування"
 #: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_view_sale_order_low_margin_warning
 msgid "Продовжити"
 msgstr "Продовжити"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_picking__td_agreement_id
+msgid "Agreement"
+msgstr "Договір"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_picking__td_auto_create_purchase_on_validate
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_picking_type__td_auto_create_purchase_on_validate
+msgid "Create PO on Validation"
+msgstr "Створити замовлення на покупку при підтвердженні"
+
