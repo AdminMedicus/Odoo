@@ -6,7 +6,6 @@
         <field name="inherit_id" ref="td_medicus_uktzed.td_view_production_lot_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='td_uktzed_code_id']" position="after">
-                <field name="product_qty" readonly="1"/>
                 <field name="td_available_qty" readonly="1"/>
             </xpath>
         </field>
