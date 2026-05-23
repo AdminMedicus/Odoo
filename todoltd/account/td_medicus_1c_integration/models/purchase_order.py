@@ -53,4 +53,6 @@ class PurchaseOrder(models.Model):
             picking.td_currency_id = self.currency_id.id
             picking.td_type_of_trade = self.td_type_of_trade
             picking.td_is_import = self.td_is_import
+            if 'td_agreement_id' in picking._fields:
+                picking.td_agreement_id = self.td_agreement_id.id if self.td_agreement_id else False
         return res

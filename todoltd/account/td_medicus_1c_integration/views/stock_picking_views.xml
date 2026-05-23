@@ -14,7 +14,15 @@
 
             <xpath expr="//field[@name='owner_id']" position="after">
                 <field name="picking_code" invisible="1"/>
-                <field name="td_type_of_trade" invisible="picking_code"/>
+                <field name="td_auto_create_purchase_on_validate" invisible="1"/>
+                <field name="td_is_goods_balance_of_act_res_st" invisible="1"/>
+                <field name="td_type_of_trade" invisible="picking_code" readonly="picking_type_code != 'incoming'"/>
+                <field
+                        name="td_agreement_id"
+                        invisible="picking_type_code != 'incoming' or not td_auto_create_purchase_on_validate"
+                        domain="[('partner_id', '=?', partner_id)]"
+                        context="{'default_partner_id': partner_id}"
+                />
             </xpath>
 
             <xpath expr="//field[@name='picking_type_id']" position="before">
@@ -88,6 +96,46 @@
                 <field name="td_amount_origin_currency"/>
                 <field name="td_total_without_tax"/>
                 <field name="td_total_tax"/>
+            </xpath>
+
+
+            <xpath expr="//field[@name='implementation_document']" position="attributes">
+                <attribute name="invisible">picking_type_code == 'incoming'</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='action_show_product_list']" position="attributes">
+                <attribute name="invisible">state not in ('draft') or not td_is_goods_balance_of_act_res_st</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='date_agreement_start']" position="attributes">
+                <attribute name="invisible">not td_is_goods_balance_of_act_res_st</attribute>
+            </xpath>
+
+            <xpath expr="//label[@for='date_agreement_start']" position="attributes">
+                <attribute name="invisible">not td_is_goods_balance_of_act_res_st</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='date_agreement_end']" position="attributes">
+                <attribute name="invisible">not td_is_goods_balance_of_act_res_st</attribute>
+            </xpath>
+
+            <xpath expr="//label[@for='date_agreement_end']" position="attributes">
+                <attribute name="invisible">not td_is_goods_balance_of_act_res_st</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='create_implementation_document_sale_order']" position="attributes">
+                <attribute name="invisible">sale_id or not td_is_goods_balance_of_act_res_st</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="td_one_c_view_picking_form_hide_parent_partner" model="ir.ui.view">
+        <field name="name">td.stock.picking.form.hide.parent.partner</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="td_contact_sale.view_picking_form_td_sub_client_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='td_parent_partner_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
             </xpath>
         </field>
     </record>
