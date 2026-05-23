@@ -56,6 +56,11 @@ class SaleOrder(models.Model):
             else:
                 res.partner_shipping_id = res.partner_id.id
 
+    def _prepare_picking(self):
+        vals = super(SaleOrder, self)._prepare_picking()
+        vals['user_id'] = False 
+        return vals
+
     def action_confirm(self):
         action = super().action_confirm()
 
