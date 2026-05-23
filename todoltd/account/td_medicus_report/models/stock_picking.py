@@ -614,7 +614,7 @@ class StockPicking(models.Model):
 
         data = {
             'company': {
-                'name': company_partner.full_partner_name,
+                'name': company_partner.full_partner_name or company_partner.name,
                 'registry': company.company_registry,
                 'vat': company.vat,
                 'street': company_partner.contact_address_complete,
