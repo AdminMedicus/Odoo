@@ -52,9 +52,43 @@ class SaleOrder(models.Model):
             'groups': [],
         }
 
+        bom = getattr(self, 'td_mrp_bom_id', False)
+        if bom:
+            line_num = 0
+
+            main_group = {'section_name': 'Основне обладнання', 'lines': []}
+            data['groups'].append(main_group)
+            for line in self.order_line:
+                if not line.display_type:
+                    line_num += 1
+                    main_group['lines'].append({
+                        'line_num': line_num,
+                        'product_code': line.product_id.default_code or '',
+                        'product_name': line.product_id.description_sale or line.product_id.name,
+                        'product_uom': line.product_uom.name,
+                        'product_qty': line.product_uom_qty,
+                        'product_price_unit': line.price_unit,
+                        'product_price_subtotal': line.price_total,
+                    })
+
+            components_group = {'section_name': 'Компоненти', 'lines': []}
+            data['groups'].append(components_group)
+            for bom_line in bom.bom_line_ids:
+                line_num += 1
+                components_group['lines'].append({
+                    'line_num': line_num,
+                    'product_code': bom_line.product_id.default_code or '',
+                    'product_name': bom_line.product_id.description_sale or bom_line.product_id.name,
+                    'product_uom': bom_line.product_uom_id.name,
+                    'product_qty': bom_line.product_qty,
+                    'product_price_unit': bom_line.price_unit,
+                    'product_price_subtotal': bom_line.td_price_subtotal,
+                })
+            return data
+
         current_group = None
         line_num = 0
-        
+
         for line in self.order_line:
             if line.display_type == 'line_section':
                 current_group = {
@@ -64,14 +98,14 @@ class SaleOrder(models.Model):
                 data['groups'].append(current_group)
             elif not line.display_type:
                 line_num += 1
-                
+
                 if current_group is None:
                     current_group = {
                         'section_name': '',
                         'lines': []
                     }
                     data['groups'].append(current_group)
-                
+
                 current_group['lines'].append({
                     'line_num': line_num,
                     'product_code': line.product_id.default_code or '',
