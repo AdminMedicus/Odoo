@@ -39,6 +39,59 @@ class StockMove(models.Model):
         compute='_compute_td_lot_ids'
     )
 
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        moves = super().create(vals_list)
+        if any('td_book_value' in vals for vals in vals_list):
+            moves._td_sync_td_book_value_to_lots()
+        return moves
+
+    def write(self, vals):
+        res = super().write(vals)
+        if {'td_book_value', 'move_line_ids', 'quantity'} & set(vals):
+            self._td_sync_td_book_value_to_lots()
+        return res
+
+    def _td_get_move_line_done_qty(self, move_line):
+        if 'qty_done' in move_line._fields:
+            return move_line.qty_done or 0.0
+        return move_line.quantity or 0.0
+
+    def _td_sync_td_book_value_to_lots(self):
+        """Sync td_book_value from done receipt moves to their lots/serials.
+
+        1C writes td_book_value on stock.move.  Once the receipt is done, each
+        involved lot should carry the same unit cost.  The quantity fields on
+        stock.lot remain computed from quants/import move lines, so no direct
+        write to product_qty/td_available_qty is needed here.
+        """
+        for move in self:
+            if not move.td_book_value:
+                continue
+            if not move.picking_id or move.picking_id.state != 'done':
+                continue
+
+            lot_by_id = {}
+            lot_qty_by_id = {}
+            for move_line in move.move_line_ids.filtered(lambda line: line.lot_id):
+                qty = move._td_get_move_line_done_qty(move_line)
+                if not qty:
+                    continue
+                lot_by_id[move_line.lot_id.id] = move_line.lot_id
+                lot_qty_by_id.setdefault(move_line.lot_id.id, 0.0)
+                lot_qty_by_id[move_line.lot_id.id] += qty
+
+            for lot_id in lot_qty_by_id:
+                lot = lot_by_id[lot_id]
+                vals = {}
+                if 'standard_price' in lot._fields:
+                    vals['standard_price'] = move.td_book_value
+                if 'standart_price' in lot._fields:
+                    vals['standart_price'] = move.td_book_value
+                if vals:
+                    lot.sudo().write(vals)
+
     @api.depends('lot_ids', 'move_line_ids', 'move_line_ids.quant_id')
     def _compute_td_lot_ids(self):
         for rec in self:
