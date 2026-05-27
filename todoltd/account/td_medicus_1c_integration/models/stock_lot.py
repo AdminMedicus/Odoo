@@ -11,6 +11,15 @@ class StockLot(models.Model):
         default=0.0,
     )
 
+    standard_price = fields.Float(
+        string="Lot Cost (standard)",
+        related="standart_price",
+        readonly=False,
+        store=True,
+        digits="Product Price",
+        help="Compatibility alias for the correctly named lot cost field.",
+    )
+
     product_qty = fields.Float(
         compute='_compute_td_qty_fields',
         string='Quantity',
