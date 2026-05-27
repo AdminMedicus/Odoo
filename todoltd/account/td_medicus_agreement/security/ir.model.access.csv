@@ -1,5 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_td_agreement_stock_move,td_agreement_stock_move,model_td_agreement_stock_move,base.group_user,1,1,1,1
-access_td_agreement_stock_report,td_agreement_stock_report,model_td_stock_report,base.group_user,1,1,1,1
-access_td_agreement_closing_reason,td.agreement.closing.reason,model_td_agreement_closing_reason,base.group_user,1,1,1,1
-access_td_agreement_closing_wizard,td.agreement.closing.wizard,model_td_agreement_closing_wizard,base.group_user,1,1,1,1

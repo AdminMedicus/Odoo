@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <data noupdate="0">
-        <record id="base.main_company" model="res.company">
-            <field name="tax_calculation_rounding_method">round_per_line</field>
-        </record>
-    </data>
-</odoo>
