@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="td_tax_invoice_view_form" model="ir.ui.view">
+        <field name="name">td.tax.invoice.form</field>
+        <field name="model">td.tax.invoice</field>
+        <field name="arch" type="xml">
+            <form js_class="account_move_form">
+                <header>
+                    <button name="action_confirm_tax_invoice"
+                            type="object"
+                            string="Confirm"
+                            invisible="state in ('confirm', 'confirm_finish')"
+                            class="btn btn-primary"
+                    />
+                    <button name="action_draft_tax_invoice"
+                            type="object"
+                            string="Reset to Draft"
+                            invisible="state != 'cancel'"
+                            class="btn btn-secondary"
+                    />
+                    <button name="action_cancel_tax_invoice"
+                            type="object"
+                            string="Cancel"
+                            invisible="state == 'cancel'"
+                            class="btn btn-secondary"
+                    />
+                    <button name="action_create_adjustment_invoice"
+                            type="object"
+                            string="Create Adjustment Invoice"
+                            invisible="state == 'cancel'"
+                            class="btn btn-secondary"
+                    />
+                    <button name="recalculation_of_the_quantity_of_lines"
+                            type="object"
+                            string="Recalculation of the quantity of lines"
+                            invisible="state in ['cancel', 'confirm', 'confirm_finish']"
+                            class="btn btn-secondary"
+                    />
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <field name="invoice_id" invisible="1"/>
+                    <field name="sale_order_id" invisible="1"/>
+                    <div name="button_box" class="oe_button_box">
+                        <button name="action_open_sale_order"
+                                class="oe_stat_button"
+                                icon="fa-shopping-cart"
+                                type="object"
+                                invisible="not sale_order_id"
+                        >
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Sale Order</span>
+                            </div>
+                        </button>
+                        <button name="action_open_invoice"
+                                class="oe_stat_button"
+                                icon="fa-pencil-square-o"
+                                type="object"
+                                invisible="not invoice_id"
+                        >
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Invoice</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title oe_td_title">
+                        <div>
+                            <span class="o_form_label"><field name="move_type" readonly="1" nolabel="1"/></span>
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <div id="td_status_stock_button">
+                            <button name="action_update_data"
+                                    string="Update Data"
+                                    type="object"
+                                    class="btn-primary"
+                                    invisible="state == 'confirm_finish'"
+                                    groups="td_medicus_1c_integration.group_user"/>
+
+                            <button name="action_update_data"
+                                    string="Update Data"
+                                    type="object"
+                                    class="btn-primary"
+                                    invisible="state != 'confirm_finish'"
+                                    groups="td_medicus_1c_integration.group_admin"/>
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="parent_id"/>
+                            <label for="partner_id" style="font-weight:bold;"/>
+                            <div class="o_col">
+                                <field name="partner_id" widget="res_partner_many2one" nolabel="1"
+                                       domain="[('company_id', 'in', (False, company_id))]"
+                                       options='{"no_quick_create": True}'
+                                       placeholder="Search a name or Tax ID..."
+                                       readonly="state != 'draft'"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="accounting_date"/>
+                            <field name="tax_guide_id"/>
+                            <field name="domain_payment_ids" invisible="1"/>
+                            <field name="payment_id" domain="[('id', 'in', domain_payment_ids)]" invisible="invoice_type == 'regular'"/>
+                            <field name="td_budget_funds"/>
+                            <field name="invoice_type"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="td_invoice_line" string="Document Line">
+                            <field name="td_invoice_line_ids" nolabel="1" readonly="state == 'confirm'">
+                                <list editable="bottom">
+                                    <field name="seq_line_number" optional="show"/>
+                                    <field name="product_id" widget="many2one" optional="show"/>
+                                    <field name="name" optional="show"/>
+                                    <field name="lot_ids" widget="many2many_tags" optional="show"/>
+                                    <field name="uktzed_code_id" widget="many2one" optional="show"/>
+                                    <field name="quantity" optional="show"/>
+                                    <field name="product_uom_id" optional="show"/>
+                                    <field name="sale_order_price" optional="show" column_invisible="True"/>
+                                    <field name="sale_order_quantity" optional="show" column_invisible="True"/>
+                                    <field name="sale_order_currency_id" optional="show" column_invisible="True"/>
+                                    <field name="sale_order_price_subtotal" optional="show"/>
+                                    <field name="invoice_price" optional="show" column_invisible="True"/>
+                                    <field name="invoice_quantity" optional="show" column_invisible="True"/>
+                                    <field name="invoice_currency_id" optional="show" column_invisible="True"/>
+                                    <field name="invoice_price_subtotal" optional="show" column_invisible="True"/>
+                                    <field name="vat_id" widget="many2one" optional="show"/>
+                                    <field name="vat_type" optional="show" column_invisible="True"/>
+                                    <field name="vat_price" optional="show"/>
+                                    <field name="sum_vat_price" optional="show" column_invisible="True"/>
+                                    <field name="price_with_out_vat" optional="show"/>
+                                    <field name="sum_price_with_out_vat" optional="show"/>
+                                    <field name="sum_price_with_vat" optional="show"/>
+                                    <field name="corr_line_number" optional="show"/>
+                                </list>
+                            </field>
+                            <group col="12" class="oe_invoice_lines_tab overflow-hidden">
+                                <group colspan="8">
+                                    <field name="narration" placeholder="Terms and Conditions" nolabel="1"/>
+                                </group>
+                                <group colspan="4">
+                                    <group class="oe_subtotal_footer">
+
+                                        <field name="price_with_out_tax" colspan="2" readonly="1"/>
+                                        <div colspan="2" class="o_row" invisible="not tax_guide_id">
+                                            <field name="tax_guide_id" colspan="1" nolabel="1" readonly="1"/>
+                                            <field name="price_vat" colspan="1" readonly="1" nolabel="1"/>
+                                        </div>
+                                        <field name="price_total" class="oe_subtotal_footer_separator" readonly="1"/>
+                                    </group>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="other_information" string="Other information">
+                            <group>
+                                <group>
+                                    <field name="responsible_user_id"/>
+                                    <field name="company_id"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="td_tax_invoice_view_list" model="ir.ui.view">
+        <field name="name">td.tax.invoice.list</field>
+        <field name="model">td.tax.invoice</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="partner_id" optional="show"/>
+                <field name="accounting_date" optional="show"/>
+                <field name="price_with_out_tax" optional="show" sum="Total w/o Tax"/>
+                <field name="price_vat" optional="hide" sum="VAT Total"/>
+                <field name="price_total" optional="show" sum="Grand Total"/>
+                <field name="state" optional="show"/>
+                <field name="td_budget_funds" optional="show"/>
+                <field name="responsible_user_id" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_td_tax_invoice" model="ir.actions.act_window">
+        <field name="name">Tax Invoice</field>
+        <field name="res_model">td.tax.invoice</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('move_type', '=', 'tax_inv')]</field>
+    </record>
+
+    <record id="action_td_adj_invoice" model="ir.actions.act_window">
+        <field name="name">Adjustment Invoice</field>
+        <field name="res_model">td.tax.invoice</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('move_type', '=', 'adj_inv')]</field>
+    </record>
+
+    <record id="action_td_tax_invoice_mass_change_status" model="ir.actions.server">
+        <field name="name">Mass Change Status</field>
+        <field name="model_id" ref="model_td_tax_invoice"/>
+        <field name="state">code</field>
+        <field name="code">records.action_mass_change_status()</field>
+        <field name="binding_model_id" ref="model_td_tax_invoice"/>
+        <field name="binding_view_types">list</field>
+        <field name="groups_id" eval="[(4, ref('td_medicus_1c_integration.group_admin'))]"/>
+    </record>
+
+    <menuitem
+        id="menu_td_tax_invoice"
+        action="action_td_tax_invoice"
+        parent="account.menu_finance_receivables"
+        sequence="98"
+    />
+    <menuitem
+        id="menu_td_adj_invoice"
+        action="action_td_adj_invoice"
+        parent="account.menu_finance_receivables"
+        sequence="99"
+    />
+</odoo>

@@ -1,0 +1,19 @@
+<odoo>
+    <record id="td_view_sale_order_low_margin_warning" model="ir.ui.view">
+        <field name="name">td.sale.order.low.margin.warning.form</field>
+        <field name="model">td.sale.order.low.margin.warning</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <p>
+                        This document contains goods whose value is lower than cost.
+                    </p>
+                </group>
+                <footer>
+                    <button name="action_continue" type="object" string="Продовжити" class="btn-primary"/>
+                    <button name="action_back_to_edit" type="object" string="Повернутись до редагування" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

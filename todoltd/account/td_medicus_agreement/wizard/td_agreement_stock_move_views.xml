@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="td_stock_move_wizard_view_tree" model="ir.ui.view">
+        <field name="name">td.agreement.stock.move</field>
+        <field name="model">td.agreement.stock.move</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="product_id"/>
+                <field name="lot_ids" widget="many2many_tags"/>
+                <field name="stock_picking_id"/>
+                <field name="sale_order_id"/>
+                <field name="quantity"/>
+                <field name="product_uom"/>
+                <field name="price_unit" readonly="1"/>
+                <field name="price_subtotal" readonly="1"/>
+                <header>
+                    <button name="action_process_selected" string="Apply" type="object" class="btn-primary"/>
+                </header>
+            </list>
+        </field>
+    </record>
+</odoo>

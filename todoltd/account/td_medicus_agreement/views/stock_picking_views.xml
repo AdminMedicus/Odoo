@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="td_implementation_document_view_picking_form_inherit" model="ir.ui.view">
+        <field name="name">td.implementation.document.stock.picking.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="implementation_document" readonly="state not in ('draft')"/>
+                <div/>
+                <div class="o_row" colspan="2">
+                    <label for="date_agreement_start"/>
+                    <field name="date_agreement_start" readonly="state not in ('draft')"/>
+                    <label for="date_agreement_end"/>
+                    <field name="date_agreement_end" readonly="state not in ('draft')"/>
+                </div>
+                <div>
+                    <button
+                            type="object"
+                            name="action_show_product_list"
+                            string="Show the list of products"
+                            class="btn btn-secondary"
+                            invisible="state not in ('draft')"
+                    />
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']//field[@name='product_uom']" position="after">
+                <field name="sale_order_id" optional="show"/>
+                <field name="td_price_unit" optional="show"/>
+                <field name="td_untaxed_price_unit" optional="show" readonly="1"/>
+                <field name="td_price_subtotal" optional="show" readonly="1"/>
+            </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']" position="after">
+                <group>
+                    <field name="td_total_amount" readonly="1"/>
+                </group>
+            </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']//field[@name='lot_ids']" position="replace">
+            </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']//field[@name='product_id']" position="after">
+                 <field name="td_lot_ids" widget="many2many_tags"/>
+                 <field name="lot_ids" widget="many2many_tags"
+                        column_invisible="1"
+                        optional="show" options="{'create': [('parent.use_create_lots', '=', True)]}"
+                        context="{'default_company_id': company_id, 'default_product_id': product_id,
+                        'active_picking_id': parent.id}" domain="[('product_id','=',product_id)]"
+                        on_change="1" can_create="True" can_write="True"
+                 />
+                 <field name="td_picking_code" column_invisible="1"/>
+                 <field name="td_uktzed_code_id" domain="[('visible', '=', True)]" readonly="td_picking_code != 'incoming'"/>
+<!--                 <field name="lot_ids" widget="many2many_tags"-->
+<!--                        invisible="not show_details_visible or has_tracking == 'none'"-->
+<!--                        optional="show" options="{'create': [('parent.use_create_lots', '=', True)]}"-->
+<!--                        context="{'default_company_id': company_id, 'default_product_id': product_id,-->
+<!--                        'active_picking_id': parent.id}" domain="[('product_id','=',product_id)]"-->
+<!--                        on_change="1" can_create="True" can_write="True"-->
+<!--                 />-->
+            </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']//field[@name='quantity']" position="attributes">
+                 <attribute name="column_invisible">0</attribute>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <field name="sale_id" invisible="1"/>
+                <button name="action_see_sale_orders" type="object" class="oe_stat_button" icon="fa-shopping-cart">
+                    <field string="Sale Orders" name="sale_order_count" widget="statinfo"/>
+                </button>
+                <button name="action_open_sale_order" type="object" class="oe_stat_button" icon="fa-shopping-cart"
+                    invisible="not sale_id"
+                >
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text"><field name="td_sale_id_name" nolabel="1"/></span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//button[@name='action_cancel']" position="after">
+                <field name="sale_id" invisible="1"/>
+                <button
+                        name="create_implementation_document_sale_order"
+                        type="object"
+                        string="Create a new implementation document"
+                        invisible="sale_id"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

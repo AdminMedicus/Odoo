@@ -30,9 +30,9 @@ class AtaExchangeIncomingrequestStockPickingImport(models.AbstractModel):
         record = cast(Picking,self.ata_exchange_get_model_record(sp_params))
 
         if record.state == "import":
-            record.write({
-                "state": "done"
-            })
+            # record.write({
+            #     "state": "done"
+            # })
             record.td_1c_apply_gtd_first_exchange(sp_data.id, [])
         elif record.state == "done":
             record.td_1c_apply_gtd_correction(sp_data.id, [])
