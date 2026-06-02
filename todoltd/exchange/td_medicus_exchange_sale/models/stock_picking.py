@@ -25,7 +25,7 @@ class TdStockPickingExchange(models.Model):
 
         if self.picking_type_code == 'incoming':
             if self.td_is_import:
-                if (self.state == 'import' and self.purchase_id) or self.state == 'done':
+                if self.state == 'import' and self.purchase_id:
                     methods.append(self.env.ref('td_medicus_exchange_sale.stock_picking_incoming_import_prepared_odoo_1c'))
             else:
                 if self.state == 'done':
