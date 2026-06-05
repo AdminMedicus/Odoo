@@ -35,17 +35,19 @@ class StockLot(models.Model):
     @api.depends(
         'product_id',
         'company_id',
+        'quant_ids.quantity',
+        'quant_ids.reserved_quantity',
+        'quant_ids.location_id.usage',
+        'quant_ids.company_id',
         'product_id.qty_available',
     )
+    @api.depends_context('company', 'allowed_company_ids')
     def _compute_td_qty_fields(self):
         for lot in self:
             actual_qty = lot._td_get_internal_qty(company=lot.company_id)
             import_qty = lot._td_get_import_qty(company=lot.company_id)
 
-            # Базове поле показує весь on hand + заблокований імпорт
             lot.product_qty = actual_qty + import_qty
-
-            # Нове поле тільки доступну кількість без import
             lot.td_available_qty = actual_qty
 
     def _td_get_internal_qty(self, company=None):
@@ -64,6 +66,15 @@ class StockLot(models.Model):
 
         quants = Quant.search(domain)
         return sum(quants.mapped("quantity"))
+
+    def _td_get_move_line_done_qty(self, move_line):
+        if 'quantity' in move_line._fields:
+            return move_line.quantity or 0.0
+
+        if 'qty_done' in move_line._fields:
+            return move_line.qty_done or 0.0
+
+        return 0.0
 
     def _td_get_import_qty(self, company=None):
         self.ensure_one()
@@ -85,5 +96,5 @@ class StockLot(models.Model):
 
         qty = 0.0
         for line in move_lines:
-            qty += abs(line.qty_done or line.quantity or 0.0)
+            qty += abs(self._td_get_move_line_done_qty(line))
         return qty
