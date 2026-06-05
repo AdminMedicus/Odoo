@@ -100,6 +100,26 @@ class StockPicking(models.Model):
         readonly=True,
     )
 
+    def _td_get_receipt_lots(self):
+        lots = self.env['stock.lot']
+
+        for picking in self:
+            lots |= picking.move_line_ids.mapped('lot_id')
+
+            for move in picking.move_ids:
+                if 'lot_ids' in move._fields:
+                    lots |= move.lot_ids
+
+                if 'td_lot_ids' in move._fields:
+                    lots |= move.td_lot_ids
+
+        return lots.filtered(lambda lot: lot and lot.product_id)
+
+    def _td_invalidate_receipt_lot_qty_cache(self):
+        lots = self._td_get_receipt_lots()
+        if lots:
+            lots.invalidate_recordset(['product_qty', 'td_available_qty'])
+
     @api.depends('purchase_id.currency_id', 'company_id.currency_id')
     def _compute_td_currency_id(self):
         for picking in self:
@@ -773,13 +793,6 @@ class StockPicking(models.Model):
             pickings_to_unlink.unlink()
 
     def _td_sync_book_value_to_lots_from_moves(self):
-        """
-        Sync stock.move.td_book_value to related stock.lot.standart_price.
-
-        Used after 1C GTD exchange, because 1C sends td_book_value on stock.move,
-        but lot cost is stored on stock.lot.standart_price.
-        """
-        StockLot = self.env['stock.lot'].sudo()
         precision = self.env['decimal.precision'].precision_get('Product Price')
 
         for picking in self:
@@ -787,28 +800,13 @@ class StockPicking(models.Model):
                 if not move.product_id:
                     continue
 
-                if not move.td_book_value:
+                new_price = move._td_get_lot_cost_for_sync()
+                if new_price is None:
                     continue
 
-                lots = StockLot
-
-                # main source: done/created move lines
-                lots |= move.move_line_ids.mapped('lot_id')
-
-                # existing computed helper from stock.move
-                lots |= move.td_lot_ids
-
-                # native Odoo lot_ids, if used in this project
-                lots |= move.lot_ids
-
-                lots = lots.filtered(
-                    lambda lot: lot.product_id.id == move.product_id.id
-                )
-
+                lots = move._td_get_lots_for_cost_sync()
                 if not lots:
                     continue
-
-                new_price = move.td_book_value
 
                 lots_to_update = lots.filtered(
                     lambda lot: float_compare(
@@ -818,10 +816,8 @@ class StockPicking(models.Model):
                     ) != 0
                 )
 
-                if lots_to_update:
-                    lots_to_update.write({
-                        'standart_price': new_price,
-                    })
+                for lot in lots_to_update:
+                    move._td_write_lot_cost(lot, new_price)
 
     def _td_link_receipt_to_purchase_order(self, purchase_order, move_line_pairs):
         self.ensure_one()
@@ -1005,6 +1001,9 @@ class StockPicking(models.Model):
 
         res = super().button_validate()
 
+        self._td_sync_book_value_to_lots_from_moves()
+        self._td_invalidate_receipt_lot_qty_cache()
+
         if not self.sale_id:
             self._assign_serial_ref()
 
@@ -1185,7 +1184,8 @@ class StockPicking(models.Model):
         )
 
         self._td_sync_book_value_to_lots_from_moves()
-
+        self._td_invalidate_receipt_lot_qty_cache()
+        
         return True
 
     def td_1c_apply_gtd_correction(self, onec_doc_number, lot_prices):
@@ -1196,6 +1196,9 @@ class StockPicking(models.Model):
             changed=True,
             chatter_message=_("Перенесено коригування даних з 1С"),
         )
+
+        self._td_sync_book_value_to_lots_from_moves()
+        self._td_invalidate_receipt_lot_qty_cache()
 
         self._td_sync_book_value_to_lots_from_moves()
 
