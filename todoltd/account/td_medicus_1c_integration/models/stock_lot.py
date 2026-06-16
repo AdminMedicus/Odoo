@@ -4,6 +4,11 @@ from odoo import api, fields, models
 class StockLot(models.Model):
     _inherit = "stock.lot"
 
+    td_manufacturer_directory_res_id = fields.Many2one(
+        comodel_name='res.partner',
+        string="Manufacturer",
+    )
+
     standart_price = fields.Float(
         string="Lot Cost (standard)",
         digits="Product Price",
