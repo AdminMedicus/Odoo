@@ -7,16 +7,16 @@ class StockMoveLine(models.Model):
     td_manufacturer_directory_res_id = fields.Many2one(
         comodel_name='res.partner',
         string="Manufacturer",
-        compute='_compute_td_manufacturer_directory_res_id',
-        store=True,
-        readonly=False,
+        # compute='_compute_td_manufacturer_directory_res_id',
+        # store=True,
+        # readonly=False,
     )
 
-    @api.depends('product_id', 'lot_id', 'lot_id.td_manufacturer_directory_res_id')
+    @api.onchange('product_id', 'lot_id', 'lot_id.td_manufacturer_directory_res_id', 'quant_id')
     def _compute_td_manufacturer_directory_res_id(self):
         for line in self:
-            if line.lot_id.td_manufacturer_directory_res_id:
-                line.td_manufacturer_directory_res_id = line.lot_id.td_manufacturer_directory_res_id
+            if lot := line.quant_id.lot_id:
+                line.td_manufacturer_directory_res_id = lot.td_manufacturer_directory_res_id
             else:
                 line.td_manufacturer_directory_res_id = line.product_id.td_manufacturer_directory_res_id
 
