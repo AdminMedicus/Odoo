@@ -1,10 +1,6 @@
 import re
 
-from collections import Counter
-from itertools import groupby
-
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_round, float_is_zero
 from lxml import etree
 
@@ -13,6 +9,7 @@ class AccountMove(models.Model):
     _inherit = 'account.move'
 
     td_advance_payment_method = fields.Selection(
+        string='TD Advance Payment Method',
         default='delivered',
         selection=[
             ('delivered', "Regular invoice"),
@@ -21,7 +18,7 @@ class AccountMove(models.Model):
         ],
     )
     td_budget_funds = fields.Boolean(
-        related='td_order_id.budget_funds'
+        related='td_order_id.td_budget_funds',
     )
     td_order_id = fields.Many2one(
         comodel_name='sale.order'
@@ -39,9 +36,11 @@ class AccountMove(models.Model):
         related='td_order_id.td_tax_guide_id'
     )
     td_tax_invoice_id = fields.Many2one(
+        string='Td Tax Invoice',
         comodel_name='td.tax.invoice'
     )
     td_tax_invoice_ids = fields.Many2many(
+        string='Td Tax Invoices',
         comodel_name='td.tax.invoice',
         store=True
     )
@@ -135,48 +134,43 @@ class AccountMove(models.Model):
             if key.startswith('td_') and key not in company_info:
                 company_info[key] = safe_get(company, key)
 
-
         company_info['logo'] = safe_get(company, 'logo')
         company_info['logo_web'] = safe_get(company, 'logo_web')
 
-
         report_data = {'company_info': company_info}
-
 
         for key in self._fields:
             report_data[key] = safe_get(self, key)
 
-
         for key in ['co_date', 'create_date', 'write_date']:
             report_data[key] = safe_get(self, key)
 
-
         missing_fields = {}
-        
+
         required_fields = [
-            'co_number', 
-            'co_validity_period', 
-            'co_delivery_period', 
+            'co_number',
+            'co_validity_period',
+            'co_delivery_period',
             'co_delivery_terms',
-            'co_manager', 
-            'co_manager_number', 
-            'consignee', 
+            'co_manager',
+            'co_manager_number',
+            'consignee',
             'consignee_code',
-            'partner_name', 
-            'vendor_name', 
-            'recipient_name', 
-            'buyer', 
+            'partner_name',
+            'vendor_name',
+            'recipient_name',
+            'buyer',
             'shipper',
-            'amount_in_words', 
+            'amount_in_words',
             'tax_guide_name'
         ]
-        
+
         for field in required_fields:
             if field not in report_data:
                 if field == 'co_number':
                     missing_fields[field] = safe_get(self, 'name')
                 elif field == 'co_validity_period':
-                    missing_fields[field] = 30 
+                    missing_fields[field] = 30
                 elif field == 'co_delivery_period':
                     missing_fields[field] = 7
                 elif field == 'co_delivery_terms':
@@ -188,7 +182,8 @@ class AccountMove(models.Model):
                 elif field == 'consignee':
                     missing_fields[field] = safe_get(self.partner_id, 'name')
                 elif field == 'consignee_code':
-                    missing_fields[field] = safe_get(self.partner_id, 'company_registry') or safe_get(self.partner_id, 'vat')
+                    missing_fields[field] = safe_get(self.partner_id, 'company_registry') or safe_get(self.partner_id,
+                                                                                                      'vat')
                 elif field in ['partner_name', 'vendor_name', 'recipient_name', 'buyer', 'shipper']:
                     missing_fields[field] = safe_get(self.partner_id, 'name')
                 elif field == 'amount_in_words':
@@ -196,7 +191,7 @@ class AccountMove(models.Model):
                     missing_fields[field] = self._get_amount_in_words(float(amount_total) if amount_total else 0)
                 elif field == 'tax_guide_name':
                     missing_fields[field] = safe_get(self.td_tax_guide_id, 'name')
-        
+
         report_data.update(missing_fields)
         report_data['groups'] = self.invoice_line_ids.filtered(lambda l: l.display_type != 'line_section')
 
@@ -263,8 +258,9 @@ class AccountMove(models.Model):
             move.amount_untaxed_in_currency_signed = -total_untaxed_currency
             move.amount_tax_signed = -total_tax
             move.amount_total_signed = abs(total) if move.move_type == 'entry' else -total
-            move.amount_total_in_currency_signed = abs(move.amount_total) if move.move_type == 'entry' else -(sign * move.amount_total)
-            
+            move.amount_total_in_currency_signed = abs(move.amount_total) if move.move_type == 'entry' else -(
+                        sign * move.amount_total)
+
             # if move.is_invoice(True) and move.td_order_id:
             #     if not move.td_prepayment:
             #         other_invoices = move.td_order_id.invoice_ids.filtered(lambda inv: inv.id != move.id)
@@ -364,7 +360,7 @@ class AccountMove(models.Model):
                         'invoice_line_id': line.id,
                         'name': line.name,
                         'price_with_out_vat': float_round(
-                            line.td_order_line_id.price_unit if line.td_order_line_id else line.price_unit, 
+                            line.td_order_line_id.price_unit if line.td_order_line_id else line.price_unit,
                             precision_digits=2
                         ),
                         'product_id': line.product_id.id,
@@ -436,7 +432,6 @@ class AccountMove(models.Model):
             'views': [(False, 'list'), (False, 'form')],
         }
 
-
     def _post(self, soft=True):
         for move in self:
             if move.move_type not in ('out_invoice', 'in_invoice', 'out_refund', 'in_refund'):
@@ -445,16 +440,16 @@ class AccountMove(models.Model):
             c_untaxed_total = 0.0
             for line in move.invoice_line_ids.filtered(lambda l: l.display_type == 'product'):
                 res = line.tax_ids.compute_all(
-                    line.price_unit, 
-                    currency=move.currency_id, 
-                    quantity=1.0, 
-                    product=line.product_id, 
+                    line.price_unit,
+                    currency=move.currency_id,
+                    quantity=1.0,
+                    product=line.product_id,
                     partner=move.partner_id
                 )
                 unit_untaxed = float_round(res['total_excluded'], precision_digits=2)
                 line_untaxed = float_round(unit_untaxed * line.quantity, precision_digits=2)
                 c_untaxed_total += line_untaxed
-                
+
             tax_lines_product = move.invoice_line_ids.filtered(lambda l: l.display_type == 'product').mapped('tax_ids')
             tax_rate = tax_lines_product[0].amount / 100.0 if tax_lines_product else 0.0
             c_tax_total = float_round(c_untaxed_total * tax_rate, precision_digits=2)
@@ -463,15 +458,15 @@ class AccountMove(models.Model):
             diff_total = c_total - move.amount_total
             diff_tax = c_tax_total - move.amount_tax
             diff_untaxed = c_untaxed_total - move.amount_untaxed
-            
-            if any(not float_is_zero(d, precision_rounding=move.currency_id.rounding) for d in [diff_total, diff_tax, diff_untaxed]):
+
+            if any(not float_is_zero(d, precision_rounding=move.currency_id.rounding) for d in
+                   [diff_total, diff_tax, diff_untaxed]):
                 term_line = move.line_ids.filtered(lambda l: l.display_type == 'payment_term')[:1]
                 tax_line = move.line_ids.filtered(lambda l: l.display_type == 'tax')[:1]
                 prod_line = move.line_ids.filtered(lambda l: l.display_type == 'product')[:1]
-                
 
                 move_ctx = move.with_context(check_move_validity=False, skip_account_move_synchronization=True)
-                
+
                 def force_balance(line, diff):
                     if not line or float_is_zero(diff, precision_rounding=move.currency_id.rounding):
                         return
@@ -482,7 +477,8 @@ class AccountMove(models.Model):
                         'credit': -new_balance if new_balance < 0 else 0.0,
                         'amount_currency': line.amount_currency + (diff if line.amount_currency > 0 else -diff),
                         'amount_residual': new_balance,
-                        'amount_residual_currency': line.amount_currency + (diff if line.amount_currency > 0 else -diff),
+                        'amount_residual_currency': line.amount_currency + (
+                            diff if line.amount_currency > 0 else -diff),
                     })
 
                 force_balance(term_line, diff_total)
@@ -495,15 +491,14 @@ class AccountMove(models.Model):
                     'amount_total': c_total,
                 })
 
-
         res = super()._post(soft)
-        
+
         for move in self:
             if move.move_type not in ('out_invoice', 'in_invoice', 'out_refund', 'in_refund'):
                 continue
-            
-            move._compute_tax_totals() 
-            
+
+            move._compute_tax_totals()
+
             for line in move.line_ids.filtered(lambda l: l.display_type == 'payment_term'):
                 line.with_context(check_move_validity=False).write({
                     'amount_residual': line.balance,
@@ -512,5 +507,5 @@ class AccountMove(models.Model):
 
         self.invalidate_recordset()
         self.env['account.move.line'].invalidate_model(['amount_residual', 'amount_residual_currency'])
-        
+
         return res

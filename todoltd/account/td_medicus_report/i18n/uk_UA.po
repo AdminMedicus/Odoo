@@ -1196,7 +1196,7 @@ msgstr "Якщо позначено, цей контакт буде викори
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_order_implementation_document
-msgid "Implementation Document"
+msgid "TD Implementation Document"
 msgstr "Документ реалізації"
 
 #. module: td_medicus_report
@@ -1242,8 +1242,12 @@ msgstr "Довжина, м"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_license_number
-#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_license_number_other
 msgid "License Plate"
+msgstr "Номер ліцензії"
+
+#. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_license_number_other
+msgid "License Plate Other"
 msgstr "Номер ліцензії"
 
 #. module: td_medicus_report
@@ -1325,8 +1329,12 @@ msgstr "Сформувати акт повернення"
 
 #. module: td_medicus_report
 #: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_carrier_partner_id
-#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_hired_carrier
 msgid "Road Carrier"
+msgstr "Автомобільний перевізник"
+
+#. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_hired_carrier
+msgid "Hired Road Carrier"
 msgstr "Автомобільний перевізник"
 
 #. module: td_medicus_report
@@ -1442,9 +1450,13 @@ msgstr "Користувач, відповідальний за управлін
 
 #. module: td_medicus_report
 #: model:ir.model,name:td_medicus_report.model_fleet_vehicle
-#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_hired_vehicle
 #: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_vehicle_id
 msgid "Vehicle"
+msgstr "Транспортний засіб"
+
+#. module: td_medicus_report
+#: model:ir.model.fields,field_description:td_medicus_report.field_stock_picking__td_ttn_hired_vehicle
+msgid "Hired Vehicle"
 msgstr "Транспортний засіб"
 
 #. module: td_medicus_report

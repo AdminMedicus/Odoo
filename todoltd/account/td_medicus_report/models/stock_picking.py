@@ -19,6 +19,7 @@ class StockPicking(models.Model):
         help="Date of the custody act related to this delivery order",
     )
     td_order_implementation_document = fields.Selection(
+        string='TD Implementation Document',
         related="sale_id.implementation_document",
         store=True,
     )
@@ -57,7 +58,7 @@ class StockPicking(models.Model):
     )
 
     td_ttn_hired_vehicle = fields.Char(
-        string='Vehicle',
+        string='Hired Vehicle',
         copy=False,
     )
 
@@ -85,7 +86,7 @@ class StockPicking(models.Model):
     )
 
     td_ttn_hired_carrier = fields.Char(
-        string='Road Carrier',
+        string='Hired Road Carrier',
         copy=False,
     )
 
@@ -154,7 +155,7 @@ class StockPicking(models.Model):
     )
 
     td_ttn_license_number_other = fields.Char(
-        string='License Plate',
+        string='License Plate Other',
         copy=False,
     )
 
