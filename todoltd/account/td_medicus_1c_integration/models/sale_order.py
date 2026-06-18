@@ -11,10 +11,8 @@ from odoo.tools import float_round
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    budget_funds = fields.Boolean(
-        related='td_agreement_id.budget_funds'
-    )
     td_budget_funds = fields.Boolean(
+        string='Budget Funds',
         related='td_agreement_id.budget_funds'
     )
     td_show_create_invoice = fields.Boolean(
@@ -30,7 +28,6 @@ class SaleOrder(models.Model):
     )
     td_tax_invoice_ids = fields.Many2many(
         comodel_name='td.tax.invoice',
-        compute='_compute_td_tax_invoices',
         store=True
     )
     td_tax_invoice_state = fields.Selection(
@@ -322,21 +319,6 @@ class SaleOrder(models.Model):
                 most_common_state = max(state_percentages.items(), key=lambda x: x[1])
                 rec.td_tax_invoice_state = most_common_state[0]
                 rec.td_tax_invoice_state_percentage = most_common_state[-1]
-
-            # if len(rec.td_tax_invoice_ids.filtered(lambda l: l.state == 'confirm_finish')) > 0:
-            #     rec.td_tax_invoice_state = 'confirm_finish'
-            # elif len(rec.td_tax_invoice_ids.filtered(lambda l: l.state == 'confirm')) > 0:
-            #     rec.td_tax_invoice_state = 'confirm'
-            # elif len(rec.td_tax_invoice_ids) == 0:
-            #     rec.td_tax_invoice_state = 'not_created'
-            # elif len(rec.td_tax_invoice_ids.filtered(lambda l: l.state == 'draft')) > 0:
-            #     rec.td_tax_invoice_state = 'draft'
-            # elif rec.td_budget_funds:
-            #     rec.td_tax_invoice_state = 'budget'
-            # elif len(rec.td_tax_invoice_ids.filtered(lambda l: l.state == 'cancel')) > 0:
-            #     rec.td_tax_invoice_state = 'cancel'
-            # else:
-            #     rec.td_tax_invoice_state = 'draft'
 
     def action_confirm(self):
         self.ensure_one()
