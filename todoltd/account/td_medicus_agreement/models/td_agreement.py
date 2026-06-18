@@ -47,21 +47,17 @@ class Agreement(models.Model):
         default="full",
     )
     implementation_document = fields.Selection(
-        compute='_compute_implementation_document',
         selection=[
-            ('exp_inv', 'Expenditure Invoice'),
-            ('act_res_st', 'Act of Responsible Storage'),
+            ('exp_inv', 'Expenditure invoice'),
+            ('act_res_st', 'Act of responsible storage'),
             ('move', 'Movement'),
         ],
-        compute_sudo=True,
-        store=True,
-        string="Implementation Document"
-    )
-    implementation_document_additional = fields.Boolean(
         compute='_compute_implementation_document',
-        compute_sudo=True,
         store=True,
-        string="Is Additional Document"
+    )
+
+    implementation_document_additional = fields.Boolean(
+        compute='_compute_implementation_document_additional',
     )
 
     pre_payment = fields.Float()
@@ -143,12 +139,16 @@ class Agreement(models.Model):
     @api.depends('type_of_agreement')
     def _compute_implementation_document(self):
         for rec in self:
+            rec.implementation_document = (
+                rec.type_of_agreement.implementation_document
+                if rec.type_of_agreement
+                else False
+            )
 
-            rec.implementation_document = False
+    @api.depends('type_of_agreement')
+    def _compute_implementation_document_additional(self):
+        for rec in self:
             rec.implementation_document_additional = False
-
-            if rec.type_of_agreement and rec.type_of_agreement.implementation_document:
-                rec.implementation_document = rec.type_of_agreement.implementation_document
 
     @api.onchange('partner_id')
     def _compute_allowed_sub_client_ids(self):

@@ -6,10 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-16 15:17+0000\n"
-"PO-Revision-Date: 2026-06-16 15:17+0000\n"
+"POT-Creation-Date: 2026-04-27 01:47+0000\n"
+"PO-Revision-Date: 2026-04-27 01:47+0000\n"
 "Last-Translator: \n"
-"Language-Team: \n"
+"Language-Team: Ukrainian\n"
+"Language: uk_UA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -173,7 +174,6 @@ msgstr "Доступна кількість"
 #. module: td_medicus_1c_integration
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_account_bank_statement_line__td_budget_funds
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_account_move__td_budget_funds
-#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_sale_order__budget_funds
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_sale_order__td_budget_funds
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__td_budget_funds
 msgid "Budget Funds"
@@ -261,10 +261,20 @@ msgstr "Створити Рахунок-коригування"
 
 #. module: td_medicus_1c_integration
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_sale_advance_payment_inv__advance_payment_method
-#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_sale_advance_payment_inv__td_advance_payment_method
-#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_sale_advance_payment_inv__td_advance_payment_method_one
 #: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_one_c_integration_view_order_form_inherited
 msgid "Create Invoice"
+msgstr "Створити рахунок"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_sale_advance_payment_inv__td_advance_payment_method_one
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_one_c_integration_view_order_form_inherited
+msgid "TD Create Invoice One"
+msgstr "Створити рахунок"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_sale_advance_payment_inv__td_advance_payment_method
+#: model_terms:ir.ui.view,arch_db:td_medicus_1c_integration.td_one_c_integration_view_order_form_inherited
+msgid "TD Create Invoice"
 msgstr "Створити рахунок"
 
 #. module: td_medicus_1c_integration
@@ -305,6 +315,11 @@ msgstr "Кредит"
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__invoice_currency_id
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__sale_order_currency_id
 msgid "Currency"
+msgstr "Валюта"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__invoice_currency_id
+msgid "Invoice Currency"
 msgstr "Валюта"
 
 #. module: td_medicus_1c_integration
@@ -494,6 +509,11 @@ msgstr "Джерело документа"
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__message_is_follower
 msgid "Is Follower"
 msgstr "Є підписником"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__invoice_price
+msgid "Invoice price"
+msgstr "Ціна за одиницю"
 
 #. module: td_medicus_1c_integration
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_one_c_category__write_uid
@@ -786,8 +806,17 @@ msgstr ""
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_lot__product_qty
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__invoice_quantity
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__quantity
-#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__sale_order_quantity
 msgid "Quantity"
+msgstr "Кількість в наявності"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__sale_order_quantity
+msgid "SO quantity"
+msgstr "Кількість в наявності"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__invoice_quantity
+msgid "Invoice qty"
 msgstr "Кількість в наявності"
 
 #. module: td_medicus_1c_integration
@@ -837,9 +866,8 @@ msgid "Responsible Storage"
 msgstr "Відп. зберігання"
 
 #. module: td_medicus_1c_integration
-#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__activity_user_id
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__responsible_user_id
-msgid "Responsible User"
+msgid "TD Responsible User"
 msgstr "Відповідальний"
 
 #. module: td_medicus_1c_integration
@@ -909,9 +937,13 @@ msgid "Stock Move"
 msgstr "Складське переміщення "
 
 #. module: td_medicus_1c_integration
-#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__invoice_price_subtotal
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__sale_order_price_subtotal
 msgid "Subtotal"
+msgstr "Загальна ціна з КП без податку"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__invoice_price_subtotal
+msgid "Invoice Subtotal"
 msgstr "Загальна ціна з КП без податку"
 
 #. module: td_medicus_1c_integration
@@ -1129,9 +1161,13 @@ msgstr "Податок"
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_account_bank_statement_line__td_tax_invoice_id
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_account_bank_statement_line__td_tax_invoice_ids
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_account_move__td_tax_invoice_id
-#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_account_move__td_tax_invoice_ids
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_sale_order__td_tax_invoice_ids
 msgid "Td Tax Invoice"
+msgstr "Податкові накладні"
+
+#. module: td_medicus_1c_integration
+#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_account_move__td_tax_invoice_ids
+msgid "Td Tax Invoices"
 msgstr "Податкові накладні"
 
 #. module: td_medicus_1c_integration
@@ -1340,7 +1376,6 @@ msgstr ""
 "%s"
 
 #. module: td_medicus_1c_integration
-#: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__invoice_price
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice_line__sale_order_price
 msgid "Unit Price"
 msgstr "Ціна за одиницю"
