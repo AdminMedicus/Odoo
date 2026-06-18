@@ -543,7 +543,7 @@ msgstr "Партія/серія"
 
 #. module: td_medicus_1c_integration
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_stock_lot__standart_price
-msgid "Lot Cost (standard)"
+msgid "TD Lot Cost (standard)"
 msgstr "Стандартна вартість партії"
 
 #. module: td_medicus_1c_integration
