@@ -15,7 +15,7 @@ class StockMoveLine(models.Model):
     @api.onchange('product_id', 'lot_id', 'lot_id.td_manufacturer_directory_res_id', 'quant_id')
     def _compute_td_manufacturer_directory_res_id(self):
         for line in self:
-            if lot := line.quant_id.lot_id:
+            if (lot := line.quant_id.lot_id) and lot.td_manufacturer_directory_res_id:
                 line.td_manufacturer_directory_res_id = lot.td_manufacturer_directory_res_id
             else:
                 line.td_manufacturer_directory_res_id = line.product_id.td_manufacturer_directory_res_id
@@ -38,6 +38,9 @@ class StockMoveLine(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         lines = super().create(vals_list)
+        for line in lines:
+            if not line.td_manufacturer_directory_res_id and line.product_id.td_manufacturer_directory_res_id:
+                line.td_manufacturer_directory_res_id = line.product_id.td_manufacturer_directory_res_id
         lines._td_sync_manufacturer_to_lot()
         return lines
 
