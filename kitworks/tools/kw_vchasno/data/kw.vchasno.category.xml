@@ -1,0 +1,94 @@
+<odoo noupdate="1">
+    <record id="0" model="kw.vchasno.category">
+        <field name="name">Тип не обрано</field>
+        <field name="category_ref">0</field>
+    </record>
+    <record id="1" model="kw.vchasno.category">
+        <field name="name">Акт наданих послуг</field>
+        <field name="category_ref">1</field>
+    </record>
+    <record id="2" model="kw.vchasno.category">
+        <field name="name">Рахунок</field>
+        <field name="category_ref">2</field>
+    </record>
+    <record id="3" model="kw.vchasno.category">
+        <field name="name">Договір</field>
+        <field name="category_ref">3</field>
+    </record>
+    <record id="4" model="kw.vchasno.category">
+        <field name="name">Додаткова угода до договору</field>
+        <field name="category_ref">4</field>
+    </record>
+    <record id="5" model="kw.vchasno.category">
+        <field name="name">Видаткова накладна</field>
+        <field name="category_ref">5</field>
+    </record>
+    <record id="6" model="kw.vchasno.category">
+        <field name="name">ТТН</field>
+        <field name="category_ref">6</field>
+    </record>
+    <record id="7" model="kw.vchasno.category">
+        <field name="name">EDI документи</field>
+        <field name="category_ref">7</field>
+    </record>
+    <record id="8" model="kw.vchasno.category">
+        <field name="name">Довіреність</field>
+        <field name="category_ref">8</field>
+    </record>
+    <record id="9" model="kw.vchasno.category">
+        <field name="name">Специфікація</field>
+        <field name="category_ref">9</field>
+    </record>
+    <record id="10" model="kw.vchasno.category">
+        <field name="name">Заява</field>
+        <field name="category_ref">10</field>
+    </record>
+    <record id="11" model="kw.vchasno.category">
+        <field name="name">Акт приймання-передачі</field>
+        <field name="category_ref">11</field>
+    </record>
+    <record id="12" model="kw.vchasno.category">
+        <field name="name">Повернення</field>
+        <field name="category_ref">12</field>
+    </record>
+    <record id="13" model="kw.vchasno.category">
+        <field name="name">Замовлення</field>
+        <field name="category_ref">13</field>
+    </record>
+    <record id="14" model="kw.vchasno.category">
+        <field name="name">Додаток</field>
+        <field name="category_ref">14</field>
+    </record>
+    <record id="15" model="kw.vchasno.category">
+        <field name="name">Інше</field>
+        <field name="category_ref">15</field>
+    </record>
+    <record id="16" model="kw.vchasno.category">
+        <field name="name">Акт звіряння</field>
+        <field name="category_ref">16</field>
+    </record>
+    <record id="17" model="kw.vchasno.category">
+        <field name="name">Протокол розбіжностей</field>
+        <field name="category_ref">17</field>
+    </record>
+    <record id="18" model="kw.vchasno.category">
+        <field name="name">Звіт</field>
+        <field name="category_ref">18</field>
+    </record>
+    <record id="19" model="kw.vchasno.category">
+        <field name="name">Лист</field>
+        <field name="category_ref">19</field>
+    </record>
+    <record id="20" model="kw.vchasno.category">
+        <field name="name">Протокол</field>
+        <field name="category_ref">20</field>
+    </record>
+    <record id="21" model="kw.vchasno.category">
+        <field name="name">Наказ</field>
+        <field name="category_ref">21</field>
+    </record>
+    <record id="22" model="kw.vchasno.category">
+        <field name="name">Акт</field>
+        <field name="category_ref">22</field>
+    </record>
+</odoo>

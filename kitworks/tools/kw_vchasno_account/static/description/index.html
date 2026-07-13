@@ -1,0 +1,131 @@
+<section style="max-width: 896px; margin: 0 auto;">
+    <div style="text-align: center;">
+        <h1 style="color:#875A7B;">Vchasno Account</h1>
+    </div>
+    <div style="text-align: center;">
+        <p>
+            <a href="https://www.odoo.com/documentation/17.0/legal/licenses.html#odoo-proprietary-license">
+                <img alt="License: OPL-1"
+                     src="https://img.shields.io/badge/license-OPL--1-blue.png"/></a>
+            <a href="https://kitworks.systems/">
+                <img alt="Kitworks Systems"
+                     src="https://img.shields.io/badge/maintainer-Kitworks-purple.png"/></a>
+        </p>
+        <p><br></p>
+    </div>
+</section>
+
+<section style="margin: 0 auto; max-width: 896px;">
+    <div>
+        <p>Extends Account module with ability to send invoices through Vchasno electronic document management system. This module integrates the invoice sending workflow with Vchasno, allowing you to send invoices with electronic signatures directly from Odoo.</p>
+
+        <p>Key features include:</p>
+        <ul>
+            <li>Send invoices via Vchasno with one click</li>
+            <li>Electronic invoice signing with qualified signatures</li>
+            <li>Track invoice delivery status in real-time</li>
+            <li>Batch invoice sending support for multiple invoices at once</li>
+            <li>Integration with standard Odoo invoice sending workflow</li>
+        </ul>
+    </div>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto;">
+    <div>
+        <h3>Configuration</h3>
+
+        <h5>Prerequisites:</h5>
+        <ul>
+            <li>kw_vchasno module must be installed and configured</li>
+            <li>kw_vchasno_partner module must be installed</li>
+            <li>Vchasno API key must be configured</li>
+            <li>Partners must be marked as Vchasno users</li>
+        </ul>
+
+        <h5>Usage:</h5>
+        <ol>
+            <li>Open an invoice</li>
+            <li>Click "Send Invoices" button</li>
+            <li>In the send wizard, enable "Send in Vchasno" checkbox</li>
+            <li>Select your Vchasno API key</li>
+            <li>Click "Send Vchasno" button</li>
+        </ol>
+
+        <h5>Batch Sending:</h5>
+        <p>You can also send multiple invoices at once:</p>
+        <ol>
+            <li>Select multiple invoices from the list view</li>
+            <li>Choose "Send Invoices" from the action menu</li>
+            <li>Follow the same steps as for single invoice</li>
+        </ol>
+    </div>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto;">
+    <div>
+        <h3>Features Details</h3>
+        <ul>
+            <li><b>Invoice Sending:</b>
+                <ul>
+                    <li>Integrated with standard Odoo send wizard</li>
+                    <li>Automatic document preparation</li>
+                    <li>Attachment handling</li>
+                    <li>Category assignment (default: category 2)</li>
+                </ul>
+            </li>
+            <li><b>Batch Operations:</b>
+                <ul>
+                    <li>Send multiple invoices at once</li>
+                    <li>Progress tracking</li>
+                    <li>Error handling for individual failures</li>
+                </ul>
+            </li>
+            <li><b>Status Tracking:</b>
+                <ul>
+                    <li>View sent invoices in Vchasno documents</li>
+                    <li>Track delivery and signing status</li>
+                    <li>Receive notifications on status changes</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto;">
+    <div>
+        <h3>Dependencies</h3>
+        <p>This module requires:</p>
+        <ul>
+            <li><b>kw_vchasno_partner</b> - Vchasno Partner integration</li>
+            <li><b>account</b> - Odoo Accounting module</li>
+        </ul>
+    </div>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto;">
+    <div>
+        <h3>Bug Tracker</h3>
+        <p>
+            Bugs are tracked on <a href="https://kitworks.systems/requests">https://kitworks.systems/requests</a>.
+            In case of trouble, please check there if your issue has already been reported.
+        </p>
+    </div>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto; text-align: center;">
+    <div>
+        <h2 style="color: #138c33">Maintainer</h2>
+        <p>KitWorks Systems. Our web site: <a href="https://kitworks.systems">https://kitworks.systems</a></p>
+
+        <p>
+            We can provide you further Odoo Support, Odoo implementation,
+            Odoo customization, Odoo 3rd Party development and integration
+            software, consulting services. Our main goal is to provide the best
+            quality product for you.
+        </p>
+        <p>
+            For any questions
+            <a href="mailto:info@kitworks.systems">contact us</a>.
+        </p>
+    </div>
+</section>

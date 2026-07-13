@@ -1,0 +1,12 @@
+<odoo>
+    <record id="kw_vchasno_partner_res_partner_form" model="ir.ui.view" >
+        <field name="name">res.partner.form (kw_vchasno_partner)</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="kw_is_vchasno"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
