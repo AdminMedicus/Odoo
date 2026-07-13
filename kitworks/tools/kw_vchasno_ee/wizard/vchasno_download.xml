@@ -1,0 +1,15 @@
+<odoo>
+
+    <record id="kw_dms_vchasno_kw_vchasno_download_document_wizard_views_form"
+            model="ir.ui.view" >
+        <field name="name">vchasno.download.document.wizard.form (kw_dms_vchasno)</field>
+        <field name="model">vchasno.download.document.wizard</field>
+        <field name="inherit_id" ref="kw_vchasno.kw_vchasno_download_document_wizard_views_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='file']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
