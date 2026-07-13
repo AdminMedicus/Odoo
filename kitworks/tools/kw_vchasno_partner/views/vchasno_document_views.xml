@@ -1,0 +1,13 @@
+<odoo>
+    <record model="ir.ui.view" id="kw_vchasno_partner_kw_vchasno_document_form">
+        <field name="name">kw.vchasno.document.form (kw_vchasno_partner)</field>
+        <field name="model">kw.vchasno.document</field>
+        <field name="inherit_id" ref="kw_vchasno.kw_vchasno_kw_vchasno_document_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='amount']" position="after">
+                <field name="partner_id"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
