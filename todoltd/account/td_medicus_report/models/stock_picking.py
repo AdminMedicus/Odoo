@@ -19,6 +19,7 @@ class StockPicking(models.Model):
         help="Date of the custody act related to this delivery order",
     )
     td_order_implementation_document = fields.Selection(
+        string='TD Implementation Document',
         related="sale_id.implementation_document",
         store=True,
     )
@@ -57,7 +58,7 @@ class StockPicking(models.Model):
     )
 
     td_ttn_hired_vehicle = fields.Char(
-        string='Vehicle',
+        string='Hired Vehicle',
         copy=False,
     )
 
@@ -85,7 +86,7 @@ class StockPicking(models.Model):
     )
 
     td_ttn_hired_carrier = fields.Char(
-        string='Road Carrier',
+        string='Hired Road Carrier',
         copy=False,
     )
 
@@ -154,7 +155,7 @@ class StockPicking(models.Model):
     )
 
     td_ttn_license_number_other = fields.Char(
-        string='License Plate',
+        string='License Plate Other',
         copy=False,
     )
 
@@ -509,6 +510,7 @@ class StockPicking(models.Model):
         if self.td_ttn_transport_type == 'own':
             common.update({
                 'vehicle': self.td_ttn_vehicle_id.name.replace('/', ' ') if self.td_ttn_vehicle_id else '',
+                'vehicle_number': self.td_ttn_license_number if self.td_ttn_license_number else '',
                 'driver': self.td_ttn_driver_employee_id.name if self.td_ttn_driver_employee_id else '',
                 'driver_license': self.td_ttn_driver_license_number or '',
                 'carrier_partner': self.td_ttn_carrier_partner_id.full_partner_name if self.td_ttn_carrier_partner_id else '',
@@ -516,6 +518,7 @@ class StockPicking(models.Model):
         else:
             common.update({
                 'vehicle': self.td_ttn_hired_vehicle or '',
+                'vehicle_number': self.td_ttn_license_number_other or '',
                 'driver': self.td_ttn_hired_driver or '',
                 'driver_license': self.td_ttn_driver_license_number or '',
                 'carrier_partner': self.td_ttn_hired_carrier or '',

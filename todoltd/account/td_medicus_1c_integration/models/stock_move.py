@@ -33,11 +33,227 @@ class StockMove(models.Model):
         compute='_compute_td_price_total',
         store=True
     )
-
     td_lot_ids = fields.Many2many(
         comodel_name='stock.lot',
         compute='_compute_td_lot_ids'
     )
+    td_manufacturer_directory_res_id = fields.Many2one(
+        comodel_name='res.partner',
+        string="Manufacturer",
+    )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        moves = super().create(vals_list)
+        if any('td_book_value' in vals for vals in vals_list):
+            moves._td_sync_td_book_value_to_lots()
+        return moves
+
+    def write(self, vals):
+        res = super().write(vals)
+        if {
+            'td_book_value',
+            'td_price_unit',
+            'td_untaxed_price_unit',
+            'move_line_ids',
+            'quantity',
+        } & set(vals):
+            self._td_sync_td_book_value_to_lots()
+        return res
+
+    def _td_get_lot_cost_for_sync(self):
+        self.ensure_one()
+
+        if self.td_book_value:
+            return self.td_book_value
+
+        picking = self.picking_id
+        if not picking or picking.picking_type_code != 'incoming':
+            return None
+
+        if picking.td_is_import:
+            return None
+
+        if 'td_untaxed_price_unit' in self._fields and self.td_untaxed_price_unit:
+            return self.td_untaxed_price_unit
+
+        if 'td_price_unit' in self._fields and self.td_price_unit:
+            return self.td_price_unit
+
+        purchase_line = self.purchase_line_id
+        if purchase_line:
+            if (
+                    'td_untaxed_price_unit' in purchase_line._fields
+                    and purchase_line.td_untaxed_price_unit
+            ):
+                return purchase_line.td_untaxed_price_unit
+
+            if purchase_line.price_unit:
+                return purchase_line.price_unit
+
+        if self.product_id and self.product_id.standard_price:
+            return self.product_id.standard_price
+
+        return None
+
+    def _td_get_lots_for_cost_sync(self):
+        self.ensure_one()
+        lots = self.env['stock.lot']
+
+        for move_line in self.move_line_ids.filtered(lambda line: line.lot_id):
+            qty = self._td_get_move_line_done_qty(move_line)
+            if qty:
+                lots |= move_line.lot_id
+
+        if 'lot_ids' in self._fields:
+            lots |= self.lot_ids
+
+        if 'td_lot_ids' in self._fields:
+            lots |= self.td_lot_ids
+
+        return lots.filtered(lambda lot: lot.product_id.id == self.product_id.id)
+
+    def _td_write_lot_cost(self, lot, cost):
+        vals = {}
+
+        if 'standart_price' in lot._fields:
+            vals['standart_price'] = cost
+        elif 'standard_price' in lot._fields:
+            vals['standard_price'] = cost
+
+        if vals:
+            lot.sudo().write(vals)
+
+    def _td_get_move_line_done_qty(self, move_line):
+        if 'qty_done' in move_line._fields:
+            return move_line.qty_done or 0.0
+        return move_line.quantity or 0.0
+
+    def _td_sync_td_book_value_to_lots(self):
+        for move in self:
+            picking = move.picking_id
+
+            if (
+                not picking
+                or picking.state != 'done'
+                or picking.picking_type_code != 'incoming'
+                or not move.product_id
+            ):
+                continue
+
+            cost = move._td_get_lot_cost_for_sync()
+            if cost is None:
+                continue
+
+            for lot in move._td_get_lots_for_cost_sync():
+                move._td_write_lot_cost(lot, cost)
+
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        moves = super().create(vals_list)
+        if any('td_book_value' in vals for vals in vals_list):
+            moves._td_sync_td_book_value_to_lots()
+        return moves
+
+    def write(self, vals):
+        res = super().write(vals)
+        if {
+            'td_book_value',
+            'td_price_unit',
+            'td_untaxed_price_unit',
+            'move_line_ids',
+            'quantity',
+        } & set(vals):
+            self._td_sync_td_book_value_to_lots()
+        return res
+
+    def _td_get_lot_cost_for_sync(self):
+        self.ensure_one()
+
+        if self.td_book_value:
+            return self.td_book_value
+
+        picking = self.picking_id
+        if not picking or picking.picking_type_code != 'incoming':
+            return None
+
+        if picking.td_is_import:
+            return None
+
+        if 'td_untaxed_price_unit' in self._fields and self.td_untaxed_price_unit:
+            return self.td_untaxed_price_unit
+
+        if 'td_price_unit' in self._fields and self.td_price_unit:
+            return self.td_price_unit
+
+        purchase_line = self.purchase_line_id
+        if purchase_line:
+            if (
+                    'td_untaxed_price_unit' in purchase_line._fields
+                    and purchase_line.td_untaxed_price_unit
+            ):
+                return purchase_line.td_untaxed_price_unit
+
+            if purchase_line.price_unit:
+                return purchase_line.price_unit
+
+        if self.product_id and self.product_id.standard_price:
+            return self.product_id.standard_price
+
+        return None
+
+    def _td_get_lots_for_cost_sync(self):
+        self.ensure_one()
+        lots = self.env['stock.lot']
+
+        for move_line in self.move_line_ids.filtered(lambda line: line.lot_id):
+            qty = self._td_get_move_line_done_qty(move_line)
+            if qty:
+                lots |= move_line.lot_id
+
+        if 'lot_ids' in self._fields:
+            lots |= self.lot_ids
+
+        if 'td_lot_ids' in self._fields:
+            lots |= self.td_lot_ids
+
+        return lots.filtered(lambda lot: lot.product_id.id == self.product_id.id)
+
+    def _td_write_lot_cost(self, lot, cost):
+        vals = {}
+
+        if 'standart_price' in lot._fields:
+            vals['standart_price'] = cost
+        elif 'standard_price' in lot._fields:
+            vals['standard_price'] = cost
+
+        if vals:
+            lot.sudo().write(vals)
+
+    def _td_get_move_line_done_qty(self, move_line):
+        if 'qty_done' in move_line._fields:
+            return move_line.qty_done or 0.0
+        return move_line.quantity or 0.0
+
+    def _td_sync_td_book_value_to_lots(self):
+        for move in self:
+            picking = move.picking_id
+
+            if (
+                not picking
+                or picking.state != 'done'
+                or picking.picking_type_code != 'incoming'
+                or not move.product_id
+            ):
+                continue
+
+            cost = move._td_get_lot_cost_for_sync()
+            if cost is None:
+                continue
+
+            for lot in move._td_get_lots_for_cost_sync():
+                move._td_write_lot_cost(lot, cost)
 
     @api.depends('lot_ids', 'move_line_ids', 'move_line_ids.quant_id')
     def _compute_td_lot_ids(self):
@@ -204,3 +420,23 @@ class StockMove(models.Model):
                 move.td_customs_value_good = move.td_price_unit * rate
             else:
                 move.td_customs_value_good = 0.0
+
+    @api.model
+    def action_generate_lot_line_vals(self, context, mode, first_lot, count, lot_text):
+        vals = super().action_generate_lot_line_vals(context, mode, first_lot, count, lot_text)
+        if 'td_manufacturer_directory_res_id' in self._fields:
+            for val in vals:
+                product = self.env['product.product'].browse(val['product_id']['id'])
+                val.update({
+                    # 'td_manufacturer_directory_res_id': (
+                    #     product.td_manufacturer_directory_res_id.id 
+                    #     if product.td_manufacturer_directory_res_id 
+                    #     else False),
+                    'td_manufacturer_directory_res_id': {
+                        'id': product.td_manufacturer_directory_res_id.id if product.td_manufacturer_directory_res_id else False,
+                        'display_name': product.td_manufacturer_directory_res_id.display_name if product.td_manufacturer_directory_res_id else False,
+                    }
+                })
+        
+        return vals
+                

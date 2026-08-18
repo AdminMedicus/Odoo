@@ -8,6 +8,9 @@
             <xpath expr="//field[@name='td_uktzed_code_id']" position="after">
                 <field name="td_available_qty" readonly="1"/>
             </xpath>
+            <xpath expr="//group[@name='main_group']/group" position="inside">
+                <field name="td_manufacturer_directory_res_id"/>
+            </xpath>
         </field>
     </record>
 </odoo>

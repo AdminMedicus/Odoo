@@ -2,7 +2,7 @@
 {
     'name': "Modification Contact Sale",
     'summary': 'Additional for contacts and sale',
-    'version': '18.0.1.0.13',
+    'version': '18.0.1.0.14',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',

@@ -90,12 +90,3 @@
         </field>
     </record>
 </odoo>
-
-<!--                <field name="td_tax_invoice_state" optional="show" widget="statusbar" colors='{-->
-<!--                    "budget": "grey",-->
-<!--                    "not_created": "warning",-->
-<!--                    "draft": "primary",-->
-<!--                    "confirm": "success",-->
-<!--                    "confirm_finish": "dark",-->
-<!--                    "cancel": "danger"-->
-<!--                }'/>-->

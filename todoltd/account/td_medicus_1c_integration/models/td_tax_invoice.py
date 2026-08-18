@@ -47,7 +47,6 @@ class TdTaxInvoice(models.Model):
         tracking=True
     )
     td_budget_funds = fields.Boolean(
-        default=False,
         related='invoice_id.td_budget_funds'
     )
     move_type = fields.Selection(
@@ -92,6 +91,7 @@ class TdTaxInvoice(models.Model):
     )
 
     responsible_user_id = fields.Many2one(
+        string='TD Responsible User',
         comodel_name='res.users'
     )
     company_id = fields.Many2one(
