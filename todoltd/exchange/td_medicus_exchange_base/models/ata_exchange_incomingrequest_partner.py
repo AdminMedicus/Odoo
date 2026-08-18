@@ -19,6 +19,7 @@ class AtaExchangeIncomingrequestPartner(models.AbstractModel):
         partner_params = RecordHandlerParams.build_from_class(self.env, 'res.partner', inc_req_params)
         partner_params.data = partner_data.model_dump()
         partner_params.create_record = True
+        partner_params.write_record = True
         partner_params.search_params.use_matching_data = True
         partner_params.search_params.key_matching_data = 'id'
         partner_params.search_params.search_domain = [('id', '=', ext_id)] \
