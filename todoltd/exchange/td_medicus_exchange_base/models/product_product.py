@@ -136,6 +136,7 @@ class TdProductProductExchange(models.Model):
             return self.ata_exchange_get_model_record(uktzed_params).id
         
         vals: dict[str, str|int|list] = {
+            "active":               True,
             "name":                 product_data.name,
             "description_sale":     product_data.name_full,
             "type":                 "consu",

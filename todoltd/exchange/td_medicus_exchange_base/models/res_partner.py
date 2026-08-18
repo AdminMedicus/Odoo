@@ -157,6 +157,7 @@ class TdResPartnerExchange(models.Model):
         partner_category_name = "Виробник"
 
         return {
+            "active":            True,
             "company_type":      "company",   
             "name":              partner_data.name,
             "full_partner_name": partner_data.name_full,
@@ -171,6 +172,7 @@ class TdResPartnerExchange(models.Model):
         partner_category_name = "Постачальник"
         
         return {
+            "active":            True,
             "company_type":      "company",   
             "name":              partner_data.name,
             "full_partner_name": partner_data.name_full,
@@ -183,9 +185,12 @@ class TdResPartnerExchange(models.Model):
         subclient_data = cast(PartnerDataBase,
             self.ata_exchange_process_data_with_pydantic(record_params.data, PartnerDataBase))
         
-        return subclient_data.model_dump(include={
-            'name'
-        })
+        return {
+            "active": True,
+            **subclient_data.model_dump(include={
+                'name'
+            }),
+        }
 
     def ata_exchange_prepare_vals_address_delivery(self,
         record_params: RecordHandlerParams) -> dict[str, str|int|list|None]:
@@ -202,6 +207,7 @@ class TdResPartnerExchange(models.Model):
             self.ata_exchange_process_data_with_pydantic(record_params.data, AddressDeliveryData))
         
         return {
+            'active': True,
             'parent_id': record_params.data.get('parent_id',None),
             'company_id': self.env.company.id,
             'company_type': 'person',
@@ -236,6 +242,7 @@ class TdResPartnerExchange(models.Model):
             return self.ata_exchange_get_model_record(employee_params).id
 
         return {
+            "active": True,
             **partner_data.model_dump(include={
                 'name',
                 'vat',
