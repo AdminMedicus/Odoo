@@ -1,3 +1,5 @@
+import json
+
 from odoo import api, models, _
 from odoo.exceptions import ValidationError
 
@@ -38,27 +40,18 @@ class TdMedicusExchangeModelHandler(models.AbstractModel):
         Product = record_params.model.with_context(active_test=False)
         data = record_params.data
 
-        if data.get("ext_id"):
-            record = Product.browse(data["ext_id"]).exists()
-            if record:
-                return record
-
         catalog_code = (data.get("catalog_code") or "").strip()
-        if not catalog_code:
+        incoming_name = self._normalize(data.get("name"))
+        if not catalog_code or not incoming_name:
             return Product.browse()
 
         candidates = Product.search([("default_code", "=ilike", catalog_code)])
-        if len(candidates) <= 1:
-            return candidates
-
-        incoming_name = self._normalize(data.get("name"))
-        by_name = candidates.filtered(
+        candidates = candidates.filtered(
             lambda product: self._normalize(product.name) == incoming_name
         )
-        if len(by_name) == 1:
-            return by_name
-        if by_name:
-            candidates = by_name
+
+        if len(candidates) <= 1:
+            return candidates
 
         incoming_full_name = self._normalize(data.get("name_full"))
         if incoming_full_name:
@@ -75,6 +68,67 @@ class TdMedicusExchangeModelHandler(models.AbstractModel):
             data.get("id", ""),
             _("Catalog code '%s'") % catalog_code,
         )
+
+    @api.model
+    def _get_product_matching_keys(self, record_params, records):
+        """Return external keys already linked to the Odoo product.
+
+        JSONB containment is intentional: unlike JSON equality it also finds
+        matching rows that contain additional model keys.
+        """
+        if not records:
+            return set()
+
+        search_params = record_params.search_params
+        if not search_params.method_id or not search_params.ext_system_id:
+            return set()
+
+        self.env.cr.execute(
+            """
+                SELECT key_object
+                  FROM ata_exchange_matching_data
+                 WHERE method_id = %s
+                   AND ext_system_id = %s
+                   AND COALESCE(stage, '') = %s
+                   AND matching_data @> %s::jsonb
+                 LIMIT 2
+            """,
+            (
+                search_params.method_id.id,
+                search_params.ext_system_id.id,
+                search_params.stage or '',
+                json.dumps({'product.product': records[0].id}),
+            ),
+        )
+        return {
+            key_object
+            for key_object, in self.env.cr.fetchall()
+        }
+
+    @api.model
+    def _product_matching_is_ambiguous(self, record_params, records):
+        """Detect several 1C product ids linked to one Odoo product.
+
+        Such many-to-one links were produced by the former catalog-code-only
+        fallback.  Ignoring the ambiguous match lets the exact compound-key
+        fallback reuse the right card (or create a new one) and repairs each
+        matching row during the next full import.
+        """
+        return len(
+            self._get_product_matching_keys(record_params, records)
+        ) > 1
+
+    @api.model
+    def _product_is_linked_to_another_key(self, record_params, records):
+        current_key = str(record_params.data.get('id') or '')
+        linked_keys = {
+            str(key)
+            for key in self._get_product_matching_keys(
+                record_params,
+                records,
+            )
+        }
+        return bool(linked_keys - {current_key})
 
     @api.model
     def _find_partner_rebind(self, record_params, method_xmlid):
@@ -204,7 +258,7 @@ class TdMedicusExchangeModelHandler(models.AbstractModel):
     @api.model
     def search_records(self, record_params: RecordHandlerParams):
         records = super().search_records(record_params)
-        if records or not record_params.search_params.use_matching_data:
+        if not record_params.search_params.use_matching_data:
             return records
 
         method = record_params.search_params.method_id
@@ -213,8 +267,22 @@ class TdMedicusExchangeModelHandler(models.AbstractModel):
 
         method_xmlid = method.get_xml_id()
         if method_xmlid == "td_medicus_exchange_base.product_1c_odoo":
-            records = self._find_product_rebind(record_params)
-        elif method_xmlid in {
+            if self._product_matching_is_ambiguous(record_params, records):
+                raise ValidationError(_(
+                    "Several 1C product ids are linked to Odoo product "
+                    "%(product_id)s. Run the product matching audit/cleanup "
+                    "before repeating the import."
+                ) % {
+                    "product_id": records[0].id,
+                })
+            if not records:
+                records = self._find_product_rebind(record_params)
+                if self._product_is_linked_to_another_key(
+                    record_params,
+                    records,
+                ):
+                    records = record_params.model.browse()
+        elif not records and method_xmlid in {
             "td_medicus_exchange_base.partner_1c_odoo",
             "td_medicus_exchange_base.inner_types_manufacturer_1c",
             "td_medicus_exchange_base.inner_types_product_supplier",
@@ -223,7 +291,7 @@ class TdMedicusExchangeModelHandler(models.AbstractModel):
             "td_medicus_exchange_base.inner_types_res_partner_address_delivery",
         }:
             records = self._find_partner_rebind(record_params, method_xmlid)
-        elif method_xmlid == "td_medicus_exchange_base.agreement_1c_odoo":
+        elif not records and method_xmlid == "td_medicus_exchange_base.agreement_1c_odoo":
             # Partner import also carries agreements; rebind them too so a
             # rebuilt matching table does not duplicate contract history.
             records = self._find_agreement_rebind(record_params)

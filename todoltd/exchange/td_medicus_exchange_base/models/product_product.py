@@ -1,4 +1,5 @@
 from odoo import api, Command, fields, models
+from odoo.exceptions import ValidationError
 
 from odoo.addons.ata_exchange_v4.models.ata_exchange_method import AtaExchangeMethod
 from odoo.addons.ata_exchange_v4.models.ata_exchange_class  import AtaExchangeClass
@@ -134,6 +135,23 @@ class TdProductProductExchange(models.Model):
                 ('code', '=', uktzed_code)
             ]
             return self.ata_exchange_get_model_record(uktzed_params).id
+
+        def get_equipment_category_id() -> int:
+            """Reuse the configured category and create it only if missing."""
+            ProductCategory = self.env['product.category']
+            categories = ProductCategory.search([
+                ('name', '=ilike', 'Обладнання'),
+            ])
+            if len(categories) > 1:
+                raise ValidationError(
+                    "Found several product categories named 'Обладнання': "
+                    f"{categories.ids}. Keep one category and repeat the import."
+                )
+            if not categories:
+                categories = ProductCategory.create({
+                    'name': 'Обладнання',
+                })
+            return categories.id
         
         vals: dict[str, str|int|list] = {
             "active":               True,
@@ -151,6 +169,9 @@ class TdProductProductExchange(models.Model):
             "use_expiration_date":  True,
             "barcode":              product_data.barcode or '',
         }
+
+        if product_data.is_equipment:
+            vals["categ_id"] = get_equipment_category_id()
 
         # TAXES
         tax_code = product_data.tax_code
