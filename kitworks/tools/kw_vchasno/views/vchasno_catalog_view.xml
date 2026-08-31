@@ -1,0 +1,47 @@
+<odoo>
+    <record model="ir.ui.view" id="kw_vchasno_kw_vchasno_status_list">
+        <field name="name">kw.vchasno.status.list (kw_vchasno)</field>
+        <field name="model">kw.vchasno.status</field>
+        <field name="arch" type="xml">
+            <list create="false">
+                <field name="name"/>
+                <field name="status_ref"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="kw_vchasno_kw_vchasno_status_action_window"
+            model="ir.actions.act_window">
+        <field name="name">Status List</field>
+        <field name="res_model">kw.vchasno.status</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <menuitem id="kw_vchasno_kw_vchasno_status_menu"
+              parent="kw_vchasno_catalog_main_menu"
+              action="kw_vchasno_kw_vchasno_status_action_window"
+              name="Status List" sequence="100"/>
+
+    <record model="ir.ui.view" id="kw_vchasno_kw_vchasno_category_list">
+        <field name="name">kw.vchasno.category.list (kw_vchasno)</field>
+        <field name="model">kw.vchasno.category</field>
+        <field name="arch" type="xml">
+            <list create="false">
+                <field name="name"/>
+                <field name="category_ref"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="kw_vchasno_kw_vchasno_category_action_window"
+            model="ir.actions.act_window">
+        <field name="name">Category List</field>
+        <field name="res_model">kw.vchasno.category</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <menuitem id="kw_vchasno_kw_vchasno_category_menu"
+              parent="kw_vchasno_catalog_main_menu"
+              action="kw_vchasno_kw_vchasno_category_action_window"
+              name="Category List" sequence="100"/>
+</odoo>

@@ -44,13 +44,13 @@
                 <field name="td_customs_value_good" optional="show" column_invisible="not parent.td_is_import"/>
                 <field name="td_book_value" optional="show" column_invisible="not parent.td_is_import"/>
                 <field name="td_taxes_ids" widget="many2many_tags" optional="show"/>
-<!--                <field name="td_taxes" optional="show" widget="percentage" readonly="1"/>-->
+                <!--                <field name="td_taxes" optional="show" widget="percentage" readonly="1"/>-->
                 <field name="td_taxes_price" optional="show" readonly="1"/>
                 <field name="td_price_total" optional="show" readonly="1"/>
             </xpath>
 
             <!-- Prepared button for import pickings -->
-            <xpath expr="//button[@name='button_validate' and contains(@class, 'oe_highlight')]" position="before">
+            <xpath expr="//button[@name='button_validate' and hasclass('oe_highlight')]" position="before">
                 <button
                         name="td_button_send_data_to_one_c"
                         type="object"
@@ -62,14 +62,14 @@
             </xpath>
 
             <!-- Standard highlighted Validate button -->
-            <xpath expr="//button[@name='button_validate' and contains(@class, 'oe_highlight')]" position="attributes">
+            <xpath expr="//button[@name='button_validate' and hasclass('oe_highlight')]" position="attributes">
                 <attribute name="invisible">
                     td_is_import or state in ('draft', 'confirmed', 'done', 'cancel')
                 </attribute>
             </xpath>
 
             <!-- Secondary Validate button -->
-            <xpath expr="//button[@name='button_validate' and contains(@class, 'o_btn_validate')]"
+            <xpath expr="//button[@name='button_validate' and hasclass('o_btn_validate')]"
                    position="attributes">
                 <attribute name="invisible">
                     td_is_import or state in ('waiting', 'assigned', 'done', 'cancel') or picking_type_code=='internal'
@@ -99,9 +99,9 @@
             </xpath>
 
 
-            <xpath expr="//field[@name='implementation_document']" position="attributes">
-                <attribute name="invisible">picking_type_code == 'incoming'</attribute>
-            </xpath>
+<!--            <xpath expr="//field[@name='implementation_document']" position="attributes">-->
+<!--                <attribute name="invisible">picking_type_code == 'incoming'</attribute>-->
+<!--            </xpath>-->
 
             <xpath expr="//button[@name='action_show_product_list']" position="attributes">
                 <attribute name="invisible">state not in ('draft') or not td_is_goods_balance_of_act_res_st</attribute>

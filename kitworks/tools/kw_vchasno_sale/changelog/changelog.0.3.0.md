@@ -1,0 +1,1 @@
+- extend sale.order wizard with 'first_sign_by' selection, R10155

@@ -1,0 +1,38 @@
+<odoo noupdate="1">
+    <record id="7000" model="kw.vchasno.status">
+        <field name="name">Документ завантажений у систему</field>
+        <field name="status_ref">7000</field>
+    </record>
+    <record id="7001" model="kw.vchasno.status">
+        <field name="name">Документ готовий для підпису і надсилання (вказані дані контрагента)</field>
+        <field name="status_ref">7001</field>
+    </record>
+    <record id="7002" model="kw.vchasno.status">
+        <field name="name">Документ надісланий контрагенту на перший підпис</field>
+        <field name="status_ref">7002</field>
+    </record>
+    <record id="7003" model="kw.vchasno.status">
+        <field name="name">Документ підписаний не всіма підписами, що необхідні зі сторони власника документу, або не надісланий після підписання</field>
+        <field name="status_ref">7003</field>
+    </record>
+    <record id="7004" model="kw.vchasno.status">
+        <field name="name">Документ підписаний власником, та очікує на підпис контрагента</field>
+        <field name="status_ref">7004</field>
+    </record>
+    <record id="7006" model="kw.vchasno.status">
+        <field name="name">Документ відхилений контрагентом</field>
+        <field name="status_ref">7006</field>
+    </record>
+    <record id="7007" model="kw.vchasno.status">
+        <field name="name">Документ підписаний не всіма підписами, що необхідні зі сторони отримувача документу, або не надісланий після підписання</field>
+        <field name="status_ref">7007</field>
+    </record>
+    <record id="7008" model="kw.vchasno.status">
+        <field name="name">На документ накладно всі очікувані підписи</field>
+        <field name="status_ref">7008</field>
+    </record>
+    <record id="7010" model="kw.vchasno.status">
+        <field name="name">Документ надісланий підписантам</field>
+        <field name="status_ref">7010</field>
+    </record>
+</odoo>

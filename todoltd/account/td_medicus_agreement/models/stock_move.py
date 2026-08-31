@@ -35,6 +35,7 @@ class StockMove(models.Model):
     )
     td_quantity = fields.Float()
     td_picking_type_id = fields.Many2one(
+        string='Picking Type',
         comodel_name='stock.picking.type',
         related='picking_id.picking_type_id'
     )
@@ -109,6 +110,11 @@ class StockMove(models.Model):
 
     def _set_lot_ids(self):
         for move in self:
+            if move.picking_id and move.picking_id.picking_type_code == 'incoming':
+                # Incoming receipts must not auto-fill lot_name.
+                # The user enters lot_name manually and validation creates/uses that lot.
+                continue
+
             lots_to_process = move.td_lot_ids if move.td_lot_ids else move.lot_ids
             move_lines_commands = []
 

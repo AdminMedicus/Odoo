@@ -25,7 +25,7 @@ class TdStockPickingExchange(models.Model):
 
         if self.picking_type_code == 'incoming':
             if self.td_is_import:
-                if (self.state == 'import' and self.purchase_id) or self.state == 'done':
+                if self.state == 'import' and self.purchase_id:
                     methods.append(self.env.ref('td_medicus_exchange_sale.stock_picking_incoming_import_prepared_odoo_1c'))
             else:
                 if self.state == 'done':
@@ -71,6 +71,9 @@ class TdStockPickingExchange(models.Model):
         raise UserError("No handler found for method %s" % method_xml_id)
 
     def _get_manager_data(self, sp: Picking) -> list[dict]|dict|str:
+        return sp.user_id.exchange_data if sp.user_id else ""
+
+    def _get_manager_data_sale(self, sp: Picking) -> list[dict]|dict|str:
         return sp.sale_id.user_id.exchange_data if sp.sale_id and sp.sale_id.user_id else ""
     
     def ata_exchange_get_data_incoming_main(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
@@ -111,7 +114,7 @@ class TdStockPickingExchange(models.Model):
     def ata_exchange_get_data_incoming_relocation(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
         return [{
             **record.ata_exchange_get_data_incoming(method, as_node, **kwargs),
-            "manager": self._get_manager_data(record),
+            "manager": self._get_manager_data_sale(record),
         } for record in self]
 
     def ata_exchange_get_data_incoming(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> dict:
@@ -133,11 +136,11 @@ class TdStockPickingExchange(models.Model):
             return {k: data.get(f, 0.0) for k, f in zip(output_keys, fields)}
 
         def get_doc_id():
-            if not kwargs.get("compute_doc_id", False) or not self.sale_id:
+            if not kwargs.get("compute_doc_id", False) or not self.return_ids:
                 return ""
             # Return last outgoing done stock.picking for the same sale order and implementation_document
             if last_picking := self.env['stock.picking'].search([
-                ('sale_id', '=', self.sale_id.id),
+                ('id', 'in', self.return_ids.ids),
                 ('picking_type_code', '=', 'outgoing'),
                 ('implementation_document', '=', self.implementation_document),
                 ('state', '=', 'done'),
@@ -198,13 +201,16 @@ class TdStockPickingExchange(models.Model):
             "purchase_id":      record.purchase_id.id,
             "partner":          record.partner_id.exchange_data,
             "agreement":        record.purchase_id.td_agreement_id.exchange_data,
+            "type_of_trade":    record.purchase_id.td_type_of_trade
+                if record.purchase_id else
+                (record.return_id.td_type_of_trade if record.return_id else ""),
         } for record in self]
 
     def ata_exchange_get_data_outgoing_relocation(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
         return [{
             **record.ata_exchange_get_data_outgoing(method, as_node, **kwargs),
             "partner":          record.partner_id.exchange_data,
-            "manager":          self._get_manager_data(record),
+            "manager":          self._get_manager_data_sale(record),
         } for record in self]
 
     def ata_exchange_get_data_outgoing(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> dict:
