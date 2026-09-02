@@ -2,7 +2,7 @@
 {
     'name': "Modification ToDo Agreement",
     'summary': 'Additional for ToDo Agreement',
-    'version': '18.0.0.0.24',
+    'version': '18.0.0.0.26',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
@@ -43,6 +43,11 @@
         # report
         'report/td_stock_report.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'td_medicus_agreement/static/src/js/stock_move_one2many.js',
+        ],
+    },
     'installable': 'True',
     'application': False,
 }
