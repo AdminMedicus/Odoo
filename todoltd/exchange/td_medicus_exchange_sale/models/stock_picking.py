@@ -18,6 +18,59 @@ class TdStockPickingExchange(models.Model):
     _name = 'stock.picking'
     _inherit = ['stock.picking','ata.exchange.class','ata.exchange.model.handler.mixin']
 
+    def _ata_exchange_split_line_by_lots(
+        self, line_data: dict
+    ) -> list[dict]:
+        """Split a stock move payload into one line per lot/serial number.
+
+        BAS creates a separate document line for every item in ``lots_data``.
+        Sending the stock move totals on the parent line therefore duplicates
+        those totals when one move contains several lots.  Keep unit prices
+        unchanged and allocate the subtotal/total proportionally to the lot
+        quantities.  The last line receives the floating-point remainder so
+        that split values always add up to the original Odoo totals.
+        """
+        lots_data = [
+            dict(lot_data)
+            for lot_data in line_data.get("lots_data", [])
+            if lot_data.get("quantity")
+        ]
+        if len(lots_data) <= 1:
+            result = dict(line_data)
+            if lots_data:
+                result["lots_data"] = lots_data
+            return [result]
+
+        total_quantity = sum(
+            lot_data["quantity"] for lot_data in lots_data
+        )
+        if not total_quantity:
+            return [dict(line_data)]
+
+        total_keys = ("price_subtotal", "price_total")
+        allocated = {key: 0.0 for key in total_keys}
+        result = []
+
+        for index, lot_data in enumerate(lots_data):
+            is_last = index == len(lots_data) - 1
+            quantity = lot_data["quantity"]
+            split_line = dict(line_data)
+            split_line["quantity"] = quantity
+            split_line["lots_data"] = [lot_data]
+
+            for key in total_keys:
+                source_amount = line_data.get(key, 0.0) or 0.0
+                if is_last:
+                    split_amount = source_amount - allocated[key]
+                else:
+                    split_amount = source_amount * quantity / total_quantity
+                    allocated[key] += split_amount
+                split_line[key] = split_amount
+
+            result.append(split_line)
+
+        return result
+
     #region outgoing function
     def ata_exchange_compute_methods(self) -> list[AtaExchangeMethod]:
         self.ensure_one()
@@ -146,6 +199,24 @@ class TdStockPickingExchange(models.Model):
             
             return ""
 
+        lines = []
+        for sm in self.move_ids:
+            line_data = {
+                "id":           sm.id,
+                "product":      sm.product_id.exchange_data,
+                "quantity":     sm.quantity,
+                "uom":          sm.product_uom.exchange_data,
+                "tax":          sm.td_taxes_ids.exchange_data,
+                "currency_rate": sm.td_currency_rate,
+                "doc_id":       get_doc_id(),
+                "lots_data": [{
+                    "lot":      sml.lot_id.exchange_data,
+                    "quantity": sml.quantity,
+                } for sml in sm.move_line_ids],
+                **get_move_line_prices_dict(sm),
+            }
+            lines.extend(self._ata_exchange_split_line_by_lots(line_data))
+
         return {
             "id":               self.id,
             "name":             self._str_empty(self.name),
@@ -158,20 +229,7 @@ class TdStockPickingExchange(models.Model):
             "partner":          self.partner_id.exchange_data,            
             "warehouse_code":   self.location_dest_id.warehouse_id.id,
             "implementation_document": self._str_empty(self.implementation_document),
-            "lines": [{
-                "id":           sm.id,
-                "product":      sm.product_id.exchange_data,
-                "quantity":     sm.quantity,
-                "uom":          sm.product_uom.exchange_data,
-                "tax":          sm.td_taxes_ids.exchange_data,
-                "currency_rate": sm.td_currency_rate,
-                "doc_id":       get_doc_id(),
-                "lots_data": [{
-                    "lot":      sml.lot_id.exchange_data,
-                    "quantity": sml.quantity,
-                } for sml in sm.move_line_ids],
-                **get_move_line_prices_dict(sm),                
-            } for sm in self.move_ids]
+            "lines": lines,
         }
     
     def ata_exchange_get_data_outgoing_main(self, method: AtaExchangeMethod|None = None, as_node = False, **kwargs) -> list[dict]:
