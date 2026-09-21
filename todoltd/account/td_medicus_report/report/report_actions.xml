@@ -202,6 +202,7 @@
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">td_medicus_report.report_print_invoice_act</field>
         <field name="report_file">td_medicus_report.report_print_invoice_act</field>
+        <field name="is_invoice_report">True</field>
         <field name="binding_model_id" ref="account.model_account_move"/>
         <field name="binding_type">report</field>
         <field name="domain" eval="[
