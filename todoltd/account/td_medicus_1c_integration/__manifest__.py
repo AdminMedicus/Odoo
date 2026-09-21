@@ -1,6 +1,6 @@
 {
     'name': 'TD Medicus 1C Integration',
-    "version": '18.0.0.0.61',
+    "version": '18.0.0.0.66',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
@@ -32,6 +32,7 @@
         'views/sale_order_views.xml',
         'views/purchase_order_views.xml',
         'views/stock_picking_views.xml',
+        'views/stock_move_line_views.xml',
         'views/stock_lot_views.xml',
         'views/stock_picking_type_views.xml',
         'views/res_partner_views.xml',
