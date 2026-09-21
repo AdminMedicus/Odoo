@@ -22,7 +22,7 @@ class StockLot(models.Model):
     )
     td_last_delivery_partner_id = fields.Many2one(
         'res.partner',
-        string='Last Delivery Partner',
+        string='TD Last Delivery Partner',
         compute='_compute_td_last_delivery_partner_id',
         store=True,
         help='Partner from the last outgoing delivery'

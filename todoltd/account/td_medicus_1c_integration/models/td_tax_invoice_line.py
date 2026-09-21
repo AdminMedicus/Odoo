@@ -71,6 +71,7 @@ class TdTaxInvoiceLine(models.Model):
         related='td_sale_order_line_id.price_unit'
     )
     sale_order_quantity = fields.Float(
+        string='SO quantity',
         related='td_sale_order_line_id.product_uom_qty'
     )
     sale_order_currency_id = fields.Many2one(
@@ -78,7 +79,6 @@ class TdTaxInvoiceLine(models.Model):
         string='Currency',
         required=True,
         related='td_sale_order_line_id.currency_id',
-        default=lambda self: self.env.company.currency_id
     )
     sale_order_price_subtotal = fields.Monetary(
         related='td_sale_order_line_id.price_subtotal',
@@ -88,19 +88,21 @@ class TdTaxInvoiceLine(models.Model):
     # Invoice fields
 
     invoice_price = fields.Float(
+        string='Invoice price',
         related='invoice_line_id.price_unit'
     )
     invoice_quantity = fields.Float(
+        string='Invoice qty',
         related='invoice_line_id.quantity'
     )
     invoice_currency_id = fields.Many2one(
         comodel_name='res.currency',
-        string='Currency',
+        string='Invoice Currency',
         required=True,
         related='invoice_line_id.currency_id',
-        default=lambda self: self.env.company.currency_id
     )
     invoice_price_subtotal = fields.Monetary(
+        string='Invoice Subtotal',
         related='invoice_line_id.price_subtotal',
         currency_field='invoice_currency_id',
     )
@@ -117,8 +119,8 @@ class TdTaxInvoiceLine(models.Model):
                     ])
                     outgoing_record = records.filtered(
                         lambda pick: (
-                            pick.picking_id
-                            and pick.picking_id.picking_type_code == "outgoing"
+                                pick.picking_id
+                                and pick.picking_id.picking_type_code == "outgoing"
                         )
                     )
                     if outgoing_record:
@@ -156,14 +158,14 @@ class TdTaxInvoiceLine(models.Model):
 
                     line.price_with_out_vat = round(price_excluded, 2)
                     line.vat_price = (
-                        line.invoice_price - line.price_with_out_vat
+                            line.invoice_price - line.price_with_out_vat
                     )
                     line.sum_vat_price = line.vat_price * line.invoice_quantity
                     line.sum_price_with_out_vat = (
-                        line.price_with_out_vat * line.invoice_quantity
+                            line.price_with_out_vat * line.invoice_quantity
                     )
                     line.sum_price_with_vat = (
-                        line.sum_price_with_out_vat + line.sum_vat_price
+                            line.sum_price_with_out_vat + line.sum_vat_price
                     )
 
                 elif line.vat_type == 'tax_excluded':
@@ -174,15 +176,15 @@ class TdTaxInvoiceLine(models.Model):
                     line.vat_price = round(price_excluded, 2)
                     line.sum_vat_price = line.vat_price * line.invoice_quantity
                     line.sum_price_with_out_vat = (
-                        line.price_with_out_vat * line.invoice_quantity
+                            line.price_with_out_vat * line.invoice_quantity
                     )
                     line.sum_price_with_vat = (
-                        line.sum_price_with_out_vat + line.sum_vat_price
+                            line.sum_price_with_out_vat + line.sum_vat_price
                     )
 
                 if line.lot_ids:
                     line.uktzed_code_id = (
-                        line.lot_ids[0].td_uktzed_code_id.id or False
+                            line.lot_ids[0].td_uktzed_code_id.id or False
                     )
                 if not line.uktzed_code_id:
                     if product.td_uktzed_code_id:

@@ -10,7 +10,7 @@ class StockLot(models.Model):
     )
 
     standart_price = fields.Float(
-        string="Lot Cost (standard)",
+        string="TD Lot Cost (standard)",
         digits="Product Price",
         help="Custom cost per lot/serial (used for GTD/import adjustments).",
         default=0.0,

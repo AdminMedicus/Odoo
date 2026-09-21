@@ -425,8 +425,8 @@ msgstr "Сума"
 
 #. module: td_medicus_agreement
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_stock_move__td_picking_type_id
-msgid "Operation Type"
-msgstr ""
+msgid "Picking Type"
+msgstr "Тип комплектування"
 
 #. module: td_medicus_agreement
 #: model:ir.model.fields,field_description:td_medicus_agreement.field_stock_picking__td_sale_id_name
