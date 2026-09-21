@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="kw_vchasno_account_account_invoice_send_wizard_form" model="ir.ui.view">
+        <field name="name">account.invoice.send.form (kw_vchasno_account)</field>
+        <field name="model">account.move.send.wizard</field>
+        <field name="inherit_id" ref="account.account_move_send_wizard_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='extra_edis']" position="after">
+                <div  name="option_vchasno" class="o-checkbox form-check">
+                    <field name="kw_is_vchasno"/>
+                    <b>
+                        <label for="kw_is_vchasno"/>
+                    </b>
+                    <group>
+                        <field invisible="kw_is_vchasno == False" name="company_id" required="kw_is_vchasno == True"/>
+                        <field invisible="kw_is_vchasno == False" name="vchasno_id" required="kw_is_vchasno == True"/>
+                    </group>
+                </div>
+            </xpath>
+            <xpath expr="//footer/button" position="after">
+                <button class="print btn-primary o_mail_send" data-hotkey="q" invisible="kw_is_vchasno == False" name="send_and_print_action" string="Send Vchasno" type="object"/>
+            </xpath></field>
+    </record>
+
+    <record id="kw_vchasno_account_account_invoice_send_batch_wizard_form" model="ir.ui.view">
+        <field name="name">account.move.send.batch.wizard (kw_vchasno_account)</field>
+        <field name="model">account.move.send.batch.wizard</field>
+        <field name="inherit_id" ref="account.account_move_send_batch_wizard_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='alerts']" position="after">
+                <div  name="option_vchasno" class="o-checkbox form-check">
+                    <field name="kw_is_vchasno"/>
+                    <b>
+                        <label for="kw_is_vchasno"/>
+                    </b>
+                    <group>
+                        <field invisible="kw_is_vchasno == False" name="company_id" required="kw_is_vchasno == True"/>
+                        <field invisible="kw_is_vchasno == False" name="vchasno_id" required="kw_is_vchasno == True"/>
+                    </group>
+                </div>
+            </xpath>
+            <xpath expr="//footer/button" position="after">
+                <button class="print btn-primary o_mail_send" data-hotkey="q" invisible="kw_is_vchasno == False" name="send_and_print_action" string="Send Vchasno" type="object"/>
+            </xpath></field>
+    </record>
+</odoo>

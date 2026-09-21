@@ -1,0 +1,57 @@
+<odoo>
+    <record id="kw_vchasno_download_document_wizard_views_form" model="ir.ui.view">
+        <field name="name">vchasno.download.document.wizard.form</field>
+        <field name="model">vchasno.download.document.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="contact_id"/>
+                        <field name="company_id"/>
+                        <field name="vchasno_id"/>
+                        <field name="first_sign_by"/>
+                        <field name="edrpou_owner"/>
+                        <field name="owner_signatire_count"/>
+                        <field name="edrpou_recipient"/>
+                        <field name="recipient_signatire_count"/>
+                        <field name="date"/>
+                        <field name="category"/>
+                    </group>
+                    <group>
+                        <field name="type"/>
+                        <field name="number"/>
+                        <field name="amount"/>
+                        <field name="email_recipient"/>
+                        <field name="format"/>
+                        <field name="file" filename="file_name"/>
+                        <field name="send_immediately" readonly="email_recipient == False or first_sign_by == 'owner'"/>
+                    </group>
+                </group>
+                <footer>
+                    <div>
+                        <button name="add_document"
+                                type="object" class="oe_highlight"
+                                string="Send File"/>
+                        <button special="cancel"
+                                string="Cancel"/>
+                    </div>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+<!--    <record id="kw_vchasno_download_document_wizard_action_window"-->
+<!--            model="ir.actions.act_window">-->
+<!--        <field name="name">Download File</field>-->
+<!--        <field name="type">ir.actions.act_window</field>-->
+<!--        <field name="res_model">vchasno.download.document.wizard</field>-->
+<!--        <field name="view_mode">form</field>-->
+<!--        <field name="target">new</field>-->
+<!--    </record>-->
+
+<!--    <menuitem id="kw_vchasno_download_document_wizard_menu"-->
+<!--              parent="kw_vchasno_main_menu"-->
+<!--              action="kw_vchasno_download_document_wizard_action_window"-->
+<!--              name="Add Document" sequence="200"/>-->
+</odoo>

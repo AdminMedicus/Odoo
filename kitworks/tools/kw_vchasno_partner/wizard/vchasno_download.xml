@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="kw_vchasno_partner_kw_vchasno_download_document_wizard_views_form" model="ir.ui.view">
+        <field name="name">vchasno.download.document.wizard.form (kw_vchasno_partner)</field>
+        <field name="model">vchasno.download.document.wizard</field>
+        <field name="inherit_id" ref="kw_vchasno.kw_vchasno_download_document_wizard_views_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vchasno_id']" position="after">
+                <field name="is_partner_recipient" widget="boolean_toggle"/>
+                <field invisible="is_partner_recipient == False" name="partner_id" required="is_partner_recipient == True"/>
+            </xpath></field>
+    </record>
+</odoo>

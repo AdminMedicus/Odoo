@@ -1,0 +1,19 @@
+<odoo>
+    <menuitem id="kw_vchasno_main_menu"
+              web_icon="kw_vchasno,static/description/icon.png"
+              name="Vchasno" sequence="100"/>
+
+    <menuitem id="kw_vchasno_catalog_main_menu"
+              parent="kw_vchasno_main_menu"
+              groups="kw_vchasno.group_kw_vchasno_admin"
+              name="Catalog" sequence="300"/>
+
+    <menuitem id="kw_vchasno_setting_main_menu"
+              parent="kw_vchasno_main_menu"
+              name="Setting" sequence="9999"/>
+
+<!--    <menuitem id="kw_vchasno_document_main_menu"-->
+<!--              parent="kw_vchasno_main_menu"-->
+<!--              name="Document" sequence="100"/>-->
+
+</odoo>

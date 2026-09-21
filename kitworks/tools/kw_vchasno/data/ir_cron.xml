@@ -1,0 +1,26 @@
+<odoo noupdate="1">
+    <record id="ir_cron_kw_vchasno_status"
+            model="ir.cron">
+        <field name="name">Vchasno Update Status</field>
+        <field name="state">code</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="model_id"
+               ref="kw_vchasno.model_kw_vchasno_key"/>
+        <field name="code">model._update_document_inf_cron()
+        </field>
+        <field name="active" eval="False"/>
+    </record>
+    <record id="ir_cron_kw_vchasno_documents"
+            model="ir.cron">
+        <field name="name">Vchasno Update Documents</field>
+        <field name="state">code</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="model_id"
+               ref="kw_vchasno.model_kw_vchasno_key"/>
+        <field name="code">model._update_documents_cron()
+        </field>
+        <field name="active" eval="False"/>
+    </record>
+</odoo>

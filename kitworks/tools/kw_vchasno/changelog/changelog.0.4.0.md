@@ -1,0 +1,1 @@
+- fix categories update function.
