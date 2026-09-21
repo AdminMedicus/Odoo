@@ -30,23 +30,50 @@
                 <field name="td_date_supplier_document" invisible="picking_code"/>
             </xpath>
 
-            <xpath expr="//field[@name='move_ids_without_package']//field[@name='td_uktzed_code_id']" position="after">
-                <field name="td_currency_rate" optional="show" column_invisible="not parent.td_is_import"/>
+            <!--
+                Import columns used to be anchored on td_uktzed_code_id, which is now the last
+                column of the list. They are grouped with the other amount columns instead.
+            -->
+<!--            <xpath expr="//field[@name='move_ids_without_package']//field[@name='td_uktzed_code_id']" position="after">-->
+<!--                <field name="td_currency_rate" optional="show" column_invisible="not parent.td_is_import"/>-->
+<!--                <field-->
+<!--                        name="td_customs_rate"-->
+<!--                        optional="show"-->
+<!--                        widget="percentage"-->
+<!--                        column_invisible="not parent.td_is_import"-->
+<!--                />-->
+<!--            </xpath>-->
+
+            <xpath expr="//field[@name='move_ids_without_package']//field[@name='td_price_subtotal']" position="after">
+                <field
+                        name="td_currency_rate"
+                        optional="show"
+                        width="110px"
+                        column_invisible="not parent.td_is_import"
+                />
                 <field
                         name="td_customs_rate"
                         optional="show"
                         widget="percentage"
+                        width="110px"
                         column_invisible="not parent.td_is_import"
                 />
-            </xpath>
-
-            <xpath expr="//field[@name='move_ids_without_package']//field[@name='td_price_subtotal']" position="after">
-                <field name="td_customs_value_good" optional="show" column_invisible="not parent.td_is_import"/>
-                <field name="td_book_value" optional="show" column_invisible="not parent.td_is_import"/>
-                <field name="td_taxes_ids" widget="many2many_tags" optional="show"/>
+                <field
+                        name="td_customs_value_good"
+                        optional="show"
+                        width="130px"
+                        column_invisible="not parent.td_is_import"
+                />
+                <field
+                        name="td_book_value"
+                        optional="show"
+                        width="120px"
+                        column_invisible="not parent.td_is_import"
+                />
+                <field name="td_taxes_ids" widget="many2many_tags" optional="show" width="150px"/>
                 <!--                <field name="td_taxes" optional="show" widget="percentage" readonly="1"/>-->
-                <field name="td_taxes_price" optional="show" readonly="1"/>
-                <field name="td_price_total" optional="show" readonly="1"/>
+                <field name="td_taxes_price" optional="show" readonly="1" width="110px"/>
+                <field name="td_price_total" optional="show" readonly="1" width="120px"/>
             </xpath>
 
             <!-- Prepared button for import pickings -->

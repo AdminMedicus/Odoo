@@ -26,11 +26,17 @@
                 </div>
             </xpath>
             <xpath expr="//field[@name='move_ids_without_package']//field[@name='product_uom']" position="after">
-                <field name="sale_order_id" optional="show"/>
-                <field name="td_price_unit" optional="show"/>
-                <field name="td_untaxed_price_unit" optional="show" readonly="1"/>
-                <field name="td_price_subtotal" optional="show" readonly="1"/>
+                <field name="sale_order_id" optional="show" width="130px"/>
+                <field name="td_price_unit" optional="show" width="110px"/>
+                <field name="td_untaxed_price_unit" optional="show" readonly="1" width="110px"/>
+                <field name="td_price_subtotal" optional="show" readonly="1" width="120px"/>
             </xpath>
+<!--            <xpath expr="//field[@name='move_ids_without_package']//field[@name='product_uom']" position="after">-->
+<!--                <field name="sale_order_id" optional="show"/>-->
+<!--                <field name="td_price_unit" optional="show"/>-->
+<!--                <field name="td_untaxed_price_unit" optional="show" readonly="1"/>-->
+<!--                <field name="td_price_subtotal" optional="show" readonly="1"/>-->
+<!--            </xpath>-->
             <xpath expr="//field[@name='move_ids_without_package']" position="after">
                 <group>
                     <field name="td_total_amount" readonly="1"/>
@@ -38,8 +44,18 @@
             </xpath>
             <xpath expr="//field[@name='move_ids_without_package']//field[@name='lot_ids']" position="replace">
             </xpath>
+            <!-- Product is the main column of the moves list: give it more room -->
+            <xpath expr="//field[@name='move_ids_without_package']//field[@name='product_id']" position="attributes">
+                <attribute name="width">320px</attribute>
+            </xpath>
+            <!-- Packaging must be hideable by the user (standard optional column) -->
+            <xpath expr="//field[@name='move_ids_without_package']//field[@name='product_packaging_id']" position="attributes">
+                <attribute name="optional">show</attribute>
+                <attribute name="width">130px</attribute>
+            </xpath>
             <xpath expr="//field[@name='move_ids_without_package']//field[@name='product_id']" position="after">
-                 <field name="td_lot_ids" widget="many2many_tags"/>
+                 <field name="td_lot_ids" widget="many2many_tags" optional="show" width="200px"/>
+<!--                 <field name="td_lot_ids" widget="many2many_tags"/>-->
                  <field name="lot_ids" widget="many2many_tags"
                         column_invisible="1"
                         optional="show" options="{'create': [('parent.use_create_lots', '=', True)]}"
@@ -48,7 +64,8 @@
                         on_change="1" can_create="True" can_write="True"
                  />
                  <field name="td_picking_code" column_invisible="1"/>
-                 <field name="td_uktzed_code_id" domain="[('visible', '=', True)]" readonly="td_picking_code != 'incoming'"/>
+                 <!-- UKTZED code moved to the last column of the list, see below -->
+<!--                 <field name="td_uktzed_code_id" domain="[('visible', '=', True)]" readonly="td_picking_code != 'incoming'"/>-->
 <!--                 <field name="lot_ids" widget="many2many_tags"-->
 <!--                        invisible="not show_details_visible or has_tracking == 'none'"-->
 <!--                        optional="show" options="{'create': [('parent.use_create_lots', '=', True)]}"-->
@@ -59,6 +76,15 @@
             </xpath>
             <xpath expr="//field[@name='move_ids_without_package']//field[@name='quantity']" position="attributes">
                  <attribute name="column_invisible">0</attribute>
+            </xpath>
+            <!-- UKTZED code is the last column of the moves list -->
+            <xpath expr="//field[@name='move_ids_without_package']/list" position="inside">
+                 <field
+                         name="td_uktzed_code_id"
+                         domain="[('visible', '=', True)]"
+                         readonly="td_picking_code != 'incoming'"
+                         width="230px"
+                 />
             </xpath>
             <xpath expr="//div[@name='button_box']" position="inside">
                 <field name="sale_id" invisible="1"/>
