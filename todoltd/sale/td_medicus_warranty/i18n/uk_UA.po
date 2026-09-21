@@ -344,7 +344,7 @@ msgstr "Востаннє доставлено"
 
 #. module: td_medicus_warranty
 #: model:ir.model.fields,field_description:td_medicus_warranty.field_stock_lot__td_last_delivery_partner_id
-msgid "Last Delivery Partner"
+msgid "TD Last Delivery Partner"
 msgstr "Востаннє доставлено партнеру"
 
 #. module: td_medicus_warranty

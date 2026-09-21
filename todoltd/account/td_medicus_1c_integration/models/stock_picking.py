@@ -36,7 +36,6 @@ class StockPicking(models.Model):
 
     td_is_import = fields.Boolean(
         string="Import",
-        default=False,
         related='purchase_id.td_is_import'
     )
 

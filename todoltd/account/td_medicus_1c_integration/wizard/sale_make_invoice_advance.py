@@ -9,17 +9,15 @@ class SaleMakeInvoiceAdvance(models.TransientModel):
         selection=[
             ('delivered', "Regular invoice"),
             ('percentage', "Down payment"),
-            # ('fixed', "Down payment (fixed amount)"),
         ],
-        string="Create Invoice",
+        string="TD Create Invoice",
         default='delivered',
     )
     td_advance_payment_method_one = fields.Selection(
         selection=[
             ('percentage', "Down payment"),
-            # ('fixed', "Down payment (fixed amount)"),
         ],
-        string="Create Invoice",
+        string="TD Create Invoice One",
         default='percentage',
     )
     td_choose_payment_method = fields.Boolean(
@@ -29,13 +27,11 @@ class SaleMakeInvoiceAdvance(models.TransientModel):
         selection=[
             ('delivered', "Regular invoice"),
             ('percentage', "Down payment"),
-            # ('fixed', "Down payment (fixed amount)"),
         ],
         compute='_compute_advance_payment_method'
     )
 
     advance_payment_method = fields.Selection(
-        # compute='_compute_advance_payment_method',
         default='percentage'
     )
 
