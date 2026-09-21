@@ -1,0 +1,1 @@
+- extend module with new feature: send documents to recipient for first sign

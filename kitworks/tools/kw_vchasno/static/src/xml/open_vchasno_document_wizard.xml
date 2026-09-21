@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<templates id="vchasno_document_view" xml:space="preserve">
+    <t t-name="kw_vchasno.ListView" t-inherit="web.ListView" t-inherit-mode="extension" owl="1">
+        <xpath expr="//*[@class='btn btn-primary o_list_button_add']" position="after">
+            <t t-if="model.config.resModel == 'kw.vchasno.document'">
+                <button class="btn btn-primary oe_highlight" t-on-click="onClickCreateDocumentVchasno"
+                    type="button">Add Document</button>
+            </t>
+        </xpath>
+        <xpath expr="//*[@class='btn btn-primary o_list_button_add']" position="attributes">
+            <attribute name="t-if">model.config.resModel != 'kw.vchasno.document'</attribute>
+        </xpath>
+    </t>
+</templates>

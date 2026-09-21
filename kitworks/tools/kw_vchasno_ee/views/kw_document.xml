@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="spreadsheet_document_view_kanban" model="ir.ui.view">
+        <field name="name">spreadsheet.documents.document.kanban</field>
+        <field name="model">documents.document</field>
+        <field name="inherit_id" ref="documents.document_view_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//footer" position="after">
+                <div class="w-100 mt-2 mb-3 ms-3">
+                    <button name="send_vchasno" string="Send to Vchasno" type="object" class="btn-primary" invisible="type != 'binary'"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+    
+    <record id="kw_vchasno_ee_kw_document_tree" model="ir.ui.view">
+        <field name="name">kw.document.tree</field>
+        <field name="model">documents.document</field>
+        <field name="inherit_id" ref="documents.documents_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='url']" position="before">
+                <button name="send_vchasno" string="Send to Vchasno" type="object" class="btn-primary" invisible="type != 'binary'"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

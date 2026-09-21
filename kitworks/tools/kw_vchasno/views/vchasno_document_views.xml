@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="kw_vchasno_kw_vchasno_document_list" model="ir.ui.view">
+        <field name="name">kw.vchasno.document.list (kw_vchasno)</field>
+        <field name="model">kw.vchasno.document</field>
+        <field name="arch" type="xml">
+            <list default_order="date_created desc">
+                <field name="name"/>
+                <field name="date_created"/>
+                <field name="category"/>
+                <field name="number"/>
+                <field name="amount"/>
+                <field name="company_name_owner"/>
+                <field name="edrpou_owner"/>
+                <field name="company_name_recipient"/>
+                <field name="edrpou_recipient"/>
+                <field name="contact_id"/>
+                <field name="state"/>
+                <button class="btn-primary" name="download_document" string="Download Origin Document" type="object"/>
+                <button class="btn-primary" name="download_archive_document" string="Download Archive with signatures" type="object"/>
+                <button name="sync_contact" string="Sync Contact" type="object"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="kw_vchasno_kw_vchasno_document_form" model="ir.ui.view">
+        <field name="name">kw.vchasno.document.form (kw_vchasno)</field>
+        <field name="model">kw.vchasno.document</field>
+        <field name="arch" type="xml">
+            <form create="false" delete="false" edit="false">
+                <header>
+                    <button class="btn-primary" name="download_document" string="Download Origin Document" type="object"/>
+                    <button class="btn-primary" invisible="extension != '.pdf'" name="preview_document" string="Preview Document" type="object"/>
+                    <button class="btn-primary" name="download_archive_document" string="Download Archive with signatures" type="object"/>
+                    <button name="send_to_recipient" type="object"
+                            class="btn-primary"
+                            string="Send to Recipient"
+                            invisible="state != '7001' or first_sign_by != 'recipient'"/>
+                    <button name="sync_contact" string="Sync Contact" type="object"/>
+                </header>
+                <sheet>
+                    <div name="title_line" style="width: 100%">
+                        <div class="oe_title">
+                            <label class="oe_edit_only" for="name"/>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="vchasno_id"/>
+                            <field name="contact_id"/>
+                            <field name="vchasno_ref"/>
+                            <field name="number"/>
+                            <field name="date_created"/>
+                            <field name="date_delivered"/>
+                            <field invisible="ir_attachment_id == False" name="ir_attachment_id"/>
+                            <field invisible="1" name="ir_attachment_archive_id"/>
+                            <field filename="name" invisible="ir_attachment_id == False" name="file"/>
+                            <field name="extension"/>
+                            <field name="company_name_owner"/>
+                            <field name="edrpou_owner"/>
+                            <field name="email_owner"/>
+                        </group>
+                        <group>
+                            <field name="is_incoming"/>
+                            <field name="state"/>
+                            <field name="category"/>
+                            <field name="type"/>
+                            <field name="amount"/>
+                            <field name="company_name_recipient"/>
+                            <field name="edrpou_recipient"/>
+                            <field name="email_recipient"/>
+                            <field name="first_sign_by"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="kw_vchasno_kw_vchasno_docment_search" model="ir.ui.view">
+        <field name="name">kw.vchasno.document.search (kw_vchasno)</field>
+        <field name="model">kw.vchasno.document</field>
+        <field name="arch" type="xml">
+            <search>
+                <field filter_domain="['|', '|', '|', '|',                         ('name', 'ilike', self),                          ('edrpou_owner', 'ilike', self),                           ('edrpou_recipient', 'ilike', self),                            ('company_name_owner', 'ilike', self),                             ('company_name_recipient', 'ilike', self)]" name="name"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="kw_vchasno_kw_vchasno_docment_action_window" model="ir.actions.act_window">
+        <field name="name">Documents</field>
+        <field name="res_model">kw.vchasno.document</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem action="kw_vchasno_kw_vchasno_docment_action_window" id="kw_vchasno_document_main_menu" name="Documents" parent="kw_vchasno_main_menu" sequence="100"/>
+
+</odoo>

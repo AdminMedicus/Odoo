@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="kw_vchasno_kw_vchasno_log_list" model="ir.ui.view">
+        <field name="name">kw.vchasno.log.list (kw_vchasno)</field>
+        <field name="model">kw.vchasno.log</field>
+        <field name="arch" type="xml">
+            <list create="false">
+                <field name="name" optional="show"/>
+                <field name="create_date" optional="show"/>
+                <field name="json" optional="hide"/>
+                <field name="params" optional="show"/>
+                <field name="headers" optional="show"/>
+                <field name="error" optional="show"/>
+                <field name="response" optional="hide"/>
+                <field name="method" optional="show"/>
+                <field name="code" optional="show"/>
+                <field name="token" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="kw_vchasno_kw_vchasno_log_form" model="ir.ui.view">
+        <field name="name">kw.vchasno.log.form (kw_vchasno)</field>
+        <field name="model">kw.vchasno.log</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false">
+                <group>
+                    <field name="name"/>
+                    <field name="create_date"/>
+                    <field name="is_download"/>
+                    <field invisible="is_download == True" name="json" options="{'mode': 'python'}" widget="ace"/>
+                    <field name="params"/>
+                    <field name="headers"/>
+                    <field name="error"/>
+                    <field invisible="is_download == True" name="response" options="{'mode': 'python'}" widget="ace"/>
+                    <field name="method"/>
+                    <field name="code"/>
+                    <field name="token"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="kw_vchasno_kw_vchasno_log_search" model="ir.ui.view">
+        <field name="name">kw.vchasno.log.search (kw_vchasno)</field>
+        <field name="model">kw.vchasno.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="method"/>
+                <field name="code"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="kw_vchasno_kw_vchasno_log_action_window" model="ir.actions.act_window">
+        <field name="name">Log</field>
+        <field name="res_model">kw.vchasno.log</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem action="kw_vchasno_kw_vchasno_log_action_window" id="kw_vchasno_kw_vchasno_log_menu" name="Log" parent="kw_vchasno_setting_main_menu" sequence="900"/>
+
+</odoo>

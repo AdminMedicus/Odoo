@@ -1,0 +1,117 @@
+<section style="max-width: 896px; margin: 0 auto;">
+    <div style="text-align: center;">
+        <h1 style="color:#875A7B;">Vchasno</h1>
+    </div>
+    <div style="text-align: center;">
+        <p>
+            <a href="https://www.odoo.com/documentation/17.0/legal/licenses.html#odoo-proprietary-license">
+                <img alt="License: OPL-1"
+                     src="https://img.shields.io/badge/license-OPL--1-blue.png"/></a>
+            <a href="https://kitworks.systems/">
+                <img alt="Kitworks Systems"
+                     src="https://img.shields.io/badge/maintainer-Kitworks-purple.png"/></a>
+        </p>
+        <p><br></p>
+    </div>
+</section>
+
+<section style="margin: 0 auto; max-width: 896px;">
+    <div>
+        <p>Core module for integration with <a href="https://vchasno.ua/">Vchasno</a> - Ukrainian electronic document management system. Provides API connectivity, document management, and electronic signature support for seamless EDI (Electronic Data Interchange) operations.</p>
+
+        <p>Key features include:</p>
+        <ul>
+            <li>API Integration: Direct connection with Vchasno API for real-time document exchange</li>
+            <li>Document Management: Comprehensive document handling and storage</li>
+            <li>Electronic Signatures: Support for qualified electronic signatures</li>
+            <li>Status Tracking: Real-time document status monitoring</li>
+            <li>Automatic Synchronization: Scheduled document updates and downloads</li>
+            <li>Category Management: Organize documents by customizable categories</li>
+        </ul>
+    </div>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto;">
+    <div>
+        <h3>Configuration</h3>
+
+        <h5>1. Create API Key:</h5>
+        <p>Navigate to <b>Settings → Vchasno → API Keys</b> and create a new API key:</p>
+        <ul>
+            <li>Name: Descriptive name for the connection</li>
+            <li>Token: Your Vchasno API token from <a href="https://vchasno.ua/">vchasno.ua</a></li>
+            <li>EDRPOU Owner: Your company's EDRPOU or IPN</li>
+            <li>Email Owner: Your company email for notifications</li>
+            <li>Company: Select the Odoo company for this connection</li>
+        </ul>
+
+        <h5>2. Configure Document Categories:</h5>
+        <p>Access <b>Vchasno → Catalog → Category List</b> to view and manage document categories synchronized from Vchasno.</p>
+
+        <h5>3. Set Up Cron Jobs:</h5>
+        <p>The module includes scheduled actions for automatic document synchronization:</p>
+        <ul>
+            <li>Update Documents: Syncs incoming and outgoing documents</li>
+            <li>Update Document Info: Refreshes document status and details</li>
+        </ul>
+    </div>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto;">
+    <div>
+        <h3>Features Details</h3>
+        <ul>
+            <li><b>Document Operations:</b>
+                <ul>
+                    <li>Send documents to Vchasno</li>
+                    <li>Download documents and archives</li>
+                    <li>Preview documents online</li>
+                    <li>Track document lifecycle</li>
+                </ul>
+            </li>
+            <li><b>Signature Management:</b>
+                <ul>
+                    <li>Configure signature requirements</li>
+                    <li>Define signing order (owner/recipient first)</li>
+                    <li>Track signature status</li>
+                </ul>
+            </li>
+            <li><b>Integration Features:</b>
+                <ul>
+                    <li>Partner auto-detection by EDRPOU/IPN</li>
+                    <li>Document categorization</li>
+                    <li>Status tracking and notifications</li>
+                    <li>Request logging for debugging</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto;">
+    <div>
+        <h3>Bug Tracker</h3>
+        <p>
+            Bugs are tracked on <a href="https://kitworks.systems/requests">https://kitworks.systems/requests</a>.
+            In case of trouble, please check there if your issue has already been reported.
+        </p>
+    </div>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto; text-align: center;">
+    <div>
+        <h2 style="color: #138c33">Maintainer</h2>
+        <p>KitWorks Systems. Our web site: <a href="https://kitworks.systems">https://kitworks.systems</a></p>
+
+        <p>
+            We can provide you further Odoo Support, Odoo implementation,
+            Odoo customization, Odoo 3rd Party development and integration
+            software, consulting services. Our main goal is to provide the best
+            quality product for you.
+        </p>
+        <p>
+            For any questions
+            <a href="mailto:info@kitworks.systems">contact us</a>.
+        </p>
+    </div>
+</section>

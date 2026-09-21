@@ -1,0 +1,164 @@
+<section style="max-width: 896px; margin: 0 auto;">
+    <div style="text-align: center;">
+        <h1 style="color:#875A7B;">Vchasno Sale Pro-Forma</h1>
+    </div>
+    <div style="text-align: center;">
+        <p>
+            <a href="https://www.odoo.com/documentation/17.0/legal/licenses.html#odoo-proprietary-license">
+                <img alt="License: OPL-1"
+                     src="https://img.shields.io/badge/license-OPL--1-blue.png"/></a>
+            <a href="https://kitworks.systems/">
+                <img alt="Kitworks Systems"
+                     src="https://img.shields.io/badge/maintainer-Kitworks-purple.png"/></a>
+        </p>
+        <p><br></p>
+    </div>
+</section>
+
+<section style="margin: 0 auto; max-width: 896px;">
+    <div>
+        <p>Extends Sale module with ability to send pro-forma invoices and sale orders through Vchasno electronic document management system. This module allows you to send sale documents with electronic signatures directly from the sale order form.</p>
+
+        <p>Key features include:</p>
+        <ul>
+            <li>Send sale orders/pro-forma invoices via Vchasno</li>
+            <li>Electronic document signing with qualified signatures</li>
+            <li>Configure signature order (owner or recipient signs first)</li>
+            <li>Multiple recipients support for single document</li>
+            <li>Integration with standard Odoo email composer</li>
+        </ul>
+    </div>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto;">
+    <div>
+        <h3>Configuration</h3>
+
+        <h5>Prerequisites:</h5>
+        <ul>
+            <li>kw_vchasno module must be installed and configured</li>
+            <li>kw_vchasno_partner module must be installed</li>
+            <li>Vchasno API key must be configured</li>
+            <li>Partners must be marked as Vchasno users</li>
+        </ul>
+
+        <h5>Usage:</h5>
+        <ol>
+            <li>Open a sale order</li>
+            <li>Click "Send by Email" button</li>
+            <li>In the composer wizard, enable "Send in Vchasno" checkbox</li>
+            <li>Select your Vchasno API key</li>
+            <li>Configure "First Sign By" option:
+                <ul>
+                    <li><b>Owner:</b> Your company signs first, then sends to recipient</li>
+                    <li><b>Recipient:</b> Recipient signs first, then returns to owner</li>
+                </ul>
+            </li>
+            <li>Select recipients (partners)</li>
+            <li>Choose attachments to send</li>
+            <li>Click send button</li>
+        </ol>
+    </div>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto;">
+    <div>
+        <h3>Features Details</h3>
+        <ul>
+            <li><b>Signature Workflow:</b>
+                <ul>
+                    <li>Configure who signs first (owner or recipient)</li>
+                    <li>Flexible signing order for different scenarios</li>
+                    <li>Track signature status</li>
+                </ul>
+            </li>
+            <li><b>Multiple Recipients:</b>
+                <ul>
+                    <li>Send same document to multiple partners</li>
+                    <li>Each partner gets individual copy</li>
+                    <li>Separate tracking for each recipient</li>
+                </ul>
+            </li>
+            <li><b>Document Handling:</b>
+                <ul>
+                    <li>Automatic PDF attachment</li>
+                    <li>Support for multiple attachments</li>
+                    <li>Document categorization (default: category 13)</li>
+                    <li>Amount field populated from sale order total</li>
+                </ul>
+            </li>
+            <li><b>Integration:</b>
+                <ul>
+                    <li>Seamless integration with Odoo mail composer</li>
+                    <li>Works with standard email sending workflow</li>
+                    <li>Preserves all Odoo email features</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto;">
+    <div>
+        <h3>Use Cases</h3>
+
+        <h5>Scenario 1: Pro-forma Invoice</h5>
+        <p>When you need customer approval before creating final invoice:</p>
+        <ol>
+            <li>Create sale order with "Recipient" as first signer</li>
+            <li>Send pro-forma via Vchasno</li>
+            <li>Customer reviews and signs</li>
+            <li>Document returns to you</li>
+            <li>You sign to confirm</li>
+        </ol>
+
+        <h5>Scenario 2: Contract/Agreement</h5>
+        <p>When you need to send signed document to partner:</p>
+        <ol>
+            <li>Create sale order with "Owner" as first signer</li>
+            <li>You sign the document first</li>
+            <li>Send signed document via Vchasno</li>
+            <li>Partner receives already signed document</li>
+            <li>Partner signs to accept</li>
+        </ol>
+    </div>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto;">
+    <div>
+        <h3>Dependencies</h3>
+        <p>This module requires:</p>
+        <ul>
+            <li><b>kw_vchasno_partner</b> - Vchasno Partner integration</li>
+            <li><b>sale</b> - Odoo Sales module</li>
+        </ul>
+    </div>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto;">
+    <div>
+        <h3>Bug Tracker</h3>
+        <p>
+            Bugs are tracked on <a href="https://kitworks.systems/requests">https://kitworks.systems/requests</a>.
+            In case of trouble, please check there if your issue has already been reported.
+        </p>
+    </div>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto; text-align: center;">
+    <div>
+        <h2 style="color: #138c33">Maintainer</h2>
+        <p>KitWorks Systems. Our web site: <a href="https://kitworks.systems">https://kitworks.systems</a></p>
+
+        <p>
+            We can provide you further Odoo Support, Odoo implementation,
+            Odoo customization, Odoo 3rd Party development and integration
+            software, consulting services. Our main goal is to provide the best
+            quality product for you.
+        </p>
+        <p>
+            For any questions
+            <a href="mailto:info@kitworks.systems">contact us</a>.
+        </p>
+    </div>
+</section>

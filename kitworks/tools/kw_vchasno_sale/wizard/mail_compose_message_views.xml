@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="kw_email_compose_form_mass_mailing" model="ir.ui.view">
+        <field name="name">kw.mail.compose.message.form.mass_mailing</field>
+        <field name="model">mail.compose.message</field>
+        <field name="inherit_id" ref="mail.email_compose_message_wizard_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='subject']" position="after">
+                <field name="kw_is_vchasno" invisible="composition_mode == 'mass_mail' or model != 'sale.order'"/>
+                <field name="company_id" invisible="kw_is_vchasno == False" required="kw_is_vchasno == True"/>
+                <field name="vchasno_id" invisible="kw_is_vchasno == False" required="kw_is_vchasno == True"/>
+                <field name="kw_first_sign_by" invisible="kw_is_vchasno == False" required="kw_is_vchasno == True"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
