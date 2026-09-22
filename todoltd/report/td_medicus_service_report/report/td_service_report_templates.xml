@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Reusable checkbox glyph: [X] / [ ] -->
+    <template id="td_service_report_checkbox">
+        <span t-attf-style="display:inline-block;width:11px;height:11px;border:1px solid #000;text-align:center;line-height:10px;font-size:9px;font-weight:bold;margin-right:4px;">
+            <t t-if="checked">X</t>
+        </span>
+    </template>
+
+    <!-- Reusable labelled text block of the printed form -->
+    <template id="td_service_report_text_block">
+        <div style="margin-bottom:6px;">
+            <div style="font-weight:bold;"><t t-out="label"/>:</div>
+            <div style="border-bottom:1px solid #000;min-height:16px;white-space:pre-wrap;">
+                <t t-out="value"/>
+            </div>
+        </div>
+    </template>
+
+    <!-- ============================================================ -->
+    <!-- Main document                                                -->
+    <!-- ============================================================ -->
+    <template id="report_td_service_report_document">
+        <div class="page" style="font-size:11px;font-family:Arial, sans-serif;">
+
+                <!-- = Company header = -->
+                <div style="border-bottom:2px solid #000;padding-bottom:6px;margin-bottom:8px;">
+                    <table style="width:100%;border:none;">
+                        <tr>
+                            <td style="border:none;vertical-align:top;width:65%;">
+                                <div style="font-size:14px;font-weight:bold;">
+                                    <span t-field="o.company_id.name"/>
+                                </div>
+                                <div t-if="o.company_id.street">
+                                    <span t-field="o.company_id.street"/>
+                                    <span t-if="o.company_id.city">, <span t-field="o.company_id.city"/></span>
+                                </div>
+                                <div>
+                                    <t t-if="o.company_id.phone">тел.: <span t-field="o.company_id.phone"/></t>
+                                    <t t-if="o.company_id.email"> &#160;&#160; e-mail: <span t-field="o.company_id.email"/></t>
+                                </div>
+                            </td>
+                            <td style="border:none;vertical-align:top;text-align:right;width:35%;">
+                                <img t-if="o.company_id.logo"
+                                     t-att-src="image_data_uri(o.company_id.logo)"
+                                     style="max-height:60px;"
+                                     alt="Logo"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- = Title = -->
+                <div style="text-align:center;margin-bottom:10px;">
+                    <div style="font-size:16px;font-weight:bold;text-transform:uppercase;">
+                        Сервісний звіт № <span t-out="o.sequence_number"/>
+                    </div>
+                    <div>
+                        від <span t-field="o.td_date_report" t-options="{'widget': 'date'}"/>
+                    </div>
+                </div>
+
+                <!-- = Header data = -->
+                <table style="width:100%;border-collapse:collapse;margin-bottom:10px;">
+                    <tr>
+                        <td style="border:1px solid #000;padding:3px;width:28%;font-weight:bold;">Замовник</td>
+                        <td style="border:1px solid #000;padding:3px;"><span t-field="o.partner_id"/></td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000;padding:3px;font-weight:bold;">Заявка</td>
+                        <td style="border:1px solid #000;padding:3px;">
+                            <span t-out="o.ticket_id.display_name"/>
+                        </td>
+                    </tr>
+                    <tr t-if="o.td_product_id">
+                        <td style="border:1px solid #000;padding:3px;font-weight:bold;">Обладнання</td>
+                        <td style="border:1px solid #000;padding:3px;"><span t-field="o.td_product_id"/></td>
+                    </tr>
+                    <tr t-if="o.td_lot_id">
+                        <td style="border:1px solid #000;padding:3px;font-weight:bold;">Серійний номер</td>
+                        <td style="border:1px solid #000;padding:3px;"><span t-field="o.td_lot_id.name"/></td>
+                    </tr>
+                    <tr t-if="o.td_agreement_ids">
+                        <td style="border:1px solid #000;padding:3px;font-weight:bold;">Договір</td>
+                        <td style="border:1px solid #000;padding:3px;">
+                            <span t-out="', '.join(o.td_agreement_ids.mapped('display_name'))"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000;padding:3px;font-weight:bold;">Кількість сервісних годин</td>
+                        <td style="border:1px solid #000;padding:3px;"><span t-field="o.td_service_hours"/></td>
+                    </tr>
+                    <tr t-if="o.td_warranty_date_end_manufacturer or o.td_warranty_date_end_company">
+                        <td style="border:1px solid #000;padding:3px;font-weight:bold;">Гарантія</td>
+                        <td style="border:1px solid #000;padding:3px;">
+                            <t t-if="o.td_warranty_date_end_manufacturer">
+                                гарантія виробника до
+                                <span t-field="o.td_warranty_date_end_manufacturer"
+                                      t-options="{'widget': 'date'}"/>
+                            </t>
+                            <t t-if="o.td_warranty_date_end_company">
+                                <t t-if="o.td_warranty_date_end_manufacturer">; </t>
+                                гарантія компанії до
+                                <span t-field="o.td_warranty_date_end_company"
+                                      t-options="{'widget': 'date'}"/>
+                            </t>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- = 3.2. Service categories = -->
+                <div style="font-weight:bold;margin-bottom:4px;">Категорія обслуговування:</div>
+                <table style="width:100%;border:none;margin-bottom:10px;">
+                    <tr>
+                        <td style="border:none;width:50%;">
+                            <div><t t-call="td_medicus_service_report.td_service_report_checkbox">
+                                <t t-set="checked" t-value="o.td_is_delivery"/></t>Доставка</div>
+                            <div><t t-call="td_medicus_service_report.td_service_report_checkbox">
+                                <t t-set="checked" t-value="o.td_is_installation"/></t>Встановлення</div>
+                            <div><t t-call="td_medicus_service_report.td_service_report_checkbox">
+                                <t t-set="checked" t-value="o.td_is_repair"/></t>Ремонт / технічне обслуговування</div>
+                        </td>
+                        <td style="border:none;width:50%;">
+                            <div><t t-call="td_medicus_service_report.td_service_report_checkbox">
+                                <t t-set="checked" t-value="o.td_is_maintenance"/></t>Обслуговування / налаштування</div>
+                            <div><t t-call="td_medicus_service_report.td_service_report_checkbox">
+                                <t t-set="checked" t-value="o.td_is_demonstration"/></t>Демонстрація / консультування</div>
+                            <div><t t-call="td_medicus_service_report.td_service_report_checkbox">
+                                <t t-set="checked" t-value="o.td_is_inspection"/></t>Огляд обладнання за викликом / вилучення в ремонт</div>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- = 3.3. Delivery = -->
+                <div t-if="o.td_is_delivery" style="margin-bottom:10px;">
+                    <div style="background:#eee;font-weight:bold;padding:3px;border:1px solid #000;">
+                        ДОСТАВКА
+                    </div>
+                    <div style="border:1px solid #000;border-top:none;padding:4px;">
+                        <t t-call="td_medicus_service_report.td_service_report_text_block">
+                            <t t-set="label" t-value="'Інформація про доставку'"/>
+                            <t t-set="value" t-value="o.td_delivery_info"/>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- = 3.4. Installation = -->
+                <div t-if="o.td_is_installation" style="margin-bottom:10px;">
+                    <div style="background:#eee;font-weight:bold;padding:3px;border:1px solid #000;">
+                        ВСТАНОВЛЕННЯ
+                    </div>
+                    <div style="border:1px solid #000;border-top:none;padding:4px;">
+                        <t t-call="td_medicus_service_report.td_service_report_text_block">
+                            <t t-set="label" t-value="'Інформація про встановлення'"/>
+                            <t t-set="value" t-value="o.td_installation_info"/>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- = 3.5. Repair / technical maintenance = -->
+                <div t-if="o.td_is_repair" style="margin-bottom:10px;">
+                    <div style="background:#eee;font-weight:bold;padding:3px;border:1px solid #000;">
+                        РЕМОНТ / ТЕХНІЧНЕ ОБСЛУГОВУВАННЯ
+                    </div>
+                    <div style="border:1px solid #000;border-top:none;padding:4px;">
+                        <div style="margin-bottom:6px;">
+                            <t t-call="td_medicus_service_report.td_service_report_checkbox">
+                                <t t-set="checked" t-value="o.td_repair_warranty_type == 'warranty'"/>
+                            </t>Гарантійне
+                            <span style="display:inline-block;width:20px;"/>
+                            <t t-call="td_medicus_service_report.td_service_report_checkbox">
+                                <t t-set="checked" t-value="o.td_repair_warranty_type == 'non_warranty'"/>
+                            </t>Негарантійне
+                        </div>
+                        <t t-call="td_medicus_service_report.td_service_report_text_block">
+                            <t t-set="label" t-value="'Проведені роботи'"/>
+                            <t t-set="value" t-value="o.td_repair_works"/>
+                        </t>
+                        <t t-call="td_medicus_service_report.td_service_report_text_block">
+                            <t t-set="label" t-value="'Коментарі / результати'"/>
+                            <t t-set="value" t-value="o.td_repair_comments"/>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- = 3.6. Maintenance / setup = -->
+                <div t-if="o.td_is_maintenance" style="margin-bottom:10px;">
+                    <div style="background:#eee;font-weight:bold;padding:3px;border:1px solid #000;">
+                        ОБСЛУГОВУВАННЯ / НАЛАШТУВАННЯ
+                    </div>
+                    <div style="border:1px solid #000;border-top:none;padding:4px;">
+                        <div style="margin-bottom:6px;">
+                            <t t-call="td_medicus_service_report.td_service_report_checkbox">
+                                <t t-set="checked" t-value="o.td_maintenance_warranty_type == 'warranty'"/>
+                            </t>Гарантійне
+                            <span style="display:inline-block;width:20px;"/>
+                            <t t-call="td_medicus_service_report.td_service_report_checkbox">
+                                <t t-set="checked" t-value="o.td_maintenance_warranty_type == 'non_warranty'"/>
+                            </t>Негарантійне
+                        </div>
+                        <t t-call="td_medicus_service_report.td_service_report_text_block">
+                            <t t-set="label" t-value="'Опис'"/>
+                            <t t-set="value" t-value="o.td_maintenance_description"/>
+                        </t>
+                        <t t-call="td_medicus_service_report.td_service_report_text_block">
+                            <t t-set="label" t-value="'Проведені роботи'"/>
+                            <t t-set="value" t-value="o.td_maintenance_works"/>
+                        </t>
+                        <t t-call="td_medicus_service_report.td_service_report_text_block">
+                            <t t-set="label" t-value="'Коментарі / результати'"/>
+                            <t t-set="value" t-value="o.td_maintenance_comments"/>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- = 3.6. Demonstration / consulting = -->
+                <div t-if="o.td_is_demonstration" style="margin-bottom:10px;">
+                    <div style="background:#eee;font-weight:bold;padding:3px;border:1px solid #000;">
+                        ДЕМОНСТРАЦІЯ / КОНСУЛЬТУВАННЯ
+                    </div>
+                    <div style="border:1px solid #000;border-top:none;padding:4px;">
+                        <div style="margin-bottom:6px;">
+                            <t t-call="td_medicus_service_report.td_service_report_checkbox">
+                                <t t-set="checked" t-value="o.td_demonstration_warranty_type == 'warranty'"/>
+                            </t>Гарантійне
+                            <span style="display:inline-block;width:20px;"/>
+                            <t t-call="td_medicus_service_report.td_service_report_checkbox">
+                                <t t-set="checked" t-value="o.td_demonstration_warranty_type == 'non_warranty'"/>
+                            </t>Негарантійне
+                        </div>
+                        <t t-call="td_medicus_service_report.td_service_report_text_block">
+                            <t t-set="label" t-value="'Опис'"/>
+                            <t t-set="value" t-value="o.td_demonstration_description"/>
+                        </t>
+                        <t t-call="td_medicus_service_report.td_service_report_text_block">
+                            <t t-set="label" t-value="'Проведені роботи'"/>
+                            <t t-set="value" t-value="o.td_demonstration_works"/>
+                        </t>
+                        <t t-call="td_medicus_service_report.td_service_report_text_block">
+                            <t t-set="label" t-value="'Коментарі / результати'"/>
+                            <t t-set="value" t-value="o.td_demonstration_comments"/>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- = 3.7. Inspection / removal for repair = -->
+                <div t-if="o.td_is_inspection" style="margin-bottom:10px;">
+                    <div style="background:#eee;font-weight:bold;padding:3px;border:1px solid #000;">
+                        ОГЛЯД ОБЛАДНАННЯ ЗА ВИКЛИКОМ / ВИЛУЧЕННЯ В РЕМОНТ
+                    </div>
+                    <div style="border:1px solid #000;border-top:none;padding:4px;">
+                        <div style="margin-bottom:6px;">
+                            <t t-call="td_medicus_service_report.td_service_report_checkbox">
+                                <t t-set="checked" t-value="o.td_inspection_warranty_type == 'warranty'"/>
+                            </t>Гарантійне
+                            <span style="display:inline-block;width:20px;"/>
+                            <t t-call="td_medicus_service_report.td_service_report_checkbox">
+                                <t t-set="checked" t-value="o.td_inspection_warranty_type == 'non_warranty'"/>
+                            </t>Негарантійне
+                        </div>
+                        <t t-call="td_medicus_service_report.td_service_report_text_block">
+                            <t t-set="label" t-value="'Опис несправності'"/>
+                            <t t-set="value" t-value="o.td_inspection_defect"/>
+                        </t>
+                        <t t-call="td_medicus_service_report.td_service_report_text_block">
+                            <t t-set="label" t-value="'Проведені роботи'"/>
+                            <t t-set="value" t-value="o.td_inspection_works"/>
+                        </t>
+                        <t t-call="td_medicus_service_report.td_service_report_text_block">
+                            <t t-set="label" t-value="'Коментарі / результати'"/>
+                            <t t-set="value" t-value="o.td_inspection_comments"/>
+                        </t>
+                        <div style="margin-bottom:6px;">
+                            <div style="font-weight:bold;">Видимі пошкодження при прийманні:</div>
+                            <div>
+                                <t t-call="td_medicus_service_report.td_service_report_checkbox">
+                                    <t t-set="checked" t-value="o.td_inspection_damage == 'none'"/>
+                                </t>Немає
+                                <span style="display:inline-block;width:20px;"/>
+                                <t t-call="td_medicus_service_report.td_service_report_checkbox">
+                                    <t t-set="checked" t-value="o.td_inspection_damage == 'present'"/>
+                                </t>Є:
+                                <span style="border-bottom:1px solid #000;display:inline-block;min-width:60%;white-space:pre-wrap;">
+                                    <t t-out="o.td_inspection_damage_description"/>
+                                </span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom:6px;">
+                            <t t-call="td_medicus_service_report.td_service_report_checkbox">
+                                <t t-set="checked" t-value="o.td_inspection_warranty_card_marked"/>
+                            </t>Відмітка про вилучення зроблена у гарантійному талоні
+                        </div>
+                        <t t-call="td_medicus_service_report.td_service_report_text_block">
+                            <t t-set="label"
+                               t-value="'Обладнання ОТРИМАНО у ремонт разом з (комплектація)'"/>
+                            <t t-set="value" t-value="o.td_inspection_equipment_set"/>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- = Signatures = -->
+                <table style="width:100%;border:none;margin-top:25px;">
+                    <tr>
+                        <td style="border:none;width:50%;vertical-align:bottom;">
+                            <div style="border-bottom:1px solid #000;height:22px;"/>
+                            <div style="font-size:9px;">
+                                Виконавець
+                                <t t-if="o.td_engineer_id">
+                                    (<span t-field="o.td_engineer_id.name"/>)
+                                </t>
+                            </div>
+                        </td>
+                        <td style="border:none;width:5%;"/>
+                        <td style="border:none;width:45%;vertical-align:bottom;">
+                            <div style="border-bottom:1px solid #000;height:22px;"/>
+                            <div style="font-size:9px;">Замовник (підпис, П.І.Б.)</div>
+                        </td>
+                    </tr>
+                </table>
+
+        </div>
+    </template>
+
+    <!-- ============================================================ -->
+    <!-- Report entry point                                           -->
+    <!-- ============================================================ -->
+    <template id="report_td_service_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="td_medicus_service_report.report_td_service_report_document"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>

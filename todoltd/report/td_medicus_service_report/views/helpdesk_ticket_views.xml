@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="td_helpdesk_ticket_view_form_service_report" model="ir.ui.view">
+        <field name="name">td.helpdesk.ticket.form.service.report</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id"
+               ref="td_medicus_working_with_service.td_helpdesk_ticket_view_form_inherit"/>
+        <field name="arch" type="xml">
+
+            <!-- One big button on the main screen of the ticket: acts like
+                 "New" in the service report list (minimum of clicks). -->
+            <xpath expr="//form/header" position="inside">
+                <button name="action_create_service_report"
+                        string="Generate Report"
+                        type="object"
+                        class="btn-primary"/>
+            </xpath>
+
+            <!-- Statistic button with the number of service reports. -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_service_reports"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-file-text-o">
+                    <field name="td_service_report_count"
+                           widget="statinfo"
+                           string="Service Reports"/>
+                </button>
+            </xpath>
+
+            <!-- Agreements of the selected equipment (tags). -->
+            <xpath expr="//field[@name='td_serial_number_id']" position="after">
+                <field name="td_agreement_domain" invisible="1"/>
+                <field name="td_agreement_ids"
+                       widget="many2many_tags"
+                       domain="td_agreement_domain"
+                       options="{'no_create': True}"/>
+            </xpath>
+
+            <!-- Service report tab with the list of reports. -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Service Report" name="td_service_report">
+                    <field name="td_service_report_ids"
+                           context="{'default_ticket_id': id}">
+                        <list>
+                            <field name="sequence_number" string="#"/>
+                            <field name="name"/>
+                            <field name="td_date_report"/>
+                            <field name="td_category_summary"/>
+                            <field name="td_service_hours" optional="show"/>
+                            <button name="action_print_report"
+                                    type="object"
+                                    icon="fa-print"
+                                    title="Generate Report"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

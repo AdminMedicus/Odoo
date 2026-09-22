@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Section 4: the equipment serial number lives on the agreement card.
+         Placed right after "Document available", as agreed with the customer. -->
+    <record id="td_agreement_form_service_report" model="ir.ui.view">
+        <field name="name">td.agreement.form.service.report</field>
+        <field name="model">td.agreement</field>
+        <field name="inherit_id"
+               ref="td_medicus_agreement.td_medicus_agreement_form_inherit_yaroslav"/>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='document_available']" position="after">
+                <field name="td_lot_ids"
+                       widget="many2many_tags"
+                       options="{'no_create': True}"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

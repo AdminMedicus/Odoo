@@ -1,0 +1,448 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* td_medicus_service_report
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-22 09:00+0000\n"
+"PO-Revision-Date: 2026-09-22 09:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: uk_UA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+
+#. module: td_medicus_service_report
+#: model:ir.model,name:td_medicus_service_report.model_td_service_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_form
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.td_helpdesk_ticket_view_form_service_report
+msgid "Service Report"
+msgstr "Сервісний звіт"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__name
+msgid "Reference"
+msgstr "Номер звіту"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__sequence_number
+msgid "Number"
+msgstr "Номер"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__ticket_id
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_search
+msgid "Ticket"
+msgstr "Заявка"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__company_id
+msgid "Company"
+msgstr "Компанія"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__partner_id
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_search
+msgid "Customer"
+msgstr "Замовник"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_date_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_search
+msgid "Preparation Date"
+msgstr "Дата складання"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_service_hours
+msgid "Service Hours"
+msgstr "Кількість сервісних годин"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_engineer_id
+msgid "Engineer"
+msgstr "Інженер"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_lot_id
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_agreement__td_lot_ids
+msgid "Equipment Serial Number"
+msgstr "Серійний номер обладнання"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_product_id
+msgid "Equipment"
+msgstr "Обладнання"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_agreement_ids
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_stock_lot__td_agreement_ids
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_production_lot_form_td_service_report
+#: code:addons/td_medicus_service_report/models/td_service_report.py:0
+msgid "Agreements"
+msgstr "Договори"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_agreement_domain
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_helpdesk_ticket__td_agreement_domain
+msgid "Agreement Domain"
+msgstr "Домен договорів"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_warranty_suggestion
+msgid "Suggested Warranty State"
+msgstr "Запропоновано системою"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_warranty_date_end_manufacturer
+msgid "Manufacturer Warranty Until"
+msgstr "Гарантія виробника до"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_warranty_date_end_company
+msgid "Company Warranty Until"
+msgstr "Гарантія компанії до"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_is_delivery
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_form
+msgid "Delivery"
+msgstr "Доставка"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_is_installation
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_form
+msgid "Installation"
+msgstr "Встановлення"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_is_repair
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_form
+msgid "Repair / Technical Maintenance"
+msgstr "Ремонт / технічне обслуговування"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_is_maintenance
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_form
+msgid "Maintenance / Setup"
+msgstr "Обслуговування / налаштування"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_is_demonstration
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_form
+msgid "Demonstration / Consulting"
+msgstr "Демонстрація / консультування"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_is_inspection
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_form
+msgid "Equipment Inspection on Call / Removal for Repair"
+msgstr "Огляд обладнання за викликом / вилучення в ремонт"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_category_summary
+msgid "Categories"
+msgstr "Категорії"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_has_category
+msgid "Has Category"
+msgstr "Є категорія"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_delivery_info
+msgid "Delivery Information"
+msgstr "Інформація про доставку"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_installation_info
+msgid "Installation Information"
+msgstr "Інформація про встановлення"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_repair_warranty_type
+msgid "Repair: Warranty Type"
+msgstr "Ремонт: тип обслуговування"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_repair_works
+msgid "Repair: Works Performed"
+msgstr "Ремонт: проведені роботи"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_repair_comments
+msgid "Repair: Comments / Results"
+msgstr "Ремонт: коментарі / результати"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_maintenance_warranty_type
+msgid "Maintenance: Warranty Type"
+msgstr "Обслуговування: тип обслуговування"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_maintenance_description
+msgid "Maintenance: Description"
+msgstr "Обслуговування: опис"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_maintenance_works
+msgid "Maintenance: Works Performed"
+msgstr "Обслуговування: проведені роботи"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_maintenance_comments
+msgid "Maintenance: Comments / Results"
+msgstr "Обслуговування: коментарі / результати"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_demonstration_warranty_type
+msgid "Demonstration: Warranty Type"
+msgstr "Демонстрація: тип обслуговування"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_demonstration_description
+msgid "Demonstration: Description"
+msgstr "Демонстрація: опис"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_demonstration_works
+msgid "Demonstration: Works Performed"
+msgstr "Демонстрація: проведені роботи"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_demonstration_comments
+msgid "Demonstration: Comments / Results"
+msgstr "Демонстрація: коментарі / результати"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_inspection_warranty_type
+msgid "Inspection: Warranty Type"
+msgstr "Огляд: тип обслуговування"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_inspection_defect
+msgid "Inspection: Defect Description"
+msgstr "Огляд: опис несправності"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_inspection_works
+msgid "Inspection: Works Performed"
+msgstr "Огляд: проведені роботи"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_inspection_comments
+msgid "Inspection: Comments / Results"
+msgstr "Огляд: коментарі / результати"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_inspection_damage
+msgid "Visible Damage on Acceptance"
+msgstr "Видимі пошкодження при прийманні"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_inspection_damage_description
+msgid "Visible Damage Description"
+msgstr "Опис видимих пошкоджень"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_inspection_warranty_card_marked
+msgid "Removal Noted in the Warranty Card"
+msgstr "Відмітка про вилучення зроблена у гарантійному талоні"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_inspection_equipment_set
+msgid "Accepted for Repair Together With (Set)"
+msgstr "Обладнання ОТРИМАНО у ремонт разом з (комплектація)"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_helpdesk_ticket__td_service_report_ids
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_list
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.td_helpdesk_ticket_view_form_service_report
+#: code:addons/td_medicus_service_report/models/td_service_report.py:0
+#: model:ir.actions.act_window,name:td_medicus_service_report.action_td_service_report
+msgid "Service Reports"
+msgstr "Сервісні звіти"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_helpdesk_ticket__td_service_report_count
+msgid "Service Reports Count"
+msgstr "Кількість сервісних звітів"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_helpdesk_ticket__td_agreement_ids
+msgid "Agreement"
+msgstr "Договір"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_stock_lot__td_agreement_count
+msgid "Agreements Count"
+msgstr "Кількість договорів"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,help:td_medicus_service_report.field_td_service_report__td_date_report
+msgid "Date the service report is drawn up. Defaults to today and can be changed."
+msgstr "Дата складання сервісного звіту. За замовчуванням — сьогоднішня, її можна змінити."
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,help:td_medicus_service_report.field_td_service_report__td_service_hours
+msgid "Number of service hours, free text as on the paper form."
+msgstr "Кількість сервісних годин, текстове поле як на паперовому бланку."
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,help:td_medicus_service_report.field_td_service_report__td_warranty_suggestion
+msgid "Value proposed by the system from the warranty records of the serial number. The engineer confirms or overrides it in every block."
+msgstr "Значення, яке система пропонує за гарантійними записами серійного номера. Інженер підтверджує або змінює його в кожному блоці."
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,help:td_medicus_service_report.field_td_agreement__td_lot_ids
+msgid "Equipment this agreement covers. One customer may own several units and each unit has its own set of agreements."
+msgstr "Обладнання, якого стосується цей договір. В одного клієнта може бути кілька одиниць обладнання, і кожна має свій набір договорів."
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,help:td_medicus_service_report.field_helpdesk_ticket__td_agreement_ids
+msgid "Agreements related to the selected piece of equipment."
+msgstr "Договори, пов’язані з обраним обладнанням."
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields.selection,name:td_medicus_service_report.selection__td_service_report__td_repair_warranty_type__warranty
+#: model:ir.model.fields.selection,name:td_medicus_service_report.selection__td_service_report__td_maintenance_warranty_type__warranty
+#: model:ir.model.fields.selection,name:td_medicus_service_report.selection__td_service_report__td_demonstration_warranty_type__warranty
+#: model:ir.model.fields.selection,name:td_medicus_service_report.selection__td_service_report__td_inspection_warranty_type__warranty
+#: model:ir.model.fields.selection,name:td_medicus_service_report.selection__td_service_report__td_warranty_suggestion__warranty
+msgid "Warranty"
+msgstr "Гарантійне"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields.selection,name:td_medicus_service_report.selection__td_service_report__td_repair_warranty_type__non_warranty
+#: model:ir.model.fields.selection,name:td_medicus_service_report.selection__td_service_report__td_maintenance_warranty_type__non_warranty
+#: model:ir.model.fields.selection,name:td_medicus_service_report.selection__td_service_report__td_demonstration_warranty_type__non_warranty
+#: model:ir.model.fields.selection,name:td_medicus_service_report.selection__td_service_report__td_inspection_warranty_type__non_warranty
+#: model:ir.model.fields.selection,name:td_medicus_service_report.selection__td_service_report__td_warranty_suggestion__non_warranty
+msgid "Non-warranty"
+msgstr "Негарантійне"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields.selection,name:td_medicus_service_report.selection__td_service_report__td_inspection_damage__none
+msgid "None"
+msgstr "Немає"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields.selection,name:td_medicus_service_report.selection__td_service_report__td_inspection_damage__present
+msgid "Present"
+msgstr "Є"
+
+#. module: td_medicus_service_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_form
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_list
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.td_helpdesk_ticket_view_form_service_report
+msgid "Generate Report"
+msgstr "Сформувати звіт"
+
+#. module: td_medicus_service_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_form
+msgid "Apply System Suggestion"
+msgstr "Застосувати пропозицію системи"
+
+#. module: td_medicus_service_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_form
+msgid "Warranty Information"
+msgstr "Гарантійна інформація"
+
+#. module: td_medicus_service_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_form
+msgid "Service Category"
+msgstr "Категорія обслуговування"
+
+#. module: td_medicus_service_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_form
+msgid "Delivery information..."
+msgstr "Інформація про доставку..."
+
+#. module: td_medicus_service_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_form
+msgid "Installation information..."
+msgstr "Інформація про встановлення..."
+
+#. module: td_medicus_service_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_form
+msgid "Works performed..."
+msgstr "Проведені роботи..."
+
+#. module: td_medicus_service_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_form
+msgid "Comments / results..."
+msgstr "Коментарі / результати..."
+
+#. module: td_medicus_service_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_form
+msgid "Description..."
+msgstr "Опис..."
+
+#. module: td_medicus_service_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_form
+msgid "Defect description..."
+msgstr "Опис несправності..."
+
+#. module: td_medicus_service_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_form
+msgid "Describe the visible damage..."
+msgstr "Опишіть видимі пошкодження..."
+
+#. module: td_medicus_service_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_form
+msgid "Equipment RECEIVED for repair together with (set)..."
+msgstr "Обладнання ОТРИМАНО у ремонт разом з (комплектація)..."
+
+#. module: td_medicus_service_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_search
+msgid "Search Service Reports"
+msgstr "Пошук сервісних звітів"
+
+#. module: td_medicus_service_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_search
+msgid "Group By"
+msgstr "Групувати за"
+
+#. module: td_medicus_service_report
+#: code:addons/td_medicus_service_report/models/td_service_report.py:0
+msgid "Service Report %s"
+msgstr "Сервісний звіт %s"
+
+#. module: td_medicus_service_report
+#: code:addons/td_medicus_service_report/models/td_service_report.py:0
+msgid "Service report created: %s"
+msgstr "Створено сервісний звіт: %s"
+
+#. module: td_medicus_service_report
+#: code:addons/td_medicus_service_report/models/td_service_report.py:0
+msgid "%s updated:"
+msgstr "%s оновлено:"
+
+#. module: td_medicus_service_report
+#: code:addons/td_medicus_service_report/models/td_service_report.py:0
+msgid "(empty)"
+msgstr "(порожньо)"
+
+#. module: td_medicus_service_report
+#: code:addons/td_medicus_service_report/models/td_service_report.py:0
+msgid "Yes"
+msgstr "Так"
+
+#. module: td_medicus_service_report
+#: code:addons/td_medicus_service_report/models/td_service_report.py:0
+msgid "No"
+msgstr "Ні"
+
+#. module: td_medicus_service_report
+#: code:addons/td_medicus_service_report/models/td_service_report.py:0
+msgid "Select at least one service category before generating the report."
+msgstr "Оберіть щонайменше одну категорію обслуговування перед формуванням звіту."
+
+#. module: td_medicus_service_report
+#: model:ir.model.constraint,message:td_medicus_service_report.constraint_td_service_report_td_service_report_sequence_uniq
+msgid "Service report numbers must be unique per ticket."
+msgstr "Номери сервісних звітів мають бути унікальними в межах заявки."
