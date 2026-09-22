@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Section 4: "Agreements" smart button on the serial number card. -->
+    <record id="view_production_lot_form_td_service_report" model="ir.ui.view">
+        <field name="name">stock.lot.form.td.service.report</field>
+        <field name="model">stock.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_agreements"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-file-text-o">
+                    <field name="td_agreement_count" widget="statinfo" string="Agreements"/>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Agreements" name="td_agreements">
+                    <field name="td_agreement_ids" widget="many2many" options="{'no_create': True}">
+                        <list>
+                            <field name="name"/>
+                            <field name="number"/>
+                            <field name="partner_id"/>
+                            <field name="signing_date"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
