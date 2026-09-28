@@ -35,6 +35,16 @@ msgid "Number"
 msgstr "Номер"
 
 #. module: td_medicus_service_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_production_lot_form_td_service_report
+msgid "Agreement Number"
+msgstr "Номер договору"
+
+#. module: td_medicus_service_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.td_agreement_form_service_report
+msgid "Internal Number"
+msgstr "Внутрішній номер"
+
+#. module: td_medicus_service_report
 #: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__ticket_id
 #: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_search
 msgid "Ticket"
@@ -451,6 +461,16 @@ msgstr "%s оновлено:"
 #: code:addons/td_medicus_service_report/models/td_service_report.py:0
 msgid "(empty)"
 msgstr "(порожньо)"
+
+#. module: td_medicus_service_report
+#: code:addons/td_medicus_service_report/models/relation_chatter.py:0
+msgid "Added"
+msgstr "Додано"
+
+#. module: td_medicus_service_report
+#: code:addons/td_medicus_service_report/models/relation_chatter.py:0
+msgid "Removed"
+msgstr "Вилучено"
 
 #. module: td_medicus_service_report
 #: code:addons/td_medicus_service_report/models/td_service_report.py:0

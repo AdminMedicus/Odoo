@@ -20,7 +20,7 @@
                     <field name="td_agreement_ids" widget="many2many" options="{'no_create': True}">
                         <list>
                             <field name="name"/>
-                            <field name="number"/>
+                            <field name="agreement_number" string="Agreement Number"/>
                             <field name="partner_id"/>
                             <field name="signing_date"/>
                             <field name="start_date"/>
