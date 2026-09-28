@@ -12,9 +12,12 @@ Service Report for the Medicus Service Department
 * Agreement <-> equipment serial number relation.
 * Semi-automatic Warranty / Non-warranty detection based on the serial
   number warranty records.
-* A printable form built only from the blocks that were actually filled in.
+* A printable form built only from the blocks that were actually filled in,
+  laid out like the paper service report of the department.
+* The "Replacement" table of the repair block is filled from the spare parts
+  of the repair order linked to the report.
 """,
-    'version': '18.0.1.0.0',
+    'version': '18.0.1.2.0',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
@@ -23,6 +26,8 @@ Service Report for the Medicus Service Department
     'depends': [
         'stock',
         'helpdesk',
+        'repair',
+        'helpdesk_repair',
         'td_medicus_working_with_service',
         'td_medicus_warranty',
         'td_medicus_agreement',

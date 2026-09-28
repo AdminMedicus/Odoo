@@ -3,6 +3,7 @@ from markupsafe import Markup
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools import format_date
 
 WARRANTY_SELECTION = [
     ('warranty', 'Warranty'),
@@ -26,6 +27,15 @@ WARRANTY_BLOCKS = [
     ('td_demonstration_warranty_type', 'td_is_demonstration'),
     ('td_inspection_warranty_type', 'td_is_inspection'),
 ]
+
+SERVICE_BLOCK_PREFIXES = (
+    ('td_delivery_', 'td_is_delivery'),
+    ('td_installation_', 'td_is_installation'),
+    ('td_repair_', 'td_is_repair'),
+    ('td_maintenance_', 'td_is_maintenance'),
+    ('td_demonstration_', 'td_is_demonstration'),
+    ('td_inspection_', 'td_is_inspection'),
+)
 
 
 class TdServiceReport(models.Model):
@@ -116,6 +126,12 @@ class TdServiceReport(models.Model):
         store=True,
         readonly=True,
     )
+    td_equipment_address = fields.Char(
+        string='Equipment Location Address',
+        tracking=True,
+        help='Address the equipment is installed at, as printed on the form. '
+             'Prefilled from the customer of the ticket and can be corrected.',
+    )
     td_agreement_ids = fields.Many2many(
         comodel_name='td.agreement',
         relation='td_service_report_agreement_rel',
@@ -178,6 +194,13 @@ class TdServiceReport(models.Model):
     td_installation_info = fields.Text(string='Installation Information', tracking=True)
 
     # --- Repair / technical maintenance block ---
+    td_repair_order_id = fields.Many2one(
+        comodel_name='repair.order',
+        string='Repair Order',
+        tracking=True,
+        help='Repair order the spare parts of the "Replacement" table are '
+             'taken from. Defaults to the last repair opened on the ticket.',
+    )
     td_repair_warranty_type = fields.Selection(
         selection=WARRANTY_SELECTION,
         string='Repair: Warranty Type',
@@ -365,6 +388,25 @@ class TdServiceReport(models.Model):
         return (last.sequence_number or 0) + 1
 
     @api.model
+    def _default_repair_order(self, ticket):
+        """The repair the engineer is most likely reporting on: the last one
+        opened on the ticket. Several repairs per ticket are normal, so the
+        engineer can always pick another one."""
+        return self.env['repair.order'].search(
+            [('ticket_id', '=', ticket.id)], order='id desc', limit=1)
+
+    @api.model
+    def _format_partner_address(self, partner):
+        """The postal address of the partner on a single line."""
+        if not partner:
+            return ''
+        return ', '.join(
+            line.strip()
+            for line in partner._display_address(without_company=True).splitlines()
+            if line.strip()
+        )
+
+    @api.model
     def default_get(self, fields_list):
         """Prefill the wizard from the ticket before anything is saved."""
         values = super().default_get(fields_list)
@@ -381,6 +423,13 @@ class TdServiceReport(models.Model):
             values.setdefault('td_agreement_ids', [(6, 0, ticket.td_agreement_ids.ids)])
         if 'td_engineer_id' in fields_list and ticket.user_id:
             values.setdefault('td_engineer_id', ticket.user_id.id)
+        if 'td_equipment_address' in fields_list and ticket.partner_id:
+            values.setdefault(
+                'td_equipment_address', self._format_partner_address(ticket.partner_id))
+        if 'td_repair_order_id' in fields_list:
+            repair = self._default_repair_order(ticket)
+            if repair:
+                values.setdefault('td_repair_order_id', repair.id)
         return values
 
     @api.model_create_multi
@@ -404,6 +453,13 @@ class TdServiceReport(models.Model):
                 vals['td_agreement_ids'] = [(6, 0, ticket.td_agreement_ids.ids)]
             if 'td_engineer_id' not in vals and ticket.user_id:
                 vals['td_engineer_id'] = ticket.user_id.id
+            if 'td_equipment_address' not in vals and ticket.partner_id:
+                vals['td_equipment_address'] = self._format_partner_address(
+                    ticket.partner_id)
+            if 'td_repair_order_id' not in vals:
+                repair = self._default_repair_order(ticket)
+                if repair:
+                    vals['td_repair_order_id'] = repair.id
         records = super().create(vals_list)
         records._post_ticket_message(created=True)
         return records
@@ -430,11 +486,22 @@ class TdServiceReport(models.Model):
     def _tracked_field_snapshot(self):
         return {
             record.id: {
-                fname: record._format_tracked_value(fname)
+                fname: record._tracked_field_state(fname)
                 for fname in self._tracked_fields()
             }
             for record in self
         }
+
+    def _tracked_field_state(self, fname):
+        field = self._fields[fname]
+        value = self[fname]
+        if field.type == 'many2one':
+            identity = value.id or False
+        elif field.type in ('many2many', 'one2many'):
+            identity = tuple(sorted(value.ids))
+        else:
+            identity = value
+        return self._format_tracked_value(fname), identity
 
     def _format_tracked_value(self, fname):
         field = self._fields[fname]
@@ -442,7 +509,7 @@ class TdServiceReport(models.Model):
         if field.type == 'many2one':
             return value.display_name or ''
         if field.type in ('many2many', 'one2many'):
-            return ', '.join(value.mapped('display_name'))
+            return ', '.join(sorted(value.mapped('display_name')))
         if field.type == 'selection':
             return dict(field._description_selection(self.env)).get(value, '')
         if field.type == 'boolean':
@@ -458,15 +525,42 @@ class TdServiceReport(models.Model):
             if not ticket:
                 continue
             if created:
-                ticket.message_post(body=_('Service report created: %s', record.name))
+                initial_values = []
+                for fname in record._tracked_fields():
+                    block_checkbox = next((checkbox for prefix, checkbox
+                                           in SERVICE_BLOCK_PREFIXES
+                                           if fname.startswith(prefix)), None)
+                    if block_checkbox and not record[block_checkbox]:
+                        continue
+                    value = record._format_tracked_value(fname)
+                    if not value or (record._fields[fname].type == 'boolean'
+                                     and not record[fname]):
+                        continue
+                    label = record._fields[fname]._description_string(record.env)
+                    initial_values.append(Markup('<li><b>%s</b>: %s</li>') % (
+                        label, value,
+                    ))
+                body = _('Service report created: %s', record.name)
+                if initial_values:
+                    body = Markup('%s<ul>%s</ul>') % (
+                        body, Markup('').join(initial_values),
+                    )
+                ticket.message_post(body=body, subtype_xmlid='mail.mt_note')
                 continue
             before = (previous or {}).get(record.id, {})
             changes = []
             for fname in record._tracked_fields():
-                old = before.get(fname)
-                new = record._format_tracked_value(fname)
-                if old is None or old == new:
+                old_state = before.get(fname)
+                new, new_identity = record._tracked_field_state(fname)
+                if old_state is None or old_state[1] == new_identity:
                     continue
+                old, old_identity = old_state
+                if old == new and record._fields[fname].type in (
+                        'many2one', 'many2many', 'one2many'):
+                    old_ids = old_identity if isinstance(old_identity, tuple) else (old_identity,)
+                    new_ids = new_identity if isinstance(new_identity, tuple) else (new_identity,)
+                    old = '%s (%s)' % (old, ', '.join('#%s' % item for item in old_ids if item))
+                    new = '%s (%s)' % (new, ', '.join('#%s' % item for item in new_ids if item))
                 label = record._fields[fname]._description_string(self.env)
                 changes.append(Markup('<li><b>%s</b>: %s &#8594; %s</li>') % (
                     label, old or _('(empty)'), new or _('(empty)')))
@@ -474,7 +568,43 @@ class TdServiceReport(models.Model):
                 ticket.message_post(body=Markup('%s<ul>%s</ul>') % (
                     _('%s updated:', record.name),
                     Markup('').join(changes),
-                ))
+                ), subtype_xmlid='mail.mt_note')
+
+    # ------------------------------------------------------------------
+    # Printed form
+    # ------------------------------------------------------------------
+    def td_format_date(self, value):
+        """Date with the month spelled out, the way the paper form reads it."""
+        return format_date(self.env, value, date_format='d MMMM y') if value else ''
+
+    def td_get_agreement_lines(self):
+        """Number and date of every agreement, for the "to agreement No." line."""
+        self.ensure_one()
+        return [{
+            'number': agreement.agreement_number or agreement.number or '',
+            'date': self.td_format_date(agreement.signing_date or agreement.start_date),
+        } for agreement in self.td_agreement_ids]
+
+    def td_get_replacement_lines(self):
+        """Spare parts of the linked repair order for the "Replacement" table.
+
+        The parts are the "add" moves of the repair order, and the amounts
+        come from the quotation line each of those moves generated: the
+        repair is what puts a price on a spare part, the service report only
+        reports it.
+        """
+        self.ensure_one()
+        moves = self.td_repair_order_id.move_ids.filtered(
+            lambda m: m.repair_line_type == 'add' and m.state != 'cancel')
+        return [{
+            'name': move.product_id.display_name,
+            'quantity': (move.sale_line_id.product_uom_qty if move.sale_line_id
+                         else move.quantity or move.product_uom_qty),
+            'serial': ', '.join(move.move_line_ids.lot_id.mapped('name')),
+            'price_subtotal': move.sale_line_id.price_subtotal or 0.0,
+            'price_tax': move.sale_line_id.price_tax or 0.0,
+            'price_total': move.sale_line_id.price_total or 0.0,
+        } for move in moves]
 
     # ------------------------------------------------------------------
     # Actions

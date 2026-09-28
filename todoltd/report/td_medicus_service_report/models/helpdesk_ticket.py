@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from odoo import _, api, fields, models
 
+from .relation_chatter import post_relation_changes, relation_snapshots
+
 
 class HelpdeskTicket(models.Model):
     _inherit = 'helpdesk.ticket'
@@ -53,6 +55,20 @@ class HelpdeskTicket(models.Model):
         for ticket in self:
             lot = ticket.td_serial_number_id.lot_id
             ticket.td_agreement_ids = lot.td_agreement_ids if lot else False
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        tickets = super().create(vals_list)
+        post_relation_changes(tickets, 'td_agreement_ids')
+        return tickets
+
+    def write(self, vals):
+        previous = (relation_snapshots(self, 'td_agreement_ids')
+                    if 'td_agreement_ids' in vals else None)
+        result = super().write(vals)
+        if previous is not None:
+            post_relation_changes(self, 'td_agreement_ids', previous)
+        return result
 
     # ------------------------------------------------------------------
     # Actions

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from odoo import _, api, fields, models
 
+from .relation_chatter import post_relation_changes, relation_snapshots
+
 
 class StockLot(models.Model):
     _inherit = 'stock.lot'
@@ -21,6 +23,22 @@ class StockLot(models.Model):
     def _compute_td_agreement_count(self):
         for lot in self:
             lot.td_agreement_count = len(lot.td_agreement_ids)
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        lots = super().create(vals_list)
+        post_relation_changes(lots, 'td_agreement_ids',
+                              inverse_field_name='td_lot_ids')
+        return lots
+
+    def write(self, vals):
+        previous = (relation_snapshots(self, 'td_agreement_ids')
+                    if 'td_agreement_ids' in vals else None)
+        result = super().write(vals)
+        if previous is not None:
+            post_relation_changes(self, 'td_agreement_ids', previous,
+                                  inverse_field_name='td_lot_ids')
+        return result
 
     def action_view_agreements(self):
         """Smart button "Agreements" on the serial number card."""

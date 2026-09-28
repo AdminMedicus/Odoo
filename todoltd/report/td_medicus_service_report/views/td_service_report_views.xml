@@ -31,6 +31,8 @@
                             <field name="partner_id" readonly="1" options="{'no_open': True}"/>
                             <field name="td_lot_id" options="{'no_create': True}"/>
                             <field name="td_product_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="td_equipment_address"
+                                   placeholder="Address the equipment is installed at..."/>
                             <field name="company_id" invisible="1"/>
                         </group>
                         <group name="header_data">
@@ -90,6 +92,9 @@
                            invisible="not td_is_repair">
                         <field name="td_repair_warranty_type" widget="radio"
                                options="{'horizontal': True}"/>
+                        <field name="td_repair_order_id"
+                               domain="[('ticket_id', '=', ticket_id)]"
+                               options="{'no_create': True}"/>
                         <field name="td_repair_works" placeholder="Works performed..."/>
                         <field name="td_repair_comments" placeholder="Comments / results..."/>
                     </group>

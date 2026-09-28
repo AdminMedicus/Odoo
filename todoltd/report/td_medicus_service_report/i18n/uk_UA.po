@@ -35,6 +35,16 @@ msgid "Number"
 msgstr "Номер"
 
 #. module: td_medicus_service_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_production_lot_form_td_service_report
+msgid "Agreement Number"
+msgstr "Номер договору"
+
+#. module: td_medicus_service_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.td_agreement_form_service_report
+msgid "Internal Number"
+msgstr "Внутрішній номер"
+
+#. module: td_medicus_service_report
 #: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__ticket_id
 #: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_search
 msgid "Ticket"
@@ -283,9 +293,29 @@ msgid "Agreements Count"
 msgstr "Кількість договорів"
 
 #. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_equipment_address
+msgid "Equipment Location Address"
+msgstr "Адреса розміщення обладнання"
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,field_description:td_medicus_service_report.field_td_service_report__td_repair_order_id
+msgid "Repair Order"
+msgstr "Замовлення на ремонт"
+
+#. module: td_medicus_service_report
 #: model:ir.model.fields,help:td_medicus_service_report.field_td_service_report__td_date_report
 msgid "Date the service report is drawn up. Defaults to today and can be changed."
 msgstr "Дата складання сервісного звіту. За замовчуванням — сьогоднішня, її можна змінити."
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,help:td_medicus_service_report.field_td_service_report__td_equipment_address
+msgid "Address the equipment is installed at, as printed on the form. Prefilled from the customer of the ticket and can be corrected."
+msgstr "Адреса, за якою розміщене обладнання, — так, як вона друкується у бланку. Підставляється з контрагента заявки, її можна виправити."
+
+#. module: td_medicus_service_report
+#: model:ir.model.fields,help:td_medicus_service_report.field_td_service_report__td_repair_order_id
+msgid "Repair order the spare parts of the \"Replacement\" table are taken from. Defaults to the last repair opened on the ticket."
+msgstr "Замовлення на ремонт, з якого беруться комплектуючі для таблиці «Заміна». За замовчуванням — останній ремонт заявки."
 
 #. module: td_medicus_service_report
 #: model:ir.model.fields,help:td_medicus_service_report.field_td_service_report__td_service_hours
@@ -359,6 +389,11 @@ msgstr "Категорія обслуговування"
 
 #. module: td_medicus_service_report
 #: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_form
+msgid "Address the equipment is installed at..."
+msgstr "Адреса розміщення обладнання..."
+
+#. module: td_medicus_service_report
+#: model_terms:ir.ui.view,arch_db:td_medicus_service_report.view_td_service_report_form
 msgid "Delivery information..."
 msgstr "Інформація про доставку..."
 
@@ -426,6 +461,16 @@ msgstr "%s оновлено:"
 #: code:addons/td_medicus_service_report/models/td_service_report.py:0
 msgid "(empty)"
 msgstr "(порожньо)"
+
+#. module: td_medicus_service_report
+#: code:addons/td_medicus_service_report/models/relation_chatter.py:0
+msgid "Added"
+msgstr "Додано"
+
+#. module: td_medicus_service_report
+#: code:addons/td_medicus_service_report/models/relation_chatter.py:0
+msgid "Removed"
+msgstr "Вилучено"
 
 #. module: td_medicus_service_report
 #: code:addons/td_medicus_service_report/models/td_service_report.py:0
