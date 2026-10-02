@@ -38,7 +38,8 @@
                         <group name="header_data">
                             <field name="td_date_report"/>
                             <field name="td_service_hours"/>
-                            <field name="td_engineer_id" options="{'no_create': True}"/>
+                            <!-- <field name="td_engineer_id" options="{'no_create': True}"/> -->
+                            <field name="td_engineer_employee_id" options="{'no_create': True}"/>
                             <field name="td_agreement_domain" invisible="1"/>
                             <field name="td_agreement_ids"
                                    widget="many2many_tags"
@@ -156,7 +157,8 @@
                 <field name="td_category_summary"/>
                 <field name="td_service_hours" optional="show"/>
                 <field name="td_lot_id" optional="hide"/>
-                <field name="td_engineer_id" optional="hide"/>
+                <!-- <field name="td_engineer_id" optional="hide"/> -->
+                <field name="td_engineer_employee_id" optional="hide"/>
                 <button name="action_print_report"
                         type="object"
                         icon="fa-print"
@@ -173,7 +175,8 @@
                 <field name="ticket_id"/>
                 <field name="partner_id"/>
                 <field name="td_lot_id"/>
-                <field name="td_engineer_id"/>
+                <!-- <field name="td_engineer_id"/> -->
+                <field name="td_engineer_employee_id"/>
                 <group expand="0" string="Group By">
                     <filter name="group_ticket" string="Ticket"
                             context="{'group_by': 'ticket_id'}"/>
