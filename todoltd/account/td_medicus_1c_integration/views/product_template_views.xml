@@ -6,11 +6,30 @@
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='barcode']" position="after">
-                <field name="td_manufacturer_directory_res_id"/>
+                <field name="td_manufacturer_directory_res_id" required="1"/>
             </xpath>
             <xpath expr="//field[@name='categ_id']" position="after">
-                <field name="td_one_c_category_id" context="{'search_default_td_leaf_category': 1, 'category_leaf_only': 1}"/>
+                <field name="td_one_c_category_id" context="{'search_default_td_leaf_category': 1, 'category_leaf_only': 1}" required="1"/>
             </xpath>
+        </field>
+    </record>
+
+    <record id="td_product_template_form_view_description_sale" model="ir.ui.view">
+        <field name="name">td.product.template.form.view.description.sale</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//page[@name='sales']//group[@name='description']" position="attributes">
+                <attribute name="string">Declaration Name</attribute>
+            </xpath>
+            <xpath expr="//field[@name='description_sale']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='general_information']//group[@name='internal_notes']" position="before">
+                <xpath expr="//page[@name='sales']//group[@name='description']" position="move"/>
+            </xpath>
+
         </field>
     </record>
 
