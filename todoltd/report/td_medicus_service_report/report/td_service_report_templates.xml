@@ -491,7 +491,8 @@
                         <td style="width:8%;"/>
                         <td style="width:24%;">
                             <div class="td_sr_sign_line">
-                                <span t-out="o.td_engineer_id.name"/>
+                                <!-- <span t-out="o.td_engineer_id.name"/> -->
+                                <span t-out="o.td_engineer_employee_id.td_partner_short_name or o.td_engineer_employee_id.name"/>
                             </div>
                             <div class="td_sr_sign_caption">(ініціали та прізвище)</div>
                         </td>
@@ -509,9 +510,13 @@
                     вищезазначений обсяг робіт послуг надав (передав):
                 </div>
                 <t t-call="td_medicus_service_report.td_service_report_signature">
-                    <t t-set="sign_name" t-value="o.td_engineer_id.name"/>
+                    <!-- <t t-set="sign_name" t-value="o.td_engineer_id.name"/>
                     <t t-if="o.td_engineer_id.job_title">
                         <t t-set="sign_position" t-value="o.td_engineer_id.job_title"/>
+                    </t> -->
+                    <t t-set="sign_name" t-value="o.td_engineer_employee_id.td_partner_short_name or o.td_engineer_employee_id.name"/>
+                    <t t-if="o.td_engineer_employee_id.job_title">
+                        <t t-set="sign_position" t-value="o.td_engineer_employee_id.job_title"/>
                     </t>
                 </t>
             </div>
