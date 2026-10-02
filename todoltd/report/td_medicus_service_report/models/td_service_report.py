@@ -104,11 +104,27 @@ class TdServiceReport(models.Model):
         tracking=True,
         help='Number of service hours, free text as on the paper form.',
     )
+    # td_engineer_id = fields.Many2one(
+    #     comodel_name='res.users',
+    #     string='Engineer',
+    #     tracking=True,
+    #     default=lambda self: self.env.user,
+    # )
+    # Legacy: not every engineer has a user account, so the engineer is now
+    # td_engineer_employee_id. The column is kept only to preserve the data
+    # already stored in it; nothing reads or writes it any more.
     td_engineer_id = fields.Many2one(
         comodel_name='res.users',
+        string='Engineer (User, Legacy)',
+    )
+    td_engineer_employee_id = fields.Many2one(
+        comodel_name='hr.employee',
         string='Engineer',
         tracking=True,
-        default=lambda self: self.env.user,
+        check_company=True,
+        default=lambda self: self.env.user.employee_id,
+        help='Employee who performed the service. Printed on the form as the '
+             'engineer of the contractor; no user account is required.',
     )
 
     # ------------------------------------------------------------------
@@ -396,6 +412,14 @@ class TdServiceReport(models.Model):
             [('ticket_id', '=', ticket.id)], order='id desc', limit=1)
 
     @api.model
+    def _default_engineer_employee(self, ticket):
+        """The employee of the user the ticket is assigned to, in the company
+        of the ticket. Empty when that user has no employee there."""
+        if not ticket.user_id:
+            return self.env['hr.employee']
+        return ticket.user_id.with_company(ticket.company_id).employee_id
+
+    @api.model
     def _format_partner_address(self, partner):
         """The postal address of the partner on a single line."""
         if not partner:
@@ -421,8 +445,15 @@ class TdServiceReport(models.Model):
             values.setdefault('td_lot_id', ticket.td_serial_number_id.lot_id.id)
         if 'td_agreement_ids' in fields_list and ticket.td_agreement_ids:
             values.setdefault('td_agreement_ids', [(6, 0, ticket.td_agreement_ids.ids)])
-        if 'td_engineer_id' in fields_list and ticket.user_id:
-            values.setdefault('td_engineer_id', ticket.user_id.id)
+        # if 'td_engineer_id' in fields_list and ticket.user_id:
+        #     values.setdefault('td_engineer_id', ticket.user_id.id)
+        # The field default (employee of the current user) wins, as it did
+        # for the user field; the ticket assignee is only the fallback.
+        if 'td_engineer_employee_id' in fields_list and not values.get(
+                'td_engineer_employee_id'):
+            employee = self._default_engineer_employee(ticket)
+            if employee:
+                values['td_engineer_employee_id'] = employee.id
         if 'td_equipment_address' in fields_list and ticket.partner_id:
             values.setdefault(
                 'td_equipment_address', self._format_partner_address(ticket.partner_id))
@@ -451,8 +482,12 @@ class TdServiceReport(models.Model):
                 vals['td_lot_id'] = ticket.td_serial_number_id.lot_id.id
             if 'td_agreement_ids' not in vals and ticket.td_agreement_ids:
                 vals['td_agreement_ids'] = [(6, 0, ticket.td_agreement_ids.ids)]
-            if 'td_engineer_id' not in vals and ticket.user_id:
-                vals['td_engineer_id'] = ticket.user_id.id
+            # if 'td_engineer_id' not in vals and ticket.user_id:
+            #     vals['td_engineer_id'] = ticket.user_id.id
+            if 'td_engineer_employee_id' not in vals:
+                employee = self._default_engineer_employee(ticket)
+                if employee:
+                    vals['td_engineer_employee_id'] = employee.id
             if 'td_equipment_address' not in vals and ticket.partner_id:
                 vals['td_equipment_address'] = self._format_partner_address(
                     ticket.partner_id)
