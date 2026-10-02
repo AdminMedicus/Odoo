@@ -17,7 +17,7 @@ Service Report for the Medicus Service Department
 * The "Replacement" table of the repair block is filled from the spare parts
   of the repair order linked to the report.
 """,
-    'version': '18.0.1.1.0',
+    'version': '18.0.1.1.1',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
