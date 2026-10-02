@@ -36,7 +36,7 @@
         <table class="td_sr_sign o_ignore_layout_styling">
             <tr>
                 <td style="width:38%;">
-                    <div class="td_sr_sign_line"/>
+                    <div class="td_sr_sign_line" t-out="sign_position or ''"/>
                     <div class="td_sr_sign_caption">(посада)</div>
                 </td>
                 <td style="width:8%;"/>
@@ -219,7 +219,7 @@
                         <div class="td_sr_caption">Обладнання (назва приладу, s/n)</div>
                         <div class="td_sr_data" style="padding-left:20px;">
                             <t t-if="o.td_product_id or o.td_lot_id">1. <t
-                                t-out="o.td_product_id.display_name"/><t
+                                t-out="o.td_product_id.description_sale"/><t
                                 t-if="o.td_lot_id">, s/n <t t-out="o.td_lot_id.name"/></t></t>
                         </div>
                     </td>
@@ -510,6 +510,9 @@
                 </div>
                 <t t-call="td_medicus_service_report.td_service_report_signature">
                     <t t-set="sign_name" t-value="o.td_engineer_id.name"/>
+                    <t t-if="o.td_engineer_id.job_title">
+                        <t t-set="sign_position" t-value="o.td_engineer_id.job_title"/>
+                    </t>
                 </t>
             </div>
 
