@@ -1,6 +1,6 @@
 {
     'name': 'TD Medicus UKTZED',
-    "version": '18.0.0.0.1',
+    "version": '18.0.0.0.2',
     'author': 'ToDo',
     'website': 'https://todo.ltd',
     'license': 'OPL-1',
