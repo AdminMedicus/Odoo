@@ -21,8 +21,12 @@ class AtaExchangeIncomingrequestProduct(models.AbstractModel):
         product_params.write_record = True
         product_params.search_params.use_matching_data = True
         product_params.search_params.key_matching_data = 'id'
-        product_params.search_params.search_domain = [('id', '=', ext_id)] \
-            if (ext_id := product_data.ext_id) else None
+
+        # The 1C object code (`id`) is the canonical product identity.  Do not
+        # search by the raw Odoo database id returned as `ext_id`: stale or
+        # duplicated links on the 1C side would otherwise make several 1C
+        # nomenclatures overwrite the same Odoo product.  The matching table
+        # and the safe compound-key fallback handle existing records.
 
         self.ata_exchange_get_model_record(product_params)
 

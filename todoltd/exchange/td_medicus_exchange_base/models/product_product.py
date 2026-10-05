@@ -1,4 +1,5 @@
 from odoo import api, Command, fields, models
+from odoo.exceptions import ValidationError
 
 from odoo.addons.ata_exchange_v4.models.ata_exchange_method import AtaExchangeMethod
 from odoo.addons.ata_exchange_v4.models.ata_exchange_class  import AtaExchangeClass
@@ -13,23 +14,97 @@ from .pydantic_model import (
 )
 from typing import cast
 
+
+# Only these values are actually applied by Товары_Заполнить in BAS.
+# Stock valuation/price writes must not re-export an otherwise unchanged item.
+BAS_PRODUCT_FIELDS = frozenset({
+    'name', 'description_sale', 'taxes_id', 'td_one_c_category_id',
+    'td_uktzed_code_id', 'default_code', 'barcode',
+})
+_SKIP_PRODUCT_QUEUE = 'td_medicus_skip_product_write_queue'
+
+
+def _bas_product_values(product):
+    return {
+        'name': product.name or '',
+        'description_sale': product.description_sale or product.name or '',
+        'tax': product.taxes_id.exchange_data,
+        'category_1c_name': product.td_one_c_category_id.full_name or '',
+        'uktzed_code': product.td_uktzed_code_id.code or '',
+        'catalog_code': product.default_code or '',
+        'barcode': product.barcode or '',
+    }
+
+
+def _queue_changed_products(products, previous_values):
+    changed = products.filtered(
+        lambda product: previous_values[product.id] != _bas_product_values(product)
+    )
+    if changed:
+        changed.ata_exchange_add_to_queue()
+
+
 class TdProductTemplateExchange(models.Model):
     _name = 'product.template'
     _inherit = ['product.template','ata.exchange.class']
 
     def write(self, vals):
-        over_write = super(TdProductTemplateExchange, self).write(vals)
-        if over_write:
-            for template in self:
-                product_ids = self.env['product.product'].sudo().search([('product_tmpl_id', '=', template.id)])
-                product_ids.ata_exchange_add_to_queue()
+        if self.env.context.get(_SKIP_PRODUCT_QUEUE) or not BAS_PRODUCT_FIELDS.intersection(vals):
+            return super().write(vals)
 
-        return over_write
+        products = self.env['product.product'].sudo().with_context(active_test=False).search([
+            ('product_tmpl_id', 'in', self.ids),
+        ])
+        previous_values = {
+            product.id: _bas_product_values(product) for product in products
+        }
+        result = super(
+            TdProductTemplateExchange,
+            self.with_context(**{_SKIP_PRODUCT_QUEUE: True}),
+        ).write(vals)
+        _queue_changed_products(products, previous_values)
+        return result
 
 
 class TdProductProductExchange(models.Model):
     _name = 'product.product'
     _inherit = ['product.product','ata.exchange.class','ata.exchange.model.handler.mixin']
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        # A template write may create a new variant. Keep the normal create
+        # event even while its existing variants' writes are being compared.
+        if self.env.context.get(_SKIP_PRODUCT_QUEUE):
+            return super(
+                TdProductProductExchange,
+                self.with_context(**{_SKIP_PRODUCT_QUEUE: False}),
+            ).create(vals_list)
+        return super().create(vals_list)
+
+    def write(self, vals):
+        if self.env.context.get(_SKIP_PRODUCT_QUEUE):
+            return super().write(vals)
+        if not BAS_PRODUCT_FIELDS.intersection(vals):
+            return super(
+                TdProductProductExchange,
+                self.with_context(**{_SKIP_PRODUCT_QUEUE: True}),
+            ).write(vals)
+
+        products = self.sudo().with_context(active_test=False)
+        previous_values = {
+            product.id: _bas_product_values(product) for product in products
+        }
+        result = super(
+            TdProductProductExchange,
+            self.with_context(**{_SKIP_PRODUCT_QUEUE: True}),
+        ).write(vals)
+        _queue_changed_products(products, previous_values)
+        return result
+
+    def _ata_exchange_check_add_to_queue(self, vals):
+        if self.env.context.get(_SKIP_PRODUCT_QUEUE):
+            return False
+        return super()._ata_exchange_check_add_to_queue(vals)
 
     #region outgoing function
     def ata_exchange_compute_methods(self) -> list[AtaExchangeMethod]:
@@ -134,8 +209,26 @@ class TdProductProductExchange(models.Model):
                 ('code', '=', uktzed_code)
             ]
             return self.ata_exchange_get_model_record(uktzed_params).id
+
+        def get_equipment_category_id() -> int:
+            """Reuse the configured category and create it only if missing."""
+            ProductCategory = self.env['product.category']
+            categories = ProductCategory.search([
+                ('name', '=ilike', 'Обладнання'),
+            ])
+            if len(categories) > 1:
+                raise ValidationError(
+                    "Found several product categories named 'Обладнання': "
+                    f"{categories.ids}. Keep one category and repeat the import."
+                )
+            if not categories:
+                categories = ProductCategory.create({
+                    'name': 'Обладнання',
+                })
+            return categories.id
         
         vals: dict[str, str|int|list] = {
+            "active":               True,
             "name":                 product_data.name,
             "description_sale":     product_data.name_full,
             "type":                 "consu",
@@ -150,6 +243,9 @@ class TdProductProductExchange(models.Model):
             "use_expiration_date":  True,
             "barcode":              product_data.barcode or '',
         }
+
+        if product_data.is_equipment:
+            vals["categ_id"] = get_equipment_category_id()
 
         # TAXES
         tax_code = product_data.tax_code

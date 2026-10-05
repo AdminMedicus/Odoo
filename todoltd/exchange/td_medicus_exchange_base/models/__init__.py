@@ -1,4 +1,5 @@
 from . import pydantic_model
+from . import ata_exchange_model_handler
 
 from . import account_tax
 from . import product_product

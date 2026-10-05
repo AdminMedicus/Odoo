@@ -137,6 +137,7 @@ class ProductDataIncoming(BaseModelPydantic):
     catalog_code: str
     barcode: str = ''
     tracking_lot: StrBool
+    is_equipment: StrBool = False
 
 SALE_TAX_MAPPING = {
     TaxCodeEnum.TAX_20: "account.1_sale_tax_template_vat20_psbo",
