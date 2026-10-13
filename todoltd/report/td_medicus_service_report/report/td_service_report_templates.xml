@@ -477,7 +477,8 @@
 
             <!-- = Signatures of the parties = -->
             <div class="td_sr_footer">
-                <table class="td_sr_sign o_ignore_layout_styling">
+                <table  class="td_sr_sign o_ignore_layout_styling"
+                        t-if="o.td_is_inspection">
                     <tr>
                         <td style="width:38%;text-align:left;font-weight:bold;
                                    vertical-align:bottom;padding-bottom:4px;">
