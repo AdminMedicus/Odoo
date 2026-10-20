@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="td_equipment_applicant_menu"
+              name="Equipment Applicants"
+              parent="helpdesk.helpdesk_menu_config"
+              action="td_equipment_applicant_action"
+              sequence="30"/>
+
+</odoo>

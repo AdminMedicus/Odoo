@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="td_service_report_view_form_equipment_partner" model="ir.ui.view">
+        <field name="name">td.service.report.form.equipment.partner</field>
+        <field name="model">td.service.report</field>
+        <field name="inherit_id" ref="td_medicus_service_report.view_td_service_report_form"/>
+        <field name="arch" type="xml">
+            <!-- AC-21: the customer is editable. -->
+            <field name="partner_id" position="attributes">
+                <attribute name="readonly">0</attribute>
+                <attribute name="options">{'no_create': True}</attribute>
+            </field>
+            <!-- AC-25: the customer's agreements first, each with its counterparty. -->
+            <field name="td_agreement_ids" position="attributes">
+                <attribute name="context">{'td_agreement_client_id': partner_id, 'td_agreement_lot_id': td_lot_id}</attribute>
+            </field>
+        </field>
+    </record>
+
+</odoo>

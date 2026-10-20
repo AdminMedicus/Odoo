@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- AC-39: owner and applicants on the serial number card. -->
+    <record id="td_stock_lot_view_form_equipment_partner" model="ir.ui.view">
+        <field name="name">stock.lot.form.td.equipment.partner</field>
+        <field name="model">stock.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_form"/>
+        <field name="arch" type="xml">
+            <field name="ref" position="after">
+                <field name="td_owner_id"/>
+            </field>
+            <xpath expr="//notebook" position="inside">
+                <page string="Applicants" name="td_applicants">
+                    <field name="td_applicant_ids" readonly="1">
+                        <list>
+                            <field name="company_name"/>
+                            <field name="edrpou"/>
+                            <field name="partner_id"/>
+                            <field name="ticket_count"/>
+                            <field name="is_confirmed"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="td_stock_lot_view_list_equipment_partner" model="ir.ui.view">
+        <field name="name">stock.lot.list.td.equipment.partner</field>
+        <field name="model">stock.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_tree"/>
+        <field name="arch" type="xml">
+            <field name="product_id" position="after">
+                <field name="td_owner_id" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- AC-36: filters of the "Search More..." dialog of the ticket serial number. -->
+    <record id="td_stock_lot_view_search_equipment_partner" model="ir.ui.view">
+        <field name="name">stock.lot.search.td.equipment.partner</field>
+        <field name="model">stock.lot</field>
+        <field name="inherit_id" ref="stock.search_product_lot_filter"/>
+        <field name="arch" type="xml">
+            <field name="product_id" position="after">
+                <field name="td_owner_id"/>
+            </field>
+            <filter name="on_hand" position="after">
+                <filter string="Serviced for This Client" name="td_serviced_for_client"
+                        domain="[('td_serviced_for_client', '=', True)]"/>
+            </filter>
+            <filter name="group_by_product" position="after">
+                <filter string="Owner" name="group_by_td_owner" domain="[]"
+                        context="{'group_by': 'td_owner_id'}"/>
+            </filter>
+        </field>
+    </record>
+
+</odoo>
