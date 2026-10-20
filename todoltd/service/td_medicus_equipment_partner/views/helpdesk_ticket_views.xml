@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="td_helpdesk_ticket_view_form_equipment_partner" model="ir.ui.view">
+        <field name="name">td.helpdesk.ticket.form.equipment.partner</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id"
+               ref="td_medicus_service_report.td_helpdesk_ticket_view_form_service_report"/>
+        <field name="arch" type="xml">
+
+            <!-- AC-15, AC-39: notice when the applicant is not the owner of the equipment. -->
+            <xpath expr="//div[hasclass('oe_title')]" position="before">
+                <field name="td_owner_notice" invisible="1"/>
+                <field name="td_is_not_owner" invisible="1"/>
+                <div class="alert alert-warning mb-3" role="alert"
+                     invisible="td_owner_notice != 'warning'">
+                    <i class="fa fa-exclamation-triangle me-1" title="Warning"/>
+                    <span>Equipment purchased by another company: </span>
+                    <field name="td_owner_id" class="fw-bold" readonly="1"
+                           options="{'no_open': True}"/>
+                    <span> (EDRPOU </span>
+                    <field name="td_owner_edrpou" readonly="1"/>
+                    <span>). Check the service agreement and the payer.</span>
+                    <div class="mt-2">
+                        <button name="action_td_confirm_applicant" type="object"
+                                string="Confirm Applicant" class="btn btn-sm btn-secondary"
+                                invisible="not td_applicant_id"/>
+                        <button name="action_td_make_owner" type="object"
+                                string="Make Owner" class="btn btn-sm btn-secondary ms-2"
+                                groups="helpdesk.group_helpdesk_manager"
+                                invisible="not partner_id"/>
+                    </div>
+                </div>
+                <div class="alert alert-info mb-3" role="status"
+                     invisible="td_owner_notice != 'info'">
+                    <field name="td_applicant_id" readonly="1" options="{'no_open': True}"/>
+                    <span> is a confirmed applicant for this equipment. Owner: </span>
+                    <field name="td_owner_id" readonly="1" options="{'no_open': True}"/>
+                    <span>.</span>
+                    <button name="action_td_make_owner" type="object"
+                            string="Make Owner" class="btn btn-sm btn-link"
+                            groups="helpdesk.group_helpdesk_manager"
+                            invisible="not partner_id"/>
+                </div>
+            </xpath>
+
+            <!-- The standard product / lot fields replace the stock.lot.report ones. -->
+            <xpath expr="//field[@name='td_equipment_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='td_serial_number_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='td_serial_number_id']" position="after">
+                <field name="product_id" string="Equipment" options="{'no_create': True}"/>
+                <field name="lot_id" string="Serial Number" options="{'no_create': True}"
+                       context="{'td_client_id': partner_id}"
+                       groups="stock.group_stock_user"/>
+                <field name="td_owner_id" readonly="1"/>
+                <field name="td_applicant_edrpou" invisible="partner_id"/>
+                <field name="td_applicant_id" readonly="1" invisible="not td_applicant_id"/>
+            </xpath>
+
+            <!-- AC-25: the client's agreements first, each with its counterparty. -->
+            <xpath expr="//field[@name='td_agreement_ids']" position="attributes">
+                <attribute name="context">{'td_agreement_client_id': partner_id, 'td_agreement_lot_id': lot_id}</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- AC-14: "Applicant ≠ Owner" filter and grouping by owner for every ticket search view. -->
+    <record id="td_helpdesk_tickets_view_search_equipment_partner" model="ir.ui.view">
+        <field name="name">td.helpdesk.ticket.search.equipment.partner</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_tickets_view_search_base"/>
+        <field name="arch" type="xml">
+            <filter name="is_close" position="after">
+                <separator/>
+                <filter string="Applicant ≠ Owner" name="td_filter_not_owner"
+                        domain="[('td_is_not_owner', '=', True)]"/>
+            </filter>
+            <filter name="partner" position="after">
+                <filter string="Equipment Owner" name="td_group_owner"
+                        context="{'group_by': 'td_owner_id'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <!-- AC-15: "Not owner" badge next to the tags of the kanban card. -->
+    <record id="td_helpdesk_ticket_view_kanban_equipment_partner" model="ir.ui.view">
+        <field name="name">td.helpdesk.ticket.kanban.equipment.partner</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="inside">
+                <field name="td_is_not_owner"/>
+            </xpath>
+            <xpath expr="//t[@t-name='card']//field[@name='tag_ids']" position="after">
+                <span class="badge rounded-pill text-bg-warning"
+                      t-if="record.td_is_not_owner.raw_value">Not owner</span>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

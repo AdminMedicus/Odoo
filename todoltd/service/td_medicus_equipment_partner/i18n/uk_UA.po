@@ -1,0 +1,576 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* td_medicus_equipment_partner
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-20 11:57+0000\n"
+"PO-Revision-Date: 2026-10-20 11:57+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: td_medicus_equipment_partner
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_helpdesk_ticket_view_form_equipment_partner
+msgid ""
+"<i class=\"fa fa-exclamation-triangle me-1\" title=\"Warning\"/>\n"
+"                    <span>Equipment purchased by another company: </span>"
+msgstr ""
+"<i class=\"fa fa-exclamation-triangle me-1\" title=\"Попередження\"/>\n"
+"                    <span>Обладнання придбане іншою компанією: </span>"
+
+#. module: td_medicus_equipment_partner
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_helpdesk_ticket_view_form_equipment_partner
+msgid "<span> (EDRPOU </span>"
+msgstr "<span> (ЄДРПОУ </span>"
+
+#. module: td_medicus_equipment_partner
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_helpdesk_ticket_view_form_equipment_partner
+msgid "<span> is a confirmed applicant for this equipment. Owner: </span>"
+msgstr "<span> — підтверджений заявник цього обладнання. Власник: </span>"
+
+#. module: td_medicus_equipment_partner
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_helpdesk_ticket_view_form_equipment_partner
+msgid "<span>). Check the service agreement and the payer.</span>"
+msgstr "<span>). Перевірте договір обслуговування та платника.</span>"
+
+#. module: td_medicus_equipment_partner
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_helpdesk_ticket_view_form_equipment_partner
+msgid "<span>.</span>"
+msgstr "<span>.</span>"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__message_needaction
+msgid "Action Needed"
+msgstr "Необхідна дія"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__activity_ids
+msgid "Activities"
+msgstr "Дії"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Оформлення виключення дії"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__activity_state
+msgid "Activity State"
+msgstr "Статус дії"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Іконка типу дії"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model,name:td_medicus_equipment_partner.model_td_agreement
+msgid "Agreement"
+msgstr "Договір"
+
+#. module: td_medicus_equipment_partner
+#: model_terms:ir.actions.act_window,help:td_medicus_equipment_partner.td_equipment_applicant_action
+msgid ""
+"An applicant is registered automatically when a ticket gets a serial number\n"
+"                and an applicant (a client or an EDRPOU)."
+msgstr ""
+"Заявник реєструється автоматично, коли в заявці є серійний номер\n"
+"                і заявник (клієнт або ЄДРПОУ)."
+
+#. module: td_medicus_equipment_partner
+#. odoo-python
+#: code:addons/td_medicus_equipment_partner/models/td_equipment_applicant.py:0
+msgid "An applicant without a partner needs an EDRPOU of 8 or 10 digits."
+msgstr "Заявник без партнера повинен мати ЄДРПОУ з 8 або 10 цифр."
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_helpdesk_ticket__td_applicant_id
+msgid "Applicant"
+msgstr "Заявник"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_helpdesk_ticket__td_applicant_edrpou
+msgid "Applicant EDRPOU"
+msgstr "ЄДРПОУ заявника"
+
+#. module: td_medicus_equipment_partner
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_helpdesk_tickets_view_search_equipment_partner
+msgid "Applicant ≠ Owner"
+msgstr "Заявник ≠ власник"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_stock_lot__td_applicant_ids
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_stock_lot_view_form_equipment_partner
+msgid "Applicants"
+msgstr "Заявники"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__message_attachment_count
+msgid "Attachment Count"
+msgstr "Підрахунок прикріплення"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__company_name
+msgid "Company Name"
+msgstr "Назва компанії"
+
+#. module: td_medicus_equipment_partner
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_equipment_applicant_view_form
+msgid "Company name..."
+msgstr "Назва компанії..."
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,help:td_medicus_equipment_partner.field_stock_lot__td_owner_id
+msgid ""
+"Company that bought this unit: set by sale deliveries, cleared by their "
+"returns, editable by helpdesk and inventory managers."
+msgstr ""
+"Компанія, що купила цю одиницю обладнання: встановлюється видатковими "
+"накладними, знімається їх поверненням, змінювати можуть менеджери служби "
+"підтримки та складу."
+
+#. module: td_medicus_equipment_partner
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_helpdesk_ticket_view_form_equipment_partner
+msgid "Confirm Applicant"
+msgstr "Підтвердити заявника"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__is_confirmed
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_equipment_applicant_view_search
+msgid "Confirmed"
+msgstr "Підтверджено"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__confirmed_uid
+msgid "Confirmed By"
+msgstr "Підтвердив"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__confirmed_date
+msgid "Confirmed On"
+msgstr "Дата підтвердження"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model,name:td_medicus_equipment_partner.model_res_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__contact_name
+msgid "Contact"
+msgstr "Контакт"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__create_uid
+msgid "Created by"
+msgstr "Створив"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__create_date
+msgid "Created on"
+msgstr "Створено"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_service_report__partner_id
+msgid "Customer"
+msgstr "Замовник"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__display_name
+msgid "Display Name"
+msgstr "Назва для відображення"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__edrpou
+msgid "EDRPOU"
+msgstr "ЄДРПОУ"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,help:td_medicus_equipment_partner.field_helpdesk_ticket__td_applicant_edrpou
+msgid ""
+"EDRPOU of the company that asked for the service: the one entered on the "
+"website form, replaced by the EDRPOU of the client once it is set."
+msgstr ""
+"ЄДРПОУ компанії, що звернулася по сервіс: введений у веб-формі, а після "
+"вибору клієнта — ЄДРПОУ клієнта."
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__product_id
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_helpdesk_ticket_view_form_equipment_partner
+msgid "Equipment"
+msgstr "Обладнання"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model,name:td_medicus_equipment_partner.model_td_equipment_applicant
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_equipment_applicant_view_form
+msgid "Equipment Applicant"
+msgstr "Заявник обладнання"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.actions.act_window,name:td_medicus_equipment_partner.td_equipment_applicant_action
+#: model:ir.ui.menu,name:td_medicus_equipment_partner.td_equipment_applicant_menu
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_equipment_applicant_view_list
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_equipment_applicant_view_search
+msgid "Equipment Applicants"
+msgstr "Заявники обладнання"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_helpdesk_ticket__td_owner_id
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_helpdesk_tickets_view_search_equipment_partner
+msgid "Equipment Owner"
+msgstr "Власник обладнання"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__message_follower_ids
+msgid "Followers"
+msgstr "Підписники"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Підписники (Партнери)"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,help:td_medicus_equipment_partner.field_td_equipment_applicant__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Іконка з чудовим шрифтом, напр. fa-tasks"
+
+#. module: td_medicus_equipment_partner
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_equipment_applicant_view_search
+msgid "Group By"
+msgstr "Групувати за"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__has_message
+msgid "Has Message"
+msgstr "Є повідомлення"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model,name:td_medicus_equipment_partner.model_helpdesk_ticket
+msgid "Helpdesk Ticket"
+msgstr "Заявка служби підтримки"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__id
+msgid "ID"
+msgstr "ID"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__activity_exception_icon
+msgid "Icon"
+msgstr "Значок"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,help:td_medicus_equipment_partner.field_td_equipment_applicant__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Іконка для визначення виключення дії."
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,help:td_medicus_equipment_partner.field_td_equipment_applicant__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Якщо позначено, то нові повідомлення будуть потребувати вашої уваги."
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,help:td_medicus_equipment_partner.field_td_equipment_applicant__message_has_error
+#: model:ir.model.fields,help:td_medicus_equipment_partner.field_td_equipment_applicant__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Якщо позначено, деякі повідомлення мають помилку доставки."
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields.selection,name:td_medicus_equipment_partner.selection__helpdesk_ticket__td_owner_notice__info
+msgid "Info"
+msgstr "Інформація"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__message_is_follower
+msgid "Is Follower"
+msgstr "Стежить"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__write_uid
+msgid "Last Updated by"
+msgstr "Востаннє оновив"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__write_date
+msgid "Last Updated on"
+msgstr "Останнє оновлення"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model,name:td_medicus_equipment_partner.model_stock_lot
+msgid "Lot/Serial"
+msgstr "Партія/Серійний номер"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_helpdesk_ticket__lot_id
+msgid "Lot/Serial Number"
+msgstr "Партія/серійний номер"
+
+#. module: td_medicus_equipment_partner
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_helpdesk_ticket_view_form_equipment_partner
+msgid "Make Owner"
+msgstr "Зробити власником"
+
+#. module: td_medicus_equipment_partner
+#. odoo-python
+#: code:addons/td_medicus_equipment_partner/models/helpdesk_ticket.py:0
+msgid "Matching equipment"
+msgstr "Можливе обладнання"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__message_has_error
+msgid "Message Delivery error"
+msgstr "Помилка доставлення повідомлення"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__message_ids
+msgid "Messages"
+msgstr "Повідомлення"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Дедлайн моєї дії"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Наступна подія календаря дій"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Дедлайн наступної дії"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__activity_summary
+msgid "Next Activity Summary"
+msgstr "Підсумок наступної дії"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__activity_type_id
+msgid "Next Activity Type"
+msgstr "Тип наступної дії"
+
+#. module: td_medicus_equipment_partner
+#: model_terms:ir.actions.act_window,help:td_medicus_equipment_partner.td_equipment_applicant_action
+msgid "No equipment applicants yet"
+msgstr "Заявників обладнання ще немає"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields.selection,name:td_medicus_equipment_partner.selection__helpdesk_ticket__td_owner_notice__none
+msgid "None"
+msgstr "Немає"
+
+#. module: td_medicus_equipment_partner
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_equipment_applicant_view_search
+msgid "Not Confirmed"
+msgstr "Не підтверджено"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_helpdesk_ticket__td_is_not_owner
+msgid "Not Owner"
+msgstr "Не власник"
+
+#. module: td_medicus_equipment_partner
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_helpdesk_ticket_view_kanban_equipment_partner
+msgid "Not owner"
+msgstr "Не власник"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Кількість дій"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__message_has_error_counter
+msgid "Number of errors"
+msgstr "Кількість помилок"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,help:td_medicus_equipment_partner.field_td_equipment_applicant__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Кількість повідомлень, які вимагають дії"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,help:td_medicus_equipment_partner.field_td_equipment_applicant__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Кількість повідомлень з помилкою доставки"
+
+#. module: td_medicus_equipment_partner
+#. odoo-python
+#: code:addons/td_medicus_equipment_partner/models/stock_lot.py:0
+msgid ""
+"Only helpdesk or inventory managers can change the owner of a serial number."
+msgstr ""
+"Змінювати власника серійного номера можуть лише менеджери служби підтримки "
+"або складу."
+
+#. module: td_medicus_equipment_partner
+#. odoo-python
+#: code:addons/td_medicus_equipment_partner/models/stock_lot.py:0
+msgid "Operation not supported"
+msgstr "Операція не підтримується"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_stock_lot__td_owner_id
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_stock_lot_view_search_equipment_partner
+msgid "Owner"
+msgstr "Власник"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_helpdesk_ticket__td_owner_edrpou
+msgid "Owner EDRPOU"
+msgstr "ЄДРПОУ власника"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_helpdesk_ticket__td_owner_notice
+msgid "Owner Notice"
+msgstr "Позначка про власника"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,help:td_medicus_equipment_partner.field_helpdesk_ticket__td_owner_id
+msgid ""
+"Owner of the serial number. Follows the serial number while the ticket is "
+"open and stays as it was once the ticket is closed."
+msgstr ""
+"Власник серійного номера. Поки заявка відкрита, оновлюється разом із "
+"серійним номером, а після закриття заявки лишається незмінним."
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__partner_id
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_equipment_applicant_view_search
+msgid "Partner"
+msgstr "Партнер"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__phone
+msgid "Phone"
+msgstr "Телефон"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_helpdesk_ticket__product_id
+msgid "Product"
+msgstr "Товар"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,help:td_medicus_equipment_partner.field_helpdesk_ticket__product_id
+msgid ""
+"Product this ticket is about. If selected, only the sales orders, deliveries"
+" and invoices including this product will be visible."
+msgstr ""
+"Товар, про який йдеться в цій заявці. Якщо вибрано, відображатимуться лише "
+"замовлення на продаж, доставка та рахунок-фактура, що включають цей товар."
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__rating_ids
+msgid "Ratings"
+msgstr "Оцінювання"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__activity_user_id
+msgid "Responsible User"
+msgstr "Відповідальний користувач"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Помилка доставки SMS"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__lot_id
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_equipment_applicant_view_search
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_helpdesk_ticket_view_form_equipment_partner
+msgid "Serial Number"
+msgstr "Серійний номер"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model,name:td_medicus_equipment_partner.model_td_service_report
+msgid "Service Report"
+msgstr "Сервісний звіт"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_stock_lot__td_serviced_for_client
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_stock_lot_view_search_equipment_partner
+msgid "Serviced for This Client"
+msgstr "Обслуговувалось цим клієнтом"
+
+#. module: td_medicus_equipment_partner
+#. odoo-python
+#: code:addons/td_medicus_equipment_partner/models/helpdesk_ticket.py:0
+msgid "Set the client and the serial number of the ticket first."
+msgstr "Спершу вкажіть у заявці клієнта і серійний номер."
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,help:td_medicus_equipment_partner.field_td_equipment_applicant__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Етап заснований на діях\n"
+"Протерміновано: термін виконання вже минув\n"
+"Сьогодні: дата дії сьогодні\n"
+"Заплановано: майбутні дії."
+
+#. module: td_medicus_equipment_partner
+#. odoo-python
+#: code:addons/td_medicus_equipment_partner/models/td_equipment_applicant.py:0
+msgid ""
+"The company %(company)s is already an applicant of the serial number "
+"%(serial)s."
+msgstr "Компанія %(company)s уже є заявником серійного номера %(serial)s."
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,help:td_medicus_equipment_partner.field_helpdesk_ticket__td_owner_edrpou
+msgid ""
+"The registry number of the company. Use it if it is different from the Tax "
+"ID. It must be unique across all partners of a same country"
+msgstr ""
+"Реєстраційний номер компанії. Використовуйте його, якщо він відрізняється "
+"від ID податку. Він має бути унікальним для всіх партнерів однієї країни"
+
+#. module: td_medicus_equipment_partner
+#. odoo-python
+#: code:addons/td_medicus_equipment_partner/models/helpdesk_ticket.py:0
+msgid "This ticket has no applicant to confirm."
+msgstr "У цій заявці немає заявника для підтвердження."
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__ticket_ids
+#: model_terms:ir.ui.view,arch_db:td_medicus_equipment_partner.td_equipment_applicant_view_form
+msgid "Tickets"
+msgstr "Заявки"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__ticket_count
+msgid "Tickets Count"
+msgstr "Кількість заявок"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model,name:td_medicus_equipment_partner.model_stock_picking
+msgid "Transfer"
+msgstr "Переміщення"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,help:td_medicus_equipment_partner.field_td_equipment_applicant__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Тип дії виключення на записі."
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields.selection,name:td_medicus_equipment_partner.selection__helpdesk_ticket__td_owner_notice__warning
+msgid "Warning"
+msgstr "Попередження"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,field_description:td_medicus_equipment_partner.field_td_equipment_applicant__website_message_ids
+msgid "Website Messages"
+msgstr "Повідомлення з веб-сайту"
+
+#. module: td_medicus_equipment_partner
+#: model:ir.model.fields,help:td_medicus_equipment_partner.field_td_equipment_applicant__website_message_ids
+msgid "Website communication history"
+msgstr "Історія бесіди на сайті"
