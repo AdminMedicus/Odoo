@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_td_equipment_applicant_stock_user,td.equipment.applicant stock user,model_td_equipment_applicant,stock.group_stock_user,1,0,0,0
+access_td_equipment_applicant_helpdesk_user,td.equipment.applicant helpdesk user,model_td_equipment_applicant,helpdesk.group_helpdesk_user,1,1,1,0
+access_td_equipment_applicant_helpdesk_manager,td.equipment.applicant helpdesk manager,model_td_equipment_applicant,helpdesk.group_helpdesk_manager,1,1,1,1
