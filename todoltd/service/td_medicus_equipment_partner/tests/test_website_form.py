@@ -52,10 +52,29 @@ class TestWebsiteForm(TdEquipmentPartnerCase):
         self.assertTrue(ticket.td_is_not_owner)
 
     def test_ac16_serial_normalized(self):
-        """AC-16 [US-05]: case, extra spaces and invisible characters do not stop
-        the match."""
-        result = self._autofill(**{SERIAL_KEY: '  td-ep-sn-001​ '})
+        """AC-16 [US-05]: extra spaces and invisible characters around the serial
+        number do not stop the match."""
+        result = self._autofill(**{SERIAL_KEY: '  TD-EP-SN-001​ '})
         self.assertEqual(result['record'].get('lot_id'), self.lot_l.id)
+
+    def test_ac16_serial_leading_zeros(self):
+        """AC-16 [US-05]: leading zeros are part of the serial number: typed in
+        full they match, without them they do not."""
+        lot = self.env['stock.lot'].create({
+            'name': '000TD-EP-777', 'product_id': self.product_device.id,
+            'company_id': self.company.id,
+        })
+        result = self._autofill(**{SERIAL_KEY: '000TD-EP-777'})
+        self.assertEqual(result['record'].get('lot_id'), lot.id)
+        result = self._autofill(**{SERIAL_KEY: 'TD-EP-777'})
+        self.assertNotIn('lot_id', result['record'])
+
+    def test_ac16_serial_exact_case(self):
+        """AC-16 [US-05]: the serial number must match exactly — another letter
+        case finds nothing."""
+        result = self._autofill(**{SERIAL_KEY: 'td-ep-sn-001'})
+        self.assertNotIn('lot_id', result['record'])
+        self.assertNotIn('product_id', result['record'])
 
     def test_ac16_controller_merges_values(self):
         """AC-16 [US-05]: the website controller writes the resolved values into

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
-from odoo.tools import escape_psql
 
 from odoo.addons.td_medicus_helpdesk_website_autofill.controllers.website_form import (
     _EDRPOU_KEYS,
@@ -244,9 +243,8 @@ class HelpdeskTicket(models.Model):
 
     @api.model
     def _td_find_lots(self, serial):
-        Lot = self.env['stock.lot'].sudo()
-        return (Lot.search([('name', '=', serial)])
-                or Lot.search([('name', '=ilike', escape_psql(serial))]))
+        """AC-16: exact match only — letter case and leading zeros count."""
+        return self.env['stock.lot'].sudo().search([('name', '=', serial)])
 
     # ── Actions (AC-34, AC-35) ────────────────────────────────────────
 
