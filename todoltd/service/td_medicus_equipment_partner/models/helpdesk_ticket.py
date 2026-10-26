@@ -243,8 +243,16 @@ class HelpdeskTicket(models.Model):
 
     @api.model
     def _td_find_lots(self, serial):
-        """AC-16: exact match only — letter case and leading zeros count."""
-        return self.env['stock.lot'].sudo().search([('name', '=', serial)])
+        """AC-16: exact match only — letter case and leading zeros count.
+
+        Not ``('name', '=', serial)``: with the GS1 barcode nomenclature,
+        stock_barcode rewrites ``=`` on a zero-padded digit serial into ``ilike``
+        on the unpadded digits ('00001115' → '%1115%', which also matches
+        '111555666'). It leaves the ``in`` operator alone, and ``in`` is still an
+        exact comparison in SQL.
+        """
+        # return self.env['stock.lot'].sudo().search([('name', '=', serial)])
+        return self.env['stock.lot'].sudo().search([('name', 'in', [serial])])
 
     # ── Actions (AC-34, AC-35) ────────────────────────────────────────
 
