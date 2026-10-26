@@ -10,7 +10,7 @@ resolved independently. The owner of a serial number comes from sale
 deliveries, the ticket shows a "not owner" notice, and every company that
 asked for service on a serial number is kept as an equipment applicant.
     """,
-    'version': '18.0.1.0.0',
+    'version': '18.0.1.0.1',
     'category': 'Services/Helpdesk',
     'author': 'ToDo',
     'website': 'https://todo.ltd',

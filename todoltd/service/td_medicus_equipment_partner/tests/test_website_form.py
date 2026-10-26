@@ -69,6 +69,26 @@ class TestWebsiteForm(TdEquipmentPartnerCase):
         result = self._autofill(**{SERIAL_KEY: 'TD-EP-777'})
         self.assertNotIn('lot_id', result['record'])
 
+    def test_ac16_digit_serial_leading_zeros_gs1(self):
+        """AC-16 [US-05]: with the GS1 barcode nomenclature, stock_barcode turns a
+        name search for a zero-padded digit serial into ``ilike`` on the unpadded
+        digits. The lookup must still find only the exact serial number."""
+        gs1 = self.env.ref('barcodes_gs1_nomenclature.default_gs1_nomenclature',
+                           raise_if_not_found=False)
+        if gs1:
+            self.env.company.nomenclature_id = gs1
+        exact = self.env['stock.lot'].create({
+            'name': '000987654321', 'product_id': self.product_device.id,
+            'company_id': self.company.id,
+        })
+        self.env['stock.lot'].create({
+            'name': '9876543219', 'product_id': self.product_device2.id,
+            'company_id': self.company.id,
+        })
+        result = self._autofill(**{SERIAL_KEY: '000987654321'})
+        self.assertEqual(result['record'].get('lot_id'), exact.id)
+        self.assertEqual(result['custom'], [])
+
     def test_ac16_serial_exact_case(self):
         """AC-16 [US-05]: the serial number must match exactly — another letter
         case finds nothing."""
