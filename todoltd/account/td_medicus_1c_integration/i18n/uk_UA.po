@@ -223,7 +223,7 @@ msgstr "Код"
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_res_partner__company_registry
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_res_users__company_registry
 msgid "Code EDRPOU"
-msgstr "ID компанії"
+msgstr "Код ЄДРПОУ"
 
 #. module: td_medicus_1c_integration
 #: model:ir.model.fields,field_description:td_medicus_1c_integration.field_td_tax_invoice__company_id
